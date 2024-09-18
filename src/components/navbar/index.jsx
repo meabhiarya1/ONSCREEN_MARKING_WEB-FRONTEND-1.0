@@ -5,13 +5,15 @@ import { FiSearch } from "react-icons/fi";
 import { RiMoonFill, RiSunFill } from "react-icons/ri";
 import avatar from "assets/img/avatars/avatar4.png";
 import { getUserDetails, getAllUsers } from "services/common";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice";
 
 const Navbar = (props) => {
   const { brandText } = props;
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const token =
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
@@ -29,6 +31,9 @@ const Navbar = (props) => {
     };
     fetchData();
   }, [authState.isAuthenticated]);
+
+
+  
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
@@ -121,12 +126,14 @@ const Navbar = (props) => {
                   Profile
                 </a>
 
-                <a
-                  href=" "
-                  className="mt-3 text-sm font-medium text-red-500 transition duration-150 ease-out hover:text-red-500 hover:ease-in"
-                >
+                <button 
+                 onClick={() => {
+                  dispatch(logout())
+                  navigate("/auth/sign-in")
+                 }}
+                className="mt-3 text-sm font-medium text-red-500 transition duration-150 ease-out hover:text-red-500 hover:ease-in">
                   Log Out
-                </a>
+                </button>
               </div>
             </div>
           }
