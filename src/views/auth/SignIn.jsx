@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/authSlice";
 
 const style = {
   position: "absolute",
@@ -29,6 +31,7 @@ export default function SignIn() {
   const [forgotPassword, setForgotPassword] = useState(false);
   const [open, setOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -42,6 +45,7 @@ export default function SignIn() {
 
   const handleSubmitEmailPassword = async (e) => {
     e.preventDefault();
+    if (localStorage.getItem("token")) localStorage.removeItem("token");
     const updatedUser = { ...user, type: "password" };
     try {
       const response = await axios.post(
@@ -49,9 +53,7 @@ export default function SignIn() {
         updatedUser
       );
       toast.success("Logged in successfully!");
-      console.log(response);
-      if (localStorage.getItem("token")) localStorage.removeItem("token");
-      localStorage.setItem("token", response.data.token);
+      dispatch(login(response.data));
       navigate("/admin");
     } catch (error) {
       toast.error("Login failed. Please try again.");
@@ -73,7 +75,6 @@ export default function SignIn() {
         updatedUser
       );
       toast.success(response.data.message);
-      // console.log(response.data.userId)
       localStorage.setItem("userId", response.data.userId);
     } catch (error) {
       toast.error(error?.response.data.message);
@@ -94,7 +95,6 @@ export default function SignIn() {
         `${process.env.REACT_APP_API_URL}/api/auth/verify`,
         { userId, otp }
       );
-      // console.log(userId, otp);
       toast.success(response.data.message);
       if (localStorage.getItem("token")) localStorage.removeItem("token");
       localStorage.setItem("token", response.data.token);
@@ -277,7 +277,6 @@ export default function SignIn() {
                       OTP based login
                     </button>
                   </p>
-                  {console.log(forgotPassword)}
                   <p className="text-sm text-gray-500">
                     <button
                       className="text-gray-700 underline"
