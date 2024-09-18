@@ -41,7 +41,7 @@ const Index = () => {
 
           <tbody className="divide-y divide-gray-300 ">
             {users &&
-              users.map((user) => (
+              users?.map((user) => (
                 <tr key={user._id}>
                   {visibleFields.map((field) => (
                     <td

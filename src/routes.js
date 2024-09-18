@@ -3,7 +3,6 @@ import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
-import SignIn from "views/auth/SignIn";
 import Users from "views/admin/users";
 
 import {
@@ -44,13 +43,7 @@ const routes = [
     icon: <MdPerson className="h-6 w-6" />,
     component: <Profile />,
   },
-  {
-    name: "Sign In",
-    layout: "/auth",
-    path: "sign-in",
-    icon: <MdLock className="h-6 w-6" />,
-    component: <SignIn />,
-  },
+
   {
     name: "Users",
     layout: "/admin",
