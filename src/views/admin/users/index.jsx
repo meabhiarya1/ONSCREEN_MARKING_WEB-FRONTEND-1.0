@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getAllUsers } from "services/common";
+import Modal from "../../../components/modal/Modal";
 
 const Index = () => {
   const [users, setUsers] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // New state for selected user
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -19,12 +22,18 @@ const Index = () => {
   // Specify the keys you want to display
   const visibleFields = ["name", "email", "mobile", "role", "date"];
 
+  // Updated handleClick to store the selected user and open the modal
+  const handleClick = (user) => {
+    setSelectedUser(user);
+    setIsOpen(true);
+  };
+
   return (
     <div>
       <div className="mt-12 overflow-x-auto">
         <table className="min-w-full divide-y-2 divide-gray-300 bg-white text-sm">
-          <thead className="">
-            <tr >
+          <thead>
+            <tr>
               {visibleFields.map((key) => (
                 <th
                   key={key}
@@ -34,14 +43,12 @@ const Index = () => {
                   {/* Capitalize the first letter */}
                 </th>
               ))}
-              <th className="px-4 py-2">Action</th>{" "}
-              {/* Additional action column */}
             </tr>
           </thead>
 
           <tbody className="divide-y divide-gray-300 ">
             {users &&
-              users?.map((user) => (
+              users.map((user) => (
                 <tr key={user._id}>
                   {visibleFields.map((field) => (
                     <td
@@ -53,19 +60,30 @@ const Index = () => {
                         : user[field]}
                     </td>
                   ))}
+                 
                   <td className="whitespace-nowrap px-4 py-2">
-                    <a
-                      href="#"
+                    <button
                       className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+                      onClick={() => handleClick(user)}
                     >
-                      View
-                    </a>
+                      Edit
+                    </button>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2">
+                    <button className="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                      Remove
+                    </button>
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
+
+      {/* Render the modal when isOpen is true */}
+      {isOpen && (
+        <Modal user={selectedUser} isOpen={isOpen} setIsOpen={setIsOpen} />
+      )}
     </div>
   );
 };
