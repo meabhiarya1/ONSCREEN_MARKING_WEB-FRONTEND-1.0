@@ -17,7 +17,7 @@ const Index = () => {
       }
     };
     fetchUsers();
-  }, []);
+  }, [isOpen]);
 
   // Specify the keys you want to display
   const visibleFields = ["name", "email", "mobile", "role", "date"];

@@ -11,7 +11,6 @@ export default function Auth() {
             <Routes>
               <Route path={`/sign-in`} element={<SignIn />} />
             </Routes>
-            {/* <Footer /> */}
           </div>
         </div>
       </main>
