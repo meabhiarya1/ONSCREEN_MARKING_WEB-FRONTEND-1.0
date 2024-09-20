@@ -12,6 +12,7 @@ import {
   MdPerson,
   MdLock,
 } from "react-icons/md";
+import CreateUser from "views/admin/createUser/CreateUser";
 
 const routes = [
   {
@@ -50,6 +51,13 @@ const routes = [
     path: "users",
     icon: <MdLock className="h-6 w-6" />,
     component: <Users />,
+  },
+  {
+    name: "Create Users",
+    layout: "/admin",
+    path: "createuser",
+    icon: <MdLock className="h-6 w-6" />,
+    component: <CreateUser />,
   },
 ];
 export default routes;
