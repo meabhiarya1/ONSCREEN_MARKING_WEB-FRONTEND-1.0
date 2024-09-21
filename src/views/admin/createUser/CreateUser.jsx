@@ -62,7 +62,7 @@ const CreateUser = () => {
                     type="text"
                     id="FullName"
                     name="full_name"
-                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="mt-1 w-full p-2 rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -84,7 +84,7 @@ const CreateUser = () => {
                     type="number"
                     id="mobile"
                     name="mobile"
-                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="mt-1 w-full p-2  rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({ ...userDetails, mobile: e.target.value })
                     }
@@ -104,7 +104,7 @@ const CreateUser = () => {
                     type="email"
                     id="Email"
                     name="email"
-                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="mt-1 w-full p-2  rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -127,7 +127,7 @@ const CreateUser = () => {
                   <select
                     id="role"
                     name="role"
-                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="mt-1 w-full p-2  rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({ ...userDetails, role: e.target.value })
                     }
@@ -149,7 +149,7 @@ const CreateUser = () => {
                     Permissions
                   </label>
 
-                  <div className="mt-1 flex items-center justify-center space-x-4 space-y-2">
+                  <div className="mt-1 flex p-2  items-center justify-center space-x-4 space-y-2">
                     {routes.map((route, index) => (
                       <div className="mt-2">
                         <input
@@ -158,7 +158,7 @@ const CreateUser = () => {
                           name="permissions"
                           value={route.name}
                           key={index}
-                          className="cursor-pointer rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
+                          className="cursor-pointer p-2  rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
                           onChange={(e) => {
                             if (e.target.checked) {
                               setUserDetails({

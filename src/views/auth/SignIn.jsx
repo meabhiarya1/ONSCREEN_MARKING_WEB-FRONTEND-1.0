@@ -196,9 +196,8 @@ export default function SignIn() {
 
               <div className="col-span-6 items-center gap-2 sm:justify-between">
                 <button
-                  className={`hover:bg-transparent inline-block rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:text-blue-600 ${
-                    forgotPassword || otp ? "w-full" : "sm:w-2/3"
-                  } `}
+                  className={`hover:bg-transparent inline-block rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:text-blue-600 ${forgotPassword || otp ? "w-full" : "sm:w-2/3"
+                    } `}
                   onClick={verifyOTP}
                   type="button"
                 >
