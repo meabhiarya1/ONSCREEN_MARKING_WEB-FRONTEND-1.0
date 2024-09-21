@@ -5,7 +5,7 @@ import Modal from "../../../components/modal/Modal";
 const Index = () => {
   const [users, setUsers] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // New state for selected user
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -40,7 +40,6 @@ const Index = () => {
                   className="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
                 >
                   {key.charAt(0).toUpperCase() + key.slice(1)}{" "}
-                  {/* Capitalize the first letter */}
                 </th>
               ))}
             </tr>
@@ -56,11 +55,11 @@ const Index = () => {
                       className="whitespace-nowrap px-4 py-2 text-gray-700"
                     >
                       {field === "date"
-                        ? new Date(user[field]).toLocaleDateString() // Format the date field
+                        ? new Date(user[field]).toLocaleDateString()
                         : user[field]}
                     </td>
                   ))}
-                 
+
                   <td className="whitespace-nowrap px-4 py-2">
                     <button
                       className="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
@@ -79,7 +78,6 @@ const Index = () => {
           </tbody>
         </table>
       </div>
-
       {/* Render the modal when isOpen is true */}
       {isOpen && (
         <Modal user={selectedUser} isOpen={isOpen} setIsOpen={setIsOpen} />
