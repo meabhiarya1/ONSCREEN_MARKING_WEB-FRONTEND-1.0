@@ -1,11 +1,12 @@
 import React from "react";
 import MainDashboard from "views/admin/default";
-// import NFTMarketplace from "views/admin/marketplace";
+import Upload from "views/admin/upload";
 // import DataTables from "views/admin/tables";
 import Profile from "views/admin/profile";
 import Users from "views/admin/users";
 import { FaUsers } from "react-icons/fa";
 import { SiGnuprivacyguard } from "react-icons/si";
+import { FaFileUpload } from "react-icons/fa";
 import {
   MdHome,
   MdPerson,
@@ -56,9 +57,9 @@ const routes = [
   {
     name: "Upload CSV File",
     layout: "/admin",
-    path: "nft-marketplace",
-    // icon: <MdOutlineShoppingCart className="h-6 w-6" />,
-    // component: <NFTMarketplace />,
+    path: "uploadcsv",
+    icon: <FaFileUpload className="h-6 w-6" />,
+    component: <Upload />,
     secondary: true,
   },
 ];

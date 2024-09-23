@@ -5,7 +5,7 @@ import Modal from "../../../components/modal/Modal";
 import axios from "axios";
 import { toast } from "react-toastify";
 const Index = () => {
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -15,15 +15,9 @@ const Index = () => {
     const fetchUsers = async () => {
       try {
         const response = await getAllUsers();
+        console.log(response);
         setUsers(response.data);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          // Redirect to sign-in page if unauthorized
-          navigate("/auth/sign-in");
-        } else {
-          console.log(error);
-        }
-      }
+      } catch (error) {}
     };
     fetchUsers();
   }, [isOpen, navigate]); // Add navigate to the dependency array
@@ -56,6 +50,7 @@ const Index = () => {
       console.log(error);
     }
   };
+  console.log(users);
 
   return (
     <div>
@@ -76,7 +71,7 @@ const Index = () => {
 
           <tbody className="divide-y divide-gray-300 ">
             {users &&
-              users.map((user) => (
+              users?.map((user) => (
                 <tr key={user._id}>
                   {visibleFields.map((field) => (
                     <td
