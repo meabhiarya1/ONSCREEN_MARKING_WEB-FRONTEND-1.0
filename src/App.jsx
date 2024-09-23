@@ -15,7 +15,7 @@ const App = () => {
     if (!token) {
       navigate("/auth/sign-in");
     }
-  }, [token]);
+  }, [token, navigate]);
 
   useEffect(() => {
     dispatch(rehydrateToken());

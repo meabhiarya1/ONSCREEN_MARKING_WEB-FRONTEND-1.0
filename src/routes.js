@@ -1,16 +1,17 @@
 import React from "react";
 import MainDashboard from "views/admin/default";
-import NFTMarketplace from "views/admin/marketplace";
+// import NFTMarketplace from "views/admin/marketplace";
+// import DataTables from "views/admin/tables";
 import Profile from "views/admin/profile";
-import DataTables from "views/admin/tables";
 import Users from "views/admin/users";
-
+import { FaUsers } from "react-icons/fa";
+import { SiGnuprivacyguard } from "react-icons/si";
 import {
   MdHome,
-  MdOutlineShoppingCart,
-  MdBarChart,
   MdPerson,
-  MdLock,
+  // MdOutlineShoppingCart,
+  // MdBarChart,
+  // MdLock,
 } from "react-icons/md";
 import CreateUser from "views/admin/createUser/CreateUser";
 
@@ -22,21 +23,14 @@ const routes = [
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
   },
-  {
-    name: "NFT Marketplace",
-    layout: "/admin",
-    path: "nft-marketplace",
-    icon: <MdOutlineShoppingCart className="h-6 w-6" />,
-    component: <NFTMarketplace />,
-    secondary: true,
-  },
-  {
-    name: "Data Tables",
-    layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
-    path: "data-tables",
-    component: <DataTables />,
-  },
+
+  // {
+  //   name: "Data Tables",
+  //   layout: "/admin",
+  //   icon: <MdBarChart className="h-6 w-6" />,
+  //   path: "data-tables",
+  //   component: <DataTables />,
+  // },
   {
     name: "Profile",
     layout: "/admin",
@@ -49,15 +43,23 @@ const routes = [
     name: "Users",
     layout: "/admin",
     path: "users",
-    icon: <MdLock className="h-6 w-6" />,
+    icon: <FaUsers className="h-6 w-6" />,
     component: <Users />,
   },
   {
-    name: "Create Users",
+    name: "Create User",
     layout: "/admin",
     path: "createuser",
-    icon: <MdLock className="h-6 w-6" />,
+    icon: <SiGnuprivacyguard className="h-6 w-6" />,
     component: <CreateUser />,
+  },
+  {
+    name: "Upload CSV File",
+    layout: "/admin",
+    path: "nft-marketplace",
+    // icon: <MdOutlineShoppingCart className="h-6 w-6" />,
+    // component: <NFTMarketplace />,
+    secondary: true,
   },
 ];
 export default routes;

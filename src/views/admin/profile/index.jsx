@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { getUserDetails } from "../../../services/common";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ProfileOverview = () => {
   const [userData, setUserData] = useState(null);
   const token =
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getUserDetails(token);
-        setUserData(data);
+        const response = await getUserDetails(token);
+        setUserData(response.data);
       } catch (error) {
-        console.log(error);
+        if (error.response && error.response.status === 401) {
+          // Redirect to sign-in page if unauthorized
+          navigate("/auth/sign-in");
+        } else {
+          console.log(error);
+        }
       }
     };
     fetchData();
-  }, []);
+  }, [token, navigate]);
 
   return (
     <div className="mt-12 flex h-[50vh] w-full items-center justify-center">

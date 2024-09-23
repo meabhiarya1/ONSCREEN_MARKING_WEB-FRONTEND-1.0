@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { getAllUsers } from "services/common";
 import Modal from "../../../components/modal/Modal";
-
+import axios from "axios";
+import { toast } from "react-toastify";
 const Index = () => {
   const [users, setUsers] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const data = await getAllUsers();
-        setUsers(data);
+        const response = await getAllUsers();
+        setUsers(response.data);
       } catch (error) {
-        console.log(error);
+        if (error.response && error.response.status === 401) {
+          // Redirect to sign-in page if unauthorized
+          navigate("/auth/sign-in");
+        } else {
+          console.log(error);
+        }
       }
     };
     fetchUsers();
-  }, [isOpen]);
+  }, [isOpen, navigate]); // Add navigate to the dependency array
 
   // Specify the keys you want to display
   const visibleFields = ["name", "email", "mobile", "role", "date"];
@@ -26,6 +35,26 @@ const Index = () => {
   const handleClick = (user) => {
     setSelectedUser(user);
     setIsOpen(true);
+  };
+
+  const onClickRemove = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/auth/removeUser/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUsers(users.filter((user) => user._id !== id));
+      toast.success(response.data.message);
+      console.log(response.data);
+    } catch (error) {
+      toast.error(error.response.data.message);
+      console.log(error);
+    }
   };
 
   return (
@@ -68,11 +97,16 @@ const Index = () => {
                       Edit
                     </button>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2">
-                    <button className="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                      Remove
-                    </button>
-                  </td>
+                  {user._id !== localStorage.getItem("userId") && (
+                    <td className="whitespace-nowrap px-4 py-2">
+                      <button
+                        className="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+                        onClick={() => onClickRemove(user._id)}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
           </tbody>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import routes from "routes.js";
 import { createUser } from "services/common";
+import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
 const CreateUser = () => {
   const [userDetails, setUserDetails] = useState({
@@ -13,6 +14,7 @@ const CreateUser = () => {
     permissions: [],
     password_confirmation: "",
   });
+  const [visibility, setVisibility] = useState(false);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -42,18 +44,18 @@ const CreateUser = () => {
 
   return (
     <div>
-      <section className="bg-white">
-        <div className=" w-full lg:min-h-screen">
-          <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6">
+      <section className="bg-white ">
+        <div className=" w-full lg:min-h-screen ">
+          <main className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6 ">
             <div className="max-w-xl lg:max-w-3xl">
               <form
-                className="mt-8 grid grid-cols-6 gap-6"
+                className="text-md mt-8 grid grid-cols-6 gap-6 rounded-md border-gray-400 p-8 text-gray-900 shadow-md"
                 onSubmit={handleFormSubmit}
               >
                 <div className="col-span-6 sm:col-span-3">
                   <label
                     htmlFor="FullName"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     Full Name
                   </label>
@@ -62,7 +64,7 @@ const CreateUser = () => {
                     type="text"
                     id="FullName"
                     name="full_name"
-                    className="mt-1 w-full p-2 rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="text-md mt-1 w-full rounded-md border-gray-200 bg-white p-2 text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -75,7 +77,7 @@ const CreateUser = () => {
                 <div className="col-span-6 sm:col-span-3">
                   <label
                     htmlFor="mobile"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     Mobile Number
                   </label>
@@ -84,7 +86,7 @@ const CreateUser = () => {
                     type="number"
                     id="mobile"
                     name="mobile"
-                    className="mt-1 w-full p-2  rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="text-md mt-1 w-full  rounded-md border-gray-200 bg-white p-2 text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({ ...userDetails, mobile: e.target.value })
                     }
@@ -94,7 +96,7 @@ const CreateUser = () => {
                 <div className="col-span-6">
                   <label
                     htmlFor="Email"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     {" "}
                     Email{" "}
@@ -104,7 +106,7 @@ const CreateUser = () => {
                     type="email"
                     id="Email"
                     name="email"
-                    className="mt-1 w-full p-2  rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="text-md mt-1 w-full  rounded-md border-gray-200 bg-white p-2 text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -119,7 +121,7 @@ const CreateUser = () => {
                 <div className="col-span-6">
                   <label
                     htmlFor="Role"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     Role
                   </label>
@@ -127,7 +129,7 @@ const CreateUser = () => {
                   <select
                     id="role"
                     name="role"
-                    className="mt-1 w-full p-2  rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    className="text-md mt-1 w-full  rounded-md border-gray-200 bg-white p-2 text-gray-700 shadow-sm"
                     onChange={(e) =>
                       setUserDetails({ ...userDetails, role: e.target.value })
                     }
@@ -144,21 +146,20 @@ const CreateUser = () => {
                 <div className="col-span-6 ">
                   <label
                     htmlFor="permissions"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     Permissions
                   </label>
 
-                  <div className="mt-1 flex p-2  items-center justify-center space-x-4 space-y-2">
+                  <div className="grid grid-cols-2 gap-4 p-2 sm:grid-cols-3 lg:grid-cols-4">
                     {routes.map((route, index) => (
-                      <div className="mt-2">
+                      <div className="flex items-center" key={index}>
                         <input
                           type="checkbox"
                           id={route.name}
                           name="permissions"
                           value={route.name}
-                          key={index}
-                          className="cursor-pointer p-2  rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
+                          className="checked:border-transparent h-5 w-5 cursor-pointer appearance-none rounded border-2 border-gray-300 checked:bg-blue-600 focus:ring-2 focus:ring-blue-500"
                           onChange={(e) => {
                             if (e.target.checked) {
                               setUserDetails({
@@ -180,7 +181,7 @@ const CreateUser = () => {
                         />
                         <label
                           htmlFor={route.name}
-                          className="ml-2 text-sm text-gray-700"
+                          className="md:text-md ml-2 text-sm text-gray-700"
                         >
                           {route.name}
                         </label>
@@ -192,47 +193,72 @@ const CreateUser = () => {
                 <div className="col-span-6 sm:col-span-3">
                   <label
                     htmlFor="Password"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     {" "}
                     Password{" "}
                   </label>
-
-                  <input
-                    type="password"
-                    id="Password"
-                    name="password"
-                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                    onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        password: e.target.value,
-                      })
-                    }
-                    value={userDetails.password}
-                  />
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="password"
+                      id="Password"
+                      name="password"
+                      className="text-md mt-1 w-full rounded-md border-gray-200 bg-white p-2 text-gray-700 shadow-sm"
+                      onChange={(e) =>
+                        setUserDetails({
+                          ...userDetails,
+                          password: e.target.value,
+                        })
+                      }
+                      value={userDetails.password}
+                    />
+                    {visibility ? (
+                      <MdOutlineVisibility
+                        className="absolute right-2 cursor-pointer"
+                        onClick={() => setVisibility(!visibility)}
+                      />
+                    ) : (
+                      <MdOutlineVisibilityOff
+                        className="absolute right-2 cursor-pointer"
+                        onClick={() => setVisibility(!visibility)}
+                      />
+                    )}
+                  </div>
                 </div>
+
                 <div className="col-span-6 sm:col-span-3">
                   <label
                     htmlFor="PasswordConfirmation"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-md block font-medium text-gray-700"
                   >
                     Password Confirmation
                   </label>
-
-                  <input
-                    type="password"
-                    id="PasswordConfirmation"
-                    name="password_confirmation"
-                    className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                    onChange={(e) =>
-                      setUserDetails({
-                        ...userDetails,
-                        password_confirmation: e.target.value,
-                      })
-                    }
-                    value={userDetails.password_confirmation}
-                  />
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="password"
+                      id="PasswordConfirmation"
+                      name="password_confirmation"
+                      className="text-md relative mt-1 w-full rounded-md border-gray-200 bg-white p-2 text-gray-700 shadow-sm"
+                      onChange={(e) =>
+                        setUserDetails({
+                          ...userDetails,
+                          password_confirmation: e.target.value,
+                        })
+                      }
+                      value={userDetails.password_confirmation}
+                    />
+                    {visibility ? (
+                      <MdOutlineVisibility
+                        className="absolute right-2 cursor-pointer"
+                        onClick={() => setVisibility(!visibility)}
+                      />
+                    ) : (
+                      <MdOutlineVisibilityOff
+                        className="absolute right-2 cursor-pointer"
+                        onClick={() => setVisibility(!visibility)}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                   <button className="hover:bg-transparent inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">

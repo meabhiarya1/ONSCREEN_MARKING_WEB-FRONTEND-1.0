@@ -11,9 +11,10 @@ export const getUserDetails = async (token) => {
         },
       }
     );
-    return response.data;
+    return response; // return the full response to handle status outside
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return error.response; // return full error response to handle status outside
   }
 };
 
@@ -28,9 +29,10 @@ export const getAllUsers = async () => {
         },
       }
     );
-    return response.data;
+    return response; // return the full response to handle status outside
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return error.response; // return full error response to handle status outside
   }
 };
 

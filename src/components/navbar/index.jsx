@@ -5,7 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import { RiMoonFill, RiSunFill } from "react-icons/ri";
 import avatar from "assets/img/avatars/avatar4.png";
 import { getUserDetails, getAllUsers } from "services/common";
-import { useSelector ,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
 
 const Navbar = (props) => {
@@ -30,10 +30,7 @@ const Navbar = (props) => {
       }
     };
     fetchData();
-  }, [authState.isAuthenticated]);
-
-
-  
+  }, [authState.isAuthenticated, navigate]);
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
@@ -126,12 +123,13 @@ const Navbar = (props) => {
                   Profile
                 </a>
 
-                <button 
-                 onClick={() => {
-                  dispatch(logout())
-                  navigate("/auth/sign-in")
-                 }}
-                className="mt-3 text-sm font-medium text-red-500 transition duration-150 ease-out hover:text-red-500 hover:ease-in">
+                <button
+                  onClick={() => {
+                    dispatch(logout());
+                    navigate("/auth/sign-in");
+                  }}
+                  className="mt-3 text-sm font-medium text-red-500 transition duration-150 ease-out hover:text-red-500 hover:ease-in"
+                >
                   Log Out
                 </button>
               </div>
