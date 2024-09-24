@@ -22,9 +22,10 @@ const Navbar = (props) => {
     const id = localStorage.getItem("userId");
     const fetchData = async () => {
       try {
-        const data = await getUserDetails(token);
-        const allUsers = await getAllUsers();
-        setUserDetails(data);
+        const response = await getUserDetails(token);
+        // console.log(data)
+        // const allUsers = await getAllUsers();
+        setUserDetails(response.data);
       } catch (error) {
         console.log(error);
       }

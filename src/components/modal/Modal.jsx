@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import routes from "routes";
 
 const Modal = ({ user, isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
@@ -30,29 +31,6 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
-    }));
-  };
-
-  const handlePermissionChange = (e) => {
-    setNewPermission(e.target.value);
-  };
-
-  const addPermission = (e) => {
-    if (e.key === "Enter" || e.type === "click") {
-      if (newPermission && !formData.permissions.includes(newPermission)) {
-        setFormData((prevData) => ({
-          ...prevData,
-          permissions: [...prevData.permissions, newPermission],
-        }));
-        setNewPermission("");
-      }
-    }
-  };
-
-  const removePermission = (permission) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      permissions: prevData.permissions.filter((perm) => perm !== permission),
     }));
   };
 
@@ -90,6 +68,20 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to update user.");
+    }
+  };
+
+  const handleCheckboxChange = (routeName) => {
+    if (formData.permissions.includes(routeName)) {
+      setFormData({
+        ...formData,
+        permissions: formData.permissions.filter((perm) => perm !== routeName),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        permissions: [...formData.permissions, routeName],
+      });
     }
   };
 
@@ -164,7 +156,8 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                     </div>
                   </div>
 
-                  <div>
+                  {/* Permissions */}
+                  {/* <div>
                     <label
                       htmlFor="permissions"
                       className="block text-sm font-medium text-gray-700"
@@ -175,36 +168,62 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       {formData.permissions.map((permission, index) => (
                         <div
                           key={index}
-                          className="flex items-center space-x-2 rounded-full bg-indigo-100 px-3 py-1 text-sm text-indigo-600"
+                          className="flex items-center space-x-2"
                         >
-                          <span>{permission}</span>
-                          <button
-                            type="button"
-                            className="text-indigo-500 hover:text-indigo-700"
-                            onClick={() => removePermission(permission)}
+                          <input
+                            type="checkbox"
+                            id={`permission-${index}`}
+                            name="permissions"
+                            value={permission}
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            checked={permission}
+                            // onChange={() => handleCheckboxChange(permission)}
+                          />
+                          <label
+                            htmlFor={`permission-${index}`}
+                            className="text-sm text-gray-700"
                           >
-                            ✖
-                          </button>
+                            {permission}
+                          </label>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-3 flex items-center gap-2">
-                      <input
-                        type="text"
-                        id="permissions"
-                        value={newPermission}
-                        onChange={handlePermissionChange}
-                        onKeyDown={addPermission} // Replace onKeyPress with onKeyDown
-                        className="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                        placeholder="Add new permission"
-                      />
-                      <button
-                        type="button"
-                        onClick={addPermission} // Add permission on button click
-                        className="rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white shadow-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
-                      >
-                        Add
-                      </button>
+                  </div> */}
+
+                  <div>
+                    <label
+                      htmlFor="permissions"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Permissions
+                    </label>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {routes.map((route, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center space-x-2"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`route-${index}`}
+                            name="permissions"
+                            value={route.name}
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            checked={formData.permissions.includes(
+                              route.name
+                            )} /* Checked if permission exists */
+                            onChange={() =>
+                              handleCheckboxChange(route.name)
+                            } /* Handle permission toggle */
+                          />
+                          <label
+                            htmlFor={`route-${index}`}
+                            className="text-sm text-gray-700"
+                          >
+                            {route.name}
+                          </label>
+                        </div>
+                      ))}
                     </div>
                   </div>
 

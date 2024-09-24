@@ -1,4 +1,3 @@
-import React from "react";
 import MainDashboard from "views/admin/default";
 import Upload from "views/admin/upload";
 // import DataTables from "views/admin/tables";
@@ -7,13 +6,7 @@ import Users from "views/admin/users";
 import { FaUsers } from "react-icons/fa";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { FaFileUpload } from "react-icons/fa";
-import {
-  MdHome,
-  MdPerson,
-  // MdOutlineShoppingCart,
-  // MdBarChart,
-  // MdLock,
-} from "react-icons/md";
+import { MdHome, MdPerson } from "react-icons/md";
 import CreateUser from "views/admin/createUser/CreateUser";
 
 const routes = [
