@@ -51,7 +51,7 @@ const routes = [
     name: "Upload CSV File",
     layout: "/admin",
     path: "uploadcsv",
-    icon: <FaFileUpload className="h-6 w-6" />,
+    icon: <FaFileUpload className="h-5 w-5" />,
     component: <Upload />,
     secondary: true,
   },

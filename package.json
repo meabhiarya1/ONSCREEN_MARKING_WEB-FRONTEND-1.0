@@ -21,6 +21,7 @@
     "apexcharts": "3.35.5",
     "axios": "^1.7.7",
     "framer-motion": "^7.10.2",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-apexcharts": "1.4.0",
     "react-calendar": "^3.9.0",
