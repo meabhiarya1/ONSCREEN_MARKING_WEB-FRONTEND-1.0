@@ -18,7 +18,9 @@ const Sidebar = ({ open, onClose }) => {
           data?.permissions?.includes(route?.name)
         );
         setCurrentRoutes(filteredRoutes);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchUser();
   }, [token]);
