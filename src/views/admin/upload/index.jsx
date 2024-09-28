@@ -94,11 +94,11 @@ const Upload = () => {
           selectedRole === "admin"
             ? routes.map((route) => route.name)
             : routes
-                .filter(
-                  (route) =>
-                    route.name === "Main Dashboard" || route.name === "Profile"
-                )
-                .map((route) => route.name),
+              .filter(
+                (route) =>
+                  route.name === "Main Dashboard" || route.name === "Profile"
+              )
+              .map((route) => route.name),
       }));
 
       // Check for duplicate emails
@@ -180,55 +180,53 @@ const Upload = () => {
   };
 
   return (
-    <div className="mt-8 grid grid-cols-3 py-4">
-      <article className="cursor-pointer rounded-lg border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-lg sm:p-6">
+    <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 py-4">
+      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:border-blue-500">
         <div>
-          <h3 className="mt-0.5 text-lg font-medium text-gray-900">
+          <h3 className="mt-0.5 text-xl font-semibold text-gray-900">
             Upload CSV File
             <p className="text-md text-gray-500">User Creation</p>
           </h3>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <div
-            className="text-md group mt-4 inline-flex items-center gap-1 font-medium "
+            className="text-md group mt-4 inline-flex items-center gap-2 font-medium text-blue-600 hover:text-blue-700 transition-all"
             onClick={downloadSampleCsv}
           >
             Download File Example
             <span
               aria-hidden="true"
-              className="block transition-all group-hover:ms-0.5 rtl:rotate-180"
+              className="block transition-all group-hover:ms-1"
             >
-              <FaArrowAltCircleDown className="m-1 text-lg " />
+              <FaArrowAltCircleDown className="m-1 text-lg" />
             </span>
           </div>
 
           {/* Upload functions */}
           <div
             className="mt-4 inline-flex items-center gap-2"
-            onClick={() => {
-              return disabled ? toast.warning("Please select a role") : null;
-            }}
+            onClick={() => disabled ? toast.warning("Please select a role") : null}
           >
-            <label className="text-md group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600">
+            <label className="text-md group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600 hover:text-blue-700 transition-all">
               Upload CSV
               <input
                 type="file"
                 className="hidden"
-                disabled={disabled} // Disable if no role selected
+                disabled={disabled}
                 accept=".csv"
-                onChange={uploadHandle} // Handle file upload here
+                onChange={uploadHandle}
               />
               <span
                 aria-hidden="true"
-                className="block transition-all group-hover:ms-0.5 rtl:rotate-180"
+                className="block transition-all group-hover:ms-1"
               >
                 <FaCloudUploadAlt className="m-1 text-2xl" />
               </span>
             </label>
             <span
               aria-hidden="true"
-              className="block max-w-xs overflow-hidden text-ellipsis transition-all group-hover:ms-0.5 rtl:rotate-180 "
+              className="block max-w-xs overflow-hidden text-ellipsis transition-all group-hover:ms-0.5 rtl:rotate-180"
             >
               {file.name}
             </span>
@@ -247,7 +245,7 @@ const Upload = () => {
           id="userRole"
           value={selectedRole}
           onChange={handleChange}
-          className="rounded-lg border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="null">Select Option</option>
           <option value="admin">Admin</option>
@@ -255,20 +253,19 @@ const Upload = () => {
           <option value="reviewer">Reviewer</option>
         </select>
 
-        {/* Base */}
-
+        {/* Upload button */}
         <div
-          className="hover:bg-transparent inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500 cursor-pointer"
+          className="hover:bg-transparent inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 hover:bg-white transition duration-300 ease-in-out focus:outline-none focus:ring active:text-indigo-500 cursor-pointer"
           onClick={handleSubmit}
         >
           Upload CSV
         </div>
       </div>
-      {/* Base */}
 
       {/* Hidden download link for CSV */}
       <a ref={csvLinkRef} style={{ display: "none" }} download="sample.csv" />
     </div>
+
   );
 };
 
