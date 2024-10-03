@@ -2,8 +2,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
-// chakra imports
-
 export function SidebarLinks(props) {
   let location = useLocation();
 
@@ -11,7 +9,7 @@ export function SidebarLinks(props) {
   const activeRoute = (routeName) => {
     return location.pathname.includes(routeName);
   };
-
+  
   const createLinks = (routes) => {
     return routes.map((route, index) => {
       if (
@@ -27,18 +25,20 @@ export function SidebarLinks(props) {
                 key={index}
               >
                 <span
-                  className={`${activeRoute(route.path) === true
+                  className={`${
+                    activeRoute(route.path) === true
                       ? "font-bold text-brand-500 dark:text-white"
                       : "font-medium text-gray-600"
-                    }`}
+                  }`}
                 >
                   {route.icon ? route.icon : <DashIcon />}{" "}
                 </span>
                 <p
-                  className={`leading-1 ml-4 flex ${activeRoute(route.path) === true
+                  className={`leading-1 ml-4 flex ${
+                    activeRoute(route.path) === true
                       ? "font-bold text-navy-700 dark:text-white"
                       : "font-medium text-gray-600"
-                    }`}
+                  }`}
                 >
                   {route.name}
                 </p>
@@ -52,7 +52,6 @@ export function SidebarLinks(props) {
       }
     });
   };
-  // BRAND
   return createLinks(routes);
 }
 

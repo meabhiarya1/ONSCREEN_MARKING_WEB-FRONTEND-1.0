@@ -52,3 +52,22 @@ export const createUser = async (data) => {
     return error.response; // return full error response to handle status outside
   }
 };
+
+export const getAllCourses = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/courses/get/courses`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response);
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};

@@ -13,9 +13,8 @@ const Sidebar = ({ open, onClose }) => {
     const fetchUser = async () => {
       try {
         const { data } = await getUserDetails(token);
-        // console.log(data)
-        const filteredRoutes = routes.filter((route) =>
-          data?.permissions?.includes(route?.name)
+        const filteredRoutes = routes.filter(
+          (route) => data?.permissions?.includes(route?.name) && !route?.hidden
         );
         setCurrentRoutes(filteredRoutes);
       } catch (error) {
