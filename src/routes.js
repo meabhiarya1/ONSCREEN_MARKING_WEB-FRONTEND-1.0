@@ -32,7 +32,7 @@ const routes = [
     name: "Course Detail",
     layout: "/admin",
     icon: <IoBookSharp className="m-1 h-5 w-5" />,
-    path: "courses/:id",
+    path: "classes/:id",
     component: <CourseDetails />,
     hidden: true,
   },
