@@ -4,10 +4,18 @@ import { getAllCourses } from "../../../services/common";
 import ClassModal from "components/modal/ClassModal";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const Index = () => {
   const [subjects, setSubjects] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  // Use useState for managing form inputs
+  const [formData, setFormData] = useState({
+    name: "",
+    code: "",
+  });
+
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -20,6 +28,44 @@ const Index = () => {
     };
     fetchedData();
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent form submission
+
+    const classData = {
+      ...formData,
+      classId: id, // Include classId from params
+    };
+
+    console.log(classData);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/subjects/create/subject`,
+        classData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setSubjects((preSubjects) => [...preSubjects, response.data]);
+
+      // Clear form data after successful submission
+      setFormData({
+        name: "",
+        code: "",
+      });
+
+      console.log(response);
+      toast.success("Class created successfully 🙂");
+      setIsOpen(false); // Close modal on success
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error occurred");
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -48,7 +94,13 @@ const Index = () => {
         Add More Subjects
       </div>
 
-      <ClassModal setIsOpen={setIsOpen} isOpen={isOpen} />
+      <ClassModal
+        setIsOpen={setIsOpen}
+        isOpen={isOpen}
+        handleSubmit={handleSubmit}
+        setFormData={setFormData}
+        formData={formData}
+      />
 
       <div className="grid w-full grid-cols-3 gap-4">
         {subjects.length > 0 ? (

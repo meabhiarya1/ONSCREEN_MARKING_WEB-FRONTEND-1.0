@@ -1,43 +1,24 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-const ClassModal = ({ setIsOpen, isOpen }) => {
-  const nameRef = useRef(null);
-  const codeRef = useRef(null);
-  const { id } = useParams();
+const ClassModal = ({
+  setIsOpen,
+  isOpen,
+  handleSubmit,
+  setFormData,
+  formData,
+}) => {
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent form submission
 
-    // Access values directly from refs
-    const formData = {
-      name: nameRef.current.value,
-      code: codeRef.current.value,
-      classId: id,
-    };
-
-    console.log(formData);
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/subjects/create/subject`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log(response);
-      toast.success("Class created successfully 🙂");
-      setIsOpen(false);
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value, // Dynamically set the field value
+    });
   };
 
   return (
@@ -59,15 +40,16 @@ const ClassModal = ({ setIsOpen, isOpen }) => {
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
                 <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Course{" "}
+                  Course
                 </span>
                 <input
                   type="text"
                   id="name"
+                  name="name" // Bind name to the formData key
                   placeholder="Enter Course Name"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={nameRef} // Add ref
+                  value={formData.name} // Controlled input
+                  onChange={handleChange} // Handle changes
                 />
               </label>
 
@@ -76,15 +58,16 @@ const ClassModal = ({ setIsOpen, isOpen }) => {
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
                 <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Subject / Course Code{" "}
+                  Subject / Course Code
                 </span>
                 <input
                   type="text"
                   id="code"
+                  name="code" // Bind code to the formData key
                   placeholder="Enter Subject / Course Code"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={codeRef} // Add ref
+                  value={formData.code} // Controlled input
+                  onChange={handleChange} // Handle changes
                 />
               </label>
 

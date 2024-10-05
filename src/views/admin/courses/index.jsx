@@ -9,6 +9,14 @@ const Index = () => {
   const [courses, setCourses] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  const [formData, setFormData] = useState({
+    className: "",
+    classCode: "",
+    duration: "",
+    session: "",
+    year: "",
+  });
+
   useEffect(() => {
     const fetchedData = async () => {
       try {
@@ -20,6 +28,30 @@ const Index = () => {
     };
     fetchedData();
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/classes/create/class`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Add the new course to the courses state
+      setCourses((prevCourses) => [response.data, ...prevCourses]);
+
+      toast.success("Course created successfully.");
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+    setIsOpen(false);
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -48,7 +80,13 @@ const Index = () => {
         Create Course
       </div>
 
-      <CourseModal setIsOpen={setIsOpen} isOpen={isOpen} />
+      <CourseModal
+        setIsOpen={setIsOpen}
+        isOpen={isOpen}
+        handleSubmit={handleSubmit}
+        formData={formData}
+        setFormData={setFormData}
+      />
 
       <div className="grid w-full grid-cols-3 gap-4">
         {courses.length > 0 ? (

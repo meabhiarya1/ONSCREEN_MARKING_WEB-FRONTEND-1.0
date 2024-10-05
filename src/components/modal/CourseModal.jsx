@@ -1,46 +1,18 @@
-import React, { useState, useRef } from "react";
-import { toast } from "react-toastify";
-import axios from "axios";
+import React from "react";
 
-const CourseModal = ({ isOpen, setIsOpen }) => {
-  // Create refs for each input field
-  const classNameRef = useRef(null);
-  const classCodeRef = useRef(null);
-  const durationRef = useRef(null);
-  const sessionRef = useRef(null);
-  const yearRef = useRef(null);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Access values directly from refs
-    const formData = {
-      className: classNameRef.current.value,
-      classCode: classCodeRef.current.value,
-      duration: durationRef.current.value,
-      session: sessionRef.current.value,
-      year: yearRef.current.value,
-    };
-    console.log(formData);
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = axios.post(
-        `${process.env.REACT_APP_API_URL}/api/classes/create/class`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response);
-
-      toast.success("Course created successfully.");
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-    setIsOpen(false);
+const CourseModal = ({
+  isOpen,
+  setIsOpen,
+  handleSubmit,
+  formData,
+  setFormData,
+}) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value, // Dynamically set the field value
+    }));
   };
 
   return (
@@ -68,9 +40,11 @@ const CourseModal = ({ isOpen, setIsOpen }) => {
                 <input
                   type="text"
                   id="class"
+                  name="className" // Use the same name as in the state object
                   placeholder="B.Tech / B.A etc"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={classNameRef} // Add ref
+                  value={formData.className}
+                  onChange={handleChange} // Single change handler
                 />
               </label>
 
@@ -85,9 +59,11 @@ const CourseModal = ({ isOpen, setIsOpen }) => {
                 <input
                   type="text"
                   id="classCode"
+                  name="classCode" // Use the same name as in the state object
                   placeholder="Enter Class code"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={classCodeRef} // Add ref
+                  value={formData.classCode}
+                  onChange={handleChange}
                 />
               </label>
 
@@ -102,9 +78,11 @@ const CourseModal = ({ isOpen, setIsOpen }) => {
                 <input
                   type="text"
                   id="duration"
+                  name="duration" // Use the same name as in the state object
                   placeholder="Enter duration"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={durationRef} // Add ref
+                  value={formData.duration}
+                  onChange={handleChange}
                 />
               </label>
 
@@ -119,9 +97,11 @@ const CourseModal = ({ isOpen, setIsOpen }) => {
                 <input
                   type="text"
                   id="session"
+                  name="session" // Use the same name as in the state object
                   placeholder="Enter session"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={sessionRef} // Add ref
+                  value={formData.session}
+                  onChange={handleChange}
                 />
               </label>
 
@@ -136,9 +116,11 @@ const CourseModal = ({ isOpen, setIsOpen }) => {
                 <input
                   type="text"
                   id="year"
+                  name="year" // Use the same name as in the state object
                   placeholder="Enter year"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  ref={yearRef} // Add ref
+                  value={formData.year}
+                  onChange={handleChange}
                 />
               </label>
 
