@@ -60,7 +60,7 @@ const Index = () => {
       });
 
       console.log(response);
-      toast.success("Class created successfully 🙂");
+      toast.success("Course added successfully 🙂");
       setIsOpen(false); // Close modal on success
     } catch (error) {
       toast.error(error.response?.data?.message || "Error occurred");
@@ -91,7 +91,7 @@ const Index = () => {
         className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
         onClick={() => setIsOpen(true)}
       >
-        Add More Subjects
+       Create More Courses / Subjects 
       </div>
 
       <ClassModal

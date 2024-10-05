@@ -46,7 +46,7 @@ const Index = () => {
       // Add the new course to the courses state
       setCourses((prevCourses) => [response.data, ...prevCourses]);
 
-      toast.success("Course created successfully.");
+      toast.success("Class added successfully.");
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -77,7 +77,7 @@ const Index = () => {
         className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
         onClick={() => setIsOpen(true)}
       >
-        Create Course
+        Create More Class
       </div>
 
       <CourseModal
