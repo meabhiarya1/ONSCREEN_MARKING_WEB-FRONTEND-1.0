@@ -1,6 +1,6 @@
 import MainDashboard from "views/admin/default";
 import Upload from "views/admin/upload";
-import Courses from "views/admin/courses";
+import Classes from "views/admin/classes";
 import Profile from "views/admin/profile";
 import Users from "views/admin/users";
 import { FaUsers } from "react-icons/fa";
@@ -21,11 +21,11 @@ const routes = [
     hidden: false,
   },
   {
-    name: "Courses",
+    name: "Classes",
     layout: "/admin",
     icon: <IoBookSharp className="m-1 h-5 w-5" />,
     path: "courses",
-    component: <Courses />,
+    component: <Classes />,
     hidden: false,
   },
   {

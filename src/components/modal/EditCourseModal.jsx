@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-
-const CourseModal = ({
-  setIsOpen,
-  isOpen,
-  handleSubmit,
-  setFormData,
+const EditCourseModal = ({
+  isEditOpen,
+  setIsEditOpen,
+  currentSubject,
   formData,
+  setFormData,
+  courses,
+  setCourses,
 }) => {
+  // Populate formData when the modal opens with the current course data
+  useEffect(() => {
+    if (currentSubject) {
+      setFormData(currentSubject);
+    }
+  }, [currentSubject, setFormData]);
 
-
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -19,14 +26,45 @@ const CourseModal = ({
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/subjects/update/subject/${currentSubject._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the course in the courses state
+      const updatedCourses = courses.map((course) => {
+        if (course._id === response.data._id) {
+          return response.data;
+        }
+        return course;
+      });
+      setCourses(updatedCourses);
+
+      toast.success("Class updated successfully");
+      setIsEditOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsEditOpen(false);
+  };
+
   return (
     <div>
-      {isOpen && (
+      {isEditOpen && (
         <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 transition-opacity duration-300">
           <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
             <button
               className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsEditOpen(false)}
             >
               ✖
             </button>
@@ -46,8 +84,8 @@ const CourseModal = ({
                   name="name" // Bind name to the formData key
                   placeholder="Enter Course Name"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.name} // Controlled input
-                  onChange={handleChange} // Handle changes
+                  value={formData.name}
+                  onChange={handleChange}
                 />
               </label>
 
@@ -64,8 +102,8 @@ const CourseModal = ({
                   name="code" // Bind code to the formData key
                   placeholder="Enter Subject / Course Code"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.code} // Controlled input
-                  onChange={handleChange} // Handle changes
+                  value={formData.code}
+                  onChange={handleChange}
                 />
               </label>
 
@@ -84,4 +122,4 @@ const CourseModal = ({
   );
 };
 
-export default CourseModal;
+export default EditCourseModal;

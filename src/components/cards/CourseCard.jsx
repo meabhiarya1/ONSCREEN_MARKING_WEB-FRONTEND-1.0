@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-const CourseCard = ({ subject, handleDelete }) => {
+const CourseCard = ({ subject, handleDelete, setIsEditOpen, setCurrentSubject }) => {
   const { id } = useParams(); // Get the id from the URL
   const [classCourse, setClassCourse] = useState([]);
 
@@ -71,7 +71,13 @@ const CourseCard = ({ subject, handleDelete }) => {
       </div>
       <div>
         <span className="inline-flex -space-x-px overflow-hidden rounded-md border bg-white shadow-sm">
-          <button className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative">
+          <button
+            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            onClick={() => {
+              setIsEditOpen(true);
+              setCurrentSubject(subject);
+            }}
+          >
             Edit
           </button>
 

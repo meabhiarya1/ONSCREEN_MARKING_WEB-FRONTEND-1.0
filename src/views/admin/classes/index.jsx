@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Card from "components/cards/Card";
+import CardClasses from "components/cards/CardClasses";
 import { getAllClasses } from "../../../services/common";
-import CourseModal from "components/modal/CourseModal";
+import ClassModal from "components/modal/ClassModal";
 import axios from "axios";
 import { toast } from "react-toastify";
+import EditClassModal from "components/modal/EditClassModal";
 
 const Index = () => {
-  const [courses, setCourses] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [currentClass, setCurrentClass] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setEditIsOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     className: "",
@@ -21,7 +24,7 @@ const Index = () => {
     const fetchedData = async () => {
       try {
         const response = await getAllClasses();
-        setCourses(response);
+        setClasses(response);
       } catch (error) {
         console.log(error);
       }
@@ -44,7 +47,7 @@ const Index = () => {
       );
 
       // Add the new course to the courses state
-      setCourses((prevCourses) => [response.data, ...prevCourses]);
+      setClasses((prevClasses) => [response.data, ...prevClasses]);
 
       toast.success("Class added successfully.");
     } catch (error) {
@@ -65,7 +68,7 @@ const Index = () => {
         }
       );
       toast.success(response.data.message);
-      setCourses(courses.filter((course) => course._id !== id));
+      setClasses(classes.filter((class_) => class_._id !== id));
     } catch (error) {
       console.log(error);
     }
@@ -80,7 +83,7 @@ const Index = () => {
         Create More Class
       </div>
 
-      <CourseModal
+      <ClassModal
         setIsOpen={setIsOpen}
         isOpen={isOpen}
         handleSubmit={handleSubmit}
@@ -88,13 +91,25 @@ const Index = () => {
         setFormData={setFormData}
       />
 
+      <EditClassModal
+        isEditOpen={isEditOpen}
+        setEditIsOpen={setEditIsOpen}
+        currentClass={currentClass}
+        formData={formData}
+        setFormData={setFormData}
+        classes={classes}
+        setClasses={setClasses}
+      />
+
       <div className="grid w-full grid-cols-3 gap-4">
-        {courses.length > 0 ? (
-          courses.map((course) => (
-            <Card
-              key={course._id}
-              course={course}
+        {classes.length > 0 ? (
+          classes.map((class_, index) => (
+            <CardClasses
+              key={class_._id}
+              class_={class_}
               handleDelete={handleDelete}
+              setEditIsOpen={setEditIsOpen}
+              setCurrentClass={setCurrentClass}
             />
           ))
         ) : (

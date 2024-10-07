@@ -1,28 +1,70 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const ClassModal = ({
-  isOpen,
-  setIsOpen,
-  handleSubmit,
+const EditClassModal = ({
+  isEditOpen,
+  setEditIsOpen,
+  currentClass,
   formData,
   setFormData,
+  classes,
+  setClasses,
 }) => {
+  // Populate formData when the modal opens with the current course data
+  useEffect(() => {
+    if (currentClass) {
+      setFormData(currentClass);
+    }
+  }, [currentClass, setFormData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: value, // Dynamically set the field value
-    }));
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/classes/update/classs/${currentClass._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the course in the courses state
+      const updatedClasses = classes.map((class_) => {
+        if (class_._id === response.data._id) {
+          return response.data;
+        }
+        return class_;
+      });
+      setClasses(updatedClasses);
+
+      toast.success("Class updated successfully");
+      setEditIsOpen(false);
+    } catch (error) {
+      console.log(error)
+    }
+    setEditIsOpen(false);
   };
 
   return (
     <div>
-      {isOpen && (
+      {isEditOpen && (
         <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 transition-opacity duration-300">
           <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
             <button
               className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setEditIsOpen(false)}
             >
               ✖
             </button>
@@ -33,18 +75,15 @@ const ClassModal = ({
                 htmlFor="class"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
-                <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Class{" "}
-                </span>
+                <span className="text-xs font-medium text-gray-700">Class</span>
                 <input
                   type="text"
                   id="class"
-                  name="className" // Use the same name as in the state object
+                  name="className"
                   placeholder="B.Tech / B.A etc"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.className}
-                  onChange={handleChange} // Single change handler
+                  value={formData.className || ""} // Use formData instead of currentCourse
+                  onChange={handleChange}
                 />
               </label>
 
@@ -53,16 +92,15 @@ const ClassModal = ({
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
                 <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Class Code{" "}
+                  Class Code
                 </span>
                 <input
                   type="text"
                   id="classCode"
-                  name="classCode" // Use the same name as in the state object
+                  name="classCode"
                   placeholder="Enter Class code"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.classCode}
+                  value={formData.classCode || ""} // Use formData instead of currentCourse
                   onChange={handleChange}
                 />
               </label>
@@ -72,16 +110,15 @@ const ClassModal = ({
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
                 <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Duration{" "}
+                  Duration
                 </span>
                 <input
                   type="text"
                   id="duration"
-                  name="duration" // Use the same name as in the state object
+                  name="duration"
                   placeholder="Enter duration"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.duration}
+                  value={formData.duration || ""} // Use formData instead of currentCourse
                   onChange={handleChange}
                 />
               </label>
@@ -91,16 +128,15 @@ const ClassModal = ({
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
                 <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Session{" "}
+                  Session
                 </span>
                 <input
                   type="text"
                   id="session"
-                  name="session" // Use the same name as in the state object
+                  name="session"
                   placeholder="Enter session"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.session}
+                  value={formData.session || ""} // Use formData instead of currentCourse
                   onChange={handleChange}
                 />
               </label>
@@ -109,17 +145,14 @@ const ClassModal = ({
                 htmlFor="year"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
-                <span className="text-xs font-medium text-gray-700">
-                  {" "}
-                  Year{" "}
-                </span>
+                <span className="text-xs font-medium text-gray-700">Year</span>
                 <input
                   type="text"
                   id="year"
-                  name="year" // Use the same name as in the state object
+                  name="year"
                   placeholder="Enter year"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.year}
+                  value={formData.year || ""} // Use formData instead of currentCourse
                   onChange={handleChange}
                 />
               </label>
@@ -139,4 +172,4 @@ const ClassModal = ({
   );
 };
 
-export default ClassModal;
+export default EditClassModal;

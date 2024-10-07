@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CourseCard from "components/cards/CourseCard";
-import { getAllCourses } from "../../../services/common";
-import ClassModal from "components/modal/ClassModal";
+import CourseModal from "components/modal/CourseModal";
+import EditCourseModal from "components/modal/EditCourseModal";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,8 @@ import { useParams } from "react-router-dom";
 const Index = () => {
   const [subjects, setSubjects] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [currentSubject, setCurrentSubject] = useState(null);
   // Use useState for managing form inputs
   const [formData, setFormData] = useState({
     name: "",
@@ -19,9 +21,17 @@ const Index = () => {
 
   useEffect(() => {
     const fetchedData = async () => {
+      const token = localStorage.getItem("token");
       try {
-        const response = await getAllCourses();
-        setSubjects(response);
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/subjects/getallsubjectbasedonclass/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setSubjects(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -36,8 +46,6 @@ const Index = () => {
       ...formData,
       classId: id, // Include classId from params
     };
-
-    console.log(classData);
 
     try {
       const token = localStorage.getItem("token");
@@ -91,15 +99,25 @@ const Index = () => {
         className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
         onClick={() => setIsOpen(true)}
       >
-       Create More Courses / Subjects 
+        Create More Courses / Subjects
       </div>
 
-      <ClassModal
+      <CourseModal
         setIsOpen={setIsOpen}
         isOpen={isOpen}
         handleSubmit={handleSubmit}
         setFormData={setFormData}
         formData={formData}
+      />
+
+      <EditCourseModal
+        isEditOpen={isEditOpen}
+        setIsEditOpen={setIsEditOpen}
+        currentSubject={currentSubject}
+        formData={formData}
+        setFormData={setFormData}
+        courses={subjects}
+        setCourses={setSubjects}
       />
 
       <div className="grid w-full grid-cols-3 gap-4">
@@ -109,6 +127,8 @@ const Index = () => {
               key={subject._id}
               subject={subject}
               handleDelete={handleDelete}
+              setIsEditOpen={setIsEditOpen}
+              setCurrentSubject={setCurrentSubject}
             />
           ))
         ) : (
