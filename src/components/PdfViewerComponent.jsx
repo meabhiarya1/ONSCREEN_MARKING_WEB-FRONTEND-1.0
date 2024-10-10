@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { pdfjs } from "react-pdf";
 
 // Set the worker source for PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const PDFViewer = ({ pdfUrl }) => {
   const canvasRef = useRef();
