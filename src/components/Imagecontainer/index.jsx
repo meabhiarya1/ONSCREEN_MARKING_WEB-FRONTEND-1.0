@@ -5,6 +5,8 @@ import { FiZoomOut } from "react-icons/fi";
 import { LuPencilLine } from "react-icons/lu";
 import { BiCommentAdd } from "react-icons/bi";
 import { FcCheckmark } from "react-icons/fc";
+import { ImCross } from "react-icons/im";
+import { TiTick } from "react-icons/ti";
 const ImageContainer = ({ imageUrl }) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [isDragging, setIsDragging] = useState(false); // For drag functionality
@@ -48,38 +50,64 @@ const ImageContainer = ({ imageUrl }) => {
 
   return (
     <>
-      <button
-        className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        onClick={zoomIn}
-        style={{ marginRight: "5px" }}
-      >
-        <FiZoomIn />
-      </button>
-      <button
-        className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        onClick={zoomOut}
-      >
-        <FiZoomOut />
-      </button>
-      <button
-        className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        onClick={zoomOut}
-      >
-        <LuPencilLine />
-      </button>
-      <button
-        className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        onClick={zoomOut}
-      >
-        <BiCommentAdd />
-      </button>
-      <button
-        className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        onClick={zoomOut}
-      >
-        <FcCheckmark />
-      </button>
+      <div className="justify-center border bg-gray-300">
+        <button
+          data-tooltip-target="tooltip-light"
+          data-tooltip-style="light"
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomIn}
+          style={{ marginRight: "5px" }}
+        >
+          <FiZoomIn />
+        </button>
+        <div
+          id="tooltip-light"
+          role="tooltip"
+          class="tooltip invisible absolute z-10 inline-block rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 opacity-0 shadow-sm"
+        >
+          Tooltip content
+          <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
 
+        <button
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomOut}
+        >
+          <FiZoomOut />
+        </button>
+        <button
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomOut}
+        >
+          <LuPencilLine />
+        </button>
+        <button
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomOut}
+        >
+          <BiCommentAdd />
+        </button>
+        <button
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomOut}
+        >
+          <div>
+            <TiTick color="green" width={"400px"} />
+          </div>
+        </button>
+        <button
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomOut}
+        >
+          <ImCross color="red" />
+        </button>
+        <button
+          className="mb-2 me-2 rounded-full  bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          onClick={zoomOut}
+        >
+          <img src="/blank.jpg" width={50} height={50}/>
+        </button>
+      </div>
       <div
         style={{
           border: "1px solid #ccc",
@@ -113,7 +141,14 @@ const ImageContainer = ({ imageUrl }) => {
           }}
         ></div>
       </div>
-      <div style={{ marginTop: "10px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div
+        style={{
+          marginTop: "10px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <div>
           {Array.from({ length: 10 }, (_, index) => (
             <button
@@ -133,7 +168,9 @@ const ImageContainer = ({ imageUrl }) => {
           ))}
         </div>
         <div style={{ marginTop: "10px" }}>
-          <span>Page {1} of {30}</span>
+          <span>
+            Page {1} of {30}
+          </span>
         </div>
       </div>
       <button
