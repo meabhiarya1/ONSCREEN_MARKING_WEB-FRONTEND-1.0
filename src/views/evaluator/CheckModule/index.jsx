@@ -6,7 +6,7 @@ const CheckModule = () => {
     <>
       <div>CheckModule</div>
       {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
-      <div className="flex w-full flex-row">
+      <div className="flex w-full flex-row overflow-auto">
         <div className="w-[10%]">
           <div>
             <img
