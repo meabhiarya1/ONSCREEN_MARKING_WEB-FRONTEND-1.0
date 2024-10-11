@@ -7,40 +7,31 @@ const CheckModule = () => {
       <div>CheckModule</div>
       {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
       <div className="flex w-full flex-row overflow-auto">
-        <div className="w-[10%]">
+        <div className="h-[100vh] w-[10%] overflow-auto">
           <div>
             <img
               src="https://img.icons8.com/cotton/100/overview-pages-1.png"
               width={100}
               height={100}
+              alt="icon"
             />
+            <div>Q1-10</div>
           </div>
           <div>
             <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
+            <div>Q1-10</div>
           </div>
           <div>
-            {" "}
             <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
+            <div>Q1-10</div>
           </div>
           <div>
-            {" "}
             <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
+            <div>Q1-10</div>
           </div>
           <div>
-            {" "}
             <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
-          </div>
-          <div>
-            {" "}
-            <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
-          </div>
-          <div>
-            {" "}
-            <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
-          </div>
-          <div>
-            {" "}
-            <img src="https://img.icons8.com/cotton/100/overview-pages-1.png" />
+            <div>Q1-10</div>
           </div>
         </div>
         <div className="w-[60%]">
