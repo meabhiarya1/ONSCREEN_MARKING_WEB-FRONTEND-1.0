@@ -1,101 +1,100 @@
 import React, { useState } from "react";
-import { FiZoomIn } from "react-icons/fi";
-import { FiZoomOut } from "react-icons/fi";
+import { FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { LuPencilLine } from "react-icons/lu";
 import { BiCommentAdd } from "react-icons/bi";
 import { ImCross } from "react-icons/im";
 import { TiTick } from "react-icons/ti";
 import { AnswerData } from "data/answer";
+
 const ImageContainer = ({ imageUrl }) => {
   const [scale, setScale] = useState(1); // Initial zoom level
-  const [isDragging, setIsDragging] = useState(false); // For drag functionality
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 }); // Start position for dragging
-  const [translate, setTranslate] = useState({ x: 0, y: 0 }); // For moving the image
-  const [showTick, setShowTick] = useState(false); // State to toggle tick icon
+  const [ticks, setTicks] = useState([]); // State for tick positions
+  const [isTickDragging, setIsTickDragging] = useState(false); // To handle tick dragging
+  const [currentTickIndex, setCurrentTickIndex] = useState(null); // Index of the currently dragged tick
+
   const [currentPage, setCurrentPage] = useState(0);
+
   // Zoom in and out
-  const zoomIn = () => {
-    setScale((prevScale) => Math.min(prevScale + 0.1, 3)); // Limit max scale to 3
+  const zoomIn = () => setScale((prevScale) => Math.min(prevScale + 0.1, 3));
+  const zoomOut = () => setScale((prevScale) => Math.max(prevScale - 0.1, 1));
+
+  // Add a new tick at the current mouse position
+  const handleTickClick = (e) => {
+    const newTick = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+    setTicks((prevTicks) => [...prevTicks, newTick]);
   };
 
-  const zoomOut = () => {
-    setScale((prevScale) =>prevScale - 0.1); // Limit min scale to 1
+  // Start dragging the tick
+  const handleTickMouseDown = (index, e) => {
+    setIsTickDragging(true);
+    setCurrentTickIndex(index);
   };
 
-  // Start dragging
-  const handleMouseDown = (e) => {
-    setIsDragging(false);
-    setStartPos({ x: e.clientX - translate.x, y: e.clientY - translate.y });
-  };
-
-  // Handle dragging
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      setTranslate({
-        x: e.clientX - startPos.x,
-        y: e.clientY - startPos.y,
-      });
+  // Handle tick dragging
+  const handleTickMouseMove = (e) => {
+    if (isTickDragging && currentTickIndex !== null) {
+      const updatedTicks = [...ticks];
+      updatedTicks[currentTickIndex] = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+      setTicks(updatedTicks);
     }
   };
 
-  // Stop dragging
-  const handleMouseUp = () => {
-    setIsDragging(false);
+  // Stop dragging the tick
+  const handleTickMouseUp = () => {
+    setIsTickDragging(false);
+    setCurrentTickIndex(null);
   };
 
-  // Prevent dragging when mouse leaves the image
-  const handleMouseLeave = () => {
-    setIsDragging(false);
+  const handleTickMouseLeave = () => {
+    setIsTickDragging(false);
+    setCurrentTickIndex(null);
+  };
+  const handleRightClick = (e) => {
+    e.preventDefault(); // Prevent the default context menu
   };
 
-  // Toggle the tick icon visibility
-  const handleTickClick = () => {
-    setShowTick((prev) => !prev);
-  };
-  const paginationHandler = (index) => {
-    console.log(index);
-    setCurrentPage(index);
-  };
-  console.log(AnswerData[currentPage].imgUrl);
+  const paginationHandler = (index) => setCurrentPage(index);
+
   return (
     <>
       <div className="justify-center border bg-gray-300">
         <button
-          className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           onClick={zoomIn}
-          style={{ marginRight: "5px" }}
         >
           <FiZoomIn />
         </button>
 
         <button
-          className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+          className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           onClick={zoomOut}
         >
           <FiZoomOut />
         </button>
 
-        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <LuPencilLine />
         </button>
 
-        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <BiCommentAdd />
         </button>
 
         <button
-          className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-          onClick={handleTickClick} // Toggle tick on click
+          className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          onClick={handleTickClick} // Add a tick on click
         >
-          <TiTick color="green" width={"400px"} />
+          <TiTick />
         </button>
 
-        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <ImCross color="red" />
-        </button>
-
-        <button className="mb-2 me-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
-          <img src="/blank.jpg" width={50} height={50} alt="placeholder" />
         </button>
       </div>
 
@@ -104,41 +103,45 @@ const ImageContainer = ({ imageUrl }) => {
           border: "1px solid #ccc",
           overflow: "auto",
           position: "relative",
-          cursor: isDragging ? "grabbing" : "grab",
           width: "100%",
-          height: "500px", // You can set any height
+          height: "500px",
         }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+        onContextMenu={handleRightClick}        
       >
         <img
-          xcg
           src={AnswerData[currentPage].imgUrl}
           alt="Viewer"
           style={{
-            transform: `scale(${scale}) translate(${translate.x}px, ${translate.y}px)`,
-            transformOrigin: "top left", // Ensure scaling works from top left corner
-            transition: "transform 0.2s ease-in-out", // Smooth transition on zoom
-            maxWidth: "none", // Prevents image from being resized to fit the container
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            transition: "transform 0.2s ease-in-out",
+            maxWidth: "none",
           }}
         />
 
-        {/* Conditionally render the tick icon on top of the image */}
-        {showTick && (
+        {/* Render all ticks */}
+        {ticks.map((tick, index) => (
           <div
+            key={index}
             style={{
               position: "absolute",
-              top: "10px",
-              left: "10px",
+              top: `${tick.y}px`,
+              left: `${tick.x}px`,
               zIndex: 10,
               fontSize: "50px", // Adjust size of the tick
+              cursor:
+                isTickDragging && currentTickIndex === index
+                  ? "grabbing"
+                  : "grab",
             }}
+            onMouseDown={(e) => handleTickMouseDown(index, e)}
+            onMouseMove={handleTickMouseMove}
+            onMouseUp={handleTickMouseUp}
+            onMouseLeave={handleTickMouseLeave}
           >
             <TiTick color="green" />
           </div>
-        )}
+        ))}
       </div>
 
       <div
@@ -155,8 +158,8 @@ const ImageContainer = ({ imageUrl }) => {
               key={index + 1}
               style={{
                 margin: "5px",
-                backgroundColor: currentPage === index  ? "#007bff" : "#fff",
-                color: currentPage === index  ? "#fff" : "#000",
+                backgroundColor: currentPage === index ? "#007bff" : "#fff",
+                color: currentPage === index ? "#fff" : "#000",
                 border: "1px solid #007bff",
                 padding: "5px 10px",
                 cursor: "pointer",
@@ -169,17 +172,10 @@ const ImageContainer = ({ imageUrl }) => {
         </div>
         <div style={{ marginTop: "10px" }}>
           <span>
-            Page {1} of {30}
+            Page {currentPage + 1} of {AnswerData.length}
           </span>
         </div>
       </div>
-
-      <button
-        type="button"
-        className="mb-2 me-2 rounded-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-lg shadow-red-500/50 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-red-300 dark:shadow-lg dark:shadow-red-800/80 dark:focus:ring-red-800"
-      >
-        Reject booklet
-      </button>
     </>
   );
 };
