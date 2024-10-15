@@ -2,6 +2,7 @@ import ImageContainer from "components/Imagecontainer/index";
 import { useCallback, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { useStopwatch } from "react-timer-hook";
+import QuestionSection from "components/QuestionSection";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const svgFiles = ["/red.svg", "/green.svg", "/yellow.svg"];
@@ -21,8 +22,14 @@ const CheckModule = () => {
     setIcons(generateRandomIcons());
   }, []);
   const Imgicons = icons.map((icon, index) => (
-    <div key={index}>
-      <img src={icon.src} width={70} height={70} alt="icon" />
+    <div key={index} className="my-4 text-center">
+      <img
+        src={icon.src}
+        width={70}
+        height={70}
+        alt="icon"
+        className="mx-auto"
+      />
       <div>{icon.label}</div>
     </div>
   ));
@@ -68,7 +75,7 @@ const CheckModule = () => {
       </div>
       {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
       <div className="flex h-[90vh] w-full flex-row overflow-auto">
-        <div className="h-[100%] w-[10%] justify-center overflow-auto">
+        <div className="h-[100%] w-[10%] justify-center overflow-auto text-center  ">
           <h1 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
             Total <span>40</span> Pages
           </h1>
@@ -81,7 +88,9 @@ const CheckModule = () => {
             }
           />
         </div>
-        <div className="w-[30%]"></div>
+        <div className="w-[30%]">
+          <QuestionSection />
+        </div>
       </div>
     </>
   );
