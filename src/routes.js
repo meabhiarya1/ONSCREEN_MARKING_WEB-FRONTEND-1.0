@@ -11,7 +11,11 @@ import { MdHome, MdPerson } from "react-icons/md";
 import CreateUser from "views/admin/createUser/CreateUser";
 import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
+
 import CheckModule from "views/evaluator/CheckModule";
+
+import CreateSchema from "views/admin/createSchema/Index";
+
 const routes = [
   {
     name: "Main Dashboard",
@@ -51,6 +55,14 @@ const routes = [
     icon: <IoBookSharp className="m-1 h-5 w-5" />,
     path: "classes/:id",
     component: <CourseDetails />,
+    hidden: true,
+  },
+  {
+    name: "Create Schema",
+    layout: "/admin",
+    icon: <IoBookSharp className="m-1 h-5 w-5" />,
+    path: "schema/create/:id",
+    component: <CreateSchema />,
     hidden: true,
   },
   {

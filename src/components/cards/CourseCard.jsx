@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-const CourseCard = ({ subject, handleDelete, setIsEditOpen, setCurrentSubject }) => {
+const CourseCard = ({
+  subject,
+  handleDelete,
+  setIsEditOpen,
+  setCurrentSubject,
+}) => {
   const { id } = useParams(); // Get the id from the URL
   const [classCourse, setClassCourse] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -83,12 +89,20 @@ const CourseCard = ({ subject, handleDelete, setIsEditOpen, setCurrentSubject })
 
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            onClick={() => navigate(`/admin/schema/create/${subject._id}`)}
+          >
+            Create Schema
+          </button>
+
+          <button
+            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
             onClick={() => {
               handleDelete(subject?._id);
             }}
           >
             Delete
           </button>
+         
         </span>
       </div>
     </div>
