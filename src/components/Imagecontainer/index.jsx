@@ -5,13 +5,15 @@ import { BiCommentAdd } from "react-icons/bi";
 import { ImCross } from "react-icons/im";
 import { TiTick } from "react-icons/ti";
 import { AnswerData } from "data/answer";
+import AnswerModal from "components/AnswerModal";
 
 const ImageContainer = ({ imageUrl }) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [ticks, setTicks] = useState([]); // State for tick positions
   const [isTickDragging, setIsTickDragging] = useState(false); // To handle tick dragging
   const [currentTickIndex, setCurrentTickIndex] = useState(null); // Index of the currently dragged tick
-
+  const [showModal, setShowModal] = useState(false); // Toggle the modal visibility
+  const [modalPos, setModalPos] = useState({ x: 0, y: 0 }); // Position for modal
   const [currentPage, setCurrentPage] = useState(0);
 
   // Zoom in and out
@@ -55,10 +57,16 @@ const ImageContainer = ({ imageUrl }) => {
     setIsTickDragging(false);
     setCurrentTickIndex(null);
   };
+
+  // Handle right-click and show the modal
   const handleRightClick = (e) => {
     e.preventDefault(); // Prevent the default context menu
+    setModalPos({ x: e.clientX, y: e.clientY }); // Capture the right-click position
+    setShowModal(true); // Show the modal
   };
-
+  const handleLeftClick = () => {
+    setShowModal(false);
+  };
   const paginationHandler = (index) => setCurrentPage(index);
 
   return (
@@ -106,7 +114,8 @@ const ImageContainer = ({ imageUrl }) => {
           width: "100%",
           height: "500px",
         }}
-        onContextMenu={handleRightClick}        
+        onContextMenu={handleRightClick} // Capture right-click event
+        onClick={handleLeftClick}
       >
         <img
           src={AnswerData[currentPage].imgUrl}
@@ -176,6 +185,20 @@ const ImageContainer = ({ imageUrl }) => {
           </span>
         </div>
       </div>
+
+      {/* Render the modal at the right-click position */}
+      {showModal && (
+        <div
+          style={{
+            position: "absolute",
+            top: `${modalPos.y}px`,
+            left: `${modalPos.x}px`,
+            zIndex: 999,
+          }}
+        >
+          <AnswerModal />
+        </div>
+      )}
     </>
   );
 };
