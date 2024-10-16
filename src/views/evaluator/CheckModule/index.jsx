@@ -22,7 +22,7 @@ const CheckModule = () => {
     setIcons(generateRandomIcons());
   }, []);
   const Imgicons = icons.map((icon, index) => (
-    <div key={index} className="my-4 text-center">
+    <div key={index} className="my-4 text-center hover:bg-gray-300 cursor-pointer">
       <img
         src={icon.src}
         width={70}
