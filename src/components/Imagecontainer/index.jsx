@@ -68,7 +68,37 @@ const ImageContainer = ({ imageUrl }) => {
     setShowModal(false);
   };
   const paginationHandler = (index) => setCurrentPage(index);
+  const pageList = Array.from({ length: AnswerData.length }, (_, index) => {
+    const activeClass =
+      currentPage === index
+        ? "flex h-8 items-center justify-center border border-gray-300 bg-blue-50 px-3 text-blue-600 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+        : "flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white";
 
+    return (
+      <li key={index + 1}>
+        <button
+          href="#"
+          onClick={() => paginationHandler(index)}
+          aria-current={currentPage === index ? "page" : ""}
+          class={activeClass}
+        >
+          {index + 1}
+        </button>
+      </li>
+    );
+  });
+
+  const handlePrev = () => {
+    if (currentPage > 0) {
+      setCurrentPage((item) => item - 1);
+    }
+  };
+  const handleNext = () => {
+    console.log(currentPage);
+    if (currentPage < AnswerData.length - 1) {
+      setCurrentPage((item) => item + 1);
+    }
+  };
   return (
     <>
       <div className="justify-center border bg-gray-300">
@@ -112,7 +142,7 @@ const ImageContainer = ({ imageUrl }) => {
           overflow: "auto",
           position: "relative",
           width: "100%",
-          height: "500px",
+          height: "75vh",
         }}
         onContextMenu={handleRightClick} // Capture right-click event
         onClick={handleLeftClick}
@@ -161,29 +191,36 @@ const ImageContainer = ({ imageUrl }) => {
           alignItems: "center",
         }}
       >
-        <div>
-          {Array.from({ length: AnswerData.length }, (_, index) => (
-            <button
-              key={index + 1}
-              style={{
-                margin: "5px",
-                backgroundColor: currentPage === index ? "#007bff" : "#fff",
-                color: currentPage === index ? "#fff" : "#000",
-                border: "1px solid #007bff",
-                padding: "5px 10px",
-                cursor: "pointer",
-              }}
-              onClick={() => paginationHandler(index)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-        <div style={{ marginTop: "10px" }}>
-          <span>
-            Page {currentPage + 1} of {AnswerData.length}
-          </span>
-        </div>
+        <nav aria-label="Page navigation example">
+          <ul class="inline-flex -space-x-px text-sm">
+            <li>
+              <button
+                onClick={handlePrev}
+                class={
+                  currentPage > 0
+                    ? "ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-300 bg-blue-50  px-3 leading-tight text-blue-600  hover:bg-blue-100  hover:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                }
+              >
+                Previous
+              </button>
+            </li>
+            {pageList}
+            <li>
+              <button
+                onClick={handleNext}
+                class={
+                  currentPage < AnswerData.length &&
+                  currentPage !== AnswerData.length - 1
+                    ? "flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-blue-600 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                }
+              >
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       {/* Render the modal at the right-click position */}

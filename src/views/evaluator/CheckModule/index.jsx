@@ -81,14 +81,12 @@ const CheckModule = () => {
           </h1>
           {Imgicons}
         </div>
-        <div className="w-[60%]">
+        <div className="w-[70%]">
           <ImageContainer
-            imageUrl={
-              "https://res.cloudinary.com/dje269eh5/image/upload/v1722392010/omrimages/abcdvhjzvugmlqrxmofl.jpg"
-            }
+            
           />
         </div>
-        <div className="w-[30%]">
+        <div className="w-[20%]">
           <QuestionSection />
         </div>
       </div>
