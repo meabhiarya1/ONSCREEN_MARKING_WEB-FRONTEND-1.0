@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { rehydrateToken } from "./store/authSlice";
 import { useNavigate } from "react-router-dom";
 import CheckModule from "views/evaluator/CheckModule";
-
+import "./App.css";
 const App = () => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
