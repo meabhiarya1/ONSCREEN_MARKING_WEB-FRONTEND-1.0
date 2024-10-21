@@ -165,45 +165,45 @@ const ImageContainer = () => {
     <>
       <div className="flex justify-center border bg-gray-300 p-2">
         <button
-          className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           onClick={zoomIn}
         >
           <FiZoomIn />
         </button>
 
         <button
-          className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           onClick={zoomOut}
         >
           <FiZoomOut />
         </button>
         <button
-          className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           // onClick={zoomIn}
         >
           <FaUndoAlt />
         </button>
-        <button className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <LuPencilLine />
         </button>
 
-        <button className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <BiCommentAdd />
         </button>
 
         <button
-          className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           onClick={handleTickClick} // Add a tick on click
         >
           <TiTick />
         </button>
 
-        <button className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <ImCross color="red" />
         </button>
         <div className="flex">
           <img src="/blank.jpg" width={50} height={50} />
-          <button className="mb-2 me-2 rounded-md bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+          <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
             {/* <input /> */}
 
             <IoIosArrowDown />
