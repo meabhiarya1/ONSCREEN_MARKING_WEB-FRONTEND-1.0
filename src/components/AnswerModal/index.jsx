@@ -3,7 +3,6 @@ import { IoIosArrowForward } from "react-icons/io";
 const AnswerModal = () => {
   const [modalshow, setModalShow] = useState(false);
   const subModalHandler = () => {
-    console.log("clickked");
     setModalShow(true);
   };
   const questions = Array.from({ length: 10 }, (_, index) => {

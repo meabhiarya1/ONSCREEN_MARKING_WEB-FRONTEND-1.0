@@ -21,7 +21,7 @@ const CheckModule = () => {
       const randomSvg = svgFiles[Math.floor(Math.random() * svgFiles.length)];
       return {
         src: randomSvg,
-        label: `0${index + 1}.jpg`,
+        label: `0${index + 1}`,
       };
     });
   }, [svgFiles]);
@@ -29,21 +29,25 @@ const CheckModule = () => {
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
-  const Imgicons = icons.map((icon, index) => (
-    <div
-      key={index}
-      className="my-4 cursor-pointer text-center hover:bg-gray-300"
-    >
-      <img
-        src={icon.src}
-        width={70}
-        height={70}
-        alt="icon"
-        className="mx-auto"
-      />
-      <div>{icon.label}</div>
-    </div>
-  ));
+  const Imgicons = icons.map((icon, index) => {
+
+    const active = index === 3? "bg-gray-600 text-white border rounded": ""
+    return (
+      <div
+        key={index}
+        className={`my-4 cursor-pointer py-2 text-center hover:bg-gray-300 rounded active:bg-gray-400  ${active}`}
+      >
+        <img
+          src={icon.src}
+          width={50}
+          height={50}
+          alt="icon"
+          className="mx-auto"
+        />
+        <div>{icon.label}</div>
+      </div>
+    );
+  });
   // State for the login time (when the tab is opened)
   const [loginTime, setLoginTime] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -103,7 +107,7 @@ const CheckModule = () => {
   return (
     <>
       <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gray-700  py-5 text-white">
-        <div className="flex w-[70%] items-center justify-around rounded-sm py-1 border backdrop-blur-2xl shadow-lg">
+        <div className="flex w-[70%] items-center justify-around rounded-sm border py-1 shadow-lg backdrop-blur-2xl">
           <section>
             <div>Subject: Engineering Mathematics - III</div>
             <div>Evaluation Id: 46758390</div>
@@ -120,7 +124,6 @@ const CheckModule = () => {
               <span className="inline-block w-[30px] text-center font-mono">
                 {hours}
               </span>
-              
               <span className="inline-block w-[30px] text-center font-mono">
                 {minutes}
               </span>
@@ -211,11 +214,14 @@ const CheckModule = () => {
 
       {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
       <div className="flex h-[90vh] w-full flex-row overflow-auto">
-        <div className="h-[100%] w-[10%] justify-center overflow-auto text-center  ">
-          <h1 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
+        <div className="h-[100%] w-[8%] justify-center overflow-auto text-center  ">
+          <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
             Total <span>40</span> Pages
-          </h1>
+          </h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {Imgicons}
+          </div>
+        
         </div>
         <div className="w-[70%]">
           <ImageContainer />
