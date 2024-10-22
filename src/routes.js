@@ -1,4 +1,5 @@
 import MainDashboard from "views/admin/default";
+import EvaluatorDashboard from "views/evaluator/default";
 import Upload from "views/admin/upload";
 import Classes from "views/admin/classes";
 import Profile from "views/admin/profile";
@@ -12,6 +13,7 @@ import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
 
+
 const routes = [
   {
     name: "Main Dashboard",
@@ -21,6 +23,22 @@ const routes = [
     component: <MainDashboard />,
     hidden: false,
   },
+  {
+    name: "Main Dashboard",
+    layout: "/evaluator",
+    path: "default",
+    icon: <MdHome className="h-6 w-6" />,
+    component: <EvaluatorDashboard />,
+    hidden: false,
+  },
+  // {
+  //   name: "Main Dashboard",
+  //   layout: "/evaluator/osmmodule",
+  //   path: "default",
+  //   icon: <MdHome className="h-6 w-6" />,
+  //   component: <CheckModule />,
+  //   hidden: false,
+  // },
   {
     name: "Classes",
     layout: "/admin",
