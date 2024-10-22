@@ -8,6 +8,8 @@ import { AnswerData } from "data/answer";
 import AnswerModal from "components/AnswerModal";
 import { FaUndoAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
+import { GrRedo } from "react-icons/gr";
+import { GrUndo } from "react-icons/gr";
 const ImageContainer = () => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [ticks, setTicks] = useState([]); // State for tick positions
@@ -16,6 +18,7 @@ const ImageContainer = () => {
   const [showModal, setShowModal] = useState(false); // Toggle the modal visibility
   const [modalPos, setModalPos] = useState({ x: 0, y: 0 }); // Position for modal
   const [currentPage, setCurrentPage] = useState(1);
+  const [iconModal, setIconModal] = useState(false);
   const containerRef = useRef(null);
   // Zoom in and out
   const zoomIn = () => setScale((prevScale) => Math.min(prevScale + 0.1, 3));
@@ -161,28 +164,37 @@ const ImageContainer = () => {
       </button>
     </li>
   );
+
   return (
     <>
-      <div className="flex justify-center border bg-gray-300 p-2">
-        <button
-          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-          onClick={zoomIn}
-        >
-          <FiZoomIn />
-        </button>
+      <div className="flex justify-center border bg-[#e0e2e6] p-2">
+        {/* Left Group of Buttons */}
+        <div className="me-2 flex justify-center">
+          <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+            <span className="flex items-center justify-center">
+              <span className="mr-1">75%</span>
+              <IoIosArrowDown />
+            </span>
+          </button>
 
-        <button
-          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-          onClick={zoomOut}
-        >
-          <FiZoomOut />
-        </button>
-        <button
-          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-          // onClick={zoomIn}
-        >
-          <FaUndoAlt />
-        </button>
+          <div>
+            <button
+              className="mb-2 me-1 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+              onClick={zoomIn}
+            >
+              <FiZoomIn />
+            </button>
+
+            <button
+              className="mb-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+              onClick={zoomOut}
+            >
+              <FiZoomOut />
+            </button>
+          </div>
+        </div>
+
+        {/* Other Buttons */}
         <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
           <LuPencilLine />
         </button>
@@ -191,26 +203,75 @@ const ImageContainer = () => {
           <BiCommentAdd />
         </button>
 
+        {/* Icon Modal Button and Modal */}
+        <div className="relative flex">
+          {" "}
+          {/* Make this relative to control the modal */}
+          <div className="mb-2 me-2 flex w-[200px] justify-center bg-white">
+            <img
+              src="/blank.jpg"
+              width={50}
+              height={10}
+              className="md rounded p-1 shadow"
+            />
+          </div>
+          <button
+            onClick={() => setIconModal(!iconModal)}
+            className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          >
+            <span
+              className={`inline-block transition-transform duration-300 ${
+                iconModal ? "rotate-180" : ""
+              }`}
+            >
+              <IoIosArrowDown />
+            </span>
+          </button>
+          {/* Icon Modal */}
+          {iconModal && (
+            <div className="absolute z-10 mt-11 grid h-[400px] w-[240px] border-spacing-1 grid-cols-1 gap-2 border bg-lightPrimary p-2 sm:grid-cols-2 md:grid-cols-3">
+              <img
+                src="/blank.jpg"
+                width={100}
+                height={120}
+                className="md  h-[60px] w-full cursor-pointer rounded p-1 shadow hover:bg-white"
+                alt="blank"
+              />
+
+              <img
+                src="/close.png"
+                width={100}
+                height={100}
+                className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
+                alt="close"
+              />
+              <img
+                src="/check.png"
+                width={100}
+                height={100}
+                className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
+                alt="check"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Undo and Redo Buttons */}
         <button
           className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-          onClick={handleTickClick} // Add a tick on click
+          // onClick={zoomIn}
         >
-          <TiTick />
+          <GrUndo />
         </button>
-
-        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
-          <ImCross color="red" />
+        <button
+          className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+          // onClick={zoomIn}
+        >
+          <GrRedo />
         </button>
-        <div className="flex">
-          <img src="/blank.jpg" width={50} height={50} />
-          <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
-            {/* <input /> */}
-
-            <IoIosArrowDown />
-          </button>
-        </div>
       </div>
 
+      {/* Image Viewer Section */}
       <div
         ref={containerRef}
         style={{
@@ -298,6 +359,7 @@ const ImageContainer = () => {
           </ul>
         </nav> */}
       </div>
+      {/* Icon modal */}
 
       {/* Render the modal at the right-click position */}
       {showModal && (
