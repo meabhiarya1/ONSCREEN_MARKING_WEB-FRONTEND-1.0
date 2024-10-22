@@ -10,7 +10,7 @@ import { MdHome, MdPerson } from "react-icons/md";
 import CreateUser from "views/admin/createUser/CreateUser";
 import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
-import CreateSchema from "views/admin/createSchema/Index";
+import CreateSchema from "views/admin/createSchema/createSchema";
 
 const routes = [
   {
