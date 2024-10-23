@@ -3,18 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isAuthenticated: false,
   token: null,
+  iconSelected: null,
 };
 
 const evaluatorSlice = createSlice({
   name: "evaluator",
   initialState,
   reducers: {
-    login: (state, action) => {
-      const { token, userId } = action.payload;
-      state.isAuthenticated = true;
-      state.token = token;
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", userId);
+    selectIcon: (state, action) => {    
+      const { selectedIcon } = action.payload;
+      state.iconSelected = selectedIcon;
     },
     logout: (state) => {
       state.isAuthenticated = false;
