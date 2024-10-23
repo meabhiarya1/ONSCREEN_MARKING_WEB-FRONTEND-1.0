@@ -10,6 +10,11 @@ import { FaUndoAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo } from "react-icons/gr";
 import { GrUndo } from "react-icons/gr";
+const IconsData = [
+  { imgUrl: "/blank.jpg" },
+  { imgUrl: "/close.png" },
+  { imgUrl: "/check.png" },
+];
 const ImageContainer = () => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [ticks, setTicks] = useState([]); // State for tick positions
@@ -19,6 +24,8 @@ const ImageContainer = () => {
   const [modalPos, setModalPos] = useState({ x: 0, y: 0 }); // Position for modal
   const [currentPage, setCurrentPage] = useState(1);
   const [iconModal, setIconModal] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState(null);
+
   const containerRef = useRef(null);
   // Zoom in and out
   const zoomIn = () => setScale((prevScale) => Math.min(prevScale + 0.1, 3));
@@ -72,99 +79,24 @@ const ImageContainer = () => {
   const handleLeftClick = () => {
     setShowModal(false);
   };
-  const paginationHandler = (index) => setCurrentPage(index);
-  const pageList = Array.from({ length: 25 }, (_, index) => {
-    const activeClass =
-      currentPage === index + 1
-        ? "flex h-8 items-center justify-center border border-gray-300 bg-blue-50 px-3 text-blue-600 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-        : "flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white";
 
+
+  const handleImgClick = (event) => {
+    setSelectedIcon(event.target.src);
+    setIconModal(false);
+  };
+  const IconModal = IconsData.map((item) => {
     return (
-      <li key={index + 1}>
-        <button
-          href="#"
-          onClick={() => {
-            console.log(index);
-            paginationHandler(index + 1);
-          }}
-          aria-current={currentPage === index + 1 ? "page" : ""}
-          class={activeClass}
-        >
-          {index + 1}
-        </button>
-      </li>
+      <img
+        onClick={handleImgClick}
+        src={item.imgUrl}
+        width={100}
+        height={100}
+        className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
+        alt="close"
+      />
     );
   });
-
-  const handlePrev = () => {
-    if (currentPage > 0) {
-      setCurrentPage((item) => item - 1);
-    }
-  };
-  const handleNext = () => {
-    if (currentPage < 25 - 1) {
-      setCurrentPage((item) => item + 1);
-    }
-  };
-  // Helper function to generate page list with ellipsis
-  const generatePageList = (totalPages, currentPage) => {
-    const pageList = [];
-    const maxPagesToShow = 7;
-    const pagesAroundCurrent = 2; // Show 2 pages before and after current
-
-    if (totalPages <= maxPagesToShow) {
-      // If total pages are less than or equal to 7, show all pages
-      for (let i = 0; i < totalPages; i++) {
-        pageList.push(renderPageButton(i, currentPage));
-      }
-    } else {
-      // Always show the first page
-      pageList.push(renderPageButton(0, currentPage));
-
-      // Show ellipsis if needed before current page range
-      if (currentPage > pagesAroundCurrent + 1) {
-        pageList.push(<li key="start-ellipsis">...</li>);
-      }
-
-      // Show pages around the current page
-      const startPage = Math.max(1, currentPage - pagesAroundCurrent);
-      const endPage = Math.min(
-        totalPages - 2,
-        currentPage + pagesAroundCurrent
-      );
-
-      for (let i = startPage; i <= endPage; i++) {
-        pageList.push(renderPageButton(i, currentPage));
-      }
-
-      // Show ellipsis if needed after current page range
-      if (currentPage < totalPages - pagesAroundCurrent - 2) {
-        pageList.push(<li key="end-ellipsis">...</li>);
-      }
-
-      // Always show the last page
-      pageList.push(renderPageButton(totalPages - 1, currentPage));
-    }
-
-    return pageList;
-  };
-
-  // Function to render individual page button
-  const renderPageButton = (pageNumber, currentPage) => (
-    <li key={pageNumber}>
-      <button
-        onClick={() => () => paginationHandler(pageNumber)}
-        className={
-          pageNumber === currentPage
-            ? "flex h-8 items-center justify-center border border-gray-300 bg-blue-50 px-3 leading-tight text-blue-600 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-            : "flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-        }
-      >
-        {pageNumber + 1}
-      </button>
-    </li>
-  );
-
   return (
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
@@ -179,14 +111,14 @@ const ImageContainer = () => {
 
           <div>
             <button
-              className="mb-2 me-1 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+              className="mb-2 me-1 rounded-md  px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
               onClick={zoomIn}
             >
               <FiZoomIn />
             </button>
 
             <button
-              className="mb-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+              className="mb-2 rounded-md  px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
               onClick={zoomOut}
             >
               <FiZoomOut />
@@ -208,12 +140,16 @@ const ImageContainer = () => {
           {" "}
           {/* Make this relative to control the modal */}
           <div className="mb-2 me-2 flex w-[200px] justify-center bg-white">
-            <img
-              src="/blank.jpg"
-              width={50}
-              height={10}
-              className="md rounded p-1 shadow"
-            />
+            {!selectedIcon && <span>No Icon Selected</span>}
+            {selectedIcon && (
+              <img
+                src={`${selectedIcon}`}
+                width={40}
+                height={10}
+                className="md rounded p-1 shadow"
+                alt="icon"
+              />
+            )}
           </div>
           <button
             onClick={() => setIconModal(!iconModal)}
@@ -229,29 +165,8 @@ const ImageContainer = () => {
           </button>
           {/* Icon Modal */}
           {iconModal && (
-            <div className="absolute z-10 mt-11 grid h-[400px] w-[240px] border-spacing-1 grid-cols-1 gap-2 border bg-lightPrimary p-2 sm:grid-cols-2 md:grid-cols-3">
-              <img
-                src="/blank.jpg"
-                width={100}
-                height={120}
-                className="md  h-[60px] w-full cursor-pointer rounded p-1 shadow hover:bg-white"
-                alt="blank"
-              />
-
-              <img
-                src="/close.png"
-                width={100}
-                height={100}
-                className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
-                alt="close"
-              />
-              <img
-                src="/check.png"
-                width={100}
-                height={100}
-                className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
-                alt="check"
-              />
+            <div className="absolute z-10 mt-11 grid h-[300px] w-[240px] border-spacing-1 grid-cols-1 gap-2 border bg-gray-50 p-2 shadow-md sm:grid-cols-2 md:grid-cols-3">
+              {IconModal}
             </div>
           )}
         </div>
@@ -319,47 +234,6 @@ const ImageContainer = () => {
           </div>
         ))}
       </div>
-
-      <div
-        style={{
-          marginTop: "10px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {/* <nav aria-label="Page navigation example">
-          <ul class="inline-flex -space-x-px text-sm">
-            <li>
-              <button
-                onClick={handlePrev}
-                class={
-                  currentPage > 0
-                    ? "ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-300 bg-blue-50  px-3 leading-tight text-blue-600  hover:bg-blue-100  hover:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    : "ms-0 flex h-8 items-center justify-center rounded-s-lg border border-e-0 border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                }
-              >
-                Previous
-              </button>
-            </li>
-            {pageList}
-           
-            <li>
-              <button
-                onClick={handleNext}
-                class={
-                  currentPage < 25 && currentPage !== 25 - 1
-                    ? "flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-blue-600 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    : "flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                }
-              >
-                Next
-              </button>
-            </li>
-          </ul>
-        </nav> */}
-      </div>
-      {/* Icon modal */}
 
       {/* Render the modal at the right-click position */}
       {showModal && (
