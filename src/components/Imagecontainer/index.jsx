@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { LuPencilLine } from "react-icons/lu";
 import { BiCommentAdd } from "react-icons/bi";
-import { TiTick } from "react-icons/ti";
-import { FaUndoAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
 
@@ -20,7 +18,6 @@ const ImageContainer = () => {
   const [currentIcon, setCurrentIcon] = useState(null); // Store the currently selected icon
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // Track mouse position for preview
   const [iconModal, setIconModal] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState(null);
   const [draggedIconIndex, setDraggedIconIndex] = useState(null);
   const containerRef = useRef(null);
 
@@ -30,23 +27,28 @@ const ImageContainer = () => {
 
   // Track mouse movement for dragging icons
   const handleMouseMove = (e) => {
-    if (isDraggingIcon && draggedIconIndex !== null) {
+    if (containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
-      const updatedIcons = [...icons];
-      updatedIcons[draggedIconIndex] = {
-        ...updatedIcons[draggedIconIndex],
-        x: e.clientX - containerRect.left,
-        y: e.clientY - containerRect.top,
-      };
-      setIcons(updatedIcons);
-    } else if (isDraggingIcon) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      setMousePos({
-        x: e.clientX - containerRect.left,
-        y: e.clientY - containerRect.top,
-      });
+      const scrollOffsetX = containerRef.current.scrollLeft;
+      const scrollOffsetY = containerRef.current.scrollTop;
+
+      if (isDraggingIcon && draggedIconIndex !== null) {
+        const updatedIcons = [...icons];
+        updatedIcons[draggedIconIndex] = {
+          ...updatedIcons[draggedIconIndex],
+          x: e.clientX - containerRect.left + scrollOffsetX,
+          y: e.clientY - containerRect.top + scrollOffsetY,
+        };
+        setIcons(updatedIcons);
+      } else if (isDraggingIcon) {
+        setMousePos({
+          x: e.clientX - containerRect.left + scrollOffsetX,
+          y: e.clientY - containerRect.top + scrollOffsetY,
+        });
+      }
     }
   };
+
   // Handle icon selection
   const handleIconClick = (iconUrl) => {
     setIsDraggingIcon(true); // Enable dragging mode
@@ -55,37 +57,25 @@ const ImageContainer = () => {
   };
 
   // Handle dropping the icon on the image
-  // Handle dropping the icon on the image
   const handleImageClick = (e) => {
-    if (!isDraggingIcon && currentIcon) {
+    if (containerRef.current && currentIcon) {
       const containerRect = containerRef.current.getBoundingClientRect();
-      setIcons([...icons, { iconUrl: currentIcon, x: e.clientX - containerRect.left, y: e.clientY - containerRect.top }]);
+      const scrollOffsetX = containerRef.current.scrollLeft;
+      const scrollOffsetY = containerRef.current.scrollTop;
+
+      setIcons([
+        ...icons,
+        {
+          iconUrl: currentIcon,
+          x: e.clientX - containerRect.left + scrollOffsetX,
+          y: e.clientY - containerRect.top + scrollOffsetY,
+        },
+      ]);
       setCurrentIcon(null);
+      setIsDraggingIcon(false);
     }
   };
 
-  // Handle dragging of already placed icons
-  const handleIconDrag = (index, e) => {
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const updatedIcons = [...icons];
-    updatedIcons[index] = {
-      ...updatedIcons[index],
-      x: e.clientX - containerRect.left,
-      y: e.clientY - containerRect.top,
-    };
-    setIcons(updatedIcons);
-  };
-
-  const IconModal = IconsData.map((item) => (
-    <img
-      onClick={() => handleIconClick(item.imgUrl)}
-      src={item.imgUrl}
-      width={100}
-      height={100}
-      className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
-      alt="icon"
-    />
-  ));
   // Start dragging an existing icon
   const handleIconDragStart = (index, e) => {
     setDraggedIconIndex(index);
@@ -105,6 +95,7 @@ const ImageContainer = () => {
     setIsDraggingIcon(false);
     setDraggedIconIndex(null);
   };
+
   // Close the dragging icon when right-clicked
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
@@ -114,6 +105,18 @@ const ImageContainer = () => {
       document.removeEventListener("contextmenu", handleRightClick);
     };
   }, []);
+
+  const IconModal = IconsData.map((item) => (
+    <img
+      onClick={() => handleIconClick(item.imgUrl)}
+      src={item.imgUrl}
+      width={100}
+      height={100}
+      className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
+      alt="icon"
+    />
+  ));
+
   return (
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
@@ -127,14 +130,14 @@ const ImageContainer = () => {
 
           <div>
             <button
-              className="mb-2 me-1 rounded-md  px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
+              className="mb-2 me-1 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
               onClick={zoomIn}
             >
               <FiZoomIn />
             </button>
 
             <button
-              className="mb-2 rounded-md  px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
+              className="mb-2 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
               onClick={zoomOut}
             >
               <FiZoomOut />
@@ -153,10 +156,10 @@ const ImageContainer = () => {
         {/* Icon Modal Button and Modal */}
         <div className="relative flex">
           <div className="mb-2 me-2 flex w-[200px] justify-center bg-white">
-            {!selectedIcon && <span>No Icon Selected</span>}
-            {selectedIcon && (
+            {!currentIcon && <span>No Icon Selected</span>}
+            {currentIcon && (
               <img
-                src={selectedIcon}
+                src={currentIcon}
                 width={40}
                 height={10}
                 className="md rounded p-1 shadow"
