@@ -12,7 +12,7 @@ import CreateUser from "views/admin/createUser/CreateUser";
 import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
-
+import Schema from "views/admin/schemas/Schema";
 
 const routes = [
   {
@@ -42,7 +42,7 @@ const routes = [
   {
     name: "Classes",
     layout: "/admin",
-    icon: <IoBookSharp className="m-1 h-5 w-5" />,
+    icon: <IoBookSharp className=" h-6 w-6" />,
     path: "courses",
     component: <Classes />,
     hidden: false,
@@ -50,7 +50,7 @@ const routes = [
   {
     name: "Course Detail",
     layout: "/admin",
-    icon: <IoBookSharp className="m-1 h-5 w-5" />,
+    icon: <IoBookSharp className="h-6 w-6" />,
     path: "classes/:id",
     component: <CourseDetails />,
     hidden: true,
@@ -58,7 +58,7 @@ const routes = [
   {
     name: "Create Schema",
     layout: "/admin",
-    icon: <IoBookSharp className="m-1 h-5 w-5" />,
+    icon: <IoBookSharp className=" h-6 w-6" />,
     path: "schema/create/:id",
     component: <CreateSchema />,
     hidden: true,
@@ -91,8 +91,17 @@ const routes = [
     name: "Upload CSV File",
     layout: "/admin",
     path: "uploadcsv",
-    icon: <FaFileUpload className="h-5 w-5" />,
+    icon: <FaFileUpload className="h-6 w-6" />,
     component: <Upload />,
+    hidden: false,
+  },
+
+  {
+    name: "Schema",
+    layout: "/admin",
+    path: "schema",
+    icon: <FaFileUpload className="h-6 w-6" />,
+    component: <Schema />,
     hidden: false,
   },
 ];

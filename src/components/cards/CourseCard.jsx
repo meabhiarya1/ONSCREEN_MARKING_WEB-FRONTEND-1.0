@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import SelectSchemaModal from "components/modal/SelectSchemaModal";
 const CourseCard = ({
   subject,
   handleDelete,
@@ -9,6 +11,7 @@ const CourseCard = ({
 }) => {
   const { id } = useParams(); // Get the id from the URL
   const [classCourse, setClassCourse] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,9 +92,10 @@ const CourseCard = ({
 
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
-            onClick={() => navigate(`/admin/schema/create/${subject._id}`)}
+            // onClick={() => navigate(`/admin/schema/create/${subject._id}`)}
+            onClick={() => setShowModal(true)}
           >
-            Create Schema
+            Select Schema
           </button>
 
           <button
@@ -102,9 +106,9 @@ const CourseCard = ({
           >
             Delete
           </button>
-         
         </span>
       </div>
+      <SelectSchemaModal setShowModal={setShowModal} showModal={showModal} />
     </div>
   );
 };
