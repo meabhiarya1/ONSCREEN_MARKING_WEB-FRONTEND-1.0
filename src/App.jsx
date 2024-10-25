@@ -6,7 +6,7 @@ import AuthLayout from "layouts/auth";
 import { useDispatch } from "react-redux";
 import { rehydrateToken } from "./store/authSlice";
 import { useNavigate } from "react-router-dom";
-import CheckModule from "views/evaluator/CheckModule";
+import CheckModule from "views/evaluator/CheckModule/CheckModule";
 import "./App.css";
 const App = () => {
   const dispatch = useDispatch();

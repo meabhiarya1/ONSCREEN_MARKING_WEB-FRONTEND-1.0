@@ -4,6 +4,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { BiCommentAdd } from "react-icons/bi";
 import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
+import { useSelector } from "react-redux";
 
 const IconsData = [
   { imgUrl: "/blank.jpg" },
@@ -19,12 +20,65 @@ const ImageContainer = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // Track mouse position for preview
   const [iconModal, setIconModal] = useState(false);
   const [draggedIconIndex, setDraggedIconIndex] = useState(null);
+  const [isDrawing, setIsDrawing] = useState(false); // Drawing mode toggle
+  const [drawing, setDrawing] = useState([]); // Store strokes
+  const evaluatorState = useSelector((state) => state.evaluator);
+  const [activeDrawing, setActiveDrawing] = useState(false);
   const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+  // Zoom in and out with smooth transition
+  const zoomIn = () => setScale((prevScale) =>(prevScale + 0.1));
+  const zoomOut = () => setScale((prevScale) => (prevScale - 0.1));
+  // Start drawing when the mouse is pressed down
+  const handleCanvasMouseDown = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
+    setIsDrawing(true);
+    setDrawing((prev) => [...prev, { x, y, mode: "start" }]);
+  };
 
-  // Zoom in and out
-  const zoomIn = () => setScale((prevScale) => Math.min(prevScale + 0.1, 3));
-  const zoomOut = () => setScale((prevScale) => Math.max(prevScale - 0.1, 1));
+  // Continue drawing when the mouse is moved
+  const handleCanvasMouseMove = (e) => {
+    if (!isDrawing) return;
 
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
+    setDrawing((prev) => [...prev, { x, y, mode: "draw" }]);
+  };
+  // Stop drawing when the mouse is released
+  const handleCanvasMouseUp = () => {
+    setIsDrawing(false);
+  };
+  // Draw on the canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.lineWidth = 2;
+    context.strokeStyle = "red";
+    context.lineJoin = "round";
+
+    let prevX = null;
+    let prevY = null;
+
+    drawing.forEach(({ x, y, mode }) => {
+      if (mode === "start") {
+        prevX = x;
+        prevY = y;
+      }
+      if (mode === "draw") {
+        context.beginPath();
+        context.moveTo(prevX, prevY);
+        context.lineTo(x, y);
+        context.closePath();
+        context.stroke();
+        prevX = x;
+        prevY = y;
+      }
+    });
+  }, [drawing, scale]);
   // Track mouse movement for dragging icons
   const handleMouseMove = (e) => {
     if (containerRef.current) {
@@ -36,15 +90,20 @@ const ImageContainer = () => {
         const updatedIcons = [...icons];
         updatedIcons[draggedIconIndex] = {
           ...updatedIcons[draggedIconIndex],
-          x: e.clientX - containerRect.left + scrollOffsetX,
-          y: e.clientY - containerRect.top + scrollOffsetY,
+          x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
+          y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         };
         setIcons(updatedIcons);
       } else if (isDraggingIcon) {
         setMousePos({
-          x: e.clientX - containerRect.left + scrollOffsetX,
-          y: e.clientY - containerRect.top + scrollOffsetY,
+          x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
+          y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         });
+      } else if (isDrawing) {
+        const rect = canvasRef.current.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / scale;
+        const y = (e.clientY - rect.top) / scale;
+        setDrawing((prev) => [...prev, { x, y, mode: "draw" }]);
       }
     }
   };
@@ -58,6 +117,9 @@ const ImageContainer = () => {
 
   // Handle dropping the icon on the image
   const handleImageClick = (e) => {
+    if (activeDrawing) {
+      setIsDrawing(!isDrawing);
+    }
     if (containerRef.current && currentIcon) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
@@ -67,8 +129,8 @@ const ImageContainer = () => {
         ...icons,
         {
           iconUrl: currentIcon,
-          x: e.clientX - containerRect.left + scrollOffsetX,
-          y: e.clientY - containerRect.top + scrollOffsetY,
+          x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
+          y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         },
       ]);
       setCurrentIcon(null);
@@ -106,8 +168,9 @@ const ImageContainer = () => {
     };
   }, []);
 
-  const IconModal = IconsData.map((item) => (
+  const IconModal = IconsData.map((item, index) => (
     <img
+      key={index}
       onClick={() => handleIconClick(item.imgUrl)}
       src={item.imgUrl}
       width={100}
@@ -135,9 +198,9 @@ const ImageContainer = () => {
             >
               <FiZoomIn />
             </button>
-
+            
             <button
-              className="mb-2 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
+              className="mb-2 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 focus:outline-none"
               onClick={zoomOut}
             >
               <FiZoomOut />
@@ -145,7 +208,12 @@ const ImageContainer = () => {
           </div>
         </div>
 
-        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+        <button
+          className={`mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none ${
+            isDrawing ? "bg-blue-100" : ""
+          }`}
+          onClick={() => setActiveDrawing(!isDrawing)}
+        >
           <LuPencilLine />
         </button>
 
@@ -156,7 +224,7 @@ const ImageContainer = () => {
         {/* Icon Modal Button and Modal */}
         <div className="relative flex">
           <div className="mb-2 me-2 flex w-[200px] justify-center bg-white">
-            {!currentIcon && <span>No Icon Selected</span>}
+            {!currentIcon && <span className="self-center">No Icon Selected</span>}
             {currentIcon && (
               <img
                 src={currentIcon}
@@ -172,7 +240,7 @@ const ImageContainer = () => {
             className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
           >
             <span
-              className={`inline-block transition-transform duration-300 ${
+              className={`block transition-transform duration-300 ${
                 iconModal ? "rotate-180" : ""
               }`}
             >
@@ -196,6 +264,7 @@ const ImageContainer = () => {
       </div>
 
       {/* Image Viewer Section */}
+
       <div
         ref={containerRef}
         style={{
@@ -203,49 +272,80 @@ const ImageContainer = () => {
           overflow: "auto",
           position: "relative",
           width: "100%",
-          height: "75vh",
+          height: "80vh",
+          cursor: isDrawing ? "crosshair" : "",
         }}
         onClick={handleImageClick} // Handle image click for dropping the icon
         onMouseMove={handleMouseMove} // Track mouse move for icon dragging preview
+        // onMouseMove={handleCanvasMouseMove} // Track mouse move for drawing
+        onMouseDown={isDrawing ? handleCanvasMouseDown : undefined} // Only draw when in drawing mode
+        onMouseUp={isDrawing ? handleCanvasMouseUp : undefined}
       >
-        <img
-          src={`/sampleimg/CS603_1119_page-1.jpg`}
-          alt="Viewer"
+        <div
           style={{
             transform: `scale(${scale})`,
             transformOrigin: "top left",
             transition: "transform 0.2s ease-in-out",
             maxWidth: "none",
           }}
-        />
+        >
+          <img
+            src={`/sampleimg/CS603_1119_page-${evaluatorState.currentIndex}.jpg`}
+            alt="Viewer"
+            // style={{
+            //   transform: `scale(${scale})`,
+            //   transformOrigin: "top left",
+            //   transition: "transform 0.2s ease-in-out",
+            //   maxWidth: "none",
+            // }}
+          />
 
-        {/* Render all placed icons */}
-        {icons.map((icon, index) => (
-          <div
-            key={index}
+          {/* Render all placed icons */}
+          {icons.map((icon, index) => (
+            <div
+              key={index}
+              style={{
+                position: "absolute",
+                // top: `${icon.y * scale}px`, // Scale the position
+                // left: `${icon.x * scale}px`, // Scale the position
+                top: `${icon.y}px`, // Scale the position
+                left: `${icon.x}px`, // Scale the position
+                zIndex: 10,
+                border: "2px dashed black", // Boundary for draggable icons
+                padding: "5px",
+                transform: `scale(${scale})`, // Scale the icon size
+                transformOrigin: "top left", // Ensure proper scaling
+                transition: "transform 0.2s ease-in-out", // Smooth transition
+              }}
+              onMouseDown={(e) => handleIconDragStart(index, e)} // Allow dragging
+            >
+              <img src={icon.iconUrl} alt="icon" width={40} height={40} />
+            </div>
+          ))}
+          {/* Render the canvas for drawing */}
+          <canvas
+            ref={canvasRef}
+            width={1000} // Set an appropriate width
+            height={1000} // Set an appropriate height
             style={{
               position: "absolute",
-              top: `${icon.y}px`,
-              left: `${icon.x}px`,
-              zIndex: 10,
-              border: "2px dashed black", // Boundary for draggable icons
-              padding: "5px",
+              top: 0,
+              left: 0,
+              pointerEvents: isDrawing ? "auto" : "none", // Only allow drawing in drawing mode
             }}
-            onMouseDown={(e) => handleIconDragStart(index, e)} // Allow dragging
-          >
-            <img src={icon.iconUrl} alt="icon" width={40} height={40} />
-          </div>
-        ))}
-
+          />
+        </div>
         {/* Icon following the mouse while dragging */}
         {isDraggingIcon && currentIcon && (
           <div
             style={{
               position: "absolute",
-              top: `${mousePos.y}px`,
-              left: `${mousePos.x}px`,
+              top: `${mousePos.y * scale}px`, // Adjust for scaling
+              left: `${mousePos.x * scale}px`, // Adjust for scaling
               zIndex: 1000,
               pointerEvents: "none",
+              transform: `scale(${scale})`, // Scale the preview
+              transition: "transform 0.2s ease-in-out", // Smooth transition
             }}
           >
             <img src={currentIcon} alt="dragging-icon" width={40} height={40} />

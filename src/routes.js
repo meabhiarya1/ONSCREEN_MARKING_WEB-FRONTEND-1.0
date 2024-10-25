@@ -12,8 +12,6 @@ import CreateUser from "views/admin/createUser/CreateUser";
 import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
 
-import CheckModule from "views/evaluator/CheckModule";
-
 import CreateSchema from "views/admin/createSchema/Index";
 
 const routes = [

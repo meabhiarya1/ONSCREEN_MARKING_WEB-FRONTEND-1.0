@@ -4,6 +4,7 @@ const initialState = {
   isAuthenticated: false,
   token: null,
   iconSelected: null,
+  currentIndex  : 1
 };
 
 const evaluatorSlice = createSlice({
@@ -13,6 +14,11 @@ const evaluatorSlice = createSlice({
     selectIcon: (state, action) => {    
       const { selectedIcon } = action.payload;
       state.iconSelected = selectedIcon;
+    },
+
+    setIndex: (state, action) => {    
+      const { index } = action.payload;
+      state.currentIndex = index;
     },
     logout: (state) => {
       state.isAuthenticated = false;
@@ -30,5 +36,5 @@ const evaluatorSlice = createSlice({
   },
 });
 
-export const { login, logout, rehydrateToken } = evaluatorSlice.actions;
+export const { login, logout, rehydrateToken,setIndex } = evaluatorSlice.actions;
 export default evaluatorSlice.reducer;
