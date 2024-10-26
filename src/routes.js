@@ -25,7 +25,7 @@ const routes = [
     hidden: false,
   },
   {
-    name: "Main Dashboard",
+    name: "Evaluator Dashboard",
     layout: "/evaluator",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
