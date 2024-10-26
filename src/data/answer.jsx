@@ -7,5 +7,9 @@ export const AnswerData = [
     imgUrl:
       "https://cdn.aglasem.com/aglasem-doc/afbe268c-522d-11ea-8b65-02f21f5619c4/2.jpg",
   },
+  {
+    imgUrl:
+      " https://boardstudy.in/wp-content/uploads/2024/07/The-human-eye-notes-004.webp",
+  },
  
 ];

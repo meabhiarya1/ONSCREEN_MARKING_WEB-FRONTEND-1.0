@@ -14,6 +14,7 @@ import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
 import Schema from "views/admin/schemas/Schema";
 
+
 const routes = [
   {
     name: "Main Dashboard",
