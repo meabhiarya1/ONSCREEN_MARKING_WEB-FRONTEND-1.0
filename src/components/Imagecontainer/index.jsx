@@ -24,6 +24,7 @@ const ImageContainer = () => {
   const [drawing, setDrawing] = useState([]); // Store strokes
   const evaluatorState = useSelector((state) => state.evaluator);
   const [activeDrawing, setActiveDrawing] = useState(false);
+  const [scalePercent,setScalePercent] = useState(100);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   // Zoom in and out with smooth transition
@@ -179,14 +180,14 @@ const ImageContainer = () => {
       alt="icon"
     />
   ));
-
+console.log(scale*100)
   return (
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
         <div className="me-2 flex justify-center">
           <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
             <span className="flex items-center justify-center">
-              <span className="mr-1">75%</span>
+              <span className="mr-1">{Math.floor(scale*100)}%</span>
               <IoIosArrowDown />
             </span>
           </button>
@@ -306,8 +307,6 @@ const ImageContainer = () => {
               key={index}
               style={{
                 position: "absolute",
-                // top: `${icon.y * scale}px`, // Scale the position
-                // left: `${icon.x * scale}px`, // Scale the position
                 top: `${icon.y}px`, // Scale the position
                 left: `${icon.x}px`, // Scale the position
                 zIndex: 10,

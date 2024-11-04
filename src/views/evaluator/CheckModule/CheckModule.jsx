@@ -16,7 +16,7 @@ import { setIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const evaluatorState = useSelector((state) => state.evaluator);
-  const svgFiles = ["/red.svg", "/green.svg", "/yellow.svg"];
+  const svgFiles = ["/pageicons/red.svg", "/pageicons/green.svg", "/pageicons/yellow.svg"];
 
   // Use useCallback to memoize the random image generation
   const generateRandomIcons = useCallback(() => {
@@ -221,13 +221,18 @@ const CheckModule = () => {
       </div>
 
       {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
-      <div className="flex h-[90vh] w-full flex-row overflow-auto">
-        <div className="h-[100%] w-[8%] justify-center overflow-auto text-center  ">
-          <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
-            Total <span>40</span> Pages
-          </h2>
-          <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
+      <div className="flex h-[90vh] w-full flex-row ">
+        <div className="h-[100%] w-[8%] ">
+          <div className=" h-[90%] justify-center overflow-auto text-center  ">
+            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
+              Total <span>40</span> Pages
+            </h2>
+            <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
+          </div>
+          <button type="button" className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium  text-sm px-5 py-2.5 text-center me-2 mb-2">Questions</button>
+    
         </div>
+
         <div id="imgcontainer" className="w-[75%]">
           <ImageContainer />
         </div>
