@@ -24,13 +24,15 @@ const ImageContainer = () => {
   const [drawing, setDrawing] = useState([]); // Store strokes
   const evaluatorState = useSelector((state) => state.evaluator);
   const [activeDrawing, setActiveDrawing] = useState(false);
-  const [scalePercent,setScalePercent] = useState(100);
+  const [scalePercent, setScalePercent] = useState(100);
+  const [isZoomMenuOpen, setIsZoomMenuOpen] = useState(false);
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   // Zoom in and out with smooth transition
-  const zoomIn = () => setScale((prevScale) =>(prevScale + 0.1));
-  const zoomOut = () => setScale((prevScale) => (prevScale - 0.1));
+  const zoomIn = () => setScale((prevScale) => prevScale + 0.1);
+  const zoomOut = () => setScale((prevScale) => prevScale - 0.1);
   // Start drawing when the mouse is pressed down
+
   const handleCanvasMouseDown = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / scale;
@@ -159,6 +161,11 @@ const ImageContainer = () => {
     setDraggedIconIndex(null);
   };
 
+
+  useEffect(()=>{
+setScalePercent(Math.floor(scale * 100))
+  },[scale])
+
   // Close the dragging icon when right-clicked
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
@@ -180,14 +187,19 @@ const ImageContainer = () => {
       alt="icon"
     />
   ));
-console.log(scale*100)
+  const handleZoomMenu = () => {
+    setIsZoomMenuOpen(!isZoomMenuOpen);
+  };
   return (
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
         <div className="me-2 flex justify-center">
-          <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
+          <button
+            className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+            onClick={handleZoomMenu}
+          >
             <span className="flex items-center justify-center">
-              <span className="mr-1">{Math.floor(scale*100)}%</span>
+              <span className="mr-1">{scalePercent}%</span>
               <IoIosArrowDown />
             </span>
           </button>
@@ -199,7 +211,7 @@ console.log(scale*100)
             >
               <FiZoomIn />
             </button>
-            
+
             <button
               className="mb-2 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 focus:outline-none"
               onClick={zoomOut}
@@ -225,12 +237,14 @@ console.log(scale*100)
         {/* Icon Modal Button and Modal */}
         <div className="relative flex">
           <div className="mb-2 me-2 flex w-[200px] justify-center bg-white">
-            {!currentIcon && <span className="self-center">No Icon Selected</span>}
+            {!currentIcon && (
+              <span className="self-center">No Icon Selected</span>
+            )}
             {currentIcon && (
               <img
                 src={currentIcon}
                 width={40}
-                height={10}
+                height={30}
                 className="md rounded p-1 shadow"
                 alt="icon"
               />
@@ -311,6 +325,7 @@ console.log(scale*100)
                 left: `${icon.x}px`, // Scale the position
                 zIndex: 10,
                 border: "2px dashed black", // Boundary for draggable icons
+                cursor: "pointer",
                 padding: "5px",
                 transform: `scale(${scale})`, // Scale the icon size
                 transformOrigin: "top left", // Ensure proper scaling
@@ -351,6 +366,9 @@ console.log(scale*100)
           </div>
         )}
       </div>
+      {/* <div>
+
+      </div> */}
     </>
   );
 };

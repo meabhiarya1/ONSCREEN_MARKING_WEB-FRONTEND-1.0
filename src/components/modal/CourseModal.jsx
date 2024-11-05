@@ -40,6 +40,7 @@ const CourseModal = ({
                 <span className="text-xs font-medium text-gray-700">
                   Course
                 </span>
+                
                 <input
                   type="text"
                   id="name"
