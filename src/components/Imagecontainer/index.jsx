@@ -161,10 +161,9 @@ const ImageContainer = () => {
     setDraggedIconIndex(null);
   };
 
-
-  useEffect(()=>{
-setScalePercent(Math.floor(scale * 100))
-  },[scale])
+  useEffect(() => {
+    setScalePercent(Math.floor(scale * 100));
+  }, [scale]);
 
   // Close the dragging icon when right-clicked
   useEffect(() => {
@@ -187,6 +186,17 @@ setScalePercent(Math.floor(scale * 100))
       alt="icon"
     />
   ));
+  const ZoomModal = IconsData.map((item, index) => (
+    <img
+      key={index}
+      onClick={() => handleIconClick(item.imgUrl)}
+      src={item.imgUrl}
+      width={100}
+      height={100}
+      className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
+      alt="icon"
+    />
+  ));
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
@@ -194,16 +204,22 @@ setScalePercent(Math.floor(scale * 100))
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
         <div className="me-2 flex justify-center">
-          <button
-            className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-            onClick={handleZoomMenu}
-          >
-            <span className="flex items-center justify-center">
-              <span className="mr-1">{scalePercent}%</span>
-              <IoIosArrowDown />
-            </span>
-          </button>
-
+          <div className="">
+            <button
+              className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
+              onClick={handleZoomMenu}
+            >
+              <span className="flex items-center justify-center">
+                <span className="mr-1">{scalePercent}%</span>
+                <IoIosArrowDown />
+              </span>
+            </button>
+            {iconModal && (
+              <div className="absolute z-10 mt-54   h-[200px] w-[80px] border-spacing-1 border bg-gray-50 p-2 shadow-md ">
+                {IconModal}
+              </div>
+            )}
+          </div>
           <div>
             <button
               className="mb-2 me-1 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
