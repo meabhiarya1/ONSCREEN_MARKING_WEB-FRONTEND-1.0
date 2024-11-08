@@ -50,7 +50,7 @@ const CourseModal = ({
                   value={formData.name} // Controlled input
                   onChange={handleChange} // Handle changes
                 />
-              </label>
+              </label>;
 
               <label
                 htmlFor="code"
