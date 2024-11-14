@@ -89,12 +89,16 @@ const CheckModule = () => {
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
   const [scale, setScale] = useState(1); // Initial zoom level
+  const [questionModal,setShowuestionModal]= useState(false)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const token =
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
-
+const questionHandler = ()=>{
+  console.log("question handler");
+  setShowuestionModal(true);
+}
   useEffect(() => {
     const id = localStorage.getItem("userId");
     const fetchData = async () => {
@@ -230,7 +234,7 @@ const CheckModule = () => {
             </h2>
             <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
           </div>
-          <button type="button" className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium  text-sm px-5 py-2.5 text-center me-2 mb-2">Questions</button>
+          <button type="button" className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium  text-sm px-5 py-2.5 text-center me-2 mb-2" onClick={questionHandler}>Questions</button>
     
         </div>
 
