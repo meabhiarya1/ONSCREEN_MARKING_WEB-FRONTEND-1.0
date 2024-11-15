@@ -51,14 +51,16 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
   // Handle submit function
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Subject ID:", id); // Log the subject ID
+
     if (selectedSchema === "") {
       toast.error("Please select a schema");
       return;
     }
-    console.log("Selected Schema ID:", selectedSchema); // Log the selected schema ID
-    console.log("Selected Schema Data:", selectedSchemaData); // Log the full selected schema data
-    navigate(`/admin/schema/create/${selectedSchemaData._id}`);
+
+
+    navigate(`/admin/schema/create/${selectedSchemaData._id}`, {
+      state: { schema: selectedSchemaData, images },
+    });
     setShowModal(false); // Close the modal
   };
 
@@ -81,6 +83,10 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
   const handleFileUpload = async () => {
     if (!selectedFile) {
       setErrorMessage("Please select a valid file before uploading.");
+      return;
+    }
+    if (images.length > 0) {
+      setShowImageModal(true);
       return;
     }
 
@@ -229,6 +235,8 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                 <div style={styles.loaderContainer}>
                   <MoonLoader color="#3498db" loading={loading} size={20} />
                 </div>
+              ) : images.length != 0 ? (
+                "Show"
               ) : (
                 "Upload"
               )}
@@ -245,6 +253,9 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                 className="relative h-[850px] w-[700px] rounded-lg bg-white p-6 shadow-lg"
                 style={{ maxWidth: "700px", maxHeight: "850px" }}
               >
+                <span className="absolute top-2 font-bold text-gray-600 dark:text-gray-400">
+                  {currentImageIndex + 1} / {images.length}
+                </span>
                 {/* Close button */}
                 <button
                   className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900"
@@ -257,7 +268,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                 <img
                   src={images[currentImageIndex]}
                   alt={`Slide ${currentImageIndex + 1}`}
-                  className="mb-4 h-[750px] w-full rounded-lg object-contain"
+                  className="mb-1 h-[750px] w-full rounded-lg object-contain"
                   style={{ maxWidth: "100%", maxHeight: "100%" }}
                 />
 
@@ -269,9 +280,16 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                   >
                     Previous
                   </button>
-                  <span className="text-gray-600">
-                    {currentImageIndex + 1} / {images.length}
-                  </span>
+
+                  {/* Buttons */}
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      onClick={handleSubmit} // Call handleSubmit on click
+                      className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                    >
+                      Confirm
+                    </button>
+                  </div>
                   <button
                     onClick={nextImage}
                     className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
@@ -282,22 +300,6 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
               </div>
             </div>
           )}
-
-          {/* Buttons */}
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={handleSubmit} // Call handleSubmit on click
-              className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => setShowModal(false)}
-              className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
-            >
-              No, cancel
-            </button>
-          </div>
         </div>
       </div>
     </div>
