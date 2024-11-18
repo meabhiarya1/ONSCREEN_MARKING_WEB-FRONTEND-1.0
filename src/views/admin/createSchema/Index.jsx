@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { VscChromeClose } from "react-icons/vsc";
 
@@ -16,7 +16,6 @@ const Index = () => {
   });
 
   const [allQuestions, setAllQuestions] = useState([]);
-
   const handleClick = () => {
     setAllQuestions([
       ...allQuestions,
@@ -37,6 +36,7 @@ const Index = () => {
   };
 
   const { id } = useParams();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +62,7 @@ const Index = () => {
     <section className="mx-2 mt-6 h-[100%] rounded-lg bg-white">
       <div className="flex h-[calc(100%-24px)]">
         {/* Left side with image */}
-        <div className="custom-scrollbar h-[100%]  w-1/2  flex-shrink-0 overflow-y-auto">
+        <div className="custom-scrollbar h-[100%] w-1/2 flex-shrink-0 overflow-y-auto">
           <img
             alt=""
             src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjnkLH9jkkK5zz4bocFOdxp7I3kebgsk52H3yVQo7j-FdDXO0VxsJL_NEgFaon6PtxuVnIl6kWVfcw7CUjasbLftbsgD2MNlLTvFGoO7MCeM2vpYyGsHxdoP3Fu_YF22Pi15HRz8C7SD9rU/s1600/questions.jpg"
@@ -303,7 +303,7 @@ const Index = () => {
                                 htmlFor="FilterInStock"
                                 className="inline-flex items-center gap-2"
                               >
-                                <span className="text-sm font-medium text-gray-700"> 
+                                <span className="text-sm font-medium text-gray-700">
                                   Time For Single Booklet:
                                 </span>
                                 <input
