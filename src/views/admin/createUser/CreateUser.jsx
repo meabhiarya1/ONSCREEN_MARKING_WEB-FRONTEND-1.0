@@ -20,37 +20,45 @@ const CreateUser = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
+
+    // Check if password is empty or less than 8 characters
+    if (!userDetails?.password?.trim()) {
+      toast.error("Please enter a new password.");
+      setLoading(false);
+      return;
+    }
 
     if (userDetails?.password.length < 8) {
-      toast.error("Password must be at least 8 characters")
-      return
+      toast.error("Password must be at least 8 characters.");
+      setLoading(false);
+      return;
     }
 
-    if (!userDetails?.password || !userDetails?.password_confirmation) {
-      toast.error("Please enter new password and confirm password")
-      return
-    }
-
+    // Check if password confirmation matches
     if (userDetails?.password !== userDetails?.password_confirmation) {
-      toast.error("Passwords do not match")
-      return
+      toast.error("Passwords do not match.");
+      setLoading(false);
+      return;
     }
 
-
-    if (!userDetails?.role || !userDetails?.name || !userDetails?.email || !userDetails?.mobile || !userDetails?.password) {
-      toast.error("All fields are required!")
-      return
+    // Check if required fields are filled
+    if (!userDetails?.name || !userDetails?.email || !userDetails?.mobile || !userDetails?.role || !userDetails?.password) {
+      toast.error("All fields are required!");
+      setLoading(false);
+      return;
     }
 
-    if (userDetails.mobile.length !== 10) {
-      toast.error("Mobile number must be 10 digits")
-      return
+    // Mobile number validation
+    if (userDetails.mobile.length !== 10 || isNaN(userDetails.mobile)) {
+      toast.error("Mobile number must be 10 digits.");
+      setLoading(false);
+      return;
     }
-
 
     try {
       const response = await createUser(userDetails);
+
       if (response) {
         const { status, data } = response;
         if (status === 201) {
@@ -63,12 +71,10 @@ const CreateUser = () => {
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error(
-        error?.response?.data?.message || "Failed to create user. Please try again later."
-      );
+      toast.error(error?.response?.data?.message || "Failed to create user. Please try again later.");
     } finally {
-      setUserDetails((prev) => ({
-        ...prev,
+      // Reset form fields
+      setUserDetails({
         name: "",
         email: "",
         password: "",
@@ -76,10 +82,11 @@ const CreateUser = () => {
         role: "",
         permissions: [],
         password_confirmation: "",
-      }));
-      setLoading(false)
+      });
+      setLoading(false);
     }
   };
+
 
   return (
     <section className="bg-gray-50 min-h-screen">
