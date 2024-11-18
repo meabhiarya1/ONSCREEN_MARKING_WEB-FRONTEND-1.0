@@ -232,15 +232,16 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
               className="w-1/4 rounded-lg bg-indigo-600 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             >
               {loading ? (
-                <div style={styles.loaderContainer}>
+                <div className="flex justify-center items-center">
                   <MoonLoader color="#3498db" loading={loading} size={20} />
                 </div>
-              ) : images.length != 0 ? (
+              ) : images?.length ? (
                 "Show"
               ) : (
                 "Upload"
               )}
             </button>
+
           </div>
 
           {/* Error message */}
@@ -306,13 +307,5 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
   );
 };
 
-const styles = {
-  loaderContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-};
 
 export default SelectSchemaModal;
