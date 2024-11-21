@@ -4,6 +4,7 @@ import SchemaDeleteModal from "./SchemaDeleteModal";
 import SchemaCreateModal from "./SchemaCreateModal";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Schema = () => {
   const [editShowModal, setEditShowModal] = useState(false);
@@ -11,6 +12,7 @@ const Schema = () => {
   const [deleteShowModal, setDeleteShowModal] = useState(false);
   const [schemaData, setSchemaData] = useState([]);
   const [selectedSchema, setSelectedSchema] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSchemaData = async () => {
@@ -25,7 +27,7 @@ const Schema = () => {
     };
     fetchSchemaData();
   }, [setCreateShowModal, createShowModal]);
- 
+
   const handleConfirmDelete = async (id) => {
     try {
       await axios.delete(
@@ -101,6 +103,18 @@ const Schema = () => {
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
                     {data.totalQuestions}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-2 ">
+                    <div
+                      className=" inline-block cursor-pointer rounded bg-indigo-600 px-4 py-2 
+                    text-xs font-medium text-white hover:bg-indigo-700 "
+                      onClick={() => {
+                        navigate(`/admin/schema/create/structure/${data._id}`);
+                      }}
+                    >
+                      Create Structure
+                    </div>
                   </td>
 
                   {/* edit and delete */}

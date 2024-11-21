@@ -14,7 +14,6 @@ import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
 import Schema from "views/admin/schemas/Schema";
 
-
 const routes = [
   {
     name: "Main Dashboard",
@@ -61,6 +60,14 @@ const routes = [
     layout: "/admin",
     icon: <IoBookSharp className=" h-6 w-6" />,
     path: "schema/create/:id",
+    component: <CreateSchema />,
+    hidden: true,
+  },
+  {
+    name: "Create Schema Structure",
+    layout: "/admin",
+    icon: <IoBookSharp className=" h-6 w-6" />,
+    path: "schema/create/structure/:id",
     component: <CreateSchema />,
     hidden: true,
   },
