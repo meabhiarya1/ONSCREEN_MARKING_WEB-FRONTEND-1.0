@@ -13,11 +13,12 @@ const CreateSchema = () => {
   const [combinedData, setCombinedData] = useState(null);
   const [showCanvasOverlay, setShowCanvasOverlay] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [draggingQuestion, setDraggingQuestion] = useState(null); // Tracks the current question being dragged
-  const [activeDiv, setActiveDiv] = useState(null); // Tracks the active div
-  const [createdDivs, setCreatedDivs] = useState([]); // Store dynamically created divs
-  const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
+  const [createdDivs, setCreatedDivs] = useState([]);
+  const [draggingRectangle, setDraggingRectangle] = useState(null); // Active rectangle being drawn
+  const [isDrawing, setIsDrawing] = useState(false); // To track if a rectangle is being drawn
+  const [rectStart, setRectStart] = useState({ x: 0, y: 0 }); // Starting position of the rectangle
+  const [rectEnd, setRectEnd] = useState({ x: 0, y: 0 }); // Current position during dragging
+
   const canvasRef = useRef(null);
   const { id } = useParams();
   const location = useLocation();
@@ -91,32 +92,38 @@ const CreateSchema = () => {
     const card = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - card.left;
     const offsetY = e.clientY - card.top;
-    const newDiv = {
-      x: offsetX,
-      y: offsetY,
-      parentIndex: index,
-    };
 
-    setCreatedDivs((prev) => [...prev, newDiv]);
-    setActiveDiv(newDiv);
-  };
-
-  const handleMouseUp = () => {
-    setDraggingQuestion(null); // Remove the active question
-    setActiveDiv(null);
+    // Start drawing rectangle
+    setIsDrawing(true);
+    setRectStart({ x: offsetX, y: offsetY });
+    setRectEnd({ x: offsetX, y: offsetY });
   };
 
   const handleMouseMove = (index, e) => {
-    setDraggingQuestion(index); // Mark the current question as active
-    if (draggingQuestion !== null) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      const offsetY = e.clientY - rect.top;
+    if (isDrawing) {
+      const card = e.currentTarget.getBoundingClientRect();
+      const offsetX = e.clientX - card.left;
+      const offsetY = e.clientY - card.top;
 
-      setCoordinates({ x: offsetX, y: offsetY });
-      // console.log(`Dragging Question ${draggingQuestion + 1}`);
-      // console.log(`Coordinates: X=${offsetX}, Y=${offsetY}`);
+      // Update rectangle dimensions
+      setRectEnd({ x: offsetX, y: offsetY });
     }
+  };
+
+  const handleMouseUp = () => {
+    // Stop drawing rectangle
+    setIsDrawing(false);
+    setCreatedDivs((prev) => [
+      ...prev,
+      {
+        x: Math.min(rectStart.x, rectEnd.x),
+        y: Math.min(rectStart.y, rectEnd.y),
+        width: Math.abs(rectEnd.x - rectStart.x),
+        height: Math.abs(rectEnd.y - rectStart.y),
+      },
+    ]);
+    setRectStart({ x: 0, y: 0 });
+    setRectEnd({ x: 0, y: 0 });
   };
 
   useEffect(() => {
@@ -260,35 +267,36 @@ const CreateSchema = () => {
       </div>
 
       {showCanvasOverlay && (
-        <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+        <div
+          className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50"
+          onMouseMove={(e) => handleMouseMove(rightClickDiv.index, e)}
+          onMouseUp={handleMouseUp}
+        >
           <div
-            className="relative h-[850px] w-[700px] rounded-lg bg-white p-6 shadow-lg "
+            className="relative h-[850px] w-[700px] rounded-lg bg-white p-6 shadow-lg"
             style={{ maxWidth: "700px", maxHeight: "850px" }}
+            onMouseDown={(e) => handleMouseDown(rightClickDiv.index, e)}
           >
-            <span className="absolute top-3 font-bold text-gray-600 dark:text-gray-400 ">
-              {currentImageIndex + 1} / {combinedData?.images.length}
-            </span>
-            {/* Close button */}
-            <button
-              className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900"
-              onClick={() => setShowCanvasOverlay(false)}
-            >
-              &times;
-            </button>
-            {/* Image Display */}
+            {/* Existing image */}
             <img
               src={combinedData?.images[currentImageIndex]}
               alt={`Slide ${currentImageIndex + 1}`}
-              className={`mb-1 h-[750px] w-full rounded-lg object-contain ${
-                draggingQuestion === rightClickDiv.index
-                  ? "border-4 border-blue-500"
-                  : "bg-white"
-              }`}
-              style={{ maxWidth: "100%", maxHeight: "100%" }}
-              onMouseDown={(e) => handleMouseDown(rightClickDiv.index, e)}
-              onMouseMove={(e) => handleMouseMove(rightClickDiv.index, e)}
-              onMouseUp={handleMouseUp}
+              className="mb-1 h-[750px] w-full rounded-lg bg-white object-contain"
             />
+
+            {/* Dynamic rectangle */}
+            {isDrawing && (
+              <div
+                className="absolute border-2 border-blue-500"
+                style={{
+                  position: "absolute",
+                  left: `${Math.min(rectStart.x, rectEnd.x)}px`,
+                  top: `${Math.min(rectStart.y, rectEnd.y)}px`,
+                  width: `${Math.abs(rectEnd.x - rectStart.x)}px`,
+                  height: `${Math.abs(rectEnd.y - rectStart.y)}px`,
+                }}
+              ></div>
+            )}
 
             {/* Pagination Controls */}
             <div className="flex items-center justify-between">
@@ -298,9 +306,6 @@ const CreateSchema = () => {
               >
                 Previous
               </button>
-
-              {/* Buttons */}
-
               <button
                 onClick={nextImage}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
@@ -310,6 +315,19 @@ const CreateSchema = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {isDrawing && (
+        <div
+          className="absolute border-2 border-blue-500"
+          style={{
+            position: "absolute",
+            left: `${Math.min(rectStart.x, rectEnd.x)}px`,
+            top: `${Math.min(rectStart.y, rectEnd.y)}px`,
+            width: `${Math.abs(rectEnd.x - rectStart.x)}px`,
+            height: `${Math.abs(rectEnd.y - rectStart.y)}px`,
+          }}
+        ></div>
       )}
     </div>
   );

@@ -78,7 +78,7 @@ const Schema = () => {
                   Minimum Marks
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Total Questions
+                  Total Primary Questions
                 </th>
                 <th className="px-4 py-2"></th>
               </tr>
