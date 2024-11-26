@@ -22,6 +22,7 @@ const CreateSchema = () => {
   const canvasRef = useRef(null);
   const { id } = useParams();
   const location = useLocation();
+  const token = localStorage.getItem("token");
 
   const handleInputChange = (e) => {
     setNumQuestions(e.target.value);
@@ -65,6 +66,7 @@ const CreateSchema = () => {
       }
     });
   };
+
 
   const handleShowImages = (index) => {
     // setCurrentImageIndex(index);
@@ -145,7 +147,12 @@ const CreateSchema = () => {
     const fetchedData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/schemas/get/schema/${id}`
+          `${process.env.REACT_APP_API_URL}/api/schemas/get/schema/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSchemaData(response?.data);
       } catch (error) {

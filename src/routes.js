@@ -13,6 +13,7 @@ import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
 import Schema from "views/admin/schemas/Schema";
+import CreateSchemaStructure from "views/admin/createSchemaStructure/createSchemaStructure";
 
 const routes = [
   {
@@ -68,7 +69,7 @@ const routes = [
     layout: "/admin",
     icon: <IoBookSharp className=" h-6 w-6" />,
     path: "schema/create/structure/:id",
-    component: <CreateSchema />,
+    component: <CreateSchemaStructure />,
     hidden: true,
   },
   {

@@ -8,7 +8,14 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
     totalQuestions: "",
     maxMarks: "",
     minMarks: "",
+    compulsoryQuestions: "",
+    evaluationTime: "",
+    isActive: true,
   });
+
+  console.log(formData);
+
+  const token = localStorage.getItem("token");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,10 +24,16 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData)
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/schemas/create/schema`,
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       setFormData({
@@ -28,6 +41,9 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
         totalQuestions: "",
         maxMarks: "",
         minMarks: "",
+        compulsoryQuestions: "",
+        evaluationTime: "",
+        isActive: true,
       });
       toast.success("Schema created successfully!");
       console.log(response);
@@ -55,7 +71,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
         >
           &times;
         </button>
-        <h2 className="mb-6 text-center text-2xl font-semibold">
+        <h2 className="mb-4 text-center text-2xl font-semibold">
           Create Schema
         </h2>
         <form onSubmit={handleSubmit}>
@@ -69,7 +85,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="mb-4 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1  shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
           />
 
           <label className="mb-2 block" htmlFor="totalQuestions">
@@ -82,7 +98,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
             value={formData.totalQuestions}
             onChange={handleChange}
             required
-            className="mb-4 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1  shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
           />
 
           <label className="mb-2 block" htmlFor="maxMarks">
@@ -95,7 +111,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
             value={formData.maxMarks}
             onChange={handleChange}
             required
-            className="mb-4 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1  shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
           />
 
           <label className="mb-2 block" htmlFor="minMarks">
@@ -108,9 +124,34 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
             value={formData.minMarks}
             onChange={handleChange}
             required
-            className="mb-4 w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+            className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1  shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
           />
 
+          <label className="mb-2 block" htmlFor="minMarks">
+            Compulsory Questions:
+          </label>
+          <input
+            type="number"
+            id="compulsoryQuestions"
+            name="compulsoryQuestions"
+            value={formData.compulsoryQuestions}
+            onChange={handleChange}
+            required
+            className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+          />
+
+          <label className="mb-2 block" htmlFor="minMarks">
+            Evaluation Time:
+          </label>
+          <input
+            type="number"
+            id="evaluationTime"
+            name="evaluationTime"
+            value={formData.evaluationTime}
+            onChange={handleChange}
+            required
+            className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+          />
           <button
             type="submit"
             className="w-full rounded-md bg-blue-600 py-2 text-white transition-colors hover:bg-blue-700"

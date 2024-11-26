@@ -28,7 +28,12 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
     const fetchSchemaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/schemas/getall/schema`
+          `${process.env.REACT_APP_API_URL}/api/schemas/getall/schema`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
         setSchemas(response.data);
       } catch (error) {

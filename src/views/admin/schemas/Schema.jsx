@@ -12,13 +12,22 @@ const Schema = () => {
   const [deleteShowModal, setDeleteShowModal] = useState(false);
   const [schemaData, setSchemaData] = useState([]);
   const [selectedSchema, setSelectedSchema] = useState(null);
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!token) {
+      navigate("/auth/sign-in");
+    }
     const fetchSchemaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/schemas/getall/schema`
+          `${process.env.REACT_APP_API_URL}/api/schemas/getall/schema`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSchemaData(response.data);
       } catch (error) {
@@ -26,12 +35,17 @@ const Schema = () => {
       }
     };
     fetchSchemaData();
-  }, [setCreateShowModal, createShowModal]);
+  }, [setCreateShowModal, createShowModal, navigate, token]);
 
   const handleConfirmDelete = async (id) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/schemas/remove/schema/${id}`
+        `${process.env.REACT_APP_API_URL}/api/schemas/remove/schema/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setSchemaData(schemaData.filter((schema) => schema._id !== id));
       toast.success("Schema deleted successfully");
@@ -45,7 +59,12 @@ const Schema = () => {
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/schemas/update/schema/${id}`,
-        updatedData
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setSchemaData(
         schemaData.map((schema) => (schema._id === id ? response.data : schema))
@@ -61,12 +80,23 @@ const Schema = () => {
 
   return (
     <div className="mt-12 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
-      <div className="h-32 rounded-lg lg:col-span-2">
+      <div className="h-32 rounded-lg lg:col-span-3">
         <div className=" rounded-lg bg-indigo-800 p-4 text-center text-3xl font-medium text-white">
           Schemas
         </div>
 
         <div className="mt-6 overflow-x-auto rounded-lg">
+          {/* Right-aligned Create Schema Button */}
+          <div className="mb-4 flex items-start justify-end rounded-lg">
+            <div
+              className="hover:bg-transparent inline-block cursor-pointer items-center rounded border 
+        border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium 
+        text-white focus:outline-none focus:ring active:text-indigo-500"
+              onClick={() => setCreateShowModal(!createShowModal)}
+            >
+              Create Schema
+            </div>
+          </div>
           <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
             <thead className="ltr:text-left rtl:text-right">
               <tr>
@@ -82,7 +112,12 @@ const Schema = () => {
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
                   Total Primary Questions
                 </th>
-                <th className="px-4 py-2"></th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                  Compulsory Questions
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                  Evaluation Time
+                </th>
               </tr>
             </thead>
 
@@ -103,6 +138,14 @@ const Schema = () => {
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
                     {data.totalQuestions}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                    {data.compulsoryQuestions}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                    {data.evaluationTime}
                   </td>
 
                   <td className="whitespace-nowrap px-4 py-2 ">
@@ -146,18 +189,6 @@ const Schema = () => {
               </tbody>
             ))}
           </table>
-        </div>
-      </div>
-
-      {/* Right-aligned Create Schema Button */}
-      <div className="flex items-start justify-end rounded-lg">
-        <div
-          className="hover:bg-transparent inline-block cursor-pointer items-center rounded border 
-        border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium 
-        text-white focus:outline-none focus:ring active:text-indigo-500"
-          onClick={() => setCreateShowModal(!createShowModal)}
-        >
-          Create Schema
         </div>
       </div>
 
