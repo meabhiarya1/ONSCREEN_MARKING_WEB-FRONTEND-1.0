@@ -12,6 +12,7 @@ const Schema = () => {
   const [deleteShowModal, setDeleteShowModal] = useState(false);
   const [schemaData, setSchemaData] = useState([]);
   const [selectedSchema, setSelectedSchema] = useState(null);
+  const [id, setId] = useState();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -81,9 +82,9 @@ const Schema = () => {
   return (
     <div className="mt-12 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
       <div className="h-32 rounded-lg lg:col-span-3">
-        <div className=" rounded-lg bg-indigo-800 p-4 text-center text-3xl font-medium text-white">
-          Schemas
-        </div>
+        {/* <div className=" rounded-lg bg-[#1F509A] p-4 text-center text-xl font-medium text-white">
+          Schema
+        </div> */}
 
         <div className="mt-6 overflow-x-auto rounded-lg">
           {/* Right-aligned Create Schema Button */}
@@ -127,30 +128,30 @@ const Schema = () => {
                 key={data._id}
               >
                 <tr>
-                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
                     {data.name}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
                     {data.maxMarks}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
                     {data.minMarks}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
                     {data.totalQuestions}
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
                     {data.compulsoryQuestions}
                   </td>
 
-                  <td className="whitespace-nowrap px-4 py-2 text-xl font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
                     {data.evaluationTime}
                   </td>
 
                   <td className="whitespace-nowrap px-4 py-2 ">
                     <div
-                      className=" inline-block cursor-pointer rounded bg-indigo-600 px-4 py-2 
+                      className=" inline-block cursor-pointer rounded bg-indigo-600 px-3 py-2 
                     text-xs font-medium text-white hover:bg-indigo-700 "
                       onClick={() => {
                         navigate(`/admin/schema/create/structure/${data._id}`);
@@ -161,7 +162,7 @@ const Schema = () => {
                   </td>
 
                   {/* edit and delete */}
-                  <td className="whitespace-nowrap px-4 py-2 ">
+                  <td className="whitespace-nowrap px-3 py-2  ">
                     <div
                       className=" inline-block cursor-pointer rounded bg-indigo-600 px-4 py-2 
                     text-xs font-medium text-white hover:bg-indigo-700 "
@@ -173,13 +174,14 @@ const Schema = () => {
                       Edit
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2">
+                  <td className="whitespace-nowrap px-3 py-2 ">
                     <div
                       className="inline-block cursor-pointer rounded bg-red-600 px-4 py-2 
                     text-xs font-medium text-white hover:bg-indigo-700   "
                       onClick={() => {
                         setDeleteShowModal(!deleteShowModal);
-                        handleConfirmDelete(data._id);
+                        setId(data._id);
+                        // handleConfirmDelete(data._id);
                       }}
                     >
                       Delete
@@ -210,6 +212,7 @@ const Schema = () => {
         deleteShowModal={deleteShowModal}
         setDeleteShowModal={setDeleteShowModal}
         handleConfirmDelete={handleConfirmDelete}
+        id={id}
       />
     </div>
   );

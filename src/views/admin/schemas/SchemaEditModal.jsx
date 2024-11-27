@@ -9,9 +9,12 @@ const SchemaEditModal = ({
   // Initialize state to manage input values
   const [formData, setFormData] = useState({
     name: "",
+    totalQuestions: "",
     maxMarks: "",
     minMarks: "",
-    totalQuestions: "",
+    compulsoryQuestions: "",
+    evaluationTime: "",
+    isActive: true,
   });
 
   // Update state when selectedSchema changes
@@ -22,6 +25,9 @@ const SchemaEditModal = ({
         maxMarks: selectedSchema.maxMarks || "",
         minMarks: selectedSchema.minMarks || "",
         totalQuestions: selectedSchema.totalQuestions || "",
+        compulsoryQuestions: selectedSchema.compulsoryQuestions || "",
+        evaluationTime: selectedSchema.evaluationTime || "",
+        isActive: selectedSchema.isActive || true,
       });
     }
   }, [selectedSchema]);
@@ -34,7 +40,6 @@ const SchemaEditModal = ({
       [name]: value,
     });
   };
-
 
   // Don't render modal if editShowModal is false
   if (!editShowModal) return null;
@@ -95,6 +100,30 @@ const SchemaEditModal = ({
               type="number"
               name="totalQuestions"
               value={formData.totalQuestions}
+              onChange={handleInputChange}
+              className="mt-1 w-full rounded border p-2"
+            />
+          </div>
+
+          {/* Input for Compulsory Questions */}
+          <div>
+            <label className="block text-gray-700">Compulsory Questions</label>
+            <input
+              type="number"
+              name="compulsoryQuestions"
+              value={formData.compulsoryQuestions}
+              onChange={handleInputChange}
+              className="mt-1 w-full rounded border p-2"
+            />
+          </div>
+
+          {/* Input for Evaluation Time */}
+          <div>
+            <label className="block text-gray-700">Evaluation Time</label>
+            <input
+              type="number"
+              name="evaluationTime"
+              value={formData.evaluationTime}
               onChange={handleInputChange}
               className="mt-1 w-full rounded border p-2"
             />

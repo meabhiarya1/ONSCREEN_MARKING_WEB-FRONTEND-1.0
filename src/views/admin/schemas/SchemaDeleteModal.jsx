@@ -1,9 +1,11 @@
+import { data } from "autoprefixer";
 import React from "react";
 
 const SchemaDeleteModal = ({
   deleteShowModal,
   setDeleteShowModal,
   handleConfirmDelete,
+  id,
 }) => {
   if (!deleteShowModal) return null; // Don't render modal if showModal is false
 
@@ -41,7 +43,9 @@ const SchemaDeleteModal = ({
           {/* Buttons */}
           <div className="flex justify-center space-x-4">
             <button
-              onClick={handleConfirmDelete}
+              onClick={() => {
+                handleConfirmDelete(id);
+              }}
               className="rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800"
             >
               Yes, Delete

@@ -13,7 +13,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
     isActive: true,
   });
 
-  console.log(formData);
+  // console.log(formData);
 
   const token = localStorage.getItem("token");
 
@@ -82,7 +82,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
             type="text"
             id="name"
             name="name"
-            value={formData.name}
+            value={formData.name} 
             onChange={handleChange}
             required
             className="mb-4 w-full rounded-md border border-gray-300 px-2 py-1  shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
