@@ -53,7 +53,6 @@ const SchemaEditModal = ({
         >
           &times;
         </button>
-
         <h2 className="mb-4 text-lg font-medium">Edit Schema</h2>
 
         <div className="space-y-4">
