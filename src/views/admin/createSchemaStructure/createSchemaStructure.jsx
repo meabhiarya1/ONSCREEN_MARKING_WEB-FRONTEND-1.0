@@ -1,12 +1,25 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
   const [folders, setFolders] = useState([]);
   const { id } = useParams();
   const token = localStorage.getItem("token");
+  const [count, setCount] = useState();
+  const [formData, setFormData] = useState({
+    schemaId: id,
+    questionsName: "",
+    maxMarks: "",
+    minMarks: "",
+    isSubQuestion: false,
+    bonusMarks: "",
+    marksDifference: "",
+    numberOfSubQuestions: "",
+    compulsorySubQuestions: "",
+  });
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -39,8 +52,36 @@ const CreateSchemaStructure = () => {
     return folders;
   };
 
-  const handleSubQuestionsChange = (folderId, count) => {
+  const handleSubQuestionsChange = (folder, count) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      questionsName: folder.name,
+    }));
+    const folderId = folder.id;
     const numSubQuestions = parseInt(count) || 0;
+
+    if (
+      formData.maxMarks === "" ||
+      formData.minMarks === "" ||
+      formData.bonusMarks === "" ||
+      formData.marksDifference === ""
+    ) {
+      toast.error("Please fill all the required fields");
+      return;
+    }
+
+    // If the top four conditions pass, check further only if `isSubQuestion` is true
+    if (formData.isSubQuestion) {
+      if (
+        formData.numberOfSubQuestions === "" ||
+        formData.compulsorySubQuestions === ""
+      ) {
+        toast.error("Please fill all sub-question related fields");
+        return;
+      }
+    }
+
+    // Proceed with the next steps if all conditions are satisfied
 
     const updateFolders = (folders) =>
       folders.map((folder) => {
@@ -112,33 +153,80 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Min"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+              value={formData.minMarks}
+              required
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    minMarks: e.target.value,
+                  };
+                })
+              }
             />
             <input
               type="text"
               placeholder="Max"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+              value={formData.maxMarks}
+              required
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    maxMarks: e.target.value,
+                  };
+                })
+              }
             />
             <input
               type="text"
               placeholder="Bonus"
               className="ml-2 w-14 rounded border px-2 py-1 text-sm"
+              value={formData.bonusMarks}
+              required
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    bonusMarks: e.target.value,
+                  };
+                })
+              }
             />
             <input
               type="text"
               placeholder="Marks Difference"
               className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
+              value={formData.marksDifference}
+              required
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    marksDifference: e.target.value,
+                  };
+                })
+              }
             />
             <input
               type="checkbox"
               className="ml-2 cursor-pointer"
               onChange={() => {
                 toggleInputsVisibility(folder.id);
+                setFormData((prev) => ({
+                  ...prev,
+                  isSubQuestion: !prev.isSubQuestion,
+                }));
               }}
             />
             <label className="text-sm font-medium text-gray-700">
               Sub Questions
             </label>
-            <button className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white">
+            <button
+              className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
+              onClick={(e) => handleSubQuestionsChange(folder, count)}
+            >
               Save
             </button>
           </div>
@@ -148,28 +236,36 @@ const CreateSchemaStructure = () => {
             {/* Conditional Inputs */}
             {folder.showInputs && (
               <>
-                <label
-                  htmlFor="subQuestions"
-                  className="ml-2 text-sm text-gray-700"
-                >
+                <label className="ml-2 text-sm text-gray-700">
                   No. of Sub-Questions:
                 </label>
                 <input
                   type="text"
                   className="w-12 rounded border px-3 py-1 text-sm"
-                  onChange={(e) =>
-                    handleSubQuestionsChange(folder.id, e.target.value)
-                  }
+                  required
+                  onChange={(e) => {
+                    setCount(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      numberOfSubQuestions: e.target.value,
+                    }));
+                  }}
+                  value={formData.numberOfSubQuestions}
                 />
-                <label
-                  htmlFor="subQuestions"
-                  className="ml-2 text-sm text-gray-700 "
-                >
+                <label className="ml-2 text-sm text-gray-700 ">
                   No. of Compulsory Sub-Questions:
                 </label>
                 <input
                   type="text"
                   className="w-12 rounded border px-3 py-1 text-sm"
+                  required
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      compulsorySubQuestions: e.target.value,
+                    }));
+                  }}
+                  value={formData.compulsorySubQuestions}
                 />
               </>
             )}
@@ -193,6 +289,8 @@ const CreateSchemaStructure = () => {
   if (!schemaData) {
     return <div>Loading schema data...</div>;
   }
+
+  console.log(formData)
 
   return (
     <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
