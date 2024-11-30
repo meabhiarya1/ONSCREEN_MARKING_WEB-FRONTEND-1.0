@@ -88,20 +88,7 @@ const CreateUser = () => {
   };
 
 
-  const handleRoleChange = (e) => {
-    const selectedRole = e.target.value;
-    const updatedPermissions =
-      selectedRole === "admin"
-        ? routes.map((route) => route.name)
-        : routes.map((route) => route.name);
-
-    setUserDetails({
-      ...userDetails,
-      role: selectedRole,
-      permissions: updatedPermissions,
-    });
-  };
-
+ 
 
 
   return (
