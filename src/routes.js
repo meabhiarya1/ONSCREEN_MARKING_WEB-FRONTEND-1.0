@@ -94,7 +94,7 @@ const routes = [
     path: "uploadcsv",
     icon: <FaFileUpload className="h-6 w-6" />,
     component: <Upload />,
-    hidden: false,
+    hidden: true,
   },
 
   {

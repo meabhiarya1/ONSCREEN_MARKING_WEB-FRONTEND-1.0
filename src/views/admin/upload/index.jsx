@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { FaArrowAltCircleDown } from "react-icons/fa";
+import { FaCloudUploadAlt, FaArrowAltCircleDown } from "react-icons/fa";
 import Papa from "papaparse";
 import routes from "routes";
 import { toast } from "react-toastify";
@@ -9,12 +8,12 @@ import axios from "axios";
 
 const Upload = () => {
   const [selectedRole, setSelectedRole] = useState(null); // Default value
-  const [file, setFile] = useState({ name: "No File Choosen" });
+  const [file, setFile] = useState({ name: "No file chosen" });
   const [disabled, setDisabled] = useState(true); // Start with disabled true
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state for the file upload
   const [refinedData, setRefinedData] = useState(null);
-  const csvLinkRef = useRef(null); // Reference for downloading CSV
+  const csvLinkRef = useRef(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -34,16 +33,12 @@ const Upload = () => {
     setSelectedRole(role); // Update state with selected value
 
     // Enable button only if a valid role is selected
-    if (role !== "null") {
-      setDisabled(false); // Enable button if role is selected
-    } else {
-      setDisabled(true); // Disable button if no valid role is selected
-    }
+    setDisabled(role === "null");
   };
 
   const downloadSampleCsv = () => {
     // Define the CSV headings
-    const csvHeadings = ["name", "mobile", "email", "password"];
+    const csvHeadings = ["Name", "Mobile", "Email", "Password"];
 
     // Convert the headings to CSV format (comma-separated and new line at the end)
     const csvContent = csvHeadings.join(",") + "\n";
@@ -108,7 +103,6 @@ const Upload = () => {
 
       if (duplicateEmails.length > 0) {
         duplicateEmails.forEach((row) => {
-          console.log("Duplicate email:", row.Email);
           toast.warning(`Duplicate email: ${row.Email}`);
         });
         return;
@@ -116,8 +110,7 @@ const Upload = () => {
 
       setRefinedData(modifiedData);
     } catch (error) {
-      console.error("Error handling upload:", error);
-      toast.error("Failed to upload file");
+      toast.error("Error processing the file");
     }
   };
 
@@ -141,37 +134,27 @@ const Upload = () => {
     } finally {
       setLoading(false); // End loading indicator
       setSelectedRole(null);
-      setFile({ name: "No File Choosen" });
+      setFile({ name: "No file chosen" });
     }
   };
 
   const handleSubmit = async () => {
     if (!refinedData || refinedData.length === 0 || !selectedRole) {
-      toast.warning("Please upload a file");
+      toast.warning("Please upload a valid CSV file");
       return;
     }
 
     try {
       const response = await sendData(refinedData);
 
-      // Log the response to inspect its structure
-      console.log("Response:", response);
-
-      if (response && response.data && response.data.message) {
-        toast.success(response.data.message); // Adjust according to the actual structure
+      if (response?.data?.message) {
+        toast.success(response.data.message);
       } else {
         toast.warning("Unexpected response format");
       }
     } catch (error) {
-      // Log the full error for debugging
       console.error("Error:", error);
-
-      // Check if there is an error response with a message
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error("An error occurred. Please try again.");
@@ -181,12 +164,10 @@ const Upload = () => {
 
   return (
     <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 py-4">
-      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition duration-300 ease-in-out hover:shadow-lg hover:border-blue-500">
+      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:border-blue-500">
         <div>
-          <h3 className="mt-0.5 text-xl font-semibold text-gray-900">
-            Upload CSV File
-            <p className="text-md text-gray-500">User Creation</p>
-          </h3>
+          <h3 className="text-xl font-semibold text-gray-900">Upload CSV File</h3>
+          <p className="text-md text-gray-500">User Creation</p>
         </div>
 
         <div className="flex justify-between items-center">
@@ -194,21 +175,15 @@ const Upload = () => {
             className="text-md group mt-4 inline-flex items-center gap-2 font-medium text-blue-600 hover:text-blue-700 transition-all"
             onClick={downloadSampleCsv}
           >
-            Download File Example
-            <span
-              aria-hidden="true"
-              className="block transition-all group-hover:ms-1"
-            >
-              <FaArrowAltCircleDown className="m-1 text-lg" />
-            </span>
+            <span>Download Sample</span>
+            <FaArrowAltCircleDown className="m-1 text-lg" />
           </div>
 
-          {/* Upload functions */}
-          <div
-            className="mt-4 inline-flex items-center gap-2"
-            onClick={() => disabled ? toast.warning("Please select a role") : null}
-          >
-            <label className="text-md group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600 hover:text-blue-700 transition-all">
+          <div className="mt-4 inline-flex items-center gap-2">
+            <label
+              className="text-md group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600 hover:text-blue-700 transition-all"
+              onClick={() => disabled && toast.warning("Please select a role")}
+            >
               Upload CSV
               <input
                 type="file"
@@ -217,43 +192,33 @@ const Upload = () => {
                 accept=".csv"
                 onChange={uploadHandle}
               />
-              <span
-                aria-hidden="true"
-                className="block transition-all group-hover:ms-1"
-              >
-                <FaCloudUploadAlt className="m-1 text-2xl" />
-              </span>
+              <FaCloudUploadAlt className="m-1 text-2xl" />
             </label>
-            <span
-              aria-hidden="true"
-              className="block max-w-xs overflow-hidden text-ellipsis transition-all group-hover:ms-0.5 rtl:rotate-180"
-            >
+            <span className="max-w-xs overflow-hidden text-ellipsis">
               {file.name}
             </span>
           </div>
         </div>
 
-        {/* Display loading indicator */}
         {loading && <div className="mt-4 text-blue-600">Uploading...</div>}
       </article>
 
       <div className="flex flex-col space-y-2">
         <label htmlFor="userRole" className="text-lg font-medium text-gray-700">
-          Select Role:
+          Select Role
         </label>
         <select
           id="userRole"
           value={selectedRole}
           onChange={handleChange}
-          className="rounded-lg border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
         >
-          <option value="null">Select Option</option>
+          <option value="null">Select Role</option>
           <option value="admin">Admin</option>
           <option value="evaluator">Evaluator</option>
           <option value="reviewer">Reviewer</option>
         </select>
 
-        {/* Upload button */}
         <div
           className="hover:bg-transparent inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 hover:bg-white transition duration-300 ease-in-out focus:outline-none focus:ring active:text-indigo-500 cursor-pointer"
           onClick={handleSubmit}
@@ -262,10 +227,8 @@ const Upload = () => {
         </div>
       </div>
 
-      {/* Hidden download link for CSV */}
       <a ref={csvLinkRef} style={{ display: "none" }} download="sample.csv" />
     </div>
-
   );
 };
 

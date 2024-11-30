@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import routes from "routes.js";
 import { createUser } from "services/common";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const CreateUser = () => {
   const [userDetails, setUserDetails] = useState({
@@ -86,9 +87,6 @@ const CreateUser = () => {
       setLoading(false);
     }
   };
-
-
- 
 
 
   return (
@@ -346,6 +344,12 @@ const CreateUser = () => {
                     "Create User"
                   )}
                 </button>
+                <h2 className="text-xl font-semibold text-blue-600 hover:text-blue-800 underline decoration-blue-500 decoration-2 hover:underline-offset-4 transition-all duration-300">
+                  <Link to={'/admin/uploadcsv'}>
+                    Create user by CSV
+                  </Link>
+                </h2>
+
               </div>
             </form>
           </div>
