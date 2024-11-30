@@ -6,11 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import App from "./App";
-
-//Import Register Licence from syncfusion
 import { registerLicense } from "@syncfusion/ej2-base";
-
-// Import Syncfusion CSS
 import "@syncfusion/ej2-base/styles/material.css";
 import "@syncfusion/ej2-react-grids/styles/material.css";
 

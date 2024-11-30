@@ -17,7 +17,7 @@ import CreateSchemaStructure from "views/admin/createSchemaStructure/createSchem
 
 const routes = [
   {
-    name: "Main Dashboard",
+    name: "Dashboard",
     layout: "/admin",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
@@ -32,14 +32,6 @@ const routes = [
     component: <EvaluatorDashboard />,
     hidden: false,
   },
-  // {
-  //   name: "Main Dashboard",
-  //   layout: "/evaluator/osmmodule",
-  //   path: "default",
-  //   icon: <MdHome className="h-6 w-6" />,
-  //   component: <CheckModule />,
-  //   hidden: false,
-  // },
   {
     name: "Classes",
     layout: "/admin",
@@ -78,7 +70,7 @@ const routes = [
     path: "profile",
     icon: <MdPerson className="h-6 w-6" />,
     component: <Profile />,
-    hidden: false,
+    hidden: true,
   },
   {
     name: "Users",

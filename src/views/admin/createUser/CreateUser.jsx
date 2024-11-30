@@ -88,6 +88,22 @@ const CreateUser = () => {
   };
 
 
+  const handleRoleChange = (e) => {
+    const selectedRole = e.target.value;
+    const updatedPermissions =
+      selectedRole === "admin"
+        ? routes.map((route) => route.name)
+        : routes.map((route) => route.name);
+
+    setUserDetails({
+      ...userDetails,
+      role: selectedRole,
+      permissions: updatedPermissions,
+    });
+  };
+
+
+
   return (
     <section className="bg-gray-50 min-h-screen">
       <div className="w-full h-full">
@@ -204,7 +220,11 @@ const CreateUser = () => {
                         name="permissions"
                         value={route.name}
                         className="h-5 w-5 rounded border-2 border-gray-300 bg-gray-50 text-blue-600 focus:ring-blue-500"
-                        checked={userDetails.permissions.includes(route.name)}
+                        checked={
+                          userDetails?.role === "admin"
+                            ? userDetails.permissions
+                            : userDetails.permissions.includes(route.name)
+                        }
                         onChange={(e) => {
                           if (e.target.checked) {
                             setUserDetails({
