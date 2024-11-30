@@ -153,7 +153,7 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Min"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
-              value={formData.minMarks}
+              // value={formData.minMarks}
               required
               onChange={(e) =>
                 setFormData((prev) => {
@@ -168,7 +168,7 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Max"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
-              value={formData.maxMarks}
+              // value={formData.maxMarks}
               required
               onChange={(e) =>
                 setFormData((prev) => {
@@ -183,7 +183,7 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Bonus"
               className="ml-2 w-14 rounded border px-2 py-1 text-sm"
-              value={formData.bonusMarks}
+              // value={formData.bonusMarks}
               required
               onChange={(e) =>
                 setFormData((prev) => {
@@ -198,7 +198,7 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Marks Difference"
               className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
-              value={formData.marksDifference}
+              // value={formData.marksDifference}
               required
               onChange={(e) =>
                 setFormData((prev) => {
@@ -250,7 +250,7 @@ const CreateSchemaStructure = () => {
                       numberOfSubQuestions: e.target.value,
                     }));
                   }}
-                  value={formData.numberOfSubQuestions}
+                  // value={formData.numberOfSubQuestions}
                 />
                 <label className="ml-2 text-sm text-gray-700 ">
                   No. of Compulsory Sub-Questions:
@@ -265,7 +265,7 @@ const CreateSchemaStructure = () => {
                       compulsorySubQuestions: e.target.value,
                     }));
                   }}
-                  value={formData.compulsorySubQuestions}
+                  // value={formData.compulsorySubQuestions}
                 />
               </>
             )}
@@ -290,7 +290,7 @@ const CreateSchemaStructure = () => {
     return <div>Loading schema data...</div>;
   }
 
-  console.log(formData)
+  console.log(formData);
 
   return (
     <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
