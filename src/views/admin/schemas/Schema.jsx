@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import SchemaEditModal from "./SchemaEditModal";
-import SchemaDeleteModal from "./SchemaDeleteModal";
 import SchemaCreateModal from "./SchemaCreateModal";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ConfirmationModal from "components/modal/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 
 const Schema = () => {
   const [editShowModal, setEditShowModal] = useState(false);
   const [createShowModal, setCreateShowModal] = useState(false);
-  const [deleteShowModal, setDeleteShowModal] = useState(false);
   const [schemaData, setSchemaData] = useState([]);
   const [selectedSchema, setSelectedSchema] = useState(null);
-  const [id, setId] = useState();
+  const [schemaId, setSchemaId] = useState();
+  const [confirmationModal, setConfirmationModal] = useState(false);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -38,22 +38,26 @@ const Schema = () => {
     fetchSchemaData();
   }, [setCreateShowModal, createShowModal, navigate, token]);
 
-  const handleConfirmDelete = async (id) => {
+  const handleConfirmDelete = async () => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/schemas/remove/schema/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/schemas/remove/schema/${schemaId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setSchemaData(schemaData.filter((schema) => schema._id !== id));
+      setSchemaData(schemaData.filter((schema) => schema._id !== schemaId));
       toast.success("Schema deleted successfully");
     } catch (error) {
       toast.error(error.response.data.message);
     }
-    setDeleteShowModal(false);
+    finally {
+      setConfirmationModal(false)
+      setSchemaId("")
+    }
+
   };
 
   const handleUpdate = async (id, updatedData) => {
@@ -82,12 +86,9 @@ const Schema = () => {
   return (
     <div className="mt-12 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
       <div className="h-32 rounded-lg lg:col-span-3">
-        {/* <div className=" rounded-lg bg-[#1F509A] p-4 text-center text-xl font-medium text-white">
-          Schema
-        </div> */}
 
         <div className="mt-6 overflow-x-auto rounded-lg">
-          {/* Right-aligned Create Schema Button */}
+
           <div className="mb-4 flex items-start justify-end rounded-lg">
             <div
               className="hover:bg-transparent inline-block cursor-pointer items-center rounded border 
@@ -102,24 +103,25 @@ const Schema = () => {
             <thead className="ltr:text-left rtl:text-right">
               <tr>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Schema Name
+                  Schema
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Maximum Marks
+                  Max Marks
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Minimum Marks
+                  Min Marks
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Total Primary Questions
+                  Primary Qs
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Compulsory Questions
+                  Compulsory Qs
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
-                  Evaluation Time
+                  Eval Time
                 </th>
               </tr>
+
             </thead>
 
             {schemaData.map((data) => (
@@ -179,9 +181,8 @@ const Schema = () => {
                       className="inline-block cursor-pointer rounded bg-red-600 px-4 py-2 
                     text-xs font-medium text-white hover:bg-indigo-700   "
                       onClick={() => {
-                        setDeleteShowModal(!deleteShowModal);
-                        setId(data._id);
-                        // handleConfirmDelete(data._id);
+                        setConfirmationModal(true);
+                        setSchemaId(data._id);
                       }}
                     >
                       Delete
@@ -208,12 +209,16 @@ const Schema = () => {
         createShowModal={createShowModal}
       />
 
-      <SchemaDeleteModal
-        deleteShowModal={deleteShowModal}
-        setDeleteShowModal={setDeleteShowModal}
-        handleConfirmDelete={handleConfirmDelete}
-        id={id}
+      <ConfirmationModal
+        confirmationModal={confirmationModal}
+        onSubmitHandler={handleConfirmDelete}
+        setConfirmationModal={setConfirmationModal}
+        setId={setSchemaId}
+        heading="Confirm Schema Removal"
+        message="Are you sure you want to remove this schema? This action cannot be undone."
+        type="error" // Options: 'success', 'warning', 'error'
       />
+
     </div>
   );
 };

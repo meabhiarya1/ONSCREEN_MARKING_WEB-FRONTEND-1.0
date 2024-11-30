@@ -57,7 +57,7 @@ const routes = [
     hidden: true,
   },
   {
-    name: "Create Schema Structure",
+    name: "Schema Structure",
     layout: "/admin",
     icon: <IoBookSharp className=" h-6 w-6" />,
     path: "schema/create/structure/:id",
