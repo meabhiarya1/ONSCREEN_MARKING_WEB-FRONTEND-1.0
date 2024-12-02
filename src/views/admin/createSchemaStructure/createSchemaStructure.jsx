@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const CreateSchemaStructure = () => {
+const CreateSchemaStructure = () => { 
   const [schemaData, setSchemaData] = useState(null);
+  const [savedQuestionData, setSavedQuestionData] = useState([]);
   const [folders, setFolders] = useState([]);
   const { id } = useParams();
   const token = localStorage.getItem("token");
@@ -12,6 +13,7 @@ const CreateSchemaStructure = () => {
   const formRefs = useRef({}); // Ref object to hold form input values for each folder
   const [isSubQuestion, setIsSubQuestion] = useState(false); // Track if it's a sub-question
   const [questionData, setQuestionData] = useState({}); // Store question data
+  const [savingStatus, setSavingStatus] = useState({}); // Track saving per folder
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -36,19 +38,66 @@ const CreateSchemaStructure = () => {
     fetchedData();
   }, [id, token]);
 
+  useEffect(() => {
+    const fetchedData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/schemas/getall/questiondefinitions/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = response?.data;
+        setSavedQuestionData(data);
+      } catch (error) {
+        console.error("Error fetching schema data:", error);
+      }
+    };
+    fetchedData();
+  }, []);
+
+  console.log(savedQuestionData?.data || []);
+
   const generateFolders = (count) => {
     const folders = [];
     for (let i = 1; i <= count; i++) {
-      folders.push({ id: i, name: `Q. ${i}`, children: [], showInputs: false });
+      folders.push({
+        id: i,
+        name: `Q. ${i}`,
+        children: [],
+        showInputs: false,
+        isSubQuestion: false, // Initialize for each folder
+      });
     }
     return folders;
   };
 
-  const handleSubQuestionsChange = (folder, count) => {
+  const toggleInputsVisibility = (folderId) => {
+    const updateFolders = (folders) =>
+      folders.map((folder) => {
+        if (folder.id === folderId) {
+          return {
+            ...folder,
+            showInputs: !folder.showInputs,
+            isSubQuestion: !folder.isSubQuestion, // Toggle isSubQuestion
+          };
+        }
+        if (folder.children.length > 0) {
+          return { ...folder, children: updateFolders(folder.children) };
+        }
+        return folder;
+      });
+
+    setFolders((prevFolders) => updateFolders(prevFolders));
+  };
+
+  const handleSubQuestionsChange = async (folder, count) => {
     const folderId = folder.id;
+    if (savingStatus[folderId]) return; // Prevent duplicate save for this folder
     const numSubQuestions = parseInt(count) || 0;
 
-    // Validate the fields before proceeding
     const minMarks = formRefs.current[`${folderId}-minMarks`]?.value;
     const maxMarks = formRefs.current[`${folderId}-maxMarks`]?.value;
     const bonusMarks = formRefs.current[`${folderId}-bonusMarks`]?.value;
@@ -60,11 +109,10 @@ const CreateSchemaStructure = () => {
       return;
     }
 
-    // Handle sub-question fields if sub-questions are enabled
     let numberOfSubQuestions = 0;
     let compulsorySubQuestions = 0;
 
-    if (isSubQuestion) {
+    if (folder.isSubQuestion) {
       numberOfSubQuestions =
         formRefs.current[`${folderId}-numberOfSubQuestions`]?.value || 0;
       compulsorySubQuestions =
@@ -76,29 +124,40 @@ const CreateSchemaStructure = () => {
       }
     }
 
-    // Update the questionData object
     const updatedQuestionData = {
       ...questionData,
-      [folderId]: {
-        schemaId: id,
-        questionsName: folderId,
-        isSubQuestion,
-        minMarks,
-        maxMarks,
-        bonusMarks,
-        marksDifference,
-        numberOfSubQuestions: parseInt(numberOfSubQuestions),
-        compulsorySubQuestions: parseInt(compulsorySubQuestions),
-      },
+      schemaId: id,
+      questionsName: folderId,
+      isSubQuestion: folder.isSubQuestion, // Use folder-specific state
+      minMarks,
+      maxMarks,
+      bonusMarks,
+      marksDifference,
+      numberOfSubQuestions: parseInt(numberOfSubQuestions),
+      compulsorySubQuestions: parseInt(compulsorySubQuestions),
     };
 
-    // Log the updated question data for debugging
-    console.log("Updated Question Data:", updatedQuestionData);
-
-    // Update state with the new questionData
     setQuestionData(updatedQuestionData);
 
-    // Proceed with updating folders
+    setSavingStatus((prev) => ({ ...prev, [folderId]: true })); // Set saving for this folder
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/schemas/create/questiondefinition`,
+        updatedQuestionData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error("Error creating questions:", error);
+    } finally {
+      setSavingStatus((prev) => ({ ...prev, [folderId]: false })); // Reset saving for this folder
+    }
+
     const updateFolders = (folders) =>
       folders.map((folder) => {
         if (folder.id === folderId) {
@@ -119,22 +178,9 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  const toggleInputsVisibility = (folderId) => {
-    const updateFolders = (folders) =>
-      folders.map((folder) => {
-        if (folder.id === folderId) {
-          return { ...folder, showInputs: !folder.showInputs };
-        }
-        if (folder.children.length > 0) {
-          return { ...folder, children: updateFolders(folder.children) };
-        }
-        return folder;
-      });
-
-    setFolders((prevFolders) => updateFolders(prevFolders));
-  };
-
   const renderFolder = (folder, level = 0, isLastChild = false) => {
+    const folderId = folder.id;
+    const isSaving = savingStatus[folderId] || false; // Check saving status for this folder
     const folderStyle = `relative ml-${level * 4} mt-3`;
     const color = level % 2 === 0 ? "bg-[#f4f4f4]" : "bg-[#fafafa]";
 
@@ -204,11 +250,12 @@ const CreateSchemaStructure = () => {
             </label>
             <button
               className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
+              disabled={isSaving}
               onClick={() =>
                 handleSubQuestionsChange(folder, countRef.current?.value)
               }
             >
-              Save
+              {isSaving ? "Saving..." : "Save"}
             </button>
           </div>
 
@@ -250,11 +297,11 @@ const CreateSchemaStructure = () => {
     );
   };
 
-  console.log(questionData);
-
   return (
-    <div className="overflow-hidden rounded-lg shadow">
-      {folders.map((folder) => renderFolder(folder))}
+    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
+      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+        {folders.map((folder) => renderFolder(folder))}
+      </div>
     </div>
   );
 };
