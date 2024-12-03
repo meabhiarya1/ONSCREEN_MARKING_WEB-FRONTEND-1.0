@@ -4,8 +4,6 @@ const CardClasses = ({ class_, setEditIsOpen, setCurrentClass, setClassId,
   setConfirmationModal }) => {
   const navigate = useNavigate();
 
-
-
   return (
     <div>
       <article className="mt-8 cursor-pointer overflow-hidden rounded-lg shadow transition hover:shadow-lg">

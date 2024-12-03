@@ -94,10 +94,10 @@ const Index = () => {
   return (
     <div>
       <div
-        className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+        className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-white-600 focus:outline-none focus:ring active:text-indigo-500"
         onClick={() => setIsOpen(true)}
       >
-        Create More Courses / Subjects
+        Create subject
       </div>
 
       <CourseModal
@@ -130,7 +130,11 @@ const Index = () => {
             />
           ))
         ) : (
-          <p>No courses available</p>
+          <div className="flex flex-col items-center justify-center col-span-full mt-12">
+            <p className="text-gray-700 text-lg font-semibold">
+              No subjects available. Create one to get started!
+            </p>
+          </div>
         )}
       </div>
     </div>

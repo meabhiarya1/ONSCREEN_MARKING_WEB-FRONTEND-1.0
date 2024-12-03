@@ -111,7 +111,7 @@ const Index = () => {
         font-medium text-white hover:text-white-600 focus:outline-none focus:ring active:text-white-500"
         onClick={() => setIsOpen(true)}
       >
-        Create More Class
+        Create Class
       </div>
 
       <ClassModal
