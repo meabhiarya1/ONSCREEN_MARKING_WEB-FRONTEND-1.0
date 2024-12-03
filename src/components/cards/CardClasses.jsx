@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
-const CardClasses = ({ class_, handleDelete, setEditIsOpen, setCurrentClass }) => {
+const CardClasses = ({ class_, setEditIsOpen, setCurrentClass, setClassId,
+  setConfirmationModal }) => {
   const navigate = useNavigate();
+
+  
 
   return (
     <div>
@@ -46,7 +49,10 @@ const CardClasses = ({ class_, handleDelete, setEditIsOpen, setCurrentClass }) =
           </button>
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
-            onClick={() => handleDelete(class_._id)}
+            onClick={() => {
+              setClassId(class_._id)
+              setConfirmationModal(true)
+            }}
           >
             Delete
           </button>

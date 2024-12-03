@@ -66,6 +66,15 @@ const EditClassModal = ({
     } catch (error) {
       toast.error(error?.response?.data?.error)
     }
+    finally {
+      setFormData((prev) => ({
+        ...prev, className: "",
+        classCode: "",
+        duration: "",
+        session: "",
+        year: "",
+      }))
+    }
   };
 
   return (
@@ -75,7 +84,16 @@ const EditClassModal = ({
           <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
             <button
               className="absolute right-2 top-2 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
-              onClick={() => setEditIsOpen(false)}
+              onClick={() => {
+                setEditIsOpen(false)
+                setFormData((prev) => ({
+                  ...prev, className: "",
+                  classCode: "",
+                  duration: "",
+                  session: "",
+                  year: "",
+                }))
+              }}
             >
               <GiCrossMark />
             </button>

@@ -5,12 +5,15 @@ import ClassModal from "components/modal/ClassModal";
 import axios from "axios";
 import { toast } from "react-toastify";
 import EditClassModal from "components/modal/EditClassModal";
+import ConfirmationModal from "components/modal/ConfirmationModal";
 
 const Index = () => {
   const [classes, setClasses] = useState([]);
   const [currentClass, setCurrentClass] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setEditIsOpen] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [classId, setClassId] = useState("");
 
   const [formData, setFormData] = useState({
     className: "",
@@ -62,16 +65,24 @@ const Index = () => {
       setIsOpen(false);
     } catch (error) {
       console.log(error)
-
       toast.error(error.response.data.error);
+    }
+    finally {
+      setFormData((prev) => ({
+        ...prev, className: "",
+        classCode: "",
+        duration: "",
+        session: "",
+        year: "",
+      }))
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/classes/remove/class/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/classes/remove/class/${classId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,9 +90,13 @@ const Index = () => {
         }
       );
       toast.success(response.data.message);
-      setClasses(classes.filter((class_) => class_._id !== id));
+      setClasses(classes.filter((class_) => class_._id !== classId));
     } catch (error) {
       console.log(error);
+    }
+    finally {
+      setClassId("")
+      setConfirmationModal(false)
     }
   };
 
@@ -119,6 +134,8 @@ const Index = () => {
           classes.map((class_, index) => (
             <CardClasses
               key={class_._id}
+              setClassId={setClassId}
+              setConfirmationModal={setConfirmationModal}
               class_={class_}
               handleDelete={handleDelete}
               setEditIsOpen={setEditIsOpen}
@@ -133,6 +150,17 @@ const Index = () => {
           </div>
         )}
       </div>
+
+      <ConfirmationModal
+        confirmationModal={confirmationModal}
+        onSubmitHandler={handleDelete}
+        setConfirmationModal={setConfirmationModal}
+        setId={setClassId}
+        heading="Confirm Class Removal"
+        message="Are you sure you want to remove this class? Please note that removing this class will also permanently delete all associated subjects and data. This action cannot be undone."
+        type="error" // Options: 'success', 'warning', 'error'
+      />
+
     </div>
   );
 };

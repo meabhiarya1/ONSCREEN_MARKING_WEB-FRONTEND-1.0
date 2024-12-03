@@ -15,7 +15,7 @@ const CourseModal = ({
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value, // Dynamically set the field value
+      [name]: value,
     });
   };
 
@@ -26,7 +26,17 @@ const CourseModal = ({
           <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
             <button
               className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false)
+                setFormData((prev) => ({
+                  ...prev, className: "",
+                  classCode: "",
+                  duration: "",
+                  session: "",
+                  year: "",
+                }))
+              }
+              }
             >
               ✖
             </button>
@@ -43,10 +53,10 @@ const CourseModal = ({
                 <input
                   type="text"
                   id="name"
-                  name="name" // Bind name to the formData key
+                  name="name" 
                   placeholder="Enter Course Name"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.name} // Controlled input
+                  value={formData.name} 
                   onChange={handleChange} // Handle changes
                 />
               </label>

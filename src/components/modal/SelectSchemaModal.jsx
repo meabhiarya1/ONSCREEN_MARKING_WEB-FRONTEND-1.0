@@ -184,7 +184,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
     );
   };
 
-  if (!showModal) return null; // Don't render modal if showModal is false
+  if (!showModal) return null;
 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
@@ -194,7 +194,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
           className="absolute right-2 top-2 text-2xl p-2 font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-gray-100"
           onClick={() => setShowModal(false)}
         >
-         <GiCrossMark />
+          <GiCrossMark />
         </button>
 
         {/* Modal content */}
@@ -202,11 +202,9 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
           <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-300">
             Please select a schema:
           </h3>
-
-          {/* Dropdown for selecting schema */}
           <select
             value={selectedSchema}
-            onChange={(e) => setSelectedSchema(e.target.value)} // Set selected schema
+            onChange={(e) => setSelectedSchema(e.target.value)}
             className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
             required
           >
@@ -218,10 +216,8 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
             ))}
           </select>
 
-          {/* Base */}
 
           <div className="mb-6 flex items-center space-x-6 rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
-            {/* Select Question Button */}
             <label className="flex w-3/4 cursor-pointer items-center justify-between rounded-lg bg-indigo-500 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
               <span>{fileName ? fileName : "Select Question"}</span>
               <input
@@ -291,7 +287,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                   {/* Buttons */}
                   <div className="flex justify-center space-x-4">
                     <button
-                      onClick={handleSubmit} // Call handleSubmit on click
+                      onClick={handleSubmit}
                       className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
                     >
                       Confirm
