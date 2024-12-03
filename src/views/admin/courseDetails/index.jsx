@@ -11,12 +11,10 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentSubject, setCurrentSubject] = useState(null);
-  // Use useState for managing form inputs
   const [formData, setFormData] = useState({
     name: "",
     code: "",
   });
-
   const { id } = useParams();
 
   useEffect(() => {

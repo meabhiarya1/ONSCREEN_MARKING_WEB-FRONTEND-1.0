@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { decode, isMultiPage, pageCount } from "tiff";
+import { decode } from "tiff";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import { toast } from "react-toastify";
@@ -20,7 +20,6 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [fileName, setFileName] = useState();
   const [loading, setLoading] = useState(false);
-  const { id } = useParams(); // Get subjectId from params
   const navigate = useNavigate();
 
   // Fetch schemas on component mount
@@ -87,6 +86,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
 
   const handleFileUpload = async () => {
     if (!selectedFile) {
+      toast.error("Please select a valid file before uploading.")
       setErrorMessage("Please select a valid file before uploading.");
       return;
     }

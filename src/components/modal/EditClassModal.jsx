@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { GiCrossMark } from "react-icons/gi";
 
 const EditClassModal = ({
   isEditOpen,
@@ -28,6 +29,17 @@ const EditClassModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData) {
+      toast.warning("All the fields are required.")
+      return;
+    }
+
+    if (!formData.className || !formData.classCode || !formData.duration || !formData.session || !formData.year) {
+      toast.warning("All the fields are required.")
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
@@ -48,13 +60,12 @@ const EditClassModal = ({
         return class_;
       });
       setClasses(updatedClasses);
-
+      setEditIsOpen(false);
       toast.success("Class updated successfully");
       setEditIsOpen(false);
     } catch (error) {
-      console.log(error)
+      toast.error(error?.response?.data?.error)
     }
-    setEditIsOpen(false);
   };
 
   return (
@@ -63,14 +74,14 @@ const EditClassModal = ({
         <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 transition-opacity duration-300">
           <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
             <button
-              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="absolute right-2 top-2 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
               onClick={() => setEditIsOpen(false)}
             >
-              ✖
+              <GiCrossMark />
             </button>
 
             {/* Modal Content */}
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4 p-4" onSubmit={handleSubmit}>
               <label
                 htmlFor="class"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
@@ -100,46 +111,48 @@ const EditClassModal = ({
                   name="classCode"
                   placeholder="Enter Class code"
                   className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.classCode || ""} // Use formData instead of currentCourse
+                  value={formData.classCode || ""}
                   onChange={handleChange}
                 />
               </label>
 
-              <label
-                htmlFor="duration"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
-              >
-                <span className="text-xs font-medium text-gray-700">
-                  Duration
-                </span>
-                <input
-                  type="text"
-                  id="duration"
-                  name="duration"
-                  placeholder="Enter duration"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.duration || ""} // Use formData instead of currentCourse
-                  onChange={handleChange}
-                />
-              </label>
+              <div className="flex  justify-between gap-4">
+                <label
+                  htmlFor="duration"
+                  className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                >
+                  <span className="text-xs font-medium text-gray-700">
+                    Duration
+                  </span>
+                  <input
+                    type="text"
+                    id="duration"
+                    name="duration"
+                    placeholder="Enter duration"
+                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                    value={formData.duration || ""}
+                    onChange={handleChange}
+                  />
+                </label>
 
-              <label
-                htmlFor="session"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
-              >
-                <span className="text-xs font-medium text-gray-700">
-                  Session
-                </span>
-                <input
-                  type="text"
-                  id="session"
-                  name="session"
-                  placeholder="Enter session"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.session || ""} // Use formData instead of currentCourse
-                  onChange={handleChange}
-                />
-              </label>
+                <label
+                  htmlFor="session"
+                  className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                >
+                  <span className="text-xs font-medium text-gray-700">
+                    Session
+                  </span>
+                  <input
+                    type="text"
+                    id="session"
+                    name="session"
+                    placeholder="Enter session"
+                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                    value={formData.session || ""} // Use formData instead of currentCourse
+                    onChange={handleChange}
+                  />
+                </label>
+              </div>
 
               <label
                 htmlFor="year"

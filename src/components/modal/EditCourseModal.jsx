@@ -60,57 +60,53 @@ const EditCourseModal = ({
   return (
     <div>
       {isEditOpen && (
-        <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 transition-opacity duration-300">
-          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300">
+          <div className="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl transform transition-all duration-500 scale-95 sm:scale-100">
             <button
-              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none transition-colors duration-300"
               onClick={() => setIsEditOpen(false)}
             >
               ✖
             </button>
 
             {/* Modal Content */}
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <label
                 htmlFor="name"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                className="block text-sm font-medium text-gray-700"
               >
-                <span className="text-xs font-medium text-gray-700">
-                  Course
-                </span>
-                <input
-                  type="text"
-                  id="name"
-                  name="name" // Bind name to the formData key
-                  placeholder="Enter Course Name"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
+                Course Name
               </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter Course Name"
+                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={formData.name}
+                onChange={handleChange}
+              />
 
               <label
                 htmlFor="code"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                className="block text-sm font-medium text-gray-700"
               >
-                <span className="text-xs font-medium text-gray-700">
-                  Subject / Course Code
-                </span>
-                <input
-                  type="text"
-                  id="code"
-                  name="code" // Bind code to the formData key
-                  placeholder="Enter Subject / Course Code"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
-                  value={formData.code}
-                  onChange={handleChange}
-                />
+                Subject / Course Code
               </label>
+              <input
+                type="text"
+                id="code"
+                name="code"
+                placeholder="Enter Subject / Course Code"
+                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={formData.code}
+                onChange={handleChange}
+              />
 
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
+                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Submit
               </button>
