@@ -66,7 +66,7 @@ const CreateSchemaStructure = () => {
         name: `Q. ${i}`,
         children: [],
         showInputs: false,
-        isSubQuestion: false, // Initialize for each folder
+        isSubQuestion: false,
       });
     }
     return folders;
@@ -93,42 +93,42 @@ const CreateSchemaStructure = () => {
 
   const handleSubQuestionsChange = async (folder, count) => {
     const folderId = folder.id;
-  
-    if (savingStatus[folderId]) return; // Prevent duplicate save for this folder
-  
+
+    if (savingStatus[folderId]) return;
+
     const numSubQuestions = parseInt(count) || 0;
-  
+
     const minMarks = formRefs.current[`${folderId}-minMarks`]?.value;
     const maxMarks = formRefs.current[`${folderId}-maxMarks`]?.value;
     const bonusMarks = formRefs.current[`${folderId}-bonusMarks`]?.value;
     const marksDifference =
       formRefs.current[`${folderId}-marksDifference`]?.value;
-  
+
     if (!minMarks || !maxMarks || !bonusMarks || !marksDifference) {
       toast.error("Please fill all the required fields");
       return;
     }
-  
+
     let numberOfSubQuestions = 0;
     let compulsorySubQuestions = 0;
-  
+
     if (folder.isSubQuestion) {
       numberOfSubQuestions =
         formRefs.current[`${folderId}-numberOfSubQuestions`]?.value || 0;
       compulsorySubQuestions =
         formRefs.current[`${folderId}-compulsorySubQuestions`]?.value || 0;
-  
+
       if (!numberOfSubQuestions || !compulsorySubQuestions) {
         toast.error("Please fill all sub-question related fields");
         return;
       }
     }
-  
+
     const updatedQuestionData = {
       ...questionData,
       schemaId: id,
       questionsName: folderId,
-      isSubQuestion: folder.isSubQuestion, // Use folder-specific state
+      isSubQuestion: folder.isSubQuestion,
       minMarks,
       maxMarks,
       bonusMarks,
@@ -136,10 +136,12 @@ const CreateSchemaStructure = () => {
       numberOfSubQuestions: parseInt(numberOfSubQuestions),
       compulsorySubQuestions: parseInt(compulsorySubQuestions),
     };
-  
+
+ 
+
     setQuestionData(updatedQuestionData);
-    setSavingStatus((prev) => ({ ...prev, [folderId]: true })); // Set saving for this folder
-  
+    setSavingStatus((prev) => ({ ...prev, [folderId]: true }));
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/schemas/create/questiondefinition`,
@@ -151,12 +153,11 @@ const CreateSchemaStructure = () => {
         }
       );
       toast.success(response.data.message);
-  
-      // Dynamically create sub-questions after saving
-      const updatedFolders = (folders) =>
-        folders.map((item) => {
+
+      const updatedFolders = (folders) => {
+        return folders.map((item) => {
           if (item.id === folderId) {
-            const children = Array.from({ length: numSubQuestions }, (_, i) => ({
+            const children = Array.from({ length: numberOfSubQuestions }, (_, i) => ({
               id: `${folderId}-${i + 1}`,
               name: `Q. ${folderId}.${i + 1}`,
               children: [],
@@ -164,13 +165,16 @@ const CreateSchemaStructure = () => {
             }));
             return { ...item, children };
           }
-          if (item.children.length > 0) {
+          if (item.children && item.children.length > 0) {
             return { ...item, children: updatedFolders(item.children) };
           }
-          return item;
+          return item; // No changes for items that do not match
         });
-  
+      };
+
+      // Update state
       setFolders((prevFolders) => updatedFolders(prevFolders));
+
     } catch (error) {
       console.error("Error creating questions:", error);
       toast.error("Failed to save the question data.");
@@ -178,7 +182,9 @@ const CreateSchemaStructure = () => {
       setSavingStatus((prev) => ({ ...prev, [folderId]: false }));
     }
   };
-  
+
+
+  console.log(folders)
 
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
@@ -194,9 +200,8 @@ const CreateSchemaStructure = () => {
         {/* Curved Vertical Line */}
         {level > 0 && (
           <div
-            className={`absolute left-[-16px] top-[-16px] ${
-              isLastChild ? "h-1/2" : "h-full"
-            } w-[2px] rounded-[12px] border-l-2 border-[#8a8a8a] bg-gradient-to-b from-gray-400 to-gray-500`}
+            className={`absolute left-[-16px] top-[-16px] ${isLastChild ? "h-1/2" : "h-full"
+              } w-[2px] rounded-[12px] border-l-2 border-[#8a8a8a] bg-gradient-to-b from-gray-400 to-gray-500`}
           ></div>
         )}
 
@@ -280,8 +285,8 @@ const CreateSchemaStructure = () => {
                 </label>
                 <input
                   ref={(el) =>
-                    (formRefs.current[`${folder.id}-compulsorySubQuestions`] =
-                      el)
+                  (formRefs.current[`${folder.id}-compulsorySubQuestions`] =
+                    el)
                   }
                   type="text"
                   className="ml-2 w-12 rounded border px-2 py-1 text-sm"
