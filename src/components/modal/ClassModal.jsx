@@ -25,13 +25,13 @@ const ClassModal = ({
               className="absolute right-2 top-2 p-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none "
               onClick={() => {
                 setIsOpen(false)
-                setFormData((prev) => ({
-                  ...prev, className: "",
+                setFormData({
+                  className: "",
                   classCode: "",
                   duration: "",
                   session: "",
                   year: "",
-                }))
+                })
               }}
             >
               <GiCrossMark />

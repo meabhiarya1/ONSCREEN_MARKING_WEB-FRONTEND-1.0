@@ -43,6 +43,9 @@ const Index = () => {
       return;
     }
 
+
+    console.log(formData)
+
     if (!formData.className || !formData.classCode || !formData.duration || !formData.session || !formData.year) {
       toast.warning("All the fields are required.")
       return;
@@ -68,13 +71,13 @@ const Index = () => {
       toast.error(error.response.data.error);
     }
     finally {
-      setFormData((prev) => ({
-        ...prev, className: "",
+      setFormData({
+        className: "",
         classCode: "",
         duration: "",
         session: "",
         year: "",
-      }))
+      })
     }
   };
 

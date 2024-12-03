@@ -4,16 +4,12 @@ const CardClasses = ({ class_, setEditIsOpen, setCurrentClass, setClassId,
   setConfirmationModal }) => {
   const navigate = useNavigate();
 
-  
+
 
   return (
     <div>
       <article className="mt-8 cursor-pointer overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-        <img
-          alt=""
-          src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
-          className="h-56 w-full object-cover"
-        />
+
         <div className="bg-white p-4 sm:p-6">
           <div>
             <h3 className="mt-0.5 text-lg font-bold text-gray-900">

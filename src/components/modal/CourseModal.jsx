@@ -28,13 +28,13 @@ const CourseModal = ({
               className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
               onClick={() => {
                 setIsOpen(false)
-                setFormData((prev) => ({
-                  ...prev, className: "",
+                setFormData({
+                  className: "",
                   classCode: "",
                   duration: "",
                   session: "",
                   year: "",
-                }))
+                })
               }
               }
             >
