@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { decode } from "tiff";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import { toast } from "react-toastify";
 import MoonLoader from "react-spinners/MoonLoader";
+import { GiCrossMark } from "react-icons/gi";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -190,10 +191,10 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
       <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
         {/* Close button */}
         <button
-          className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+          className="absolute right-2 top-2 text-2xl p-2 font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-gray-100"
           onClick={() => setShowModal(false)}
         >
-          &times;
+         <GiCrossMark />
         </button>
 
         {/* Modal content */}
