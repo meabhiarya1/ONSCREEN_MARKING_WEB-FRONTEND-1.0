@@ -186,17 +186,19 @@ const ImageContainer = () => {
       alt="icon"
     />
   ));
-  const ZoomModal = IconsData.map((item, index) => (
-    <img
-      key={index}
-      onClick={() => handleIconClick(item.imgUrl)}
-      src={item.imgUrl}
-      width={100}
-      height={100}
-      className="md h-[60px] w-full cursor-pointer rounded p-2 shadow hover:bg-white"
-      alt="icon"
-    />
-  ));
+  const handleZoomValueClick = () => {};
+  const ZoomModal = Array.from({ length: 12 }, (_, index) => {
+    const zoomValue = 40 + index * 10;
+    return (
+      <li
+        key={index}
+        onClick={() => handleZoomValueClick(zoomValue)}
+        className="hover:bg-gray-300 "
+      >
+        {zoomValue}%
+      </li>
+    );
+  });
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
@@ -214,9 +216,9 @@ const ImageContainer = () => {
                 <IoIosArrowDown />
               </span>
             </button>
-            {iconModal && (
-              <div className="absolute z-10 mt-54   h-[200px] w-[80px] border-spacing-1 border bg-gray-50 p-2 shadow-md ">
-                {IconModal}
+            {isZoomMenuOpen && (
+              <div className=" absolute z-10  h-[200px] w-[65px] border-spacing-1 cursor-pointer overflow-auto border bg-gray-50 p-2 shadow-md ">
+                <ul>{ZoomModal}</ul>
               </div>
             )}
           </div>
@@ -318,6 +320,9 @@ const ImageContainer = () => {
             transformOrigin: "top left",
             transition: "transform 0.2s ease-in-out",
             maxWidth: "none",
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
           }}
         >
           <img
