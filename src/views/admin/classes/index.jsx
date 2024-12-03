@@ -34,6 +34,17 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData) {
+      toast.warning("All the fields are required.")
+      return;
+    }
+
+    if (!formData.className || !formData.classCode || !formData.duration || !formData.session || !formData.year) {
+      toast.warning("All the fields are required.")
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -46,14 +57,14 @@ const Index = () => {
         }
       );
 
-      // Add the new course to the courses state
       setClasses((prevClasses) => [response.data, ...prevClasses]);
-
       toast.success("Class added successfully.");
+      setIsOpen(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error)
+
+      toast.error(error.response.data.error);
     }
-    setIsOpen(false);
   };
 
   const handleDelete = async (id) => {
@@ -77,9 +88,9 @@ const Index = () => {
   return (
     <div>
       <div
-        className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded 
+        className="hover:bg-indigo-700  mt-12 inline-block cursor-pointer rounded 
         border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm 
-        font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+        font-medium text-white hover:text-white-600 focus:outline-none focus:ring active:text-white-500"
         onClick={() => setIsOpen(true)}
       >
         Create More Class
@@ -115,7 +126,11 @@ const Index = () => {
             />
           ))
         ) : (
-          <p>No courses available</p>
+          <div className="flex flex-col items-center justify-center col-span-full mt-12">
+            <p className="text-gray-700 text-lg font-semibold">
+              No classes available. Create one to get started!
+            </p>
+          </div>
         )}
       </div>
     </div>

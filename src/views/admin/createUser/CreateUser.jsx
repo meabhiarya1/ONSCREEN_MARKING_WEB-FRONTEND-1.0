@@ -237,7 +237,6 @@ const CreateUser = () => {
                       </label>
                     </div>
                   ))}
-
                 </div>
               </div>
 

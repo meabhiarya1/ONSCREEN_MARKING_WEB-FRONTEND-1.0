@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { VscChromeClose } from "react-icons/vsc";
 
@@ -107,19 +107,6 @@ const Index = () => {
               <h3 className="text-lg font-bold text-gray-700">
                 Evaluation View
               </h3>
-              {/* <div className="mt-2 flex w-full justify-evenly  text-center">
-                <div className="border-sky-500 rounded-md border p-2 text-lg font-bold text-gray-700">
-                  Ques
-                </div>
-
-                <div className="border-sky-500 rounded-md border p-2 text-lg font-bold text-gray-700">
-                  Max
-                </div>
-
-                <div className="border-sky-500 rounded-md border p-2 text-lg font-bold text-gray-700">
-                  Marks
-                </div>
-              </div> */}
             </div>
           </div>
 
