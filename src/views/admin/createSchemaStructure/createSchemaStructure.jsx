@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const CreateSchemaStructure = () => { 
+const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
   const [savedQuestionData, setSavedQuestionData] = useState([]);
   const [folders, setFolders] = useState([]);
@@ -58,8 +58,6 @@ const CreateSchemaStructure = () => {
     fetchedData();
   }, []);
 
-  console.log(savedQuestionData?.data || []);
-
   const generateFolders = (count) => {
     const folders = [];
     for (let i = 1; i <= count; i++) {
@@ -95,35 +93,37 @@ const CreateSchemaStructure = () => {
 
   const handleSubQuestionsChange = async (folder, count) => {
     const folderId = folder.id;
+  
     if (savingStatus[folderId]) return; // Prevent duplicate save for this folder
+  
     const numSubQuestions = parseInt(count) || 0;
-
+  
     const minMarks = formRefs.current[`${folderId}-minMarks`]?.value;
     const maxMarks = formRefs.current[`${folderId}-maxMarks`]?.value;
     const bonusMarks = formRefs.current[`${folderId}-bonusMarks`]?.value;
     const marksDifference =
       formRefs.current[`${folderId}-marksDifference`]?.value;
-
+  
     if (!minMarks || !maxMarks || !bonusMarks || !marksDifference) {
       toast.error("Please fill all the required fields");
       return;
     }
-
+  
     let numberOfSubQuestions = 0;
     let compulsorySubQuestions = 0;
-
+  
     if (folder.isSubQuestion) {
       numberOfSubQuestions =
         formRefs.current[`${folderId}-numberOfSubQuestions`]?.value || 0;
       compulsorySubQuestions =
         formRefs.current[`${folderId}-compulsorySubQuestions`]?.value || 0;
-
+  
       if (!numberOfSubQuestions || !compulsorySubQuestions) {
         toast.error("Please fill all sub-question related fields");
         return;
       }
     }
-
+  
     const updatedQuestionData = {
       ...questionData,
       schemaId: id,
@@ -136,11 +136,10 @@ const CreateSchemaStructure = () => {
       numberOfSubQuestions: parseInt(numberOfSubQuestions),
       compulsorySubQuestions: parseInt(compulsorySubQuestions),
     };
-
+  
     setQuestionData(updatedQuestionData);
-
     setSavingStatus((prev) => ({ ...prev, [folderId]: true })); // Set saving for this folder
-
+  
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/schemas/create/questiondefinition`,
@@ -152,31 +151,34 @@ const CreateSchemaStructure = () => {
         }
       );
       toast.success(response.data.message);
+  
+      // Dynamically create sub-questions after saving
+      const updatedFolders = (folders) =>
+        folders.map((item) => {
+          if (item.id === folderId) {
+            const children = Array.from({ length: numSubQuestions }, (_, i) => ({
+              id: `${folderId}-${i + 1}`,
+              name: `Q. ${folderId}.${i + 1}`,
+              children: [],
+              showInputs: false,
+            }));
+            return { ...item, children };
+          }
+          if (item.children.length > 0) {
+            return { ...item, children: updatedFolders(item.children) };
+          }
+          return item;
+        });
+  
+      setFolders((prevFolders) => updatedFolders(prevFolders));
     } catch (error) {
       console.error("Error creating questions:", error);
+      toast.error("Failed to save the question data.");
     } finally {
-      setSavingStatus((prev) => ({ ...prev, [folderId]: false })); // Reset saving for this folder
+      setSavingStatus((prev) => ({ ...prev, [folderId]: false }));
     }
-
-    const updateFolders = (folders) =>
-      folders.map((folder) => {
-        if (folder.id === folderId) {
-          const children = Array.from({ length: numSubQuestions }, (_, i) => ({
-            id: `${folderId}-${i + 1}`,
-            name: `Q. ${folderId}.${i + 1}`,
-            children: [],
-            showInputs: false,
-          }));
-          return { ...folder, children };
-        }
-        if (folder.children.length > 0) {
-          return { ...folder, children: updateFolders(folder.children) };
-        }
-        return folder;
-      });
-
-    setFolders((prevFolders) => updateFolders(prevFolders));
   };
+  
 
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
