@@ -18,7 +18,6 @@ export default function Evaluator(props) {
   }, []);
 
 
-
   React.useEffect(() => {
     getActiveRoute(routes);
   }, [location.pathname]);
@@ -60,6 +59,8 @@ export default function Evaluator(props) {
   };
 
   document.documentElement.dir = "ltr";
+
+
   return (
     <div className="flex h-full w-full">
       <Sidebar open={open} onClose={() => setOpen(false)} />

@@ -11,7 +11,6 @@ import QuestionSection from "components/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
-import MyComponent from "components/Pdftron";
 import { setIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
