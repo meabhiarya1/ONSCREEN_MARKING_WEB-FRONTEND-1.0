@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import { GiCrossMark } from "react-icons/gi";
 import { toast } from "react-toastify";
 
 const EditCourseModal = ({
@@ -63,10 +64,16 @@ const EditCourseModal = ({
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300">
           <div className="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl transform transition-all duration-500 scale-95 sm:scale-100">
             <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none transition-colors duration-300"
-              onClick={() => setIsEditOpen(false)}
+              className="absolute top-4 right-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none transition-colors duration-300"
+              onClick={() => {
+                setIsEditOpen(false)
+                setFormData({
+                  name: "",
+                  code: "",
+                })
+              }}
             >
-              ✖
+              <GiCrossMark />
             </button>
 
             {/* Modal Content */}

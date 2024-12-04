@@ -4,6 +4,7 @@ import CourseModal from "components/modal/CourseModal";
 import EditCourseModal from "components/modal/EditCourseModal";
 import { toast } from "react-toastify";
 import axios from "axios";
+import ConfirmationModal from "components/modal/ConfirmationModal";
 import { useParams } from "react-router-dom";
 
 const Index = () => {
@@ -11,6 +12,8 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentSubject, setCurrentSubject] = useState(null);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [subjectId, setSubjectId] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     code: "",
@@ -73,23 +76,28 @@ const Index = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/subjects/remove/subject/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/subjects/remove/subject/${subjectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setSubjects(subjects.filter((subject) => subject._id !== id));
+      setSubjects(subjects.filter((subject) => subject._id !== subjectId));
       toast.success(response.data.message);
+      setConfirmationModal(false)
     } catch (error) {
       console.log(error);
     }
+    finally {
+      setSubjectId("")
+    }
   };
+
 
   return (
     <div>
@@ -124,7 +132,8 @@ const Index = () => {
             <CourseCard
               key={subject._id}
               subject={subject}
-              handleDelete={handleDelete}
+              setConfirmationModal={setConfirmationModal}
+              setSubjectId={setSubjectId}
               setIsEditOpen={setIsEditOpen}
               setCurrentSubject={setCurrentSubject}
             />
@@ -137,6 +146,16 @@ const Index = () => {
           </div>
         )}
       </div>
+
+      <ConfirmationModal
+        confirmationModal={confirmationModal}
+        onSubmitHandler={handleDelete}
+        setConfirmationModal={setConfirmationModal}
+        setId={setSubjectId}
+        heading="Confirm subject Removal"
+        message="Are you sure you want to remove this subject? Please note that removing this subject will also permanently delete all associated schemas and data. This action cannot be undone."
+        type="error" // Options: 'success', 'warning', 'error'
+      />
     </div>
   );
 };
