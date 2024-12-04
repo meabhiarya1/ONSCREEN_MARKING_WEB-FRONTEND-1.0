@@ -7,7 +7,7 @@ const ProfileOverview = () => {
   const [userData, setUserData] = useState(null);
   const token =
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,37 +27,30 @@ const ProfileOverview = () => {
   }, [token, navigate]);
 
   return (
-    <div className="mt-12 flex h-[50vh] w-full items-center justify-center">
-      <div className="relative block overflow-hidden rounded-lg border border-gray-100 p-4 sm:p-6 lg:p-8">
-        <span className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-blue-500 to-purple-600"></span>
-
-        <div className="sm:flex sm:justify-between sm:gap-4 ">
-          <div className="my-8 text-center sm:text-left">
-            <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
-              Building a SaaS product as a software developer
-            </h3>
-
-            <p className=" mt-4 text-lg font-medium text-gray-600">
-              By {userData?.name}
-            </p>
-            <p className="mt-1 text-lg font-medium text-gray-600">
-              Email: {userData?.email}
-            </p>
-            <p className="mt-1 text-lg font-medium text-gray-600">
-              Mobile: {userData?.mobile}
-            </p>
-            <p className="mt-1 text-lg font-medium text-gray-600">
-              Role: {userData?.role}
-            </p>
+    <div className="mt-12 flex h-[60vh] w-full items-center justify-center bg-gray-50">
+      <div className="relative block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-8 sm:p-10 lg:p-12">
+        <span className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600"></span>
+        <div className="flex flex-col items-center sm:flex-row sm:gap-8 sm:items-start">
+          {/* Profile Picture */}
+          <div className="relative flex h-24 w-24 sm:h-32 sm:w-32 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-purple-500 shadow-md">
+            <span className="text-xl font-bold text-white">Profile</span>
           </div>
+          {/* User Details */}
+          <div className="mt-6 sm:mt-0 text-center sm:text-left">
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+              {userData?.name || "N/A"}
+            </h2>
+            <p className="text-lg text-gray-600 mt-2">Role: {userData?.role || "N/A"}</p>
 
-          {/* Image */}
-          <div className="hidden sm:block sm:shrink-0">
-            <img
-              alt=""
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80"
-              className="size-32 rounded-lg object-cover shadow-sm md:size-64"
-            />
+            <div className="mt-4 space-y-2 text-base text-gray-700">
+              <p>
+                <span className="font-semibold text-gray-900">Email:</span> {userData?.email || "N/A"}
+              </p>
+              <p>
+                <span className="font-semibold text-gray-900">Mobile:</span> {userData?.mobile || "N/A"}
+              </p>
+            </div>
+
           </div>
         </div>
       </div>
