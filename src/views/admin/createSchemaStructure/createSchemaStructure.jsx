@@ -91,12 +91,11 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  const handleSubQuestionsChange = async (folder, count) => {
+  const handleSubQuestionsChange = async (folder) => {
     const folderId = folder.id;
 
     if (savingStatus[folderId]) return;
 
-    const numSubQuestions = parseInt(count) || 0;
 
     const minMarks = formRefs.current[`${folderId}-minMarks`]?.value;
     const maxMarks = formRefs.current[`${folderId}-maxMarks`]?.value;
@@ -137,7 +136,7 @@ const CreateSchemaStructure = () => {
       compulsorySubQuestions: parseInt(compulsorySubQuestions),
     };
 
- 
+
 
     setQuestionData(updatedQuestionData);
     setSavingStatus((prev) => ({ ...prev, [folderId]: true }));
@@ -259,7 +258,7 @@ const CreateSchemaStructure = () => {
               className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
               disabled={isSaving}
               onClick={() =>
-                handleSubQuestionsChange(folder, countRef.current?.value)
+                handleSubQuestionsChange(folder)
               }
             >
               {isSaving ? "Saving..." : "Save"}

@@ -13,15 +13,19 @@ const App = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+
   useEffect(() => {
     if (!token) {
       navigate("/auth/sign-in");
     }
   }, [token, navigate]);
 
+
+
   useEffect(() => {
     dispatch(rehydrateToken());
   }, [dispatch]);
+
 
   return (
     <Routes>
