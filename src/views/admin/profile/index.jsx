@@ -26,6 +26,8 @@ const ProfileOverview = () => {
     fetchData();
   }, [token, navigate]);
 
+  
+
   return (
     <div className="mt-12 flex h-[60vh] w-full items-center justify-center bg-gray-50">
       <div className="relative block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-8 sm:p-10 lg:p-12">

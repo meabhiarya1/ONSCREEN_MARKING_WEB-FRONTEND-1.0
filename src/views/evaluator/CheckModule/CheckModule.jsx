@@ -28,9 +28,14 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
+
+
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
+
+
+  
   const Imgicons = icons.map((icon, index) => {
     const active =
       index + 1 === evaluatorState.currentIndex
