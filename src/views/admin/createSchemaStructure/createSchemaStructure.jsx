@@ -14,6 +14,7 @@ const CreateSchemaStructure = () => {
   const [isSubQuestion, setIsSubQuestion] = useState(false); // Track if it's a sub-question
   const [questionData, setQuestionData] = useState({}); // Store question data
   const [savingStatus, setSavingStatus] = useState({}); // Track saving per folder
+  const [parentId, setParentId] = useState(null); // Track parent folder
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -49,14 +50,15 @@ const CreateSchemaStructure = () => {
             },
           }
         );
-        const data = response?.data;
+        const data = response?.data || []; // Fallback to an empty array if no data
         setSavedQuestionData(data);
       } catch (error) {
         console.error("Error fetching schema data:", error);
+        setSavedQuestionData([]); // Reset to an empty array on error
       }
     };
     fetchedData();
-  }, []);
+  }, [id, token]);
 
   const generateFolders = (count) => {
     const folders = [];
@@ -96,11 +98,11 @@ const CreateSchemaStructure = () => {
 
     if (savingStatus[folderId]) return;
 
-    const numSubQuestions = parseInt(count) || 0;
+    // const numSubQuestions = parseInt(count) || 0;
 
-    const minMarks = formRefs.current[`${folderId}-minMarks`]?.value;
-    const maxMarks = formRefs.current[`${folderId}-maxMarks`]?.value;
-    const bonusMarks = formRefs.current[`${folderId}-bonusMarks`]?.value;
+    const minMarks = formRefs?.current[`${folderId}-minMarks`]?.value;
+    const maxMarks = formRefs?.current[`${folderId}-maxMarks`]?.value;
+    const bonusMarks = formRefs?.current[`${folderId}-bonusMarks`]?.value;
     const marksDifference =
       formRefs.current[`${folderId}-marksDifference`]?.value;
 
@@ -125,7 +127,7 @@ const CreateSchemaStructure = () => {
     }
 
     const updatedQuestionData = {
-      ...questionData,
+      // ...questionData,
       schemaId: id,
       questionsName: folderId,
       isSubQuestion: folder.isSubQuestion,
@@ -135,11 +137,10 @@ const CreateSchemaStructure = () => {
       marksDifference,
       numberOfSubQuestions: parseInt(numberOfSubQuestions),
       compulsorySubQuestions: parseInt(compulsorySubQuestions),
+      parentQuestionId: parentId,
     };
 
- 
-
-    setQuestionData(updatedQuestionData);
+    // setQuestionData(updatedQuestionData);
     setSavingStatus((prev) => ({ ...prev, [folderId]: true }));
 
     try {
@@ -152,17 +153,24 @@ const CreateSchemaStructure = () => {
           },
         }
       );
-      toast.success(response.data.message);
+      toast.success(response?.data?.message);
+
+      // if (folder.isSubQuestion) {
+      //   setParentId(response?.data?.data?._id);
+      // }
 
       const updatedFolders = (folders) => {
         return folders.map((item) => {
           if (item.id === folderId) {
-            const children = Array.from({ length: numberOfSubQuestions }, (_, i) => ({
-              id: `${folderId}-${i + 1}`,
-              name: `Q. ${folderId}.${i + 1}`,
-              children: [],
-              showInputs: false,
-            }));
+            const children = Array.from(
+              { length: numberOfSubQuestions },
+              (_, i) => ({
+                id: `${folderId}-${i + 1}`,
+                name: `Q. ${folderId}.${i + 1}`,
+                children: [],
+                showInputs: false,
+              })
+            );
             return { ...item, children };
           }
           if (item.children && item.children.length > 0) {
@@ -174,7 +182,6 @@ const CreateSchemaStructure = () => {
 
       // Update state
       setFolders((prevFolders) => updatedFolders(prevFolders));
-
     } catch (error) {
       console.error("Error creating questions:", error);
       toast.error("Failed to save the question data.");
@@ -183,75 +190,111 @@ const CreateSchemaStructure = () => {
     }
   };
 
-
-  console.log(folders)
-
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
     const isSaving = savingStatus[folderId] || false; // Check saving status for this folder
     const folderStyle = `relative ml-${level * 4} mt-3`;
     const color = level % 2 === 0 ? "bg-[#f4f4f4]" : "bg-[#fafafa]";
 
+    const handleMarkChange = (inputBoxName, inputValue) => {
+      // console.log(inputBoxName, inputValue);
+      // console.log(formRefs.current[inputBoxName]);
+      formRefs.current[inputBoxName] = inputValue;
+    };
+
     return (
       <div
         className={`${folderStyle} p-4 ${color} rounded shadow`}
         key={folder.id}
       >
-        {/* Curved Vertical Line */}
         {level > 0 && (
           <div
-            className={`absolute left-[-16px] top-[-16px] ${isLastChild ? "h-1/2" : "h-full"
-              } w-[2px] rounded-[12px] border-l-2 border-[#8a8a8a] bg-gradient-to-b from-gray-400 to-gray-500`}
+            className={`absolute left-[-16px] top-[-16px] ${
+              isLastChild ? "h-1/2" : "h-full"
+            } w-[2px] rounded-[12px] border-l-2 border-[#8a8a8a] bg-gradient-to-b from-gray-400 to-gray-500`}
           ></div>
         )}
-
-        {/* Horizontal Connector */}
         {level > 0 && (
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
-
-        {/* Folder Header */}
         <div className="w-full flex-col gap-2">
           <div className="flex items-center gap-4">
             <span className="text-black-500 font-semibold">
-              📁 {folder.name}
+              📁 {folder?.name}
             </span>
-
-            {/* Marks Input Fields */}
             <input
-              ref={(el) => (formRefs.current[`${folder.id}-minMarks`] = el)}
+              onChange={(e) => {
+                handleMarkChange(`${folder.id}-minMarks`, e.target.value);
+              }}
               type="text"
               placeholder="Min"
+              defaultValue={
+                savedQuestionData?.data?.length > 0 &&
+                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
+                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                  : undefined
+              }
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
             />
             <input
-              ref={(el) => (formRefs.current[`${folder.id}-maxMarks`] = el)}
+              onChange={(e) => {
+                handleMarkChange(`${folder.id}-maxMarks`, e.target.value);
+              }}
               type="text"
               placeholder="Max"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+              defaultValue={
+                savedQuestionData?.data?.length > 0 &&
+                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
+                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                  : ""
+              }
             />
             <input
-              ref={(el) => (formRefs.current[`${folder.id}-bonusMarks`] = el)}
+              onChange={(e) => {
+                handleMarkChange(`${folder.id}-bonusMarks`, e.target.value);
+              }}
               type="text"
               placeholder="Bonus"
               className="ml-2 w-14 rounded border px-2 py-1 text-sm"
+              defaultValue={
+                savedQuestionData?.data?.length > 0 &&
+                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
+                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                  : ""
+              }
             />
             <input
-              ref={(el) =>
-                (formRefs.current[`${folder.id}-marksDifference`] = el)
-              }
+              onChange={(e) => {
+                handleMarkChange(
+                  `${folder.id}-marksDifference`,
+                  e.target.value
+                );
+              }}
               type="text"
               placeholder="Marks Difference"
+              defaultValue={
+                savedQuestionData?.data?.length > 0 &&
+                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
+                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                  : ""
+              }
               className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
             />
             <input
               type="checkbox"
               className="ml-2 cursor-pointer"
+              defaultChecked={
+                (savedQuestionData?.data?.length > 0 &&
+                  savedQuestionData.data[folderId - 1]?.isSubQuestion) ||
+                false
+              }
               onChange={() => {
-                toggleInputsVisibility(folder.id);
+                toggleInputsVisibility(folder?.id);
                 setIsSubQuestion((prev) => !prev);
               }}
             />
+
             <label className="text-sm font-medium text-gray-700">
               Sub Questions
             </label>
@@ -259,7 +302,7 @@ const CreateSchemaStructure = () => {
               className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
               disabled={isSaving}
               onClick={() =>
-                handleSubQuestionsChange(folder, countRef.current?.value)
+                handleSubQuestionsChange(folder, countRef?.current?.value)
               }
             >
               {isSaving ? "Saving..." : "Save"}
@@ -267,38 +310,50 @@ const CreateSchemaStructure = () => {
           </div>
 
           {/* Sub Questions Input Fields */}
-          <div className="ml-12 mt-4 flex items-center gap-4">
-            {folder.showInputs && (
-              <>
-                <label className="ml-2 text-sm text-gray-700">
-                  No. of Sub-Questions:
-                </label>
-                <input
-                  ref={(el) =>
-                    (formRefs.current[`${folder.id}-numberOfSubQuestions`] = el)
-                  }
-                  type="text"
-                  className="w-12 rounded border px-3 py-1 text-sm"
-                />
-                <label className="ml-2 text-sm text-gray-700 ">
-                  No. of compulsory questions
-                </label>
-                <input
-                  ref={(el) =>
-                  (formRefs.current[`${folder.id}-compulsorySubQuestions`] =
+          {folder.showInputs && (
+            <div className="ml-12 mt-4 flex items-center gap-4">
+              <label className="ml-2 text-sm text-gray-700">
+                No. of Sub-Questions:
+              </label>
+              <input
+                ref={(el) =>
+                  (formRefs.current[`${folder?.id}-numberOfSubQuestions`] = el)
+                }
+                type="text"
+                className="w-12 rounded border px-3 py-1 text-sm"
+                defaultValue={
+                  savedQuestionData?.data?.length > 0 &&
+                  savedQuestionData?.data[folderId - 1]?.questionsName ==
+                    folderId
+                    ? savedQuestionData?.data[folderId - 1]?.questionsName
+                    : ""
+                }
+              />
+              <label className="ml-2 text-sm text-gray-700">
+                No. of compulsory questions
+              </label>
+              <input
+                ref={(el) =>
+                  (formRefs.current[`${folder?.id}-compulsorySubQuestions`] =
                     el)
-                  }
-                  type="text"
-                  className="ml-2 w-12 rounded border px-2 py-1 text-sm"
-                />
-              </>
-            )}
-          </div>
+                }
+                type="text"
+                defaultValue={
+                  savedQuestionData?.data?.length > 0 &&
+                  savedQuestionData?.data[folderId - 1]?.questionsName ==
+                    folderId
+                    ? savedQuestionData?.data[folderId - 1]?.questionsName
+                    : ""
+                }
+                className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+              />
+            </div>
+          )}
         </div>
 
         {/* Render children (sub-questions) recursively */}
         {folder.children?.map((child, index) =>
-          renderFolder(child, level + 1, index === folder.children.length - 1)
+          renderFolder(child, level + 1, index === folder?.children?.length - 1)
         )}
       </div>
     );
