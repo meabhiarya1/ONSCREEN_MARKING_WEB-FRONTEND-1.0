@@ -93,25 +93,25 @@ const Navbar = (props) => {
               </div>
               <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
 
-              <div className="flex flex-col p-4">
-                <a
-                  href=" "
-                  className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
+              <div className="flex flex-col p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+                <button
+                  className="px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-200 ease-in-out"
                   onClick={() => navigate("/admin/profile")}
                 >
                   Profile
-                </a>
+                </button>
 
                 <button
                   onClick={() => {
                     dispatch(logout());
                     navigate("/auth/sign-in");
                   }}
-                  className="mt-3 text-sm font-medium text-red-500 transition duration-150 ease-out hover:text-red-500 hover:ease-in"
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors duration-200 ease-in-out"
                 >
                   Log Out
                 </button>
               </div>
+
             </div>
           }
           classNames={"py-2 top-8 -left-[180px] w-max"}

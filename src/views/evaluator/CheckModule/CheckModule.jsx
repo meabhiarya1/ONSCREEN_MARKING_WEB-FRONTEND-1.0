@@ -11,7 +11,6 @@ import QuestionSection from "components/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
-import MyComponent from "components/Pdftron";
 import { setIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
@@ -29,9 +28,14 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
+
+
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
+
+
+  
   const Imgicons = icons.map((icon, index) => {
     const active =
       index + 1 === evaluatorState.currentIndex
@@ -112,6 +116,10 @@ const CheckModule = () => {
   const [loginHours, loginMinutes, loginSeconds] = loginTime
     ? loginTime.split(":")
     : ["--", "--", "--"];
+
+
+
+    
   return (
     <>
       <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gray-700  py-5 text-white">

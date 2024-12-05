@@ -93,7 +93,7 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  const handleSubQuestionsChange = async (folder, count) => {
+  const handleSubQuestionsChange = async (folder) => {
     const folderId = folder.id;
 
     if (savingStatus[folderId]) return;

@@ -83,7 +83,6 @@ export const getAllCourses = async () => {
         },
       }
     );
-    // console.log(response);
     return response.data; // return the full response to handle status outside
   } catch (error) {
     console.error(error);

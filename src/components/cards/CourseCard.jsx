@@ -6,11 +6,12 @@ import SelectSchemaModal from "components/modal/SelectSchemaModal";
 
 const CourseCard = ({
   subject,
-  handleDelete,
+  setConfirmationModal,
+  setSubjectId,
   setIsEditOpen,
   setCurrentSubject,
 }) => {
-  const { id } = useParams(); // Get the id from the URL
+  const { id } = useParams();  
   const [classCourse, setClassCourse] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -94,7 +95,8 @@ const CourseCard = ({
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
             onClick={() => {
-              handleDelete(subject?._id);
+              setSubjectId(subject?._id)
+              setConfirmationModal(true)
             }}
           >
             Delete
