@@ -52,13 +52,17 @@ const CreateSchemaStructure = () => {
         );
         const data = response?.data || []; // Fallback to an empty array if no data
         setSavedQuestionData(data);
+        // toast.success("Question data fetched successfully");
       } catch (error) {
         console.error("Error fetching schema data:", error);
+        toast.error(error.response.data.message);
         setSavedQuestionData([]); // Reset to an empty array on error
       }
     };
     fetchedData();
   }, [id, token]);
+
+  // console.log(savedQuestionData);
 
   const generateFolders = (count) => {
     const folders = [];
@@ -96,29 +100,55 @@ const CreateSchemaStructure = () => {
   const handleSubQuestionsChange = async (folder) => {
     const folderId = folder.id;
 
+    // console.log(formRefs?.current[`${folderId}-minMarks`]);
+
     if (savingStatus[folderId]) return;
 
     // const numSubQuestions = parseInt(count) || 0;
 
-    const minMarks = formRefs?.current[`${folderId}-minMarks`]?.value;
-    const maxMarks = formRefs?.current[`${folderId}-maxMarks`]?.value;
-    const bonusMarks = formRefs?.current[`${folderId}-bonusMarks`]?.value;
+    const currentQuestion = savedQuestionData?.data.filter(
+      (item) => parseInt(item.questionsName) === folderId
+    );
+
+    const minMarks =
+      formRefs?.current[`${folderId}-minMarks`] || currentQuestion[0]?.minMarks;
+    const maxMarks =
+      formRefs?.current[`${folderId}-maxMarks`] || currentQuestion[0]?.maxMarks;
+    const bonusMarks =
+      formRefs?.current[`${folderId}-bonusMarks`] ||
+      currentQuestion[0]?.bonusMarks;
     const marksDifference =
-      formRefs.current[`${folderId}-marksDifference`]?.value;
+      formRefs.current[`${folderId}-marksDifference`] ||
+      currentQuestion[0]?.marksDifference;
+
+    // console.log(minMarks, maxMarks, bonusMarks, marksDifference);
 
     if (!minMarks || !maxMarks || !bonusMarks || !marksDifference) {
       toast.error("Please fill all the required fields");
       return;
     }
 
-    let numberOfSubQuestions = 0;
-    let compulsorySubQuestions = 0;
+    let numberOfSubQuestions = "";
+    let compulsorySubQuestions = "";
 
     if (folder.isSubQuestion) {
-      numberOfSubQuestions =
-        formRefs.current[`${folderId}-numberOfSubQuestions`]?.value || 0;
-      compulsorySubQuestions =
-        formRefs.current[`${folderId}-compulsorySubQuestions`]?.value || 0;
+      //numberOfSubQuestions
+      numberOfSubQuestions += formRefs?.current[
+        `${folderId}-numberOfSubQuestions`
+      ]
+        ? formRefs?.current[`${folderId}-numberOfSubQuestions`]
+        : currentQuestion?.length > 0 || currentQuestion !== undefined
+        ? currentQuestion[0]?.numberOfSubQuestions
+        : "";
+
+      //compulsorySubQuestions
+      compulsorySubQuestions += formRefs?.current[
+        `${folderId}-compulsorySubQuestions`
+      ]
+        ? formRefs?.current[`${folderId}-compulsorySubQuestions`]
+        : currentQuestion?.length > 0 || currentQuestion !== undefined
+        ? currentQuestion[0]?.compulsorySubQuestions
+        : "";
 
       if (!numberOfSubQuestions || !compulsorySubQuestions) {
         toast.error("Please fill all sub-question related fields");
@@ -140,20 +170,39 @@ const CreateSchemaStructure = () => {
       parentQuestionId: parentId,
     };
 
+    // console.log(updatedQuestionData);
+
     // setQuestionData(updatedQuestionData);
     setSavingStatus((prev) => ({ ...prev, [folderId]: true }));
 
+    // console.log(updatedQuestionData)
+
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/schemas/create/questiondefinition`,
-        updatedQuestionData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success(response?.data?.message);
+      if (currentQuestion.length > 0) {
+        console.log("pill");
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/schemas/update/questiondefinition/${currentQuestion[0]?._id}`,
+          updatedQuestionData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success(response?.data?.message);
+      } else {
+        console.log("object");
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/schemas/create/questiondefinition`,
+          updatedQuestionData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success(response?.data?.message);
+      }
 
       // if (folder.isSubQuestion) {
       //   setParentId(response?.data?.data?._id);
@@ -200,7 +249,12 @@ const CreateSchemaStructure = () => {
       // console.log(inputBoxName, inputValue);
       // console.log(formRefs.current[inputBoxName]);
       formRefs.current[inputBoxName] = inputValue;
+      // console.log(formRefs.current);
     };
+
+    const currentQuestion = savedQuestionData?.data?.filter(
+      (item) => parseInt(item.questionsName) === folderId
+    );
 
     return (
       <div
@@ -222,6 +276,9 @@ const CreateSchemaStructure = () => {
             <span className="text-black-500 font-semibold">
               📁 {folder?.name}
             </span>
+
+            {/* {console.log("currentQuestion", currentQuestion)} */}
+
             <input
               onChange={(e) => {
                 handleMarkChange(`${folder.id}-minMarks`, e.target.value);
@@ -229,13 +286,14 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Min"
               defaultValue={
-                savedQuestionData?.data?.length > 0 &&
-                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
-                  ? savedQuestionData?.data[folderId - 1]?.questionsName
-                  : undefined
+                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
+                parseInt(currentQuestion[0]?.questionsName) === folderId
+                  ? currentQuestion[0]?.minMarks
+                  : ""
               }
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
             />
+
             <input
               onChange={(e) => {
                 handleMarkChange(`${folder.id}-maxMarks`, e.target.value);
@@ -244,12 +302,13 @@ const CreateSchemaStructure = () => {
               placeholder="Max"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
               defaultValue={
-                savedQuestionData?.data?.length > 0 &&
-                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
-                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
+                parseInt(currentQuestion[0]?.questionsName) === folderId
+                  ? currentQuestion[0]?.maxMarks
                   : ""
               }
             />
+
             <input
               onChange={(e) => {
                 handleMarkChange(`${folder.id}-bonusMarks`, e.target.value);
@@ -258,12 +317,13 @@ const CreateSchemaStructure = () => {
               placeholder="Bonus"
               className="ml-2 w-14 rounded border px-2 py-1 text-sm"
               defaultValue={
-                savedQuestionData?.data?.length > 0 &&
-                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
-                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
+                parseInt(currentQuestion[0]?.questionsName) === folderId
+                  ? currentQuestion[0]?.bonusMarks
                   : ""
               }
             />
+
             <input
               onChange={(e) => {
                 handleMarkChange(
@@ -274,20 +334,22 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Marks Difference"
               defaultValue={
-                savedQuestionData?.data?.length > 0 &&
-                savedQuestionData?.data[folderId - 1]?.questionsName == folderId
-                  ? savedQuestionData?.data[folderId - 1]?.questionsName
+                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
+                parseInt(currentQuestion[0]?.questionsName) === folderId
+                  ? currentQuestion[0]?.marksDifference
                   : ""
               }
               className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
             />
+
             <input
               type="checkbox"
               className="ml-2 cursor-pointer"
               defaultChecked={
-                (savedQuestionData?.data?.length > 0 &&
-                  savedQuestionData.data[folderId - 1]?.isSubQuestion) ||
-                false
+                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
+                parseInt(currentQuestion[0]?.questionsName) === folderId
+                  ? currentQuestion[0]?.isSubQuestion
+                  : false
               }
               onChange={() => {
                 toggleInputsVisibility(folder?.id);
@@ -316,33 +378,38 @@ const CreateSchemaStructure = () => {
                 No. of Sub-Questions:
               </label>
               <input
-                ref={(el) =>
-                  (formRefs.current[`${folder?.id}-numberOfSubQuestions`] = el)
-                }
+                onChange={(e) => {
+                  handleMarkChange(
+                    `${folder.id}-numberOfSubQuestions`,
+                    e.target.value
+                  );
+                }}
                 type="text"
                 className="w-12 rounded border px-3 py-1 text-sm"
                 defaultValue={
-                  savedQuestionData?.data?.length > 0 &&
-                  savedQuestionData?.data[folderId - 1]?.questionsName ==
-                    folderId
-                    ? savedQuestionData?.data[folderId - 1]?.questionsName
+                  (currentQuestion?.length > 0 ||
+                    currentQuestion !== undefined) &&
+                  parseInt(currentQuestion[0]?.questionsName) === folderId
+                    ? currentQuestion[0]?.numberOfSubQuestions
                     : ""
                 }
               />
               <label className="ml-2 text-sm text-gray-700">
-                No. of compulsory questions
+                No. of compulsory Sub-Questions
               </label>
               <input
-                ref={(el) =>
-                  (formRefs.current[`${folder?.id}-compulsorySubQuestions`] =
-                    el)
-                }
+                onChange={(e) => {
+                  handleMarkChange(
+                    `${folder.id}-compulsorySubQuestions`,
+                    e.target.value
+                  );
+                }}
                 type="text"
                 defaultValue={
-                  savedQuestionData?.data?.length > 0 &&
-                  savedQuestionData?.data[folderId - 1]?.questionsName ==
-                    folderId
-                    ? savedQuestionData?.data[folderId - 1]?.questionsName
+                  (currentQuestion?.length > 0 ||
+                    currentQuestion !== undefined) &&
+                  parseInt(currentQuestion[0]?.questionsName) === folderId
+                    ? currentQuestion[0]?.compulsorySubQuestions
                     : ""
                 }
                 className="ml-2 w-12 rounded border px-2 py-1 text-sm"
