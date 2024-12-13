@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import SelectSchemaModal from "components/modal/SelectSchemaModal";
 
-
 const CourseCard = ({
   subject,
   setConfirmationModal,
@@ -11,9 +10,10 @@ const CourseCard = ({
   setIsEditOpen,
   setCurrentSubject,
 }) => {
-  const { id } = useParams();  
+  const { id } = useParams();
   const [classCourse, setClassCourse] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [currentSubId, currentSetSubId] = useState("");
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -36,10 +36,11 @@ const CourseCard = ({
     fetchedData();
   }, []);
 
+
   return (
     <div
       key={subject?._id}
-      className="block rounded-lg p-4 mt-4 bg-white shadow-sm shadow-indigo-100"
+      className="mt-4 block rounded-lg bg-white p-4 shadow-sm shadow-indigo-100"
     >
       <div className="mt-2">
         <dl>
@@ -87,7 +88,10 @@ const CourseCard = ({
 
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              currentSetSubId(subject?._id);
+              setShowModal(true);
+            }}
           >
             Select Schema
           </button>
@@ -95,15 +99,19 @@ const CourseCard = ({
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
             onClick={() => {
-              setSubjectId(subject?._id)
-              setConfirmationModal(true)
+              setSubjectId(subject?._id);
+              setConfirmationModal(true);
             }}
           >
             Delete
           </button>
         </span>
       </div>
-      <SelectSchemaModal setShowModal={setShowModal} showModal={showModal} />
+      <SelectSchemaModal
+        setShowModal={setShowModal}
+        showModal={showModal}
+        currentSubId={currentSubId}
+      />
     </div>
   );
 };

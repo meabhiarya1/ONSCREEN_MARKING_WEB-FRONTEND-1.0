@@ -10,16 +10,16 @@ import { GiCrossMark } from "react-icons/gi";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const SelectSchemaModal = ({ setShowModal, showModal }) => {
+const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
   const [schemas, setSchemas] = useState([]); // To hold the schema data
   const [selectedSchema, setSelectedSchema] = useState(""); // To store the selected schema ID
   const [selectedSchemaData, setSelectedSchemaData] = useState(null); // To store the full selected schema
-  const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [images, setImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [fileName, setFileName] = useState();
+  const [questionSheet, setQuestionSheet] = useState(null);
+  const [answerSheet, setAnswerSheet] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -36,6 +36,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
           }
         );
         setSchemas(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -62,127 +63,69 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
       return;
     }
 
-
     navigate(`/admin/schema/create/${selectedSchemaData._id}`, {
       state: { schema: selectedSchemaData, images },
     });
     setShowModal(false); // Close the modal
   };
 
+  // console.log(currentSubId)
   // Handle file selection
-  const handleFileChange = (e) => {
+
+  const handleFileChange = (e, type) => {
     const file = e.target.files[0];
     if (file) {
-      setFileName(file.name);
-      const fileType = file.type;
-      if (fileType === "application/pdf" || fileType === "image/tiff") {
-        setSelectedFile(file);
-        setErrorMessage("");
-      } else {
-        setErrorMessage("Only PDF and TIFF files are allowed.");
-        setSelectedFile(null);
+      if (type === "question") {
+        setQuestionSheet(file);
+      } else if (type === "answer") {
+        setAnswerSheet(file);
       }
     }
   };
 
   const handleFileUpload = async () => {
-    if (!selectedFile) {
-      toast.error("Please select a valid file before uploading.")
-      setErrorMessage("Please select a valid file before uploading.");
-      return;
-    }
-    if (images.length > 0) {
-      setShowImageModal(true);
+    if (!questionSheet || !answerSheet || !selectedSchemaData) {
+      toast.error("Please select all Schema,Question, Answer Sheets");
       return;
     }
 
-    const fileType = selectedFile.type;
-    if (fileType === "application/pdf") {
-      extractImagesFromPDF(selectedFile);
-    } else if (fileType === "image/tiff" || fileType === "image/tif") {
-      extractImagesFromTIFF(selectedFile);
-    } else {
-      setErrorMessage(
-        "Unsupported file type. Please upload a PDF or TIFF file."
-      );
-    }
-  };
+    const formData = new FormData();
+    formData.append("questionPdf", questionSheet);
+    formData.append("answerPdf", answerSheet);
+    formData.append("schemaId", selectedSchemaData._id);
+    formData.append("subjectId", currentSubId);
 
-  const extractImagesFromPDF = async (file) => {
-    const pdfArrayBuffer = await file.arrayBuffer();
-    const pdfDoc = await pdfjsLib.getDocument({ data: pdfArrayBuffer }).promise;
-    const pages = [];
-
-    setLoading(true);
-
-    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-      const page = await pdfDoc.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.5 }); // Adjust scale as needed
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({ canvasContext: context, viewport }).promise;
-      pages.push(canvas.toDataURL()); // Convert canvas to an image URL
-    }
-    setLoading(false);
-    toast.success("Image Extracted Successfully ");
-    setImages(pages);
-    setShowImageModal(true);
-  };
-
-  const extractImagesFromTIFF = async (file) => {
-    const tiffArrayBuffer = await file.arrayBuffer();
-    const tiffPages = decode(new Uint8Array(tiffArrayBuffer)); // Decode the TIFF file into pages
-    const pageDataURLs = [];
-
-    // Loop through each page in the TIFF file
-    for (const page of tiffPages) {
-      const canvas = document.createElement("canvas");
-      canvas.width = page.width;
-      canvas.height = page.height;
-      const context = canvas.getContext("2d");
-
-      // Ensure the data length is a multiple of 4
-      let imageDataArray = page.data;
-      const totalPixels = page.width * page.height;
-
-      // If data length is not correct, add padding for alpha channel
-      if (imageDataArray.length !== totalPixels * 4) {
-        const paddedArray = new Uint8ClampedArray(totalPixels * 4);
-        for (let i = 0, j = 0; i < imageDataArray.length; i += 3, j += 4) {
-          paddedArray[j] = imageDataArray[i]; // R
-          paddedArray[j + 1] = imageDataArray[i + 1]; // G
-          paddedArray[j + 2] = imageDataArray[i + 2]; // B
-          paddedArray[j + 3] = 255; // Alpha (set to fully opaque)
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/subjects/relations/createsubjectschemarel`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-        imageDataArray = paddedArray;
-      }
-
-      // Create ImageData object with corrected array
-      const imageData = new ImageData(imageDataArray, page.width, page.height);
-      context.putImageData(imageData, 0, 0);
-
-      // Convert the canvas to a data URL
-      const dataURL = canvas.toDataURL();
-      pageDataURLs.push(dataURL);
+      );
+      toast.success("Files uploaded successfully!");
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      toast.error("Failed to upload files.");
+      setErrorMessage("Failed to upload files.");
+    } finally {
+      setLoading(false);
     }
-
-    setImages(pageDataURLs); // Set the images for rendering in the component
-    setShowImageModal(true); // Show the modal to display images
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
+  // const nextImage = () => {
+  //   setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+  // };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
+  // const prevImage = () => {
+  //   setCurrentImageIndex((prevIndex) =>
+  //     prevIndex === 0 ? images.length - 1 : prevIndex - 1
+  //   );
+  // };
 
   if (!showModal) return null;
 
@@ -191,7 +134,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
       <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
         {/* Close button */}
         <button
-          className="absolute right-2 top-2 text-2xl p-2 font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-gray-100"
+          className="absolute right-2 top-2 p-2 text-2xl font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-gray-100"
           onClick={() => setShowModal(false)}
         >
           <GiCrossMark />
@@ -210,41 +153,51 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
           >
             <option value="">Select a schema</option>
             {schemas.map((schema) => (
-              <option key={schema.id} value={schema.id}>
+              <option key={schema._id} value={schema._id}>
                 {schema.name}
               </option>
             ))}
           </select>
 
-
+          {/* Selec Questions Sheet*/}
           <div className="mb-6 flex items-center space-x-6 rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
             <label className="flex w-3/4 cursor-pointer items-center justify-between rounded-lg bg-indigo-500 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
-              <span>{fileName ? fileName : "Select Question"}</span>
+              <span>
+                {questionSheet ? questionSheet.name : "Question Sheet"}
+              </span>
               <input
                 type="file"
                 accept=".pdf, .tiff, .tif"
-                onChange={handleFileChange}
+                onChange={(e) => handleFileChange(e, "question")}
                 className="hidden"
               />
             </label>
 
-            {/* Submit Upload Button */}
-            <button
-              onClick={handleFileUpload}
-              className="w-1/4 rounded-lg bg-indigo-600 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            >
-              {loading ? (
-                <div className="flex justify-center items-center">
-                  <MoonLoader color="#3498db" loading={loading} size={20} />
-                </div>
-              ) : images?.length ? (
-                "Show"
-              ) : (
-                "Upload"
-              )}
-            </button>
-
+            <label className="flex w-3/4 cursor-pointer items-center justify-between rounded-lg bg-indigo-500 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+              <span>{answerSheet ? answerSheet.name : "Answer Sheet"}</span>
+              <input
+                type="file"
+                accept=".pdf, .tiff, .tif"
+                onChange={(e) => handleFileChange(e, "answer")}
+                className="hidden"
+              />
+            </label>
           </div>
+          {/* Submit Upload Button */}
+          <button
+            onClick={handleFileUpload}
+            className="w-full rounded-lg bg-indigo-600 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          >
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <MoonLoader color="#3498db" loading={loading} size={20} />
+              </div>
+            ) : images?.length ? (
+              "Uploaded"
+            ) : (
+              "Upload"
+            )}
+          </button>
 
           {/* Error message */}
           {errorMessage && <p className="mt-2 text-red-500">{errorMessage}</p>}
@@ -278,7 +231,7 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                 {/* Pagination Controls */}
                 <div className="flex items-center justify-between">
                   <button
-                    onClick={prevImage}
+                    // onClick={prevImage}
                     className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
                   >
                     Previous
@@ -287,14 +240,14 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
                   {/* Buttons */}
                   <div className="flex justify-center space-x-4">
                     <button
-                      onClick={handleSubmit}
+                      // onClick={handleSubmit}
                       className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
                     >
                       Confirm
                     </button>
                   </div>
                   <button
-                    onClick={nextImage}
+                    // onClick={nextImage}
                     className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
                   >
                     Next
@@ -308,6 +261,5 @@ const SelectSchemaModal = ({ setShowModal, showModal }) => {
     </div>
   );
 };
-
 
 export default SelectSchemaModal;

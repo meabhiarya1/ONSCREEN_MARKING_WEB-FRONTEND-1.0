@@ -14,7 +14,18 @@ const CreateSchemaStructure = () => {
   const [isSubQuestion, setIsSubQuestion] = useState(false); // Track if it's a sub-question
   const [questionData, setQuestionData] = useState({}); // Store question data
   const [savingStatus, setSavingStatus] = useState({}); // Track saving per folder
-  const [parentId, setParentId] = useState(null); // Track parent folder
+  const [parentId, setParentId] = useState([]); // Track parent folder
+  const [currentQuestionNo, setCurrentQuesNo] = useState("");
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState([]);
+  const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
+
+  useEffect(() => {
+    if (currentQuestionNo && !/^\d+-\d+$/.test(currentQuestionNo)) {
+      // Only setParentId([]) if currentQuestionNo does NOT match the pattern
+      setParentId([]);
+    }
+  }, [currentQuestionNo]);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -28,7 +39,7 @@ const CreateSchemaStructure = () => {
           }
         );
         const data = response?.data;
-        setSchemaData(data);
+        setSchemaData((prev) => ({ ...prev, ...data }));
         if (data?.totalQuestions) {
           setFolders(generateFolders(data.totalQuestions));
         }
@@ -50,7 +61,8 @@ const CreateSchemaStructure = () => {
             },
           }
         );
-        const data = response?.data || []; // Fallback to an empty array if no data
+        const data = response?.data.data || []; // Fallback to an empty array if no data
+
         setSavedQuestionData(data);
         // toast.success("Question data fetched successfully");
       } catch (error) {
@@ -62,7 +74,16 @@ const CreateSchemaStructure = () => {
     fetchedData();
   }, [id, token]);
 
-  // console.log(savedQuestionData);
+  const extractParentId = (key, arrayOfObjects) => {
+    for (let obj of arrayOfObjects) {
+      if (obj.hasOwnProperty(key)) {
+        return obj[key];
+      }
+    }
+    return null;
+  };
+
+  console.log(subQuestionsFirst);
 
   const generateFolders = (count) => {
     const folders = [];
@@ -79,6 +100,7 @@ const CreateSchemaStructure = () => {
   };
 
   const toggleInputsVisibility = (folderId) => {
+    // console.log(folderId);
     const updateFolders = (folders) =>
       folders.map((folder) => {
         if (folder.id === folderId) {
@@ -97,29 +119,36 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  const handleSubQuestionsChange = async (folder) => {
-    const folderId = folder.id;
+  // console.log(savedQuestionData);
 
-    // console.log(formRefs?.current[`${folderId}-minMarks`]);
+  const handleSubQuestionsChange = async (folder, _, level) => {
+    const folderId = folder.id;
+    setCurrentQuesNo(folderId);
 
     if (savingStatus[folderId]) return;
 
-    // const numSubQuestions = parseInt(count) || 0;
+    const currentQ =
+      savedQuestionData &&
+      savedQuestionData?.filter(
+        (item) => parseInt(item.questionsName) === folderId
+      );
 
-    const currentQuestion = savedQuestionData?.data.filter(
-      (item) => parseInt(item.questionsName) === folderId
-    );
+    // console.log(currentQ);
+
+    setCurrentQuestion(currentQ);
 
     const minMarks =
-      formRefs?.current[`${folderId}-minMarks`] || currentQuestion[0]?.minMarks;
+      formRefs?.current[`${folderId}-minMarks`] ||
+      (currentQ && currentQ[0]?.minMarks);
     const maxMarks =
-      formRefs?.current[`${folderId}-maxMarks`] || currentQuestion[0]?.maxMarks;
+      formRefs?.current[`${folderId}-maxMarks`] ||
+      (currentQ && currentQ[0]?.maxMarks);
     const bonusMarks =
       formRefs?.current[`${folderId}-bonusMarks`] ||
-      currentQuestion[0]?.bonusMarks;
+      (currentQ && currentQ[0]?.bonusMarks);
     const marksDifference =
       formRefs.current[`${folderId}-marksDifference`] ||
-      currentQuestion[0]?.marksDifference;
+      (currentQ && currentQ[0]?.marksDifference);
 
     // console.log(minMarks, maxMarks, bonusMarks, marksDifference);
 
@@ -137,8 +166,8 @@ const CreateSchemaStructure = () => {
         `${folderId}-numberOfSubQuestions`
       ]
         ? formRefs?.current[`${folderId}-numberOfSubQuestions`]
-        : currentQuestion?.length > 0 || currentQuestion !== undefined
-        ? currentQuestion[0]?.numberOfSubQuestions
+        : currentQ?.length > 0 || currentQ !== undefined
+        ? currentQ[0]?.numberOfSubQuestions
         : "";
 
       //compulsorySubQuestions
@@ -146,8 +175,8 @@ const CreateSchemaStructure = () => {
         `${folderId}-compulsorySubQuestions`
       ]
         ? formRefs?.current[`${folderId}-compulsorySubQuestions`]
-        : currentQuestion?.length > 0 || currentQuestion !== undefined
-        ? currentQuestion[0]?.compulsorySubQuestions
+        : currentQ?.length > 0 || currentQ !== undefined
+        ? currentQ[0]?.compulsorySubQuestions
         : "";
 
       if (!numberOfSubQuestions || !compulsorySubQuestions) {
@@ -157,7 +186,6 @@ const CreateSchemaStructure = () => {
     }
 
     const updatedQuestionData = {
-      // ...questionData,
       schemaId: id,
       questionsName: folderId,
       isSubQuestion: folder.isSubQuestion,
@@ -167,21 +195,16 @@ const CreateSchemaStructure = () => {
       marksDifference,
       numberOfSubQuestions: parseInt(numberOfSubQuestions),
       compulsorySubQuestions: parseInt(compulsorySubQuestions),
-      parentQuestionId: parentId,
+      parentQuestionId: extractParentId(level, parentId) || null,
     };
 
-    // console.log(updatedQuestionData);
-
-    // setQuestionData(updatedQuestionData);
     setSavingStatus((prev) => ({ ...prev, [folderId]: true }));
 
-    // console.log(updatedQuestionData)
-
     try {
-      if (currentQuestion.length > 0) {
-        console.log("pill");
+      if (currentQ && currentQ.length > 0) {
+        console.log("put");
         const response = await axios.put(
-          `${process.env.REACT_APP_API_URL}/api/schemas/update/questiondefinition/${currentQuestion[0]?._id}`,
+          `${process.env.REACT_APP_API_URL}/api/schemas/update/questiondefinition/${currentQ[0]?._id}`,
           updatedQuestionData,
           {
             headers: {
@@ -189,9 +212,20 @@ const CreateSchemaStructure = () => {
             },
           }
         );
+
+        setSavedQuestionData((prev) => {
+          const newData = Array.isArray(response.data.data)
+            ? response.data.data
+            : [response.data.data]; // Wrap it in an array if it's not already an array
+          return [...prev, ...newData];
+        });
+
         toast.success(response?.data?.message);
+
+        const obj = { [level + 1]: response.data.data._id };
+        setParentId([...parentId, obj]);
       } else {
-        console.log("object");
+        console.log("post");
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/schemas/create/questiondefinition`,
           updatedQuestionData,
@@ -202,11 +236,16 @@ const CreateSchemaStructure = () => {
           }
         );
         toast.success(response?.data?.message);
-      }
+        setSavedQuestionData((prev) => {
+          const newData = Array.isArray(response.data.data)
+            ? response.data.data
+            : [response.data.data]; // Wrap it in an array if it's not already an array
+          return [...prev, ...newData];
+        });
 
-      // if (folder.isSubQuestion) {
-      //   setParentId(response?.data?.data?._id);
-      // }
+        const obj = { [level + 1]: response.data.data._id };
+        setParentId([...parentId, obj]);
+      }
 
       const updatedFolders = (folders) => {
         return folders.map((item) => {
@@ -239,22 +278,108 @@ const CreateSchemaStructure = () => {
     }
   };
 
+  const handleFolderClick = async (folderId) => {
+    const currentQuestionInfo =
+      savedQuestionData &&
+      savedQuestionData.length > 0 &&
+      savedQuestionData.filter((item) =>
+        item.questionsName.startsWith(folderId)
+      );
+
+    // console.log(currentQuestionInfo);
+
+    if (!currentQuestionInfo[0]?._id || currentQuestionInfo.length === 0) {
+      toast.warning("No sub-questions");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/schemas/get/questiondefinition/${currentQuestionInfo[0]?._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response?.data?.data);
+      toggleInputsVisibility(folderId);
+      const subQuestionsNumber =
+        response?.data?.data?.parentQuestion.numberOfSubQuestions || [];
+
+      setSubQuestionsFirst(response?.data?.data?.subQuestions || []);
+
+      const updateFolders = (folders) =>
+        folders.map((folder) => {
+          if (folder.id === folderId) {
+            const isCollapsed = folder.isCollapsed || false;
+
+            // Ensure subQuestions is a number and generate an array based on its value
+            const validSubQuestionsCount =
+              typeof subQuestionsNumber === "number" ? subQuestionsNumber : 0;
+
+            return {
+              ...folder,
+              children: isCollapsed
+                ? [] // Collapse the folder by clearing children
+                : Array.from({ length: validSubQuestionsCount }, (_, i) => ({
+                    id: `${folderId}-${i + 1}`,
+                    name: `Q. ${folderId}.${i + 1}`, // You can format this as needed
+                    children: [],
+                    showInputs: false,
+                  })),
+              isCollapsed: !isCollapsed, // Toggle collapsed state
+              showInputs: !folder.showInputs, // Toggle input visibility
+              isSubQuestion: !folder.isSubQuestion, // Toggle isSubQuestion
+            };
+          }
+
+          if (folder.children && folder.children.length > 0) {
+            return { ...folder, children: updateFolders(folder.children) };
+          }
+
+          return folder;
+        });
+
+      toggleInputsVisibility(folderId);
+      setFolders((prevFolders) => updateFolders(prevFolders));
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
     const isSaving = savingStatus[folderId] || false; // Check saving status for this folder
     const folderStyle = `relative ml-${level * 4} mt-3`;
     const color = level % 2 === 0 ? "bg-[#f4f4f4]" : "bg-[#fafafa]";
 
+    // console.log("folderId", folderId);
+
     const handleMarkChange = (inputBoxName, inputValue) => {
-      // console.log(inputBoxName, inputValue);
-      // console.log(formRefs.current[inputBoxName]);
+      setCurrentQuesNo(folderId);
       formRefs.current[inputBoxName] = inputValue;
-      // console.log(formRefs.current);
     };
 
-    const currentQuestion = savedQuestionData?.data?.filter(
-      (item) => parseInt(item.questionsName) === folderId
-    );
+    let currentQ = [];
+
+    if (subQuestionsFirst && subQuestionsFirst.length > 0) {
+      currentQ =
+        subQuestionsFirst &&
+        subQuestionsFirst?.filter(
+          (item) => parseInt(item.questionsName) === folderId
+        );
+    } else {
+      currentQ =
+        savedQuestionData &&
+        savedQuestionData?.filter(
+          (item) => parseInt(item.questionsName) === folderId
+        );
+    }
+
+    // console.log("currentQuestion", currentQuestion);
+    // setCurrentQuestion(currentQ);
 
     return (
       <div
@@ -273,26 +398,14 @@ const CreateSchemaStructure = () => {
         )}
         <div className="w-full flex-col gap-2">
           <div className="flex items-center gap-4">
-            <span className="text-black-500 font-semibold">
+            <span
+              className="text-black-500 cursor-pointer font-semibold"
+              onClick={() => handleFolderClick(folder.id)}
+            >
               📁 {folder?.name}
             </span>
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
-
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-minMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Min"
-              defaultValue={
-                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
-                parseInt(currentQuestion[0]?.questionsName) === folderId
-                  ? currentQuestion[0]?.minMarks
-                  : ""
-              }
-              className="ml-2 w-12 rounded border px-2 py-1 text-sm"
-            />
 
             <input
               onChange={(e) => {
@@ -302,11 +415,26 @@ const CreateSchemaStructure = () => {
               placeholder="Max"
               className="ml-2 w-12 rounded border px-2 py-1 text-sm"
               defaultValue={
-                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
-                parseInt(currentQuestion[0]?.questionsName) === folderId
-                  ? currentQuestion[0]?.maxMarks
+                (currentQ?.length > 0 || currentQ !== undefined) &&
+                parseInt(currentQ[0]?.questionsName) === folderId
+                  ? currentQ[0]?.maxMarks
                   : ""
               }
+            />
+
+            <input
+              onChange={(e) => {
+                handleMarkChange(`${folder.id}-minMarks`, e.target.value);
+              }}
+              type="text"
+              placeholder="Min"
+              defaultValue={
+                (currentQ?.length > 0 || currentQ !== undefined) &&
+                parseInt(currentQ[0]?.questionsName) === folderId
+                  ? currentQ[0]?.minMarks
+                  : ""
+              }
+              className="ml-2 w-12 rounded border px-2 py-1 text-sm"
             />
 
             <input
@@ -317,9 +445,9 @@ const CreateSchemaStructure = () => {
               placeholder="Bonus"
               className="ml-2 w-14 rounded border px-2 py-1 text-sm"
               defaultValue={
-                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
-                parseInt(currentQuestion[0]?.questionsName) === folderId
-                  ? currentQuestion[0]?.bonusMarks
+                (currentQ?.length > 0 || currentQ !== undefined) &&
+                parseInt(currentQ[0]?.questionsName) === folderId
+                  ? currentQ[0]?.bonusMarks
                   : ""
               }
             />
@@ -334,9 +462,9 @@ const CreateSchemaStructure = () => {
               type="text"
               placeholder="Marks Difference"
               defaultValue={
-                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
-                parseInt(currentQuestion[0]?.questionsName) === folderId
-                  ? currentQuestion[0]?.marksDifference
+                (currentQ?.length > 0 || currentQ !== undefined) &&
+                parseInt(currentQ[0]?.questionsName) === folderId
+                  ? currentQ[0]?.marksDifference
                   : ""
               }
               className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
@@ -346,9 +474,9 @@ const CreateSchemaStructure = () => {
               type="checkbox"
               className="ml-2 cursor-pointer"
               defaultChecked={
-                (currentQuestion?.length > 0 || currentQuestion !== undefined) &&
-                parseInt(currentQuestion[0]?.questionsName) === folderId
-                  ? currentQuestion[0]?.isSubQuestion
+                (currentQ?.length > 0 || currentQ !== undefined) &&
+                parseInt(currentQ[0]?.questionsName) === folderId
+                  ? currentQ[0]?.isSubQuestion
                   : false
               }
               onChange={() => {
@@ -364,7 +492,11 @@ const CreateSchemaStructure = () => {
               className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
               disabled={isSaving}
               onClick={() =>
-                handleSubQuestionsChange(folder, countRef?.current?.value)
+                handleSubQuestionsChange(
+                  folder,
+                  countRef?.current?.value,
+                  level
+                )
               }
             >
               {isSaving ? "Saving..." : "Save"}
@@ -387,10 +519,9 @@ const CreateSchemaStructure = () => {
                 type="text"
                 className="w-12 rounded border px-3 py-1 text-sm"
                 defaultValue={
-                  (currentQuestion?.length > 0 ||
-                    currentQuestion !== undefined) &&
-                  parseInt(currentQuestion[0]?.questionsName) === folderId
-                    ? currentQuestion[0]?.numberOfSubQuestions
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.numberOfSubQuestions
                     : ""
                 }
               />
@@ -406,10 +537,9 @@ const CreateSchemaStructure = () => {
                 }}
                 type="text"
                 defaultValue={
-                  (currentQuestion?.length > 0 ||
-                    currentQuestion !== undefined) &&
-                  parseInt(currentQuestion[0]?.questionsName) === folderId
-                    ? currentQuestion[0]?.compulsorySubQuestions
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.compulsorySubQuestions
                     : ""
                 }
                 className="ml-2 w-12 rounded border px-2 py-1 text-sm"
