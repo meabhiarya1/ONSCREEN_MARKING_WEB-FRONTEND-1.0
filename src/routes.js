@@ -14,6 +14,8 @@ import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
 import Schema from "views/admin/schemas/Schema";
 import CreateSchemaStructure from "views/admin/createSchemaStructure/createSchemaStructure";
+import SelectCoordinates from "views/admin/coordinates/SelectCoordinates";
+import CoordinateSelection from "views/admin/coordinates/CoordinateSelection";
 
 const routes = [
   {
@@ -62,6 +64,22 @@ const routes = [
     icon: <IoBookSharp className=" h-6 w-6" />,
     path: "schema/create/structure/:id",
     component: <CreateSchemaStructure />,
+    hidden: true,
+  },
+  {
+    name: "Structure Coordinates",
+    layout: "/admin",
+    icon: <IoBookSharp className=" h-6 w-6" />,
+    path: "schema/create/structure/coordinates/:id",
+    component: <SelectCoordinates />,
+    hidden: true,
+  },
+  {
+    name: "Select Coordinates",
+    layout: "/admin",
+    icon: <IoBookSharp className=" h-6 w-6" />,
+    path: "coordinates/:id",
+    component: <CoordinateSelection />,
     hidden: true,
   },
   {

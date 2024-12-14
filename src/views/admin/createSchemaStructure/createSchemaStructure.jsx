@@ -83,7 +83,6 @@ const CreateSchemaStructure = () => {
     return null;
   };
 
-  console.log(subQuestionsFirst);
 
   const generateFolders = (count) => {
     const folders = [];
@@ -501,6 +500,7 @@ const CreateSchemaStructure = () => {
             >
               {isSaving ? "Saving..." : "Save"}
             </button>
+            
           </div>
 
           {/* Sub Questions Input Fields */}

@@ -52,12 +52,10 @@ const Schema = () => {
       toast.success("Schema deleted successfully");
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      setConfirmationModal(false);
+      setSchemaId("");
     }
-    finally {
-      setConfirmationModal(false)
-      setSchemaId("")
-    }
-
   };
 
   const handleUpdate = async (id, updatedData) => {
@@ -86,9 +84,7 @@ const Schema = () => {
   return (
     <div className="mt-12 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
       <div className="h-32 rounded-lg lg:col-span-3">
-
         <div className="mt-6 overflow-x-auto rounded-lg">
-
           <div className="mb-4 flex items-start justify-end rounded-lg">
             <div
               className="hover:bg-transparent inline-block cursor-pointer items-center rounded border 
@@ -121,7 +117,6 @@ const Schema = () => {
                   Eval Time
                 </th>
               </tr>
-
             </thead>
 
             {schemaData.map((data) => (
@@ -156,6 +151,7 @@ const Schema = () => {
                       className=" inline-block cursor-pointer rounded bg-indigo-600 px-3 py-2 
                     text-xs font-medium text-white hover:bg-indigo-700 "
                       onClick={() => {
+                        localStorage.removeItem("navigateFrom");
                         navigate(`/admin/schema/create/structure/${data._id}`);
                       }}
                     >
@@ -218,7 +214,6 @@ const Schema = () => {
         message="Are you sure you want to remove this schema? This action cannot be undone."
         type="error" // Options: 'success', 'warning', 'error'
       />
-
     </div>
   );
 };

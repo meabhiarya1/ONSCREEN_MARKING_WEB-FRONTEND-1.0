@@ -48,7 +48,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
   useEffect(() => {
     if (selectedSchema) {
       const schemaData = schemas.find(
-        (schema) => schema.name === selectedSchema
+        (schema) => schema._id === selectedSchema
       );
       setSelectedSchemaData(schemaData); // Set the full schema data
     }
@@ -92,7 +92,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
     const formData = new FormData();
     formData.append("questionPdf", questionSheet);
     formData.append("answerPdf", answerSheet);
-    formData.append("schemaId", selectedSchemaData._id);
+    formData.append("schemaId", selectedSchemaData?._id);
     formData.append("subjectId", currentSubId);
 
     try {
@@ -108,6 +108,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
       );
       toast.success("Files uploaded successfully!");
       console.log(response.data);
+      navigate(`/admin/schema/create/structure/coordinates/${response.data?._id}`);
     } catch (error) {
       console.error("Error uploading files:", error);
       toast.error("Failed to upload files.");
