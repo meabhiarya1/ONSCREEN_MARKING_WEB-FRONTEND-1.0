@@ -26,6 +26,7 @@ const ImageContainer = () => {
   const [activeDrawing, setActiveDrawing] = useState(false);
   const [scalePercent, setScalePercent] = useState(100);
   const [isZoomMenuOpen, setIsZoomMenuOpen] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   // Zoom in and out with smooth transition
@@ -54,6 +55,25 @@ const ImageContainer = () => {
   const handleCanvasMouseUp = () => {
     setIsDrawing(false);
   };
+  // Function to update canvas size when image is scaled
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const imageElement = document.querySelector('img[alt="Viewer"]');
+      const imageWidth = imageElement ? imageElement.width : 0;
+      const imageHeight = imageElement ? imageElement.height : 0;
+
+      // Scale the canvas size based on the scale factor
+      const scaledWidth = imageWidth * scale;
+      const scaledHeight = imageHeight * scale;
+
+      setCanvasSize({ width: scaledWidth, height: scaledHeight });
+
+      // Update canvas width and height
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+    }
+  }, [scale]); // Run effect every time scale changes
   // Draw on the canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -120,9 +140,9 @@ const ImageContainer = () => {
 
   // Handle dropping the icon on the image
   const handleImageClick = (e) => {
-    if (activeDrawing) {
-      setIsDrawing(!isDrawing);
-    }
+    // if (activeDrawing) {
+    //   setIsDrawing(!isDrawing);
+    // }
     if (containerRef.current && currentIcon) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
@@ -205,7 +225,7 @@ const ImageContainer = () => {
   return (
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
-        <div className="me-2 flex justify-center">
+        <aside className="me-2 flex justify-center">
           <div className="">
             <button
               className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
@@ -237,13 +257,20 @@ const ImageContainer = () => {
               <FiZoomOut />
             </button>
           </div>
-        </div>
+        </aside>
 
         <button
-          className={`mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none ${
-            isDrawing ? "bg-blue-100" : ""
+          className={`mb-2 me-2 rounded-md   px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none  ${
+            isDrawing
+              ? "bg-gray-300 hover:bg-gray-400 "
+              : "bg-white hover:bg-gray-100 "
           }`}
-          onClick={() => setActiveDrawing(!isDrawing)}
+          style={
+            isDrawing
+              ? { cursor: "url('/toolImg/Handwriting.cur'), auto" } // Pencil cursor when drawing
+              : { cursor: "auto" } // Default cursor otherwise
+          }
+          onClick={() => setIsDrawing((prev) => !prev)}
         >
           <LuPencilLine />
         </button>
@@ -306,7 +333,7 @@ const ImageContainer = () => {
           position: "relative",
           width: "100%",
           height: "80vh",
-          cursor: isDrawing ? "crosshair" : "",
+          cursor: isDrawing ? "url('/toolImg/Handwriting.cur'), auto" : "",
         }}
         onClick={handleImageClick} // Handle image click for dropping the icon
         onMouseMove={handleMouseMove} // Track mouse move for icon dragging preview
@@ -360,8 +387,8 @@ const ImageContainer = () => {
           {/* Render the canvas for drawing */}
           <canvas
             ref={canvasRef}
-            width={1000} // Set an appropriate width
-            height={1000} // Set an appropriate height
+            width={canvasSize.width}
+            height={canvasSize.height}
             style={{
               position: "absolute",
               top: 0,
@@ -387,9 +414,6 @@ const ImageContainer = () => {
           </div>
         )}
       </div>
-      {/* <div>
-
-      </div> */}
     </>
   );
 };
