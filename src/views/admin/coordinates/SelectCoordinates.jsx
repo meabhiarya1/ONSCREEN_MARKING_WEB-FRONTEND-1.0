@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ImageModal from "components/modal/ImageModal";
 
 const SelectCoordinates = () => {
   const [schemaData, setSchemaData] = useState(null);
@@ -19,6 +20,8 @@ const SelectCoordinates = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -113,12 +116,13 @@ const SelectCoordinates = () => {
   //   console.log(savedQuestionData);
 
   const handleSelectCoordinates = async (folder, _, level) => {
-    if (folder.originalId) {
-      navigate(`/admin/coordinates/${folder.originalId}`);
-    } else {
-      toast.error("No coordinates selected");
-      return;
-    }
+    // if (folder.originalId) {
+    //   navigate(`/admin/coordinates/${folder.originalId}`);
+    // } else {
+    //   toast.error("No coordinates selected");
+    //   return;
+    // }
+    setShowImageModal(!showImageModal);
   };
 
   const handleFolderClick = async (folderId) => {
@@ -291,7 +295,7 @@ const SelectCoordinates = () => {
               disabled={isSaving}
               onClick={() => handleSelectCoordinates(folder)}
             >
-              Select Coordinates
+              Questions
             </button>
           </div>
 
@@ -335,6 +339,15 @@ const SelectCoordinates = () => {
       <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
         {folders.map((folder) => renderFolder(folder))}
       </div>
+
+      {showImageModal && (
+        <ImageModal
+          showImageModal={showImageModal}
+          setShowImageModal={setShowImageModal}
+          images={images}
+          setImages={setImages}
+        />
+      )}
     </div>
   );
 };
