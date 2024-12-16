@@ -28,6 +28,13 @@ const App = () => {
 
   const role = getRoleFromToken();
 
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/auth/sign-in");
+    }
+  }, [token, navigate]);
+
   // Centralized navigation logic
   useEffect(() => {
     if (!token) {
@@ -47,9 +54,10 @@ const App = () => {
     }
   }, [token, role]);
 
-  useEffect(() => {
-    dispatch(rehydrateToken());
-  }, [dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(rehydrateToken());
+  // }, [dispatch]);
 
   return (
     <Routes>

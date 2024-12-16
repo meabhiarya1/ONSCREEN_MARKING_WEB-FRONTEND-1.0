@@ -15,7 +15,11 @@ import { setIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const evaluatorState = useSelector((state) => state.evaluator);
-  const svgFiles = ["/red.svg", "/green.svg", "/yellow.svg"];
+  const svgFiles = [
+    "/pageicons/red.svg",
+    "/pageicons/green.svg",
+    "/pageicons/yellow.svg",
+  ];
 
   // Use useCallback to memoize the random image generation
   const generateRandomIcons = useCallback(() => {
@@ -93,12 +97,16 @@ const CheckModule = () => {
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
   const [scale, setScale] = useState(1); // Initial zoom level
+  const [questionModal, setShowuestionModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
   const token =
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
-
+  const questionHandler = () => {
+    console.log("question handler");
+    setShowuestionModal(true);
+  };
   useEffect(() => {
     const id = localStorage.getItem("userId");
     const fetchData = async () => {
@@ -229,13 +237,23 @@ const CheckModule = () => {
       </div>
 
       {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
-      <div className="flex h-[90vh] w-full flex-row overflow-auto">
-        <div className="h-[100%] w-[8%] justify-center overflow-auto text-center  ">
-          <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
-            Total <span>40</span> Pages
-          </h2>
-          <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
+      <div className="flex h-[90vh] w-full flex-row ">
+        <div className="h-[100%] w-[8%] ">
+          <div className=" h-[90%] justify-center overflow-auto text-center  ">
+            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
+              Total <span>40</span> Pages
+            </h2>
+            <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
+          </div>
+          <button
+            type="button"
+            className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+            onClick={questionHandler}
+          >
+            Questions
+          </button>
         </div>
+
         <div id="imgcontainer" className="w-[75%]">
           <ImageContainer />
         </div>
