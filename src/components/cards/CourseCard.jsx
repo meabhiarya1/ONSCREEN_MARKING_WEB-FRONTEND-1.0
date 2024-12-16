@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
 import SelectSchemaModal from "components/modal/SelectSchemaModal";
+
 const CourseCard = ({
   subject,
-  handleDelete,
+  setConfirmationModal,
+  setSubjectId,
   setIsEditOpen,
   setCurrentSubject,
 }) => {
-  const { id } = useParams(); // Get the id from the URL
+  const { id } = useParams();
   const [classCourse, setClassCourse] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
+  const [currentSubId, currentSetSubId] = useState("");
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -35,17 +36,12 @@ const CourseCard = ({
     fetchedData();
   }, []);
 
+
   return (
     <div
       key={subject?._id}
-      className="block rounded-lg p-4 shadow-sm shadow-indigo-100"
+      className="mt-4 block rounded-lg bg-white p-4 shadow-sm shadow-indigo-100"
     >
-      <img
-        alt=""
-        src="https://images.unsplash.com/photo-1613545325278-f24b0cae1224?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-        className="h-56 w-full rounded-md object-cover"
-      />
-
       <div className="mt-2">
         <dl>
           <div className="mt-2 text-lg font-medium">
@@ -92,8 +88,10 @@ const CourseCard = ({
 
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
-            // onClick={() => navigate(`/admin/schema/create/${subject._id}`)}
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              currentSetSubId(subject?._id);
+              setShowModal(true);
+            }}
           >
             Select Schema
           </button>
@@ -101,14 +99,19 @@ const CourseCard = ({
           <button
             className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
             onClick={() => {
-              handleDelete(subject?._id);
+              setSubjectId(subject?._id);
+              setConfirmationModal(true);
             }}
           >
             Delete
           </button>
         </span>
       </div>
-      <SelectSchemaModal setShowModal={setShowModal} showModal={showModal} />
+      <SelectSchemaModal
+        setShowModal={setShowModal}
+        showModal={showModal}
+        currentSubId={currentSubId}
+      />
     </div>
   );
 };

@@ -13,11 +13,13 @@ import { IoBookSharp } from "react-icons/io5";
 import CourseDetails from "views/admin/courseDetails";
 import CreateSchema from "views/admin/createSchema/createSchema";
 import Schema from "views/admin/schemas/Schema";
-
+import CreateSchemaStructure from "views/admin/createSchemaStructure/createSchemaStructure";
+import SelectCoordinates from "views/admin/coordinates/SelectCoordinates";
+import CoordinateSelection from "views/admin/coordinates/CoordinateSelection";
 
 const routes = [
   {
-    name: "Main Dashboard",
+    name: "Dashboard",
     layout: "/admin",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
@@ -25,21 +27,13 @@ const routes = [
     hidden: false,
   },
   {
-    name: "Main Dashboard",
+    name: "Evaluator",
     layout: "/evaluator",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
     component: <EvaluatorDashboard />,
     hidden: false,
   },
-  // {
-  //   name: "Main Dashboard",
-  //   layout: "/evaluator/osmmodule",
-  //   path: "default",
-  //   icon: <MdHome className="h-6 w-6" />,
-  //   component: <CheckModule />,
-  //   hidden: false,
-  // },
   {
     name: "Classes",
     layout: "/admin",
@@ -65,12 +59,36 @@ const routes = [
     hidden: true,
   },
   {
+    name: "Schema Structure",
+    layout: "/admin",
+    icon: <IoBookSharp className=" h-6 w-6" />,
+    path: "schema/create/structure/:id",
+    component: <CreateSchemaStructure />,
+    hidden: true,
+  },
+  {
+    name: "Structure Coordinates",
+    layout: "/admin",
+    icon: <IoBookSharp className=" h-6 w-6" />,
+    path: "schema/create/structure/coordinates/:id",
+    component: <SelectCoordinates />,
+    hidden: true,
+  },
+  {
+    name: "Select Coordinates",
+    layout: "/admin",
+    icon: <IoBookSharp className=" h-6 w-6" />,
+    path: "coordinates/:id",
+    component: <CoordinateSelection />,
+    hidden: true,
+  },
+  {
     name: "Profile",
     layout: "/admin",
     path: "profile",
     icon: <MdPerson className="h-6 w-6" />,
     component: <Profile />,
-    hidden: false,
+    hidden: true,
   },
   {
     name: "Users",
@@ -94,7 +112,7 @@ const routes = [
     path: "uploadcsv",
     icon: <FaFileUpload className="h-6 w-6" />,
     component: <Upload />,
-    hidden: false,
+    hidden: true,
   },
 
   {

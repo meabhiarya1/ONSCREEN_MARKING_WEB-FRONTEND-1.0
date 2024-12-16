@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import routes from "routes.js";
 import { createUser } from "services/common";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const CreateUser = () => {
   const [userDetails, setUserDetails] = useState({
@@ -20,37 +21,45 @@ const CreateUser = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
+
+    // Check if password is empty or less than 8 characters
+    if (!userDetails?.password?.trim()) {
+      toast.error("Please enter a new password.");
+      setLoading(false);
+      return;
+    }
 
     if (userDetails?.password.length < 8) {
-      toast.error("Password must be at least 8 characters")
-      return
+      toast.error("Password must be at least 8 characters.");
+      setLoading(false);
+      return;
     }
 
-    if (!userDetails?.password || !userDetails?.password_confirmation) {
-      toast.error("Please enter new password and confirm password")
-      return
-    }
-
+    // Check if password confirmation matches
     if (userDetails?.password !== userDetails?.password_confirmation) {
-      toast.error("Passwords do not match")
-      return
+      toast.error("Passwords do not match.");
+      setLoading(false);
+      return;
     }
 
-
-    if (!userDetails?.role || !userDetails?.name || !userDetails?.email || !userDetails?.mobile || !userDetails?.password) {
-      toast.error("All fields are required!")
-      return
+    // Check if required fields are filled
+    if (!userDetails?.name || !userDetails?.email || !userDetails?.mobile || !userDetails?.role || !userDetails?.password) {
+      toast.error("All fields are required!");
+      setLoading(false);
+      return;
     }
 
-    if (userDetails.mobile.length !== 10) {
-      toast.error("Mobile number must be 10 digits")
-      return
+    // Mobile number validation
+    if (userDetails.mobile.length !== 10 || isNaN(userDetails.mobile)) {
+      toast.error("Mobile number must be 10 digits.");
+      setLoading(false);
+      return;
     }
-
 
     try {
       const response = await createUser(userDetails);
+
       if (response) {
         const { status, data } = response;
         if (status === 201) {
@@ -63,12 +72,10 @@ const CreateUser = () => {
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error(
-        error?.response?.data?.message || "Failed to create user. Please try again later."
-      );
+      toast.error(error?.response?.data?.message || "Failed to create user. Please try again later.");
     } finally {
-      setUserDetails((prev) => ({
-        ...prev,
+      // Reset form fields
+      setUserDetails({
         name: "",
         email: "",
         password: "",
@@ -76,10 +83,11 @@ const CreateUser = () => {
         role: "",
         permissions: [],
         password_confirmation: "",
-      }));
-      setLoading(false)
+      });
+      setLoading(false);
     }
   };
+
 
   return (
     <section className="bg-gray-50 min-h-screen">
@@ -197,7 +205,11 @@ const CreateUser = () => {
                         name="permissions"
                         value={route.name}
                         className="h-5 w-5 rounded border-2 border-gray-300 bg-gray-50 text-blue-600 focus:ring-blue-500"
-                        checked={userDetails.permissions.includes(route.name)}
+                        checked={
+                          userDetails?.role === "admin"
+                            ? userDetails.permissions
+                            : userDetails.permissions.includes(route.name)
+                        }
                         onChange={(e) => {
                           if (e.target.checked) {
                             setUserDetails({
@@ -225,7 +237,6 @@ const CreateUser = () => {
                       </label>
                     </div>
                   ))}
-
                 </div>
               </div>
 
@@ -332,6 +343,12 @@ const CreateUser = () => {
                     "Create User"
                   )}
                 </button>
+                <h2 className="text-xl font-semibold text-blue-600 hover:text-blue-800 underline decoration-blue-500 decoration-2 hover:underline-offset-4 transition-all duration-300">
+                  <Link to={'/admin/uploadcsv'}>
+                    Create user by CSV
+                  </Link>
+                </h2>
+
               </div>
             </form>
           </div>

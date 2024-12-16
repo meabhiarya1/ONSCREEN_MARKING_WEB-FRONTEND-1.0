@@ -9,19 +9,23 @@ export default function Admin(props) {
   const { ...rest } = props;
   const location = useLocation();
   const [open, setOpen] = React.useState(true);
-  const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
+  const [currentRoute, setCurrentRoute] = React.useState("Dashboard");
 
   React.useEffect(() => {
     window.addEventListener("resize", () =>
       window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
     );
   }, []);
+
+
   React.useEffect(() => {
     getActiveRoute(routes);
   }, [location.pathname]);
 
+
+
   const getActiveRoute = (routes) => {
-    let activeRoute = "Main Dashboard";
+    let activeRoute = "Dashboard";
     for (let i = 0; i < routes.length; i++) {
       if (
         window.location.href.indexOf(
@@ -33,6 +37,8 @@ export default function Admin(props) {
     }
     return activeRoute;
   };
+
+
   const getActiveNavbar = (routes) => {
     let activeNavbar = false;
     for (let i = 0; i < routes.length; i++) {
@@ -44,6 +50,8 @@ export default function Admin(props) {
     }
     return activeNavbar;
   };
+
+
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
@@ -56,9 +64,15 @@ export default function Admin(props) {
     });
   };
 
+
+
+
   document.documentElement.dir = "ltr";
+
+
   return (
     <div className="flex h-full w-full ">
+
       <Sidebar open={open} onClose={() => setOpen(false)} />
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900 ">
         <main

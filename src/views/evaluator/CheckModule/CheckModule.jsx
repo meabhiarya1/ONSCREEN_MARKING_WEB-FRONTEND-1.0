@@ -11,7 +11,6 @@ import QuestionSection from "components/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
-import MyComponent from "components/Pdftron";
 import { setIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
@@ -33,9 +32,14 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
+
+
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
+
+
+  
   const Imgicons = icons.map((icon, index) => {
     const active =
       index + 1 === evaluatorState.currentIndex
@@ -120,6 +124,10 @@ const CheckModule = () => {
   const [loginHours, loginMinutes, loginSeconds] = loginTime
     ? loginTime.split(":")
     : ["--", "--", "--"];
+
+
+
+    
   return (
     <>
       <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gray-700  py-5 text-white">
@@ -159,7 +167,7 @@ const CheckModule = () => {
             <input
               type="text"
               placeholder="Search..."
-              class="block h-full w-full rounded-full bg-lightPrimary text-sm font-medium text-navy-700 outline-none placeholder:!text-gray-400 dark:bg-navy-900 dark:text-white dark:placeholder:!text-white sm:w-fit"
+              className="block h-full w-full rounded-full bg-lightPrimary text-sm font-medium text-navy-700 outline-none placeholder:!text-gray-400 dark:bg-navy-900 dark:text-white dark:placeholder:!text-white sm:w-fit"
             />
           </div>
 

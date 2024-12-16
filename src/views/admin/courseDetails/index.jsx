@@ -4,6 +4,7 @@ import CourseModal from "components/modal/CourseModal";
 import EditCourseModal from "components/modal/EditCourseModal";
 import { toast } from "react-toastify";
 import axios from "axios";
+import ConfirmationModal from "components/modal/ConfirmationModal";
 import { useParams } from "react-router-dom";
 
 const Index = () => {
@@ -11,12 +12,12 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [currentSubject, setCurrentSubject] = useState(null);
-  // Use useState for managing form inputs
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [subjectId, setSubjectId] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     code: "",
   });
-
   const { id } = useParams();
 
   useEffect(() => {
@@ -75,31 +76,36 @@ const Index = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/subjects/remove/subject/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/subjects/remove/subject/${subjectId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setSubjects(subjects.filter((subject) => subject._id !== id));
+      setSubjects(subjects.filter((subject) => subject._id !== subjectId));
       toast.success(response.data.message);
+      setConfirmationModal(false)
     } catch (error) {
       console.log(error);
     }
+    finally {
+      setSubjectId("")
+    }
   };
+
 
   return (
     <div>
       <div
-        className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+        className="hover:bg-transparent mt-12 inline-block cursor-pointer rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-white-600 focus:outline-none focus:ring active:text-indigo-500"
         onClick={() => setIsOpen(true)}
       >
-        Create More Courses / Subjects
+        Create subject
       </div>
 
       <CourseModal
@@ -126,15 +132,30 @@ const Index = () => {
             <CourseCard
               key={subject._id}
               subject={subject}
-              handleDelete={handleDelete}
+              setConfirmationModal={setConfirmationModal}
+              setSubjectId={setSubjectId}
               setIsEditOpen={setIsEditOpen}
               setCurrentSubject={setCurrentSubject}
             />
           ))
         ) : (
-          <p>No courses available</p>
+          <div className="flex flex-col items-center justify-center col-span-full mt-12">
+            <p className="text-gray-700 text-lg font-semibold">
+              No subjects available. Create one to get started!
+            </p>
+          </div>
         )}
       </div>
+
+      <ConfirmationModal
+        confirmationModal={confirmationModal}
+        onSubmitHandler={handleDelete}
+        setConfirmationModal={setConfirmationModal}
+        setId={setSubjectId}
+        heading="Confirm subject Removal"
+        message="Are you sure you want to remove this subject? Please note that removing this subject will also permanently delete all associated schemas and data. This action cannot be undone."
+        type="error" // Options: 'success', 'warning', 'error'
+      />
     </div>
   );
 };
