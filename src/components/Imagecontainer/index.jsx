@@ -27,7 +27,10 @@ const ImageContainer = () => {
   const [scalePercent, setScalePercent] = useState(100);
   const [isZoomMenuOpen, setIsZoomMenuOpen] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const [canvasStates, setCanvasStates] = useState({});
+  const [currentImage, setCurrentImage] = useState(null);
   const containerRef = useRef(null);
+  const currentIndex = evaluatorState.currentIndex;
   const canvasRef = useRef(null);
   // Zoom in and out with smooth transition
   const zoomIn = () => setScale((prevScale) => prevScale + 0.1);
@@ -55,6 +58,46 @@ const ImageContainer = () => {
   const handleCanvasMouseUp = () => {
     setIsDrawing(false);
   };
+
+  // Load the canvas state when the image changes
+  useEffect(() => {
+    const loadCanvasState = () => {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Load the saved state for the current index
+      if (canvasStates[currentIndex]) {
+        const img = new Image();
+        img.src = canvasStates[currentIndex];
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+      }
+    };
+
+    // Save the current canvas state before changing the index
+    if (currentImage !== null) {
+      saveCanvasState();
+    }
+
+    setCurrentImage(currentIndex); // Track the currently displayed image
+    loadCanvasState();
+  }, [currentIndex]);
+
+  // Save the canvas state as a base64 string
+  const saveCanvasState = () => {
+    const canvas = canvasRef.current;
+    const dataURL = canvas.toDataURL();
+
+    setCanvasStates((prevStates) => ({
+      ...prevStates,
+      [currentImage]: dataURL, // Save the canvas state for the current image
+    }));
+  };
+
   // Function to update canvas size when image is scaled
   useEffect(() => {
     if (canvasRef.current) {
@@ -102,6 +145,7 @@ const ImageContainer = () => {
       }
     });
   }, [drawing, scale]);
+  
   // Track mouse movement for dragging icons
   const handleMouseMove = (e) => {
     if (containerRef.current) {
@@ -222,6 +266,7 @@ const ImageContainer = () => {
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
+
   return (
     <>
       <div className="flex justify-center border bg-[#e0e2e6] p-2">
@@ -353,7 +398,7 @@ const ImageContainer = () => {
           }}
         >
           <img
-            src={`/sampleimg/CS603_1119_page-${evaluatorState.currentIndex}.jpg`}
+            src={`/sampleimg/CS603_1119_page-${currentIndex}.jpg`}
             alt="Viewer"
             // style={{
             //   transform: `scale(${scale})`,
@@ -384,6 +429,7 @@ const ImageContainer = () => {
               <img src={icon.iconUrl} alt="icon" width={40} height={40} />
             </div>
           ))}
+
           {/* Render the canvas for drawing */}
           <canvas
             ref={canvasRef}
@@ -418,4 +464,4 @@ const ImageContainer = () => {
   );
 };
 
-export default ImageContainer;
+export default React.memo(ImageContainer);

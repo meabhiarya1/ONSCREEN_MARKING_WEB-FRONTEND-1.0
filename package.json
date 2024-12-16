@@ -29,6 +29,7 @@
     "apexcharts": "3.35.5",
     "axios": "^1.7.7",
     "framer-motion": "^7.10.2",
+    "jwt-decode": "^4.0.0",
     "papaparse": "^5.4.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.11.174",
