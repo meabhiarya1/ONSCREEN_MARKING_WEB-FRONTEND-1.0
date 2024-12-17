@@ -42,7 +42,13 @@ const CourseModal = ({
                 htmlFor="name"
                 className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
               >
+
+                <span className="text-xs font-medium text-gray-700">
+                  Course
+                </span>
+
                 <span className="text-sm font-medium text-gray-800">Course Name</span>
+
                 <input
                   type="text"
                   id="name"
@@ -52,7 +58,7 @@ const CourseModal = ({
                   value={formData.name}
                   onChange={handleChange} // Handle changes
                 />
-              </label>
+              </label>;
 
               <label
                 htmlFor="code"
