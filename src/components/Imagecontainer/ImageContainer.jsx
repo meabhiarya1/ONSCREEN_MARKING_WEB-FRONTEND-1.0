@@ -29,34 +29,73 @@ const ImageContainer = () => {
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [canvasStates, setCanvasStates] = useState({});
   const [currentImage, setCurrentImage] = useState(null);
+  const [startDrawing, setStartDrawing] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  const [mouseUp, setMouseUp] = useState(false);
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
   const canvasRef = useRef(null);
+  const iconRefs = useRef([]);
+  // Handle clicks outside of selected icon
+  // Handle double-click outside of the specific image container
+  useEffect(() => {
+    const handleOutsideDoubleClick = (event) => {
+      if (selectedIcon !== null) {
+        const selectedIconRef = iconRefs.current[selectedIcon];
+        if (selectedIconRef && !selectedIconRef.contains(event.target)) {
+          setSelectedIcon(null); // Deselect icon if clicked outside
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideDoubleClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideDoubleClick); // Cleanup on unmount
+    };
+  }, [selectedIcon]);
+
+  const handleIconDoubleClick = (index) => {
+    setSelectedIcon(index); // Mark the icon as selected
+  };
+
+  const handleDeleteIcon = (index) => {
+    setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
+    setSelectedIcon(null); // Reset selected icon
+  };
   // Zoom in and out with smooth transition
   const zoomIn = () => setScale((prevScale) => prevScale + 0.1);
   const zoomOut = () => setScale((prevScale) => prevScale - 0.1);
   // Start drawing when the mouse is pressed down
 
   const handleCanvasMouseDown = (e) => {
+    setStartDrawing(true); // Set flag for drawing
+    setMouseUp(false); // Reset mouse up state
+
     const rect = canvasRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / scale;
     const y = (e.clientY - rect.top) / scale;
-    setIsDrawing(true);
-    setDrawing((prev) => [...prev, { x, y, mode: "start" }]);
+
+    setDrawing((prev) => [
+      ...prev,
+      { x, y, mode: "start" }, // Add starting point to differentiate new drawing
+    ]);
   };
 
   // Continue drawing when the mouse is moved
   const handleCanvasMouseMove = (e) => {
     if (!isDrawing) return;
-
     const rect = canvasRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / scale;
     const y = (e.clientY - rect.top) / scale;
     setDrawing((prev) => [...prev, { x, y, mode: "draw" }]);
   };
+
   // Stop drawing when the mouse is released
   const handleCanvasMouseUp = () => {
-    setIsDrawing(false);
+    setStartDrawing(false);
+    setMouseUp(true);
+    // setIsDrawing(false);
   };
 
   // Load the canvas state when the image changes
@@ -119,33 +158,35 @@ const ImageContainer = () => {
   }, [scale]); // Run effect every time scale changes
   // Draw on the canvas
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.lineWidth = 2;
-    context.strokeStyle = "red";
-    context.lineJoin = "round";
+    if (startDrawing) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.lineWidth = 2;
+      context.strokeStyle = "red";
+      context.lineJoin = "round";
 
-    let prevX = null;
-    let prevY = null;
+      let prevX = null;
+      let prevY = null;
 
-    drawing.forEach(({ x, y, mode }) => {
-      if (mode === "start") {
-        prevX = x;
-        prevY = y;
-      }
-      if (mode === "draw") {
-        context.beginPath();
-        context.moveTo(prevX, prevY);
-        context.lineTo(x, y);
-        context.closePath();
-        context.stroke();
-        prevX = x;
-        prevY = y;
-      }
-    });
+      drawing.forEach(({ x, y, mode }) => {
+        if (mode === "start") {
+          prevX = x;
+          prevY = y;
+        }
+        if (mode === "draw") {
+          context.beginPath();
+          context.moveTo(prevX, prevY);
+          context.lineTo(x, y);
+          context.closePath();
+          context.stroke();
+          prevX = x;
+          prevY = y;
+        }
+      });
+    }
   }, [drawing, scale]);
-  
+
   // Track mouse movement for dragging icons
   const handleMouseMove = (e) => {
     if (containerRef.current) {
@@ -166,7 +207,7 @@ const ImageContainer = () => {
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         });
-      } else if (isDrawing) {
+      } else if (isDrawing && startDrawing) {
         const rect = canvasRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left) / scale;
         const y = (e.clientY - rect.top) / scale;
@@ -383,8 +424,8 @@ const ImageContainer = () => {
         onClick={handleImageClick} // Handle image click for dropping the icon
         onMouseMove={handleMouseMove} // Track mouse move for icon dragging preview
         // onMouseMove={handleCanvasMouseMove} // Track mouse move for drawing
-        onMouseDown={isDrawing ? handleCanvasMouseDown : undefined} // Only draw when in drawing mode
-        onMouseUp={isDrawing ? handleCanvasMouseUp : undefined}
+        onMouseDown={handleCanvasMouseDown} // Only draw when in drawing mode
+        onMouseUp={handleCanvasMouseUp}
       >
         <div
           style={{
@@ -400,24 +441,18 @@ const ImageContainer = () => {
           <img
             src={`/sampleimg/CS603_1119_page-${currentIndex}.jpg`}
             alt="Viewer"
-            // style={{
-            //   transform: `scale(${scale})`,
-            //   transformOrigin: "top left",
-            //   transition: "transform 0.2s ease-in-out",
-            //   maxWidth: "none",
-            // }}
           />
-
           {/* Render all placed icons */}
           {icons.map((icon, index) => (
             <div
               key={index}
+              ref={(el) => (iconRefs.current[index] = el)}
               style={{
                 position: "absolute",
                 top: `${icon.y}px`, // Scale the position
                 left: `${icon.x}px`, // Scale the position
                 zIndex: 10,
-                border: "2px dashed black", // Boundary for draggable icons
+                border: selectedIcon === index ? "2px dashed black" : "none", // Show border if selected
                 cursor: "pointer",
                 padding: "5px",
                 transform: `scale(${scale})`, // Scale the icon size
@@ -425,8 +460,32 @@ const ImageContainer = () => {
                 transition: "transform 0.2s ease-in-out", // Smooth transition
               }}
               onMouseDown={(e) => handleIconDragStart(index, e)} // Allow dragging
+              onDoubleClick={() => handleIconDoubleClick(index)} // Show border and cross button
             >
               <img src={icon.iconUrl} alt="icon" width={40} height={40} />
+              {/* Cross button for deletion */}
+              {selectedIcon === index && (
+                <button
+                  style={{
+                    position: "absolute",
+                    top: "-10px",
+                    right: "-10px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "20px",
+                    height: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleDeleteIcon(index)}
+                >
+                  ✖
+                </button>
+              )}
             </div>
           ))}
 
