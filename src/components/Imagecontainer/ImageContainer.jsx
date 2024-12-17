@@ -5,6 +5,7 @@ import { BiCommentAdd } from "react-icons/bi";
 import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
 import { useSelector } from "react-redux";
+import Tools from "./Tools";
 
 const IconsData = [
   { imgUrl: "/blank.jpg" },
@@ -32,6 +33,7 @@ const ImageContainer = () => {
   const [startDrawing, setStartDrawing] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
   const [mouseUp, setMouseUp] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("red");
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
   const canvasRef = useRef(null);
@@ -54,49 +56,6 @@ const ImageContainer = () => {
       document.removeEventListener("mousedown", handleOutsideDoubleClick); // Cleanup on unmount
     };
   }, [selectedIcon]);
-
-  const handleIconDoubleClick = (index) => {
-    setSelectedIcon(index); // Mark the icon as selected
-  };
-
-  const handleDeleteIcon = (index) => {
-    setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
-    setSelectedIcon(null); // Reset selected icon
-  };
-  // Zoom in and out with smooth transition
-  const zoomIn = () => setScale((prevScale) => prevScale + 0.1);
-  const zoomOut = () => setScale((prevScale) => prevScale - 0.1);
-  // Start drawing when the mouse is pressed down
-
-  const handleCanvasMouseDown = (e) => {
-    setStartDrawing(true); // Set flag for drawing
-    setMouseUp(false); // Reset mouse up state
-
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / scale;
-    const y = (e.clientY - rect.top) / scale;
-
-    setDrawing((prev) => [
-      ...prev,
-      { x, y, mode: "start" }, // Add starting point to differentiate new drawing
-    ]);
-  };
-
-  // Continue drawing when the mouse is moved
-  const handleCanvasMouseMove = (e) => {
-    if (!isDrawing) return;
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / scale;
-    const y = (e.clientY - rect.top) / scale;
-    setDrawing((prev) => [...prev, { x, y, mode: "draw" }]);
-  };
-
-  // Stop drawing when the mouse is released
-  const handleCanvasMouseUp = () => {
-    setStartDrawing(false);
-    setMouseUp(true);
-    // setIsDrawing(false);
-  };
 
   // Load the canvas state when the image changes
   useEffect(() => {
@@ -126,17 +85,6 @@ const ImageContainer = () => {
     loadCanvasState();
   }, [currentIndex]);
 
-  // Save the canvas state as a base64 string
-  const saveCanvasState = () => {
-    const canvas = canvasRef.current;
-    const dataURL = canvas.toDataURL();
-
-    setCanvasStates((prevStates) => ({
-      ...prevStates,
-      [currentImage]: dataURL, // Save the canvas state for the current image
-    }));
-  };
-
   // Function to update canvas size when image is scaled
   useEffect(() => {
     if (canvasRef.current) {
@@ -163,7 +111,7 @@ const ImageContainer = () => {
       const context = canvas.getContext("2d");
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.lineWidth = 2;
-      context.strokeStyle = "red";
+      context.strokeStyle = selectedColor;
       context.lineJoin = "round";
 
       let prevX = null;
@@ -186,6 +134,49 @@ const ImageContainer = () => {
       });
     }
   }, [drawing, scale]);
+  const handleIconDoubleClick = (index) => {
+    setSelectedIcon(index); // Mark the icon as selected
+  };
+
+  // Save the canvas state as a base64 string
+  const saveCanvasState = () => {
+    const canvas = canvasRef.current;
+    const dataURL = canvas.toDataURL();
+    setCanvasStates((prevStates) => ({
+      ...prevStates,
+      [currentImage]: dataURL, // Save the canvas state for the current image
+    }));
+  };
+
+  const handleDeleteIcon = (index) => {
+    setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
+    setSelectedIcon(null); // Reset selected icon
+  };
+  // Zoom in and out with smooth transition
+  const zoomIn = () => setScale((prevScale) => prevScale + 0.1);
+  const zoomOut = () => setScale((prevScale) => prevScale - 0.1);
+  // Start drawing when the mouse is pressed down
+
+  const handleCanvasMouseDown = (e) => {
+    setStartDrawing(true); // Set flag for drawing
+    setMouseUp(false); // Reset mouse up state
+
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
+
+    setDrawing((prev) => [
+      ...prev,
+      { x, y, mode: "start" }, // Add starting point to differentiate new drawing
+    ]);
+  };
+
+  // Stop drawing when the mouse is released
+  const handleCanvasMouseUp = () => {
+    setStartDrawing(false);
+    setMouseUp(true);
+    // setIsDrawing(false);
+  };
 
   // Track mouse movement for dragging icons
   const handleMouseMove = (e) => {
@@ -225,9 +216,6 @@ const ImageContainer = () => {
 
   // Handle dropping the icon on the image
   const handleImageClick = (e) => {
-    // if (activeDrawing) {
-    //   setIsDrawing(!isDrawing);
-    // }
     if (containerRef.current && currentIcon) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
@@ -310,104 +298,21 @@ const ImageContainer = () => {
 
   return (
     <>
-      <div className="flex justify-center border bg-[#e0e2e6] p-2">
-        <aside className="me-2 flex justify-center">
-          <div className="">
-            <button
-              className="mb-2 me-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-              onClick={handleZoomMenu}
-            >
-              <span className="flex items-center justify-center">
-                <span className="mr-1">{scalePercent}%</span>
-                <IoIosArrowDown />
-              </span>
-            </button>
-            {isZoomMenuOpen && (
-              <div className=" absolute z-10  h-[200px] w-[65px] border-spacing-1 cursor-pointer overflow-auto border bg-gray-50 p-2 shadow-md ">
-                <ul>{ZoomModal}</ul>
-              </div>
-            )}
-          </div>
-          <div>
-            <button
-              className="mb-2 me-1 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 hover:bg-gray-100 focus:outline-none"
-              onClick={zoomIn}
-            >
-              <FiZoomIn />
-            </button>
-
-            <button
-              className="mb-2 rounded-md px-2.5 py-2.5 text-sm font-medium text-gray-900 opacity-70 focus:outline-none"
-              onClick={zoomOut}
-            >
-              <FiZoomOut />
-            </button>
-          </div>
-        </aside>
-
-        <button
-          className={`mb-2 me-2 rounded-md   px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none  ${
-            isDrawing
-              ? "bg-gray-300 hover:bg-gray-400 "
-              : "bg-white hover:bg-gray-100 "
-          }`}
-          style={
-            isDrawing
-              ? { cursor: "url('/toolImg/Handwriting.cur'), auto" } // Pencil cursor when drawing
-              : { cursor: "auto" } // Default cursor otherwise
-          }
-          onClick={() => setIsDrawing((prev) => !prev)}
-        >
-          <LuPencilLine />
-        </button>
-
-        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
-          <BiCommentAdd />
-        </button>
-
-        {/* Icon Modal Button and Modal */}
-        <div className="relative flex">
-          <div className="mb-2 me-2 flex w-[200px] justify-center bg-white">
-            {!currentIcon && (
-              <span className="self-center">No Icon Selected</span>
-            )}
-            {currentIcon && (
-              <img
-                src={currentIcon}
-                width={40}
-                height={30}
-                className="md rounded p-1 shadow"
-                alt="icon"
-              />
-            )}
-          </div>
-          <button
-            onClick={() => setIconModal(!iconModal)}
-            className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none"
-          >
-            <span
-              className={`block transition-transform duration-300 ${
-                iconModal ? "rotate-180" : ""
-              }`}
-            >
-              <IoIosArrowDown />
-            </span>
-          </button>
-          {iconModal && (
-            <div className="absolute z-10 mt-11 grid h-[300px] w-[240px] border-spacing-1 grid-cols-1 gap-2 border bg-gray-50 p-2 shadow-md sm:grid-cols-2 md:grid-cols-3">
-              {IconModal}
-            </div>
-          )}
-        </div>
-
-        {/* Undo and Redo Buttons */}
-        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
-          <GrUndo />
-        </button>
-        <button className="mb-2 me-2 rounded-md bg-white px-2.5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none">
-          <GrRedo />
-        </button>
-      </div>
+      <Tools
+        scalePercent={scalePercent}
+        handleZoomMenu={handleZoomMenu}
+        isZoomMenuOpen={isZoomMenuOpen}
+        ZoomModal={ZoomModal}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
+        isDrawing={isDrawing}
+        setIsDrawing={setIsDrawing}
+        iconModal={iconModal}
+        setIconModal={setIconModal}
+        currentIcon={currentIcon}
+        IconModal={IconModal}
+        setSelectedColor={setSelectedColor}
+      />
 
       {/* Image Viewer Section */}
 
@@ -423,7 +328,6 @@ const ImageContainer = () => {
         }}
         onClick={handleImageClick} // Handle image click for dropping the icon
         onMouseMove={handleMouseMove} // Track mouse move for icon dragging preview
-        // onMouseMove={handleCanvasMouseMove} // Track mouse move for drawing
         onMouseDown={handleCanvasMouseDown} // Only draw when in drawing mode
         onMouseUp={handleCanvasMouseUp}
       >
