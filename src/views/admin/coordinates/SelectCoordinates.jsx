@@ -21,7 +21,17 @@ const SelectCoordinates = () => {
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [images, setImages] = useState([]);
+  const [folderIdQuestion, setFolderIdQuestion] = useState(undefined);
+  const [questionId, setQuestionId] = useState("");
+  const [questionDone, setQuestionDone] = useState([]);
+  const [filterOutQuestionDone, setFilterOutQuestionDone] = useState([]);
+  const [formData, setFormData] = useState({
+    courseSchemaRelationId: "",
+    questionId: "",
+    questionImages: [],
+    answerImages: [],
+  });
+  const [showAnswerModel, setShowAnswerModel] = useState(false);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -77,7 +87,140 @@ const SelectCoordinates = () => {
     fetchedData();
   }, [id, token]);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchedData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/coordinates/getcoordinateallocationbyschemarelationid/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setQuestionDone(response.data);
+      } catch (error) {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      }
+    };
+    fetchedData();
+  }, [id, token]);
+
+  useEffect(() => {
+    setFilterOutQuestionDone(
+      savedQuestionData.filter((savedItem) =>
+        questionDone.some((doneItem) => savedItem._id === doneItem.questionId)
+      )
+    );
+  }, [savedQuestionData, questionDone]);
+
+  const handleSubmitButton = async () => {
+    if (
+      formData.questionImages.length === 0 ||
+      formData.answerImages.length === 0
+    ) {
+      toast.error("Please select at least one image");
+      return;
+    }
+
+    // Optimistic update
+    setQuestionDone((prev) => [
+      ...prev,
+      { questionId: formData.questionId, temporary: true },
+    ]);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/coordinates/createcoordinateallocation`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      // Replace the optimistic update with real data
+      setQuestionDone((prev) =>
+        prev.map((item) =>
+          item.questionId === formData.questionId
+            ? { questionId: formData.questionId, ...response.data }
+            : item
+        )
+      );
+
+      setShowAnswerModel(false);
+      setShowImageModal(false);
+      toast.success("Coordinates added successfully");
+    } catch (error) {
+      // Rollback optimistic update if there's an error
+      setQuestionDone((prev) =>
+        prev.filter((item) => item.questionId !== formData.questionId)
+      );
+
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const handleUpdateButton = async (questionIdtoUpdate) => {
+    const primaryQuestionToUpdate = questionDone.filter(
+      (item) => item.questionId === questionIdtoUpdate
+    );
+
+    if (
+      formData.questionImages.length === 0 ||
+      formData.answerImages.length === 0
+    ) {
+      toast.error("Please select at least one image");
+      return;
+    }
+
+    // Optimistic update
+    setQuestionDone((prev) => [
+      ...prev,
+      { questionId: formData.questionId, temporary: true },
+    ]);
+
+    const updatedData = {
+      answerImages: formData.answerImages,
+      questionImages: formData.questionImages,
+    };
+
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/coordinates/updatecoordinateallocation/${primaryQuestionToUpdate[0]._id}`,
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      // Replace the optimistic update with real data
+      setQuestionDone((prev) =>
+        prev.map((item) =>
+          item.questionId === formData.questionId
+            ? { questionId: formData.questionId, ...response.data }
+            : item
+        )
+      );
+
+      setShowAnswerModel(false);
+      setShowImageModal(false);
+      toast.success("Coordinates added successfully");
+    } catch (error) {
+      // Rollback optimistic update if there's an error
+      setQuestionDone((prev) =>
+        prev.filter((item) => item.questionId !== formData.questionId)
+      );
+
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
 
   const generateFolders = (count) => {
     const folders = [];
@@ -113,16 +256,31 @@ const SelectCoordinates = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  //   console.log(savedQuestionData);
+  // const handleSelectCoordinates = async (folder, _, level) => {
+  //   // if (folder.originalId) {
+  //   //   navigate(`/admin/coordinates/${folder.originalId}`);
+  //   // } else {
+  //   //   toast.error("No coordinates selected");
+  //   //   return;
+  //   // }
+  //   setShowImageModal(!showImageModal);
+  //   setQuestionId(
+  //     savedQuestionData.filter(
+  //       (savedQuestion) =>
+  //         parseInt(savedQuestion.questionsName) === folder.id || undefined
+  //     )
+  //   );
+  // };
 
-  const handleSelectCoordinates = async (folder, _, level) => {
-    // if (folder.originalId) {
-    //   navigate(`/admin/coordinates/${folder.originalId}`);
-    // } else {
-    //   toast.error("No coordinates selected");
-    //   return;
-    // }
-    setShowImageModal(!showImageModal);
+  const handleSelectCoordinates = async (folder) => {
+    setFolderIdQuestion(folder.id); // Set the folder ID
+    setShowImageModal(true); // Show the modal
+    setQuestionId(
+      savedQuestionData.filter(
+        (savedQuestion) =>
+          parseInt(savedQuestion.questionsName) === folder.id || undefined
+      )
+    );
   };
 
   const handleFolderClick = async (folderId) => {
@@ -212,9 +370,13 @@ const SelectCoordinates = () => {
 
     folder.originalId = currentQ[0]?._id;
 
+    const isAvailable = filterOutQuestionDone.find(
+      (item) => parseInt(item.questionsName) === folderId
+    );
+
     return (
       <div
-        className={`${folderStyle} p-4 ${color} rounded shadow`}
+        className={`${folderStyle} p-4 ${color} rounded text-gray-700 shadow`}
         key={folder.id}
       >
         {level > 0 && (
@@ -227,18 +389,19 @@ const SelectCoordinates = () => {
         {level > 0 && (
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
-        <div className="w-full flex-col gap-2">
-          <div className="flex items-center gap-4">
+        <div className="w-full flex-col gap-4">
+          <div className="flex items-center gap-12">
             <span
-              className="text-black-500 cursor-pointer font-semibold"
+              className="text-black-500 cursor-pointer font-semibold "
               onClick={() => handleFolderClick(folder.id)}
             >
-              📁 {folder?.name}
+              {isAvailable ? "☑️" : "📁"}
+              {folder?.name}
             </span>
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <span className="border  px-2 py-1 text-sm font-medium ">
+            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Max Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -247,7 +410,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="border  px-2 py-1 text-sm font-medium ">
+            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Min Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -256,7 +419,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="border  px-2 py-1 text-sm font-medium ">
+            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Bonus Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -265,7 +428,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="border  px-2 py-1 text-sm font-medium ">
+            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -286,36 +449,48 @@ const SelectCoordinates = () => {
               }
             />
 
-            <label className="text-sm font-medium text-gray-700">
+            <label className={`text-sm font-medium  ${"text-gray-800"}`}>
               Sub Questions
             </label>
 
             <button
-              className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 py-1.5 text-white"
+              className={`font-md rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white  ${
+                isAvailable ? "px-[25px]" : "px-3"
+              }`}
               disabled={isSaving}
               onClick={() => handleSelectCoordinates(folder)}
             >
-              Questions
+              {isAvailable ? "Update" : "Questions"}
             </button>
           </div>
 
           {/* Sub Questions Input Fields */}
           {folder.showInputs && (
             <div className="ml-12 mt-4 flex items-center gap-4">
-              <label className="ml-2 text-sm text-gray-700">
+              <label className={`ml-2 text-sm ${"text-gray-800"} `}>
                 No. of Sub-Questions:
               </label>
-              <span className="border  px-2 py-1 text-sm font-medium ">
+              <span
+                className={`px-2 py-1 text-sm font-medium ${
+                  isAvailable ? "text-white" : "border text-gray-700"
+                }`}
+              >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
                     ? currentQ[0]?.numberOfSubQuestions
                     : "0"
                   : "0"}
               </span>
-              <label className="ml-2 text-sm text-gray-700">
+              <label
+                className={`ml-2 text-sm ${
+                  isAvailable ? "text-white" : "text-gray-700"
+                } `}
+              >
                 No. of compulsory Sub-Questions
               </label>
-              <span className="border  px-2 py-1 text-sm font-medium ">
+              <span
+                className={`px-2 py-1 text-sm font-medium ${"  text-gray-700"}`}
+              >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
                     ? currentQ[0]?.compulsorySubQuestions
@@ -344,8 +519,15 @@ const SelectCoordinates = () => {
         <ImageModal
           showImageModal={showImageModal}
           setShowImageModal={setShowImageModal}
-          images={images}
-          setImages={setImages}
+          questionId={questionId[0]?._id}
+          handleSubmitButton={handleSubmitButton}
+          setFormData={setFormData}
+          showAnswerModel={showAnswerModel}
+          setShowAnswerModel={setShowAnswerModel}
+          handleUpdateButton={handleUpdateButton}
+          isAvailable={filterOutQuestionDone.some(
+            (item) => parseInt(item.questionsName) === folderIdQuestion // Calculate based on folderId
+          )}
         />
       )}
     </div>
