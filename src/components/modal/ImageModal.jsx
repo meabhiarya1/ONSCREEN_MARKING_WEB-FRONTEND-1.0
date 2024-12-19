@@ -12,6 +12,7 @@ const ImageModal = ({
   setShowAnswerModel,
   handleUpdateButton,
   isAvailable,
+  questionDone,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(1);
   const [questionsPdfPath, setQuestionsPdfPath] = useState(undefined);
@@ -68,6 +69,59 @@ const ImageModal = ({
     };
     fetchedData();
   }, [id]);
+  
+  useEffect(() => {
+    setCheckboxStatus({});
+    if (prefilledQuestionTobeShown?.length !== 0) {
+      if (!showAnswerModel) {
+        // Extract the numbers using map and regex
+        const extractedNumbersArray =
+          prefilledQuestionTobeShown[0].questionImages
+            .map((image) => {
+              const match = image.match(/image_(\d+)\.png/);
+              return match ? parseInt(match[1], 10) : null; // Extract and convert to number
+            })
+            .filter((num) => num !== null); // Remove any null values
+
+        extractedNumbersArray.map((num) => {
+          setCheckboxStatus((prevStatus) => ({
+            ...prevStatus,
+            [num]: true, // Set the checkbox status for the extracted numbers
+          }));
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            questionImages: [
+              ...prevFormData.questionImages,
+              `image_${num}.png`,
+            ],
+          }));
+        });
+      } else {
+        const extractedNumbersArray =
+          prefilledQuestionTobeShown[0]?.answerImages
+            .map((image) => {
+              const match = image.match(/image_(\d+)\.png/);
+              return match ? parseInt(match[1], 10) : null; // Extract and convert to number
+            })
+            .filter((num) => num !== null); // Remove any null values
+
+        extractedNumbersArray.map((num) => {
+          setCheckboxStatus((prevStatus) => ({
+            ...prevStatus,
+            [num]: true, // Set the checkbox status for the extracted numbers
+          }));
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            answerImages: [...prevFormData.answerImages, `image_${num}.png`],
+          }));
+        });
+      }
+    }
+  }, [setCheckboxStatus, showAnswerModel]);
+
+  const prefilledQuestionTobeShown = questionDone?.filter(
+    (question) => question.questionId === questionId
+  );
 
   const handleSelectedImage = (index, imageName) => {
     setCheckboxStatus((prevStatus) => {
@@ -114,9 +168,11 @@ const ImageModal = ({
     });
   };
 
+  console.log(checkboxStatus);
+
   const handleQuestionConfirm = () => {
     setShowAnswerModel(!showAnswerModel);
-    setCheckboxStatus(false);
+    setCheckboxStatus({});
     setCurrentImageIndex(1);
   };
 
@@ -134,7 +190,7 @@ const ImageModal = ({
               className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900"
               onClick={() => {
                 setShowImageModal(false);
-                setQuestionsPdfPath((questionsPdfPath));
+                setQuestionsPdfPath(questionsPdfPath);
                 setAnswersPdfPath(undefined);
               }}
             >
@@ -147,7 +203,7 @@ const ImageModal = ({
               alt={`Slide ${currentImageIndex}`}
               className={`mb-1 h-[750px] w-full rounded-lg object-contain ${
                 checkboxStatus[currentImageIndex]
-                  ? "border-2 border-green-700"
+                  ? "border-2 border-green-700 shadow-lg hover:shadow-2xl "
                   : ""
               }`}
               style={{ maxWidth: "100%", maxHeight: "100%", cursor: "pointer" }}
@@ -191,12 +247,22 @@ const ImageModal = ({
                       className="flex cursor-pointer items-start gap-4"
                     >
                       <div className="flex items-center">
+                        {console.log(checkboxStatus[currentImageIndex])}
                         &#8203;
                         <input
                           type="checkbox"
                           className="size-4 cursor-pointer rounded border-gray-300 "
                           id="Option"
-                          checked={checkboxStatus[currentImageIndex] || false}
+                          checked={
+                            prefilledQuestionTobeShown.length > 0 &&
+                            prefilledQuestionTobeShown[0].questionImages
+                              ? prefilledQuestionTobeShown[0].questionImages.includes(
+                                  `image_${currentImageIndex}.png`
+                                )
+                              : checkboxStatus[currentImageIndex] === true
+                              ? true
+                              : false
+                          }
                           onClick={() => {
                             handleSelectedImage(
                               currentImageIndex,
@@ -299,7 +365,18 @@ const ImageModal = ({
                           type="checkbox"
                           className="size-4 cursor-pointer rounded border-gray-300 "
                           id="Option"
-                          checked={checkboxStatus[currentImageIndex] || false}
+                          checked={
+                            (
+                              prefilledQuestionTobeShown.length > 0 &&
+                              prefilledQuestionTobeShown[0].answerImages
+                                ? prefilledQuestionTobeShown[0].answerImages.includes(
+                                    `image_${currentImageIndex}.png`
+                                  )
+                                : checkboxStatus[currentImageIndex] === true
+                            )
+                              ? true
+                              : false
+                          }
                           onClick={() => {
                             handleSelectedImage(
                               currentImageIndex,

@@ -98,7 +98,7 @@ const SelectCoordinates = () => {
             },
           }
         );
-        setQuestionDone(response.data);
+        setQuestionDone(response?.data);
       } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.message);
@@ -152,6 +152,12 @@ const SelectCoordinates = () => {
 
       setShowAnswerModel(false);
       setShowImageModal(false);
+      setFormData({
+        courseSchemaRelationId: "",
+        questionId: "",
+        questionImages: [],
+        answerImages: [],
+      });
       toast.success("Coordinates added successfully");
     } catch (error) {
       // Rollback optimistic update if there's an error
@@ -168,7 +174,6 @@ const SelectCoordinates = () => {
     const primaryQuestionToUpdate = questionDone.filter(
       (item) => item.questionId === questionIdtoUpdate
     );
-
     if (
       formData.questionImages.length === 0 ||
       formData.answerImages.length === 0
@@ -187,6 +192,10 @@ const SelectCoordinates = () => {
       answerImages: formData.answerImages,
       questionImages: formData.questionImages,
     };
+
+    // console.log(updatedData)
+    // return
+
 
     try {
       const response = await axios.put(
@@ -307,7 +316,7 @@ const SelectCoordinates = () => {
           },
         }
       );
-      console.log(response?.data?.data);
+      // console.log(response?.data?.data);
       toggleInputsVisibility(folderId);
       const subQuestionsNumber =
         response?.data?.data?.parentQuestion.numberOfSubQuestions || [];
@@ -354,6 +363,8 @@ const SelectCoordinates = () => {
     }
   };
 
+  console.log(formData);
+
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
     const isSaving = savingStatus[folderId] || false; // Check saving status for this folder
@@ -392,7 +403,7 @@ const SelectCoordinates = () => {
         <div className="w-full flex-col gap-4">
           <div className="flex items-center gap-12">
             <span
-              className="text-black-500 cursor-pointer font-semibold "
+              className="text-black-500 cursor-pointer font-semibold"
               onClick={() => handleFolderClick(folder.id)}
             >
               {isAvailable ? "☑️" : "📁"}
@@ -401,7 +412,7 @@ const SelectCoordinates = () => {
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Max Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -410,7 +421,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Min Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -419,7 +430,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Bonus Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -428,7 +439,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -467,13 +478,11 @@ const SelectCoordinates = () => {
           {/* Sub Questions Input Fields */}
           {folder.showInputs && (
             <div className="ml-12 mt-4 flex items-center gap-4">
-              <label className={`ml-2 text-sm ${"text-gray-800"} `}>
+              <label className={`ml-2 text-sm font-bold  ${"text-gray-700"} `}>
                 No. of Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-medium ${
-                  isAvailable ? "text-white" : "border text-gray-700"
-                }`}
+                className={`px-2 py-1 text-sm font-bold ${"text-gray-700"}`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -481,15 +490,11 @@ const SelectCoordinates = () => {
                     : "0"
                   : "0"}
               </span>
-              <label
-                className={`ml-2 text-sm ${
-                  isAvailable ? "text-white" : "text-gray-700"
-                } `}
-              >
+              <label className={`ml-2 text-sm font-bold ${"text-gray-700"} `}>
                 No. of compulsory Sub-Questions
               </label>
               <span
-                className={`px-2 py-1 text-sm font-medium ${"  text-gray-700"}`}
+                className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"}`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -528,6 +533,7 @@ const SelectCoordinates = () => {
           isAvailable={filterOutQuestionDone.some(
             (item) => parseInt(item.questionsName) === folderIdQuestion // Calculate based on folderId
           )}
+          questionDone={questionDone}
         />
       )}
     </div>
