@@ -1,36 +1,90 @@
-import { PiExportDuotone } from "react-icons/pi";
-import LineChart from "./charts/LineChart";
+import { IoBagHandle } from "react-icons/io5";
+import BarChart from "./charts/BarChart";
+import DoughnutChart from "./charts/DoughnutChart";
+import Boxes from "./boxes/Boxes";
+import { useState } from "react";
 
 const Dashboard = () => {
+  const [expandedChart, setExpandedChart] = useState(null);
+
+  const openChart = (chartType) => {
+    setExpandedChart(chartType);
+  };
+
+  const closeChart = () => {
+    setExpandedChart(null);
+  };
+
   return (
-    <div className="p-5 flex flex-col gap-10 w-full">
-      <div className="data-1 flex flex-col gap-5 h-72 lg:flex-row lg:gap-5">
-        <div className="Content-1 w-3/5 bg-white p-4 rounded-lg h-full">
-          <div className="flex py-4">
-            <div>
-              <div>Today's Sales</div>
-              <div>Sales Summary</div>
-            </div>
-            <div><span><PiExportDuotone /></span><button>Export</button></div>
-          </div>
-          {/* colorful boxes */}
-          <div className="flex gap-10">
-            <div className="bg-red-200 h-32 w-40 rounded-md">a</div>
-            <div className="bg-yellow-200 h-32 w-40 rounded-md">b</div>
-            <div className="bg-green-200 h-32 w-40 rounded-md">c</div>
-            <div className="bg-purple-200 h-32 w-40 rounded-md">d</div>
+    <div className="dashboard relative p-5 dark:text-white">
+      {/* Boxes Area */}
+      <div className="boxes flex flex-col items-center justify-start gap-5 sm:gap-5 md:flex-row md:gap-3 lg:gap-7">
+        <Boxes
+          icon={<IoBagHandle fontSize={36} />}
+          title={"Total Sales"}
+          amount={478540}
+          percentage={45}
+        />
+        <Boxes
+          icon={<IoBagHandle fontSize={36} />}
+          title={"Total Sales"}
+          amount={478540}
+          percentage={45}
+        />
+        <Boxes
+          icon={<IoBagHandle fontSize={36} />}
+          title={"Total Sales"}
+          amount={478540}
+          percentage={45}
+        />
+        <Boxes
+          icon={<IoBagHandle fontSize={36} />}
+          title={"Total Sales"}
+          amount={478540}
+          percentage={45}
+        />
+      </div>
+
+      <div className="my-8 text-4xl font-semibold">Data Analytics</div>
+
+      {/* Charts Area */}
+      <div className="charts my-7 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
+        {/* Bar Chart Section */}
+        <div
+          onClick={() => openChart("bar")}
+          className="bar w-full cursor-pointer rounded-xl border-blue-300 bg-white p-4 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:border hover:shadow-xl dark:bg-navy-700 dark:shadow-gray-800 md:w-full lg:w-7/12"
+        >
+          <div className="flex h-72 items-center justify-center sm:h-80 md:h-96">
+            <BarChart />
           </div>
         </div>
-        <div className="Content-2 w-1/3 bg-white p-4 rounded-lg h-full">
-        <LineChart />
+
+        {/* Doughnut Chart Section */}
+        <div
+          onClick={() => openChart("doughnut")}
+          className="line w-full cursor-pointer rounded-xl border-blue-300 bg-white p-4 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:border hover:shadow-xl dark:bg-navy-700 dark:shadow-gray-800 md:w-full lg:w-5/12"
+        >
+          <div className="flex h-72 justify-center sm:h-80 md:h-96">
+            <DoughnutChart />
+          </div>
         </div>
       </div>
 
-      <div className="data-2 flex justify-starrt items-center gap-5 h-64">
-        <div className="Content-4 w-5/12 bg-white p-4 rounded-lg h-full"></div>
-        <div className="Content-5 w-3/12 bg-white p-4 rounded-lg h-full"><LineChart /></div>
-        <div className="Content-6 w-3/12 bg-white p-4 rounded-lg h-full"></div>
-      </div>
+      {/* Expanded Chart Modal */}
+      {expandedChart && (
+        <div
+          className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md"
+          onClick={closeChart}
+        >
+          <div
+            className="w-11/12 max-w-4xl rounded-lg bg-white p-6 dark:bg-navy-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {expandedChart === "bar" && <BarChart />}
+            {expandedChart === "doughnut" && <DoughnutChart />}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
