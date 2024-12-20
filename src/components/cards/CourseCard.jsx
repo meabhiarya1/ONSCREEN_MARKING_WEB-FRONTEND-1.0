@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import SelectSchemaModal from "components/modal/SelectSchemaModal";
 
@@ -36,6 +36,7 @@ const CourseCard = ({
     fetchedData();
   }, []);
 
+  const navigate = useNavigate();
 
   return (
     <div
@@ -104,6 +105,15 @@ const CourseCard = ({
             }}
           >
             Delete
+          </button>
+          <button
+            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            onClick={() => {
+              setSubjectId(subject?._id);
+              navigate(`/admin/subjects/${subject?._id}`);
+            }}
+          >
+            Assign Page
           </button>
         </span>
       </div>

@@ -17,6 +17,7 @@ import CreateSchemaStructure from "views/admin/createSchemaStructure/createSchem
 import SelectCoordinates from "views/admin/coordinates/SelectCoordinates";
 import CoordinateSelection from "views/admin/coordinates/CoordinateSelection";
 import Tasks from "views/admin/tasks/Tasks";
+import AssignPage from "views/admin/assignPage/AssignPage";
 import { BiTask } from "react-icons/bi";
 
 const routes = [
@@ -132,6 +133,14 @@ const routes = [
     icon: <BiTask className="h-6 w-6" />,
     component: <Tasks />,
     hidden: false,
+  },
+  {
+    name: "Tasks",
+    layout: "/admin",
+    path: "subjects/:id",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <AssignPage />,
+    hidden: true,
   },
 ];
 
