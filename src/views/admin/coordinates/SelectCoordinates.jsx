@@ -196,7 +196,6 @@ const SelectCoordinates = () => {
     // console.log(updatedData)
     // return
 
-
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/coordinates/updatecoordinateallocation/${primaryQuestionToUpdate[0]._id}`,
@@ -290,6 +289,11 @@ const SelectCoordinates = () => {
           parseInt(savedQuestion.questionsName) === folder.id || undefined
       )
     );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      questionImages: [],
+      answerImages: [],
+    }));
   };
 
   const handleFolderClick = async (folderId) => {
@@ -363,7 +367,15 @@ const SelectCoordinates = () => {
     }
   };
 
-  console.log(formData);
+  const handleFinalSubmitButton = async () => {
+    try {
+      const response  = await axios.post()
+    } catch (error) {
+      
+    }
+  };
+
+  // console.log(formData);
 
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
@@ -491,7 +503,7 @@ const SelectCoordinates = () => {
                   : "0"}
               </span>
               <label className={`ml-2 text-sm font-bold ${"text-gray-700"} `}>
-                No. of compulsory Sub-Questions
+                No. of compulsory Sub-Questions:
               </label>
               <span
                 className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"}`}
@@ -517,6 +529,35 @@ const SelectCoordinates = () => {
   return (
     <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
       <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+        {" "}
+        <div className="flex justify-end">
+          <span
+            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border px-5 py-2 text-indigo-600 transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
+            onClick={handleFinalSubmitButton}
+          >
+            <span className="font-medium transition-colors group-hover:text-white">
+              {" "}
+              Submit{" "}
+            </span>
+
+            <span className="shrink-0 rounded-full border border-indigo-600 bg-white p-2 group-active:border-indigo-500">
+              <svg
+                className="size-5 rtl:rotate-180"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </span>
+          </span>
+        </div>
         {folders.map((folder) => renderFolder(folder))}
       </div>
 
@@ -534,6 +575,7 @@ const SelectCoordinates = () => {
             (item) => parseInt(item.questionsName) === folderIdQuestion // Calculate based on folderId
           )}
           questionDone={questionDone}
+          formData={formData}
         />
       )}
     </div>

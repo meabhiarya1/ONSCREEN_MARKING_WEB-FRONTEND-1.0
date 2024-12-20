@@ -16,6 +16,8 @@ import Schema from "views/admin/schemas/Schema";
 import CreateSchemaStructure from "views/admin/createSchemaStructure/createSchemaStructure";
 import SelectCoordinates from "views/admin/coordinates/SelectCoordinates";
 import CoordinateSelection from "views/admin/coordinates/CoordinateSelection";
+import Tasks from "views/admin/tasks/Tasks";
+import { BiTask } from "react-icons/bi";
 
 const routes = [
   {
@@ -121,6 +123,14 @@ const routes = [
     path: "schema",
     icon: <FaFileUpload className="h-6 w-6" />,
     component: <Schema />,
+    hidden: false,
+  },
+  {
+    name: "Tasks",
+    layout: "/admin",
+    path: "tasks",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <Tasks />,
     hidden: false,
   },
 ];
