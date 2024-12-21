@@ -115,6 +115,8 @@ const SelectCoordinates = () => {
     );
   }, [savedQuestionData, questionDone]);
 
+  const navigate = useNavigate();
+
   const handleSubmitButton = async () => {
     if (
       formData.questionImages.length === 0 ||
@@ -369,9 +371,20 @@ const SelectCoordinates = () => {
 
   const handleFinalSubmitButton = async () => {
     try {
-      const response  = await axios.post()
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/subjects/relations/getallsubjectschemarelationstatustrue/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Saved successfully");
+      navigate("/admin/courses");
+      // console.log(response?.data);
     } catch (error) {
-      
+      toast.error(error?.response?.data?.message);
+      console.log(error);
     }
   };
 
@@ -535,7 +548,10 @@ const SelectCoordinates = () => {
             className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border px-5 py-2 text-indigo-600 transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
             onClick={handleFinalSubmitButton}
           >
-            <span className="font-medium transition-colors group-hover:text-white">
+            <span
+              className="font-medium transition-colors group-hover:text-white"
+              onClick={handleFinalSubmitButton}
+            >
               {" "}
               Submit{" "}
             </span>
