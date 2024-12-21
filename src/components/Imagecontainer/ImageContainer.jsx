@@ -105,6 +105,7 @@ const ImageContainer = () => {
     }
   }, [scale]); // Run effect every time scale changes
   // Draw on the canvas
+  console.log(drawing)
   useEffect(() => {
     if (startDrawing) {
       const canvas = canvasRef.current;
@@ -137,7 +138,19 @@ const ImageContainer = () => {
   const handleIconDoubleClick = (index) => {
     setSelectedIcon(index); // Mark the icon as selected
   };
+  useEffect(() => {
+    setScalePercent(Math.floor(scale * 100));
+  }, [scale]);
 
+  // Close the dragging icon when right-clicked
+  useEffect(() => {
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("contextmenu", handleRightClick); // Right-click handler
+    return () => {
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("contextmenu", handleRightClick);
+    };
+  }, []);
   // Save the canvas state as a base64 string
   const saveCanvasState = () => {
     const canvas = canvasRef.current;
@@ -147,7 +160,7 @@ const ImageContainer = () => {
       [currentImage]: dataURL, // Save the canvas state for the current image
     }));
   };
-
+console.log(canvasStates)
   const handleDeleteIcon = (index) => {
     setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
     setSelectedIcon(null); // Reset selected icon
@@ -253,20 +266,6 @@ const ImageContainer = () => {
     setIsDraggingIcon(false);
     setDraggedIconIndex(null);
   };
-
-  useEffect(() => {
-    setScalePercent(Math.floor(scale * 100));
-  }, [scale]);
-
-  // Close the dragging icon when right-clicked
-  useEffect(() => {
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("contextmenu", handleRightClick); // Right-click handler
-    return () => {
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("contextmenu", handleRightClick);
-    };
-  }, []);
 
   const IconModal = IconsData.map((item, index) => (
     <img
