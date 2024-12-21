@@ -81,7 +81,7 @@ const Dashboard = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {expandedChart === "bar" && <BarChart />}
-            {expandedChart === "doughnut" && <div className="flex justify-center items-center sm:mx-auto lg:w-1/2 lg:mx-auto"><DoughnutChart /></div>}
+            {expandedChart === "doughnut" && <div className="flex justify-center items-center sm:mx-auto md:w-1/2 md:mx-auto lg:w-1/2 lg:mx-auto"><DoughnutChart /></div>}
           </div>
         </div>
       )}
