@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ImageModal = ({
   showImageModal,
@@ -12,13 +13,14 @@ const ImageModal = ({
   setShowAnswerModel,
   handleUpdateButton,
   isAvailable,
+  questionDone,
+  formData,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(1);
   const [questionsPdfPath, setQuestionsPdfPath] = useState(undefined);
   const [answersPdfPath, setAnswersPdfPath] = useState(undefined);
   const [countQuestions, setCountQuestions] = useState(0);
   const [countAnswers, setCountAnswers] = useState(0);
-
   const [checkboxStatus, setCheckboxStatus] = useState({}); // Object to hold checkbox status for each image
   const { id } = useParams();
 
@@ -69,6 +71,59 @@ const ImageModal = ({
     fetchedData();
   }, [id]);
 
+  useEffect(() => {
+    setCheckboxStatus({});
+    if (prefilledQuestionTobeShown?.length !== 0) {
+      if (!showAnswerModel) {
+        // Extract the numbers using map and regex
+        const extractedNumbersArray =
+          prefilledQuestionTobeShown[0].questionImages
+            .map((image) => {
+              const match = image.match(/image_(\d+)\.png/);
+              return match ? parseInt(match[1], 10) : null; // Extract and convert to number
+            })
+            .filter((num) => num !== null); // Remove any null values
+
+        extractedNumbersArray.map((num) => {
+          setCheckboxStatus((prevStatus) => ({
+            ...prevStatus,
+            [num]: true, // Set the checkbox status for the extracted numbers
+          }));
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            questionImages: [
+              ...prevFormData.questionImages,
+              `image_${num}.png`,
+            ],
+          }));
+        });
+      } else {
+        const extractedNumbersArray =
+          prefilledQuestionTobeShown[0]?.answerImages
+            .map((image) => {
+              const match = image.match(/image_(\d+)\.png/);
+              return match ? parseInt(match[1], 10) : null; // Extract and convert to number
+            })
+            .filter((num) => num !== null); // Remove any null values
+
+        extractedNumbersArray.map((num) => {
+          setCheckboxStatus((prevStatus) => ({
+            ...prevStatus,
+            [num]: true, // Set the checkbox status for the extracted numbers
+          }));
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            answerImages: [...prevFormData.answerImages, `image_${num}.png`],
+          }));
+        });
+      }
+    }
+  }, [setCheckboxStatus, showAnswerModel]);
+
+  const prefilledQuestionTobeShown = questionDone?.filter(
+    (question) => question.questionId === questionId
+  );
+
   const handleSelectedImage = (index, imageName) => {
     setCheckboxStatus((prevStatus) => {
       const updatedCheckboxStatus = {
@@ -85,9 +140,15 @@ const ImageModal = ({
 
         if (!showAnswerModel) {
           // Toggle image in questionImages
-          updatedImages = updatedCheckboxStatus[index]
-            ? [...questionImages, imageName] // Add image
-            : questionImages.filter((img) => img !== imageName); // Remove image
+          if (updatedCheckboxStatus[index]) {
+            // Add image if it's not already included
+            updatedImages = questionImages.includes(imageName)
+              ? questionImages
+              : [...questionImages, imageName];
+          } else {
+            // Remove image
+            updatedImages = questionImages.filter((img) => img !== imageName);
+          }
 
           return {
             ...prevFormData,
@@ -97,9 +158,15 @@ const ImageModal = ({
           };
         } else {
           // Toggle image in answerImages
-          updatedImages = updatedCheckboxStatus[index]
-            ? [...answerImages, imageName] // Add image
-            : answerImages.filter((img) => img !== imageName); // Remove image
+          if (updatedCheckboxStatus[index]) {
+            // Add image if it's not already included
+            updatedImages = answerImages.includes(imageName)
+              ? answerImages
+              : [...answerImages, imageName];
+          } else {
+            // Remove image
+            updatedImages = answerImages.filter((img) => img !== imageName);
+          }
 
           return {
             ...prevFormData,
@@ -114,10 +181,32 @@ const ImageModal = ({
     });
   };
 
+  // console.log(questionDone)
+
   const handleQuestionConfirm = () => {
+    if (!showAnswerModel && formData?.questionImages?.length === 0) {
+      toast.error("Please select at least one image");
+      return;
+    }
     setShowAnswerModel(!showAnswerModel);
-    setCheckboxStatus(false);
+    setCheckboxStatus({});
     setCurrentImageIndex(1);
+  };
+
+  const handleDeselectAll = () => {
+    if (showImageModal && !showAnswerModel) {
+      setCheckboxStatus({});
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        questionImages: [],
+      }));
+    } else if (showImageModal && showAnswerModel) {
+      setCheckboxStatus({});
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        answerImages: [],
+      }));
+    }
   };
 
   return (
@@ -126,16 +215,34 @@ const ImageModal = ({
       {showImageModal && !showAnswerModel && (
         <div className="bg-black fixed inset-0 z-50 flex  items-center justify-center bg-opacity-50">
           <div
-            className="relative h-[850px] w-[700px] rounded-lg border border-gray-900 bg-white p-6 shadow-lg"
-            style={{ maxWidth: "700px", maxHeight: "850px" }}
+            className="relative h-[950px] w-[700px] rounded-lg border border-gray-900 bg-white p-6 shadow-lg"
+            style={{ maxWidth: "700px", maxHeight: "900px" }}
           >
+            <div className="mb-4 flex items-center justify-between ">
+              <div className="text-lg font-bold text-gray-800 dark:text-white ">
+                Questions PDF
+              </div>
+              {isAvailable && (
+                <div
+                  className="text-md cursor-pointer rounded-lg bg-indigo-700 px-3 py-2 font-semibold text-white hover:text-gray-600"
+                  onClick={handleDeselectAll}
+                >
+                  Deselect All
+                </div>
+              )}
+            </div>
+
             {/* Close button */}
             <button
-              className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900"
+              className="absolute right-0 top-0 pl-2 pr-1 text-3xl font-bold text-gray-600 hover:text-gray-900"
               onClick={() => {
                 setShowImageModal(false);
-                setQuestionsPdfPath((questionsPdfPath));
+                setQuestionsPdfPath(questionsPdfPath);
                 setAnswersPdfPath(undefined);
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  questionImages: [],
+                }));
               }}
             >
               &times;
@@ -145,9 +252,9 @@ const ImageModal = ({
             <img
               src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/image_${currentImageIndex}.png`} // Use the current image URL
               alt={`Slide ${currentImageIndex}`}
-              className={`mb-1 h-[750px] w-full rounded-lg object-contain ${
+              className={`mb-2 h-[750px] w-full rounded-lg object-contain ${
                 checkboxStatus[currentImageIndex]
-                  ? "border-2 border-green-700"
+                  ? "border-2 border-green-700 shadow-lg hover:shadow-2xl "
                   : ""
               }`}
               style={{ maxWidth: "100%", maxHeight: "100%", cursor: "pointer" }}
@@ -192,18 +299,27 @@ const ImageModal = ({
                     >
                       <div className="flex items-center">
                         &#8203;
-                        <input
+                        {/* <input
                           type="checkbox"
                           className="size-4 cursor-pointer rounded border-gray-300 "
                           id="Option"
-                          checked={checkboxStatus[currentImageIndex] || false}
+                          checked={
+                            prefilledQuestionTobeShown.length > 0 &&
+                            prefilledQuestionTobeShown[0].questionImages
+                              ? prefilledQuestionTobeShown[0].questionImages.includes(
+                                  `image_${currentImageIndex}.png`
+                                )
+                              : checkboxStatus[currentImageIndex] === true
+                              ? true
+                              : false
+                          }
                           onClick={() => {
                             handleSelectedImage(
                               currentImageIndex,
                               `image_${currentImageIndex}.png`
                             );
                           }}
-                        />
+                        /> */}
                       </div>
 
                       <div>
@@ -225,15 +341,33 @@ const ImageModal = ({
       {showAnswerModel && (
         <div className="bg-black fixed inset-0 z-50 flex  items-center justify-center bg-opacity-50">
           <div
-            className="relative h-[850px] w-[700px] rounded-lg border border-gray-900 bg-white p-6 shadow-lg"
-            style={{ maxWidth: "700px", maxHeight: "850px" }}
+            className="relative h-[950px] w-[700px] rounded-lg border border-gray-900 bg-white p-6 shadow-lg"
+            style={{ maxWidth: "700px", maxHeight: "900px" }}
           >
+            <div className="mb-4 flex items-center justify-between ">
+              <div className="text-lg font-bold text-gray-800 dark:text-white ">
+                Answers PDF
+              </div>
+              {isAvailable && (
+                <div
+                  className="text-md cursor-pointer rounded-lg bg-indigo-700 px-3 py-2 font-semibold text-white hover:text-gray-600"
+                  onClick={handleDeselectAll}
+                >
+                  Deselect All
+                </div>
+              )}
+            </div>
             {/* Close button */}
             <button
               className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900"
               onClick={() => {
                 setShowAnswerModel(false);
                 setAnswersPdfPath(undefined);
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  answerImages: [],
+                  questionImages: [],
+                }));
               }}
             >
               &times;
@@ -295,18 +429,29 @@ const ImageModal = ({
                     >
                       <div className="flex items-center">
                         &#8203;
-                        <input
+                        {/* <input
                           type="checkbox"
                           className="size-4 cursor-pointer rounded border-gray-300 "
                           id="Option"
-                          checked={checkboxStatus[currentImageIndex] || false}
+                          checked={
+                            (
+                              prefilledQuestionTobeShown.length > 0 &&
+                              prefilledQuestionTobeShown[0].answerImages
+                                ? prefilledQuestionTobeShown[0].answerImages.includes(
+                                    `image_${currentImageIndex}.png`
+                                  )
+                                : checkboxStatus[currentImageIndex] === true
+                            )
+                              ? true
+                              : false
+                          }
                           onClick={() => {
                             handleSelectedImage(
                               currentImageIndex,
                               `image_${currentImageIndex}.png`
                             );
                           }}
-                        />
+                        /> */}
                       </div>
 
                       <div>

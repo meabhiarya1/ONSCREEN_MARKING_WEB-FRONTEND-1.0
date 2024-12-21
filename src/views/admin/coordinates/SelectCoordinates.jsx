@@ -98,7 +98,7 @@ const SelectCoordinates = () => {
             },
           }
         );
-        setQuestionDone(response.data);
+        setQuestionDone(response?.data);
       } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.message);
@@ -152,6 +152,12 @@ const SelectCoordinates = () => {
 
       setShowAnswerModel(false);
       setShowImageModal(false);
+      setFormData({
+        courseSchemaRelationId: "",
+        questionId: "",
+        questionImages: [],
+        answerImages: [],
+      });
       toast.success("Coordinates added successfully");
     } catch (error) {
       // Rollback optimistic update if there's an error
@@ -168,7 +174,6 @@ const SelectCoordinates = () => {
     const primaryQuestionToUpdate = questionDone.filter(
       (item) => item.questionId === questionIdtoUpdate
     );
-
     if (
       formData.questionImages.length === 0 ||
       formData.answerImages.length === 0
@@ -187,6 +192,9 @@ const SelectCoordinates = () => {
       answerImages: formData.answerImages,
       questionImages: formData.questionImages,
     };
+
+    // console.log(updatedData)
+    // return
 
     try {
       const response = await axios.put(
@@ -281,6 +289,11 @@ const SelectCoordinates = () => {
           parseInt(savedQuestion.questionsName) === folder.id || undefined
       )
     );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      questionImages: [],
+      answerImages: [],
+    }));
   };
 
   const handleFolderClick = async (folderId) => {
@@ -307,7 +320,7 @@ const SelectCoordinates = () => {
           },
         }
       );
-      console.log(response?.data?.data);
+      // console.log(response?.data?.data);
       toggleInputsVisibility(folderId);
       const subQuestionsNumber =
         response?.data?.data?.parentQuestion.numberOfSubQuestions || [];
@@ -354,6 +367,16 @@ const SelectCoordinates = () => {
     }
   };
 
+  const handleFinalSubmitButton = async () => {
+    try {
+      const response  = await axios.post()
+    } catch (error) {
+      
+    }
+  };
+
+  // console.log(formData);
+
   const renderFolder = (folder, level = 0, isLastChild = false) => {
     const folderId = folder.id;
     const isSaving = savingStatus[folderId] || false; // Check saving status for this folder
@@ -392,7 +415,7 @@ const SelectCoordinates = () => {
         <div className="w-full flex-col gap-4">
           <div className="flex items-center gap-12">
             <span
-              className="text-black-500 cursor-pointer font-semibold "
+              className="text-black-500 cursor-pointer font-semibold"
               onClick={() => handleFolderClick(folder.id)}
             >
               {isAvailable ? "☑️" : "📁"}
@@ -401,7 +424,7 @@ const SelectCoordinates = () => {
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Max Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -410,7 +433,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Min Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -419,7 +442,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Bonus Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -428,7 +451,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -467,13 +490,11 @@ const SelectCoordinates = () => {
           {/* Sub Questions Input Fields */}
           {folder.showInputs && (
             <div className="ml-12 mt-4 flex items-center gap-4">
-              <label className={`ml-2 text-sm ${"text-gray-800"} `}>
+              <label className={`ml-2 text-sm font-bold  ${"text-gray-700"} `}>
                 No. of Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-medium ${
-                  isAvailable ? "text-white" : "border text-gray-700"
-                }`}
+                className={`px-2 py-1 text-sm font-bold ${"text-gray-700"}`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -481,15 +502,11 @@ const SelectCoordinates = () => {
                     : "0"
                   : "0"}
               </span>
-              <label
-                className={`ml-2 text-sm ${
-                  isAvailable ? "text-white" : "text-gray-700"
-                } `}
-              >
-                No. of compulsory Sub-Questions
+              <label className={`ml-2 text-sm font-bold ${"text-gray-700"} `}>
+                No. of compulsory Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-medium ${"  text-gray-700"}`}
+                className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"}`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -512,6 +529,35 @@ const SelectCoordinates = () => {
   return (
     <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
       <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+        {" "}
+        <div className="flex justify-end">
+          <span
+            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border px-5 py-2 text-indigo-600 transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
+            onClick={handleFinalSubmitButton}
+          >
+            <span className="font-medium transition-colors group-hover:text-white">
+              {" "}
+              Submit{" "}
+            </span>
+
+            <span className="shrink-0 rounded-full border border-indigo-600 bg-white p-2 group-active:border-indigo-500">
+              <svg
+                className="size-5 rtl:rotate-180"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </span>
+          </span>
+        </div>
         {folders.map((folder) => renderFolder(folder))}
       </div>
 
@@ -528,6 +574,8 @@ const SelectCoordinates = () => {
           isAvailable={filterOutQuestionDone.some(
             (item) => parseInt(item.questionsName) === folderIdQuestion // Calculate based on folderId
           )}
+          questionDone={questionDone}
+          formData={formData}
         />
       )}
     </div>
