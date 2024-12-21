@@ -105,7 +105,6 @@ const ImageContainer = () => {
     }
   }, [scale]); // Run effect every time scale changes
   // Draw on the canvas
-  console.log(drawing)
   useEffect(() => {
     if (startDrawing) {
       const canvas = canvasRef.current;
@@ -160,7 +159,7 @@ const ImageContainer = () => {
       [currentImage]: dataURL, // Save the canvas state for the current image
     }));
   };
-console.log(canvasStates)
+  console.log(canvasStates);
   const handleDeleteIcon = (index) => {
     setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
     setSelectedIcon(null); // Reset selected icon
@@ -233,10 +232,12 @@ console.log(canvasStates)
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
       const scrollOffsetY = containerRef.current.scrollTop;
-
+      // const updatedIcons = [...icons];
+      // updatedIcons[index].timestamp = new Date().toLocaleString();
       setIcons([
         ...icons,
         {
+          timestamp: new Date().toLocaleString(),
           iconUrl: currentIcon,
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
@@ -294,7 +295,12 @@ console.log(canvasStates)
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
-
+  // Function to add timestamp
+  const addTimestampToIcon = (index) => {
+    const updatedIcons = [...icons];
+    updatedIcons[index].timestamp = new Date().toLocaleString(); // Add the current date and time
+    setIcons(updatedIcons); // Update state
+  };
   return (
     <>
       <Tools
@@ -362,10 +368,15 @@ console.log(canvasStates)
                 transformOrigin: "top left", // Ensure proper scaling
                 transition: "transform 0.2s ease-in-out", // Smooth transition
               }}
-              onMouseDown={(e) => handleIconDragStart(index, e)} // Allow dragging
+              onMouseDown={(e) => {
+                handleIconDragStart(index, e);
+                // addTimestampToIcon(index); // Add timestamp
+              }} // Allow dragging
+              // onMouseUp={(e) => addTimestampToIcon(index)}
               onDoubleClick={() => handleIconDoubleClick(index)} // Show border and cross button
             >
               <img src={icon.iconUrl} alt="icon" width={40} height={40} />
+              <div>{icon.timestamp || "No Timestamp"}</div>
               {/* Cross button for deletion */}
               {selectedIcon === index && (
                 <button
