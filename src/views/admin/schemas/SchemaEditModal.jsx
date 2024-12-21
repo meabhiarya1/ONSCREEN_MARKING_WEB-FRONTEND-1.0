@@ -7,8 +7,6 @@ const SchemaEditModal = ({
   selectedSchema,
   handleUpdate,
 }) => {
-
-
   const [formData, setFormData] = useState({
     name: "",
     totalQuestions: "",
@@ -29,6 +27,7 @@ const SchemaEditModal = ({
         compulsoryQuestions: selectedSchema.compulsoryQuestions || "",
         evaluationTime: selectedSchema.evaluationTime || "",
         isActive: selectedSchema.isActive || true,
+        status: false,
       });
     }
   }, [selectedSchema]);
@@ -44,90 +43,101 @@ const SchemaEditModal = ({
   if (!editShowModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-full max-w-lg rounded-lg bg-white p-8 shadow-lg transform transition-all">
+    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+      <div className="relative w-full max-w-lg transform rounded-lg bg-white p-8 shadow-lg transition-all">
         <button
-          className="absolute top-4 right-4 text-3xl p-2 text-gray-700 hover:text-red-800"
+          className="absolute right-4 top-4 p-2 text-3xl text-gray-700 hover:text-red-800"
           onClick={() => setEditShowModal(false)} // Close modal
         >
           <GiCrossMark />
         </button>
-        <h2 className="text-2xl font-semibold text-center text-blue-600 mb-6">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-blue-600">
           Edit Schema
         </h2>
 
         <div className="space-y-6">
           {/* Input for Schema Name */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Schema Name</label>
+            <label className="mb-2 block font-medium text-gray-700">
+              Schema Name
+            </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Input for Maximum Marks */}
           <div className="flex justify-between">
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Maximum Marks</label>
+              <label className="mb-2 block font-medium text-gray-700">
+                Maximum Marks
+              </label>
               <input
                 type="number"
                 name="maxMarks"
                 value={formData.maxMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Minimum Marks</label>
+              <label className="mb-2 block font-medium text-gray-700">
+                Minimum Marks
+              </label>
               <input
                 type="number"
                 name="minMarks"
                 value={formData.minMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
           {/* Input for Total Questions */}
           <div className="flex justify-between">
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Total Questions</label>
+              <label className="mb-2 block font-medium text-gray-700">
+                Total Questions
+              </label>
               <input
                 type="number"
                 name="totalQuestions"
                 value={formData.totalQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-medium mb-2">Compulsory Questions</label>
+              <label className="mb-2 block font-medium text-gray-700">
+                Compulsory Questions
+              </label>
               <input
                 type="number"
                 name="compulsoryQuestions"
                 value={formData.compulsoryQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           {/* Input for Compulsory Questions */}
 
-
           {/* Input for Evaluation Time */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Evaluation Time (minutes)</label>
+            <label className="mb-2 block font-medium text-gray-700">
+              Evaluation Time (minutes)
+            </label>
             <input
               type="number"
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleInputChange}
-              className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -138,7 +148,7 @@ const SchemaEditModal = ({
             onClick={() => {
               handleUpdate(selectedSchema._id, formData);
             }}
-            className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 transition-colors"
+            className="rounded-md bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700"
           >
             Update Schema
           </button>

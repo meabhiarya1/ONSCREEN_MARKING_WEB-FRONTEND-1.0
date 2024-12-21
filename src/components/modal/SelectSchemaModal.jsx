@@ -21,6 +21,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
   const [questionSheet, setQuestionSheet] = useState(null);
   const [answerSheet, setAnswerSheet] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [relationName, setRelationName] = useState("");
   const navigate = useNavigate();
 
   // Fetch schemas on component mount
@@ -28,7 +29,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
     const fetchSchemaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/schemas/getall/schema`,
+          `${process.env.REACT_APP_API_URL}/api/schemas/getall/completed/schema`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -84,8 +85,15 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
   };
 
   const handleFileUpload = async () => {
-    if (!questionSheet || !answerSheet || !selectedSchemaData) {
-      toast.error("Please select all Schema,Question, Answer Sheets");
+    if (
+      !questionSheet ||
+      !answerSheet ||
+      !selectedSchemaData ||
+      !relationName
+    ) {
+      toast.error(
+        "Please select all Schema,Question, Answer Sheets, Relation name"
+      );
       return;
     }
 
@@ -94,6 +102,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
     formData.append("answerPdf", answerSheet);
     formData.append("schemaId", selectedSchemaData?._id);
     formData.append("subjectId", currentSubId);
+    formData.append("relationName", relationName);
 
     try {
       setLoading(true);
@@ -103,12 +112,15 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
       toast.success("Files uploaded successfully!");
       console.log(response.data);
-      navigate(`/admin/schema/create/structure/coordinates/${response.data?._id}`);
+      navigate(
+        `/admin/schema/create/structure/coordinates/${response.data?._id}`
+      );
     } catch (error) {
       console.error("Error uploading files:", error);
       toast.error("Failed to upload files.");
@@ -136,7 +148,11 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
         {/* Close button */}
         <button
           className="absolute right-2 top-2 p-2 text-2xl font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-gray-100"
-          onClick={() => setShowModal(false)}
+          onClick={() => {
+            setShowModal(false);
+            setAnswerSheet(null);
+            setQuestionSheet(null);
+          }}
         >
           <GiCrossMark />
         </button>
@@ -152,7 +168,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
             required
           >
-            <option value="">Select a schema</option>
+            <option value=" ">Select a schema</option>
             {schemas.map((schema) => (
               <option key={schema._id} value={schema._id}>
                 {schema.name}
@@ -160,9 +176,16 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             ))}
           </select>
 
-          {/* Selec Questions Sheet*/}
+          {/* Select Questions and AnswerSheet*/}
           <div className="mb-6 flex items-center space-x-6 rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
-            <label className="flex w-3/4 cursor-pointer items-center justify-between rounded-lg bg-indigo-500 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            {/* Question Sheet Upload */}
+            <label
+              className={`flex w-3/4 cursor-pointer items-center justify-between rounded-lg px-5 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
+                questionSheet
+                  ? "bg-green-700 hover:bg-green-800 focus:ring-green-700"
+                  : "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-400"
+              }`}
+            >
               <span>
                 {questionSheet ? questionSheet.name : "Question Sheet"}
               </span>
@@ -174,7 +197,14 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
               />
             </label>
 
-            <label className="flex w-3/4 cursor-pointer items-center justify-between rounded-lg bg-indigo-500 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            {/* Answer Sheet Upload */}
+            <label
+              className={`flex w-3/4 cursor-pointer items-center justify-between rounded-lg px-5 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
+                answerSheet
+                  ? "bg-green-700 hover:bg-green-800 focus:ring-green-700"
+                  : "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-400"
+              }`}
+            >
               <span>{answerSheet ? answerSheet.name : "Answer Sheet"}</span>
               <input
                 type="file"
@@ -184,6 +214,16 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
               />
             </label>
           </div>
+
+          <input
+            type="text"
+            value={relationName}
+            onChange={(e) => setRelationName(e.target.value)}
+            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            required
+            placeholder="Enter Relation Name"
+          />
+
           {/* Submit Upload Button */}
           <button
             onClick={handleFileUpload}
@@ -216,7 +256,9 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
                 {/* Close button */}
                 <button
                   className="absolute right-2 top-2 text-2xl font-bold text-gray-600 hover:text-gray-900"
-                  onClick={() => setShowImageModal(false)}
+                  onClick={() => {
+                    setShowImageModal(false);
+                  }}
                 >
                   &times;
                 </button>

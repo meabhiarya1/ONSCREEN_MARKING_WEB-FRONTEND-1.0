@@ -12,6 +12,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
     compulsoryQuestions: "",
     evaluationTime: "",
     isActive: true,
+    status: false,
   });
 
   const token = localStorage.getItem("token");
