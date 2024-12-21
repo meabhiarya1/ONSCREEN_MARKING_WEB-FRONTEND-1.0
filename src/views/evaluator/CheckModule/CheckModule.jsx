@@ -1,4 +1,4 @@
-import ImageContainer from "components/Imagecontainer/index";
+import ImageContainer from "components/Imagecontainer/ImageContainer";
 import { getUserDetails, getAllUsers } from "services/common";
 import { FiSearch } from "react-icons/fi";
 import { RiMoonFill, RiSunFill } from "react-icons/ri";
@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
 import { setIndex } from "store/evaluatorSlice";
+
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const evaluatorState = useSelector((state) => state.evaluator);
@@ -32,14 +33,10 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
-
-
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
 
-
-  
   const Imgicons = icons.map((icon, index) => {
     const active =
       index + 1 === evaluatorState.currentIndex
@@ -80,7 +77,7 @@ const CheckModule = () => {
     start,
     pause,
     reset,
-  } = useStopwatch({ autoStart: true });
+  } = useStopwatch({ autoStart: false });
   // Capture login time when the component mounts (tab is opened)
   useEffect(() => {
     const loginTime = new Date().toLocaleTimeString();
@@ -94,6 +91,7 @@ const CheckModule = () => {
     evaluationStartTime.setSeconds(evaluationStartTime.getSeconds() + 1); // Start right away (0 delay)
     start(evaluationStartTime);
   }, [start]);
+
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
   const [scale, setScale] = useState(1); // Initial zoom level
@@ -121,13 +119,11 @@ const CheckModule = () => {
     };
     fetchData();
   }, [authState.isAuthenticated, navigate]);
+
   const [loginHours, loginMinutes, loginSeconds] = loginTime
     ? loginTime.split(":")
     : ["--", "--", "--"];
 
-
-
-    
   return (
     <>
       <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gray-700  py-5 text-white">
