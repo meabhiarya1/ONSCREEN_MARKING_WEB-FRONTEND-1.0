@@ -6,14 +6,14 @@ import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
 import { useSelector } from "react-redux";
 import Tools from "./Tools";
-
+import throttle from "lodash.throttle";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
   { imgUrl: "/check.png" },
 ];
 
-const ImageContainer = () => {
+const ImageContainer = (props) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [icons, setIcons] = useState([]); // State for placed icons
   const [isDraggingIcon, setIsDraggingIcon] = useState(false); // Track if an icon is being dragged
@@ -32,10 +32,13 @@ const ImageContainer = () => {
   const [currentImage, setCurrentImage] = useState(null);
   const [startDrawing, setStartDrawing] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
+  const [mouseBasePos, setMouseBasePos] = useState({ x: 0, y: 0 });
   const [mouseUp, setMouseUp] = useState(false);
   const [selectedColor, setSelectedColor] = useState("red");
+  const [isCursorInside, setIsCursorInside] = useState(false);
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
+  const currentQuestionNo = evaluatorState.currentQuestion;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
   // Handle clicks outside of selected icon
@@ -149,6 +152,21 @@ const ImageContainer = () => {
       document.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("contextmenu", handleRightClick);
     };
+  }, []);
+
+  // Update cursor position
+  const handleBaseMouseMove = throttle((event) => {
+    setMouseBasePos({ x: event.clientX, y: event.clientY });
+  }, 4); // Update every ~16ms (60FPS)
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (container) {
+      container.addEventListener("mousemove", handleBaseMouseMove);
+      return () =>
+        container.removeEventListener("mousemove", handleBaseMouseMove); // Cleanup
+    }
   }, []);
   // Save the canvas state as a base64 string
   const saveCanvasState = () => {
@@ -335,6 +353,12 @@ const ImageContainer = () => {
         onMouseMove={handleMouseMove} // Track mouse move for icon dragging preview
         onMouseDown={handleCanvasMouseDown} // Only draw when in drawing mode
         onMouseUp={handleCanvasMouseUp}
+        onMouseEnter={() => {
+          setIsCursorInside(true);
+        }}
+        onMouseLeave={() => {
+          setIsCursorInside(false);
+        }}
       >
         <div
           style={{
@@ -430,6 +454,19 @@ const ImageContainer = () => {
             }}
           >
             <img src={currentIcon} alt="dragging-icon" width={40} height={40} />
+          </div>
+        )}
+
+        {/* Display current question number at cursor */}
+        {isCursorInside && (
+          <div
+            className={`z-1000 pointer-events-none fixed rounded bg-gray-100 p-2.5 text-sm shadow-md`}
+            style={{
+              left: `${mouseBasePos.x}px`,
+              top: `${mouseBasePos.y + 5}px`, // Dynamic positioning
+            }}
+          >
+            {`Q(${currentQuestionNo})`}
           </div>
         )}
       </div>

@@ -4,19 +4,20 @@ const initialState = {
   isAuthenticated: false,
   token: null,
   iconSelected: null,
-  currentIndex  : 1
+  currentIndex: 1,
+  currentQuestion: 1,
 };
 
 const evaluatorSlice = createSlice({
   name: "evaluator",
   initialState,
   reducers: {
-    selectIcon: (state, action) => {    
+    selectIcon: (state, action) => {
       const { selectedIcon } = action.payload;
       state.iconSelected = selectedIcon;
     },
 
-    setIndex: (state, action) => {    
+    setIndex: (state, action) => {
       const { index } = action.payload;
       state.currentIndex = index;
     },
@@ -33,8 +34,13 @@ const evaluatorSlice = createSlice({
         state.token = token;
       }
     },
+    setCurrentQuestion: (state, action) => {
+      const { index } = action.payload;
+      state.currentQuestion = index;
+    },
   },
 });
 
-export const { login, logout, rehydrateToken,setIndex } = evaluatorSlice.actions;
+export const { login, logout, rehydrateToken, setIndex } =
+  evaluatorSlice.actions;
 export default evaluatorSlice.reducer;
