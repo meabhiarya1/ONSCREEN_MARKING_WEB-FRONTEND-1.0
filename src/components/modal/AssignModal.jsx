@@ -9,7 +9,7 @@ const AssignModal = ({
   const [showFileManager, setShowFileManager] = useState(false);
 
   const handleFileSelection = () => {
-    setShowFileManager(!showFileManager);
+    setShowFileManager(true);
   };
 
   return (
@@ -121,7 +121,7 @@ const AssignModal = ({
           </button>
         </div>
       </div>
-      {showFileManager && <FileManagerModal />}
+      {showFileManager && <FileManagerModal setShowFileManager={setShowFileManager} />}
     </div>
   );
 };
