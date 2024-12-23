@@ -19,8 +19,8 @@ const ClassModal = ({
   return (
     <div>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
-          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md transition-opacity duration-300">
+          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100 dark:bg-navy-700 dark:border dark:border-gray-400">
             <button
               className="absolute right-2 top-2 p-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none "
               onClick={() => {
@@ -41,7 +41,7 @@ const ClassModal = ({
                 htmlFor="class"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs font-medium text-gray-700 dark:text-white">
                   Class
                 </span>
                 <input
@@ -49,7 +49,7 @@ const ClassModal = ({
                   id="class"
                   name="className"
                   placeholder="B.Tech / B.A etc"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                   value={formData.className}
                   onChange={handleChange}
                 />
@@ -59,7 +59,7 @@ const ClassModal = ({
                 htmlFor="classCode"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs font-medium text-gray-700 dark:text-white">
                   Class Code
                 </span>
                 <input
@@ -67,7 +67,7 @@ const ClassModal = ({
                   id="classCode"
                   name="classCode"
                   placeholder="Enter Class code"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                   value={formData.classCode}
                   onChange={handleChange}
                 />
@@ -78,7 +78,7 @@ const ClassModal = ({
                   htmlFor="duration"
                   className="block  overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
                 >
-                  <span className="text-xs font-medium text-gray-700">
+                  <span className="text-xs font-medium text-gray-700 dark:text-white">
                     Duration
                   </span>
                   <input
@@ -86,7 +86,7 @@ const ClassModal = ({
                     id="duration"
                     name="duration"
                     placeholder="Enter duration"
-                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                     value={formData.duration}
                     onChange={handleChange}
                   />
@@ -95,7 +95,7 @@ const ClassModal = ({
                   htmlFor="session"
                   className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
                 >
-                  <span className="text-xs font-medium text-gray-700">
+                  <span className="text-xs font-medium text-gray-700 dark:text-white">
                     Session
                   </span>
                   <input
@@ -103,7 +103,7 @@ const ClassModal = ({
                     id="session"
                     name="session"
                     placeholder="Enter session"
-                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                     value={formData.session}
                     onChange={handleChange}
                   />
@@ -114,7 +114,7 @@ const ClassModal = ({
                 htmlFor="year"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs font-medium text-gray-700 dark:text-white">
                   Year
                 </span>
                 <input
@@ -122,7 +122,7 @@ const ClassModal = ({
                   id="year"
                   name="year"
                   placeholder="Enter year"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                   value={formData.year}
                   onChange={handleChange}
                 />
