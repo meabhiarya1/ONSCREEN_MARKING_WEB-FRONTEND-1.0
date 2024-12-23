@@ -145,7 +145,7 @@ const routes = [
   {
     name: "Assigned Tasks",
     layout: "/evaluator",
-    path: "createuser",
+    path: "assignedTasks",
     icon: <BiTask className="h-6 w-6" />,
     component: <EvaluatorTasks />,
     hidden: false,

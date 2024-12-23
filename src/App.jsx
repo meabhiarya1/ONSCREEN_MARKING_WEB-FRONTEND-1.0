@@ -28,7 +28,7 @@ const App = () => {
   };
 
   const role = getRoleFromToken();
-
+console.log(role)
   useEffect(() => {
     if (!token) {
       // Redirect to sign-in only if not already on an auth route
@@ -46,7 +46,7 @@ const App = () => {
         navigate("/evaluator/default");
       }
     }
-  }, [token, role]);
+  }, [token, role,location]);
 
   useEffect(() => {
     dispatch(rehydrateToken());
