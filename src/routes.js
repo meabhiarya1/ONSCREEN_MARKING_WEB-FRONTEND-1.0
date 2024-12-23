@@ -136,7 +136,7 @@ const routes = [
     hidden: false,
   },
   {
-    name: "Evaluator",
+    name: "Dashboard",
     layout: "/evaluator",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,

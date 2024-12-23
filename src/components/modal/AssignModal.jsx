@@ -7,6 +7,7 @@ const AssignModal = ({
   currentSubject,
 }) => {
   const [showFileManager, setShowFileManager] = useState(false);
+  const [selectedPath, setSelectedPath] = useState("");
 
   const handleFileSelection = () => {
     setShowFileManager(true);
@@ -121,7 +122,14 @@ const AssignModal = ({
           </button>
         </div>
       </div>
-      {showFileManager && <FileManagerModal setShowFileManager={setShowFileManager} />}
+      {console.log(selectedPath)}
+      {showFileManager && (
+        <FileManagerModal
+          setShowFileManager={setShowFileManager}
+          selectedPath={selectedPath}
+          setSelectedPath={setSelectedPath}
+        />
+      )}
     </div>
   );
 };
