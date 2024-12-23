@@ -46,7 +46,7 @@ const Index = () => {
           },
         }
       );
-      setUsers(users.filter((user) => user._id !== userId));
+      setUsers(users?.filter((user) => user._id !== userId));
       toast.success(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -86,7 +86,7 @@ const Index = () => {
           {users &&
             users?.map((user) => (
               <tr key={user._id} className="bg-white hover:bg-gray-50">
-                {visibleFields.map((field) => (
+                {visibleFields?.map((field) => (
                   <td key={field} className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                     {field === "date"
                       ? new Date(user[field]).toLocaleDateString()
