@@ -78,11 +78,7 @@ const Tools = ({
           <LuPencilLine />
         </button>
         <button
-          className={`flex rounded-md px-2 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none ${
-            isDrawing
-              ? "bg-gray-300 hover:bg-gray-400 "
-              : "bg-white hover:bg-gray-100 "
-          }`}
+          className={`flex rounded-md px-2 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none ${"bg-white hover:bg-gray-100 "}`}
           onClick={() => {
             setShowPencilIconModal(!pencilIconModal);
           }}

@@ -6,14 +6,14 @@ import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
 import { useSelector } from "react-redux";
 import Tools from "./Tools";
-
+import throttle from "lodash.throttle";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
   { imgUrl: "/check.png" },
 ];
 
-const ImageContainer = () => {
+const ImageContainer = (props) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [icons, setIcons] = useState([]); // State for placed icons
   const [isDraggingIcon, setIsDraggingIcon] = useState(false); // Track if an icon is being dragged
@@ -32,10 +32,13 @@ const ImageContainer = () => {
   const [currentImage, setCurrentImage] = useState(null);
   const [startDrawing, setStartDrawing] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState(null);
+  const [mouseBasePos, setMouseBasePos] = useState({ x: 0, y: 0 });
   const [mouseUp, setMouseUp] = useState(false);
   const [selectedColor, setSelectedColor] = useState("red");
+  const [isCursorInside, setIsCursorInside] = useState(false);
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
+  const currentQuestionNo = evaluatorState.currentQuestion;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
   // Handle clicks outside of selected icon
@@ -105,7 +108,6 @@ const ImageContainer = () => {
     }
   }, [scale]); // Run effect every time scale changes
   // Draw on the canvas
-  console.log(drawing)
   useEffect(() => {
     if (startDrawing) {
       const canvas = canvasRef.current;
@@ -151,6 +153,21 @@ const ImageContainer = () => {
       document.removeEventListener("contextmenu", handleRightClick);
     };
   }, []);
+
+  // Update cursor position
+  const handleBaseMouseMove = throttle((event) => {
+    setMouseBasePos({ x: event.clientX, y: event.clientY });
+  }, 4); // Update every ~16ms (60FPS)
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (container) {
+      container.addEventListener("mousemove", handleBaseMouseMove);
+      return () =>
+        container.removeEventListener("mousemove", handleBaseMouseMove); // Cleanup
+    }
+  }, []);
   // Save the canvas state as a base64 string
   const saveCanvasState = () => {
     const canvas = canvasRef.current;
@@ -160,7 +177,7 @@ const ImageContainer = () => {
       [currentImage]: dataURL, // Save the canvas state for the current image
     }));
   };
-console.log(canvasStates)
+  console.log(canvasStates);
   const handleDeleteIcon = (index) => {
     setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
     setSelectedIcon(null); // Reset selected icon
@@ -233,10 +250,12 @@ console.log(canvasStates)
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
       const scrollOffsetY = containerRef.current.scrollTop;
-
+      // const updatedIcons = [...icons];
+      // updatedIcons[index].timestamp = new Date().toLocaleString();
       setIcons([
         ...icons,
         {
+          timestamp: new Date().toLocaleString(),
           iconUrl: currentIcon,
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
@@ -294,7 +313,12 @@ console.log(canvasStates)
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
-
+  // Function to add timestamp
+  const addTimestampToIcon = (index) => {
+    const updatedIcons = [...icons];
+    updatedIcons[index].timestamp = new Date().toLocaleString(); // Add the current date and time
+    setIcons(updatedIcons); // Update state
+  };
   return (
     <>
       <Tools
@@ -329,6 +353,12 @@ console.log(canvasStates)
         onMouseMove={handleMouseMove} // Track mouse move for icon dragging preview
         onMouseDown={handleCanvasMouseDown} // Only draw when in drawing mode
         onMouseUp={handleCanvasMouseUp}
+        onMouseEnter={() => {
+          setIsCursorInside(true);
+        }}
+        onMouseLeave={() => {
+          setIsCursorInside(false);
+        }}
       >
         <div
           style={{
@@ -362,10 +392,15 @@ console.log(canvasStates)
                 transformOrigin: "top left", // Ensure proper scaling
                 transition: "transform 0.2s ease-in-out", // Smooth transition
               }}
-              onMouseDown={(e) => handleIconDragStart(index, e)} // Allow dragging
+              onMouseDown={(e) => {
+                handleIconDragStart(index, e);
+                // addTimestampToIcon(index); // Add timestamp
+              }} // Allow dragging
+              // onMouseUp={(e) => addTimestampToIcon(index)}
               onDoubleClick={() => handleIconDoubleClick(index)} // Show border and cross button
             >
               <img src={icon.iconUrl} alt="icon" width={40} height={40} />
+              <div>{icon.timestamp || "No Timestamp"}</div>
               {/* Cross button for deletion */}
               {selectedIcon === index && (
                 <button
@@ -419,6 +454,19 @@ console.log(canvasStates)
             }}
           >
             <img src={currentIcon} alt="dragging-icon" width={40} height={40} />
+          </div>
+        )}
+
+        {/* Display current question number at cursor */}
+        {isCursorInside && (
+          <div
+            className={`z-1000 pointer-events-none fixed rounded bg-gray-100 p-2.5 text-sm shadow-md`}
+            style={{
+              left: `${mouseBasePos.x}px`,
+              top: `${mouseBasePos.y + 5}px`, // Dynamic positioning
+            }}
+          >
+            {`Q(${currentQuestionNo})`}
           </div>
         )}
       </div>
