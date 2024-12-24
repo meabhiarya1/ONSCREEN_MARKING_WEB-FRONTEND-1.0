@@ -15,13 +15,8 @@ const AssignModal = ({
   const [selectedUser, setSelectedUser] = useState("Select User to Assign");
   const [showUserModal, setShowUserModal] = useState(false);
   const [taskName, setTaskName] = useState("");
-  const [data, setData] = useState({
-    userId: " ",
-    subjectSchemaRelationId: " ",
-    folderPath: " ",
-    status: false,
-    taskName: " ",
-  });
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedClass, setSelectedClass] = useState("");
 
   useEffect(() => {
     try {
@@ -39,6 +34,43 @@ const AssignModal = ({
     setShowUserModal(false);
   }, [selectedUser]);
 
+  useEffect(() => {
+    try {
+      const fetcheSubject = async () => {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/subjects/getbyid/subject/${currentSubject?.subjectId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response) {
+          setSelectedSubject(response.data);
+          const fetchClasses = async () => {
+            try {
+              const responseClass = await axios.get(
+                `${process.env.REACT_APP_API_URL}/api/classes/getbyid/class/${response?.data?.classId}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                }
+              );
+              setSelectedClass(responseClass.data);
+            } catch (error) {
+              console.log(error);
+            }
+          };
+          fetchClasses();
+        }
+      };
+      fetcheSubject();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const handleSubmitButton = async () => {
     if (
       selectedUser === "Select User to Assign" ||
@@ -51,13 +83,7 @@ const AssignModal = ({
     }
     try {
       const token = localStorage.getItem("token");
-      setData({
-        userId: users.find((user) => user.email === selectedUser)?._id,
-        subjectSchemaRelationId: currentSubject?._id,
-        folderPath: selectedPath,
-        status: false,
-        taskName: taskName,
-      });
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/tasks/create/task`,
         {
@@ -66,6 +92,8 @@ const AssignModal = ({
           folderPath: selectedPath,
           status: false,
           taskName: taskName,
+          className: selectedClass?.className,
+          subjectCode: selectedSubject?.code +"_"+ selectedSubject?.name,
         },
         {
           headers: {

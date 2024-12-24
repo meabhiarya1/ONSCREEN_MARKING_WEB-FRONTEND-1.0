@@ -17,20 +17,6 @@ const FileManagerModal = ({
   const [errorMessage, setErrorMessage] = useState(null); // State to store error message
   const fileManagerRef = useRef(null); // Reference to FileManagerComponent
 
-  // const onFileSelect = (args) => {
-  //   console.log(args)
-  //   if (args.action === "select") {
-  //     if (selectedPath.includes(args.fileDetails.name)) return;
-  //     setSelectedPath([...selectedPath, args.fileDetails.name]);
-  //   } else if (args.action === "unselect") {
-  //     if (selectedPath.includes(args.fileDetails.name)) {
-  //       setSelectedPath(
-  //         selectedPath.filter((path) => path !== args.fileDetails.name)
-  //       );
-  //     }
-  //   }
-  // };
-
   const handleFileSelect = (args) => {
     if (args.fileDetails.isFile === false) {
       const path = args.fileDetails.filterPath;
@@ -69,7 +55,7 @@ const FileManagerModal = ({
               id="file_manager"
               ref={fileManagerRef}
               ajaxSettings={{
-                url: `${process.env.REACT_APP_API_URL}`,
+                url: `${process.env.REACT_APP_API_URL}/api/syncfusion`,
                 // createUrl: `http://192.168.1.43:8090/api/filemanager/create`,
                 // uploadUrl: `http://192.168.1.43:8090/api/filemanager/upload`,
                 // downloadUrl: `http://192.168.1.43:8090/api/filemanager/download`,
