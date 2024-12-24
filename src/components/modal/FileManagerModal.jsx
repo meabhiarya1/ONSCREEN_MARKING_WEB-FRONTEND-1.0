@@ -6,8 +6,9 @@ import {
   Toolbar,
   DetailsView,
 } from "@syncfusion/ej2-react-filemanager";
-import axios from "axios";
-import { FileOpenEventArgs } from "@syncfusion/ej2-filemanager";
+// import axios from "axios";
+// import { FileOpenEventArgs } from "@syncfusion/ej2-filemanager";
+
 const FileManagerModal = ({
   setShowFileManager,
   selectedPath,
@@ -33,11 +34,10 @@ const FileManagerModal = ({
   const handleFileSelect = (args) => {
     if (args.fileDetails.isFile === false) {
       const path = args.fileDetails.filterPath;
-      const mainPath = "uploads" + path + args.fileDetails.name;
+      const mainPath = "scannedData" + path + args.fileDetails.name;
       setSelectedPath(mainPath);
     }
   };
-
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">

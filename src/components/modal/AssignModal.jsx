@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FileManagerModal from "./FileManagerModal";
+import { getAllUsers } from "services/common";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const AssignModal = ({
   setShowAssignModal,
@@ -8,7 +11,76 @@ const AssignModal = ({
 }) => {
   const [showFileManager, setShowFileManager] = useState(false);
   const [selectedPath, setSelectedPath] = useState("");
+  const [users, setUsers] = useState("");
+  const [selectedUser, setSelectedUser] = useState("Select User to Assign");
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [taskName, setTaskName] = useState("");
+  const [data, setData] = useState({
+    userId: " ",
+    subjectSchemaRelationId: " ",
+    folderPath: " ",
+    status: false,
+    taskName: " ",
+  });
 
+  useEffect(() => {
+    try {
+      const fetchUsers = async () => {
+        const users = await getAllUsers();
+        setUsers(users.filter((user) => user.role !== "admin"));
+      };
+      fetchUsers();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    setShowUserModal(false);
+  }, [selectedUser]);
+
+  const handleSubmitButton = async () => {
+    if (
+      selectedUser === "Select User to Assign" ||
+      selectedPath === "" ||
+      taskName === "" ||
+      currentSubject?._id === ""
+    ) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      setData({
+        userId: users.find((user) => user.email === selectedUser)?._id,
+        subjectSchemaRelationId: currentSubject?._id,
+        folderPath: selectedPath,
+        status: false,
+        taskName: taskName,
+      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/tasks/create/task`,
+        {
+          userId: users.find((user) => user.email === selectedUser)?._id,
+          subjectSchemaRelationId: currentSubject?._id,
+          folderPath: selectedPath,
+          status: false,
+          taskName: taskName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      setShowAssignModal(false);
+      toast.success("Task Assigned Successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
   const handleFileSelection = () => {
     setShowFileManager(true);
   };
@@ -48,8 +120,7 @@ const AssignModal = ({
           </div>
         </div>
         <hr className="bg-gray-600" />
-
-        <div className="min-w-[400px] space-y-3 px-4 pb-6 pt-3">
+        <div className="mt-2 min-w-[400px] space-y-2 px-3 pb-6 pt-3">
           <div className="flex space-x-3">
             <div className="flex">
               <p className="font-bold text-gray-700">Relation Name: </p>{" "}
@@ -79,16 +150,74 @@ const AssignModal = ({
                 {currentSubject?.status || "Not Assigned"}
               </p>
             </div>
-          </div>
-        </div>
+          </div>{" "}
+          <div className="relative">
+            {/* Dropdown Of users */}
+            <div
+              className="my-2 inline-flex w-full cursor-pointer items-center overflow-hidden rounded-md border bg-white"
+              onClick={() => setShowUserModal(!showUserModal)}
+            >
+              <div className="w-full border-e px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700 ">
+                {selectedUser}
+              </div>
 
-        <div className="mx-3 my-2 flex items-center ">
+              <button className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700">
+                <span className="sr-only">Menu</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="size-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {showUserModal && (
+              <div
+                className="absolute end-0 z-10 mt-0 w-60 rounded-md border border-gray-100 bg-white shadow-lg"
+                role="menu"
+              >
+                {users &&
+                  users.map((user) => (
+                    <div className="cursor-pointer px-4" key={user._id}>
+                      <div
+                        className="block rounded-lg px-4  py-3 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                        role="menuitem"
+                        onClick={() => setSelectedUser(user.email)}
+                      >
+                        {user.email}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+            {/* Dropdown Of users */}
+          </div>
+          <input
+            type="text"
+            id="taskName"
+            name="taskName"
+            placeholder="Task Name"
+            autoComplete="off"
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
+            className="bg-transparent h-10 w-full rounded-lg border border-gray-200 px-4 text-sm  focus:border-green-600 focus:outline-none "
+          />
+        </div>{" "}
+        <div className="mx-3 mb-2 flex items-center ">
           <input
             type="email"
             id="Email"
             name="Email"
             placeholder="Upload File"
             autoComplete="off"
+            value={selectedPath}
             className="bg-transparent h-12 w-full rounded-l-md border border-green-600 px-4 text-sm  focus:border-green-600 focus:outline-none "
           />
           <button className="duration-250 group  relative z-30 flex cursor-pointer  items-center justify-center overflow-hidden rounded-r-lg rounded-tr-lg bg-green-700 px-4 py-2.5 text-white shadow-lg transition-all hover:bg-green-600 hover:shadow-xl focus:bg-green-600 focus:shadow-xl focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg ">
@@ -112,17 +241,16 @@ const AssignModal = ({
             <span className="duration-350 absolute inset-0  z-[-1] cursor-pointer rounded-tr-lg bg-green-600 transition-all group-hover:w-full"></span>
           </button>
         </div>
-
-        <div class="mx-3 text-center ">
+        <div class="mx-3 text-center">
           <button
             class="my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white"
             style={{ backgroundColor: "#00A400" }}
+            onClick={handleSubmitButton}
           >
             Submit
           </button>
         </div>
       </div>
-      {console.log(selectedPath)}
       {showFileManager && (
         <FileManagerModal
           setShowFileManager={setShowFileManager}
