@@ -31,7 +31,7 @@ const CardClasses = ({
         </div>{" "}
         <span className="inline-flex w-full justify-evenly -space-x-px overflow-hidden rounded-md border bg-white shadow-sm dark:border-none dark:bg-navy-700 dark:text-white">
           <button
-            className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-green-500 transition-colors duration-200 hover:bg-green-100 hover:text-green-600 focus:outline-none focus:ring-green-300 dark:border-green-500 dark:text-green-400 dark:hover:bg-green-800 dark:hover:text-green-100 dark:focus:ring-green-700"
+            className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-green-100 hover:text-green-600 focus:outline-none focus:ring-green-300 dark:border-green-500 dark:text-gray-400 dark:hover:bg-green-800 dark:hover:text-green-100 dark:focus:ring-green-700"
             onClick={() => navigate(`/admin/classes/${class_._id}`)}
           >
             Course Details
@@ -41,12 +41,12 @@ const CardClasses = ({
               setEditIsOpen(true);
               setCurrentClass(class_);
             }}
-            className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-amber-500 transition-colors duration-200 hover:bg-amber-100 hover:text-amber-600 focus:outline-none focus:ring-amber-300 dark:border-amber-500 dark:text-amber-400 dark:hover:bg-amber-800 dark:hover:text-amber-100 dark:focus:ring-amber-700"
+            className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-amber-100 hover:text-amber-600 focus:outline-none focus:ring-amber-300 dark:border-amber-500 dark:text-gray-400 dark:hover:bg-amber-800 dark:hover:text-amber-100 dark:focus:ring-amber-700"
           >
             Edit
           </button>
           <button
-            className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-red-500 transition-colors duration-200 hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-red-300 dark:border-red-500 dark:text-red-400 dark:hover:bg-red-800 dark:hover:text-red-100 dark:focus:ring-red-700"
+            className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-red-300 dark:border-red-500 dark:text-gray-400 dark:hover:bg-red-800 dark:hover:text-red-100 dark:focus:ring-red-700"
             onClick={() => {
               setClassId(class_._id);
               setConfirmationModal(true);
