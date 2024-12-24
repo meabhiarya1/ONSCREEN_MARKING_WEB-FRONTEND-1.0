@@ -7,6 +7,8 @@ import { GrRedo, GrUndo } from "react-icons/gr";
 import { useSelector } from "react-redux";
 import Tools from "./Tools";
 import throttle from "lodash.throttle";
+import { jwtDecode } from "jwt-decode";
+import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
@@ -41,8 +43,11 @@ const ImageContainer = (props) => {
   const currentQuestionNo = evaluatorState.currentQuestion;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
+
+  
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
+
   useEffect(() => {
     const handleOutsideDoubleClick = (event) => {
       if (selectedIcon !== null) {
@@ -319,6 +324,7 @@ const ImageContainer = (props) => {
     updatedIcons[index].timestamp = new Date().toLocaleString(); // Add the current date and time
     setIcons(updatedIcons); // Update state
   };
+
   return (
     <>
       <Tools

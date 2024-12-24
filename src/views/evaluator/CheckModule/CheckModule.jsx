@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
 import { setIndex } from "store/evaluatorSlice";
+import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
@@ -33,6 +34,7 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
+  
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
