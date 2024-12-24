@@ -38,13 +38,13 @@ const ImageContainer = (props) => {
   const [mouseUp, setMouseUp] = useState(false);
   const [selectedColor, setSelectedColor] = useState("red");
   const [isCursorInside, setIsCursorInside] = useState(false);
+  const [currentStrokeWidth, setCurrentStrokeWidth] = useState(10);
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
   const currentQuestionNo = evaluatorState.currentQuestion;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
 
-  
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
 
@@ -117,31 +117,40 @@ const ImageContainer = (props) => {
     if (startDrawing) {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
+
+      // Clear the canvas for redraw
       context.clearRect(0, 0, canvas.width, canvas.height);
-      context.lineWidth = 2;
-      context.strokeStyle = selectedColor;
-      context.lineJoin = "round";
+
+      context.lineJoin = "round"; // Smooth line joins
 
       let prevX = null;
       let prevY = null;
 
-      drawing.forEach(({ x, y, mode }) => {
+      // Iterate through the drawing array
+      drawing.forEach(({ x, y, mode, strokeWidth, color }) => {
         if (mode === "start") {
+          // Update previous coordinates for the start of a new stroke
           prevX = x;
           prevY = y;
         }
         if (mode === "draw") {
           context.beginPath();
-          context.moveTo(prevX, prevY);
-          context.lineTo(x, y);
+          context.lineWidth = strokeWidth || currentStrokeWidth; // Use strokeWidth or default to currentStrokeWidth
+          context.strokeStyle = color || selectedColor; // Use color or default to selectedColor
+
+          context.moveTo(prevX, prevY); // Start from the previous point
+          context.lineTo(x, y); // Draw to the current point
+          context.stroke(); // Render the line
           context.closePath();
-          context.stroke();
+
+          // Update previous coordinates
           prevX = x;
           prevY = y;
         }
       });
     }
-  }, [drawing, scale]);
+  }, [drawing, scale, startDrawing, currentStrokeWidth, selectedColor]);
+
   const handleIconDoubleClick = (index) => {
     setSelectedIcon(index); // Mark the icon as selected
   };
@@ -182,7 +191,7 @@ const ImageContainer = (props) => {
       [currentImage]: dataURL, // Save the canvas state for the current image
     }));
   };
-  console.log(canvasStates);
+  // console.log(canvasStates);
   const handleDeleteIcon = (index) => {
     setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
     setSelectedIcon(null); // Reset selected icon
@@ -202,7 +211,14 @@ const ImageContainer = (props) => {
 
     setDrawing((prev) => [
       ...prev,
-      { x, y, mode: "start" }, // Add starting point to differentiate new drawing
+      {
+        x,
+        y,
+        mode: "start",
+        strokeWidth: currentStrokeWidth, // Include current stroke width
+        color: selectedColor,
+      },
+      // Add starting point to differentiate new drawing
     ]);
   };
 
@@ -237,7 +253,16 @@ const ImageContainer = (props) => {
         const rect = canvasRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left) / scale;
         const y = (e.clientY - rect.top) / scale;
-        setDrawing((prev) => [...prev, { x, y, mode: "draw" }]);
+        setDrawing((prev) => [
+          ...prev,
+          {
+            x,
+            y,
+            mode: "draw",
+            color: selectedColor, // Store the current color
+            strokeWidth: currentStrokeWidth,
+          },
+        ]);
       }
     }
   };
@@ -318,12 +343,6 @@ const ImageContainer = (props) => {
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
-  // Function to add timestamp
-  const addTimestampToIcon = (index) => {
-    const updatedIcons = [...icons];
-    updatedIcons[index].timestamp = new Date().toLocaleString(); // Add the current date and time
-    setIcons(updatedIcons); // Update state
-  };
 
   return (
     <>
@@ -341,6 +360,7 @@ const ImageContainer = (props) => {
         currentIcon={currentIcon}
         IconModal={IconModal}
         setSelectedColor={setSelectedColor}
+        setCurrentStrokeWidth={setCurrentStrokeWidth}
       />
 
       {/* Image Viewer Section */}

@@ -20,6 +20,8 @@ const Tools = ({
   currentIcon,
   IconModal,
   setSelectedColor,
+  setCurrentStrokeWidth,
+  currentStrokeWidth,
 }) => {
   const [pencilIconModal, setShowPencilIconModal] = useState(false);
   const [color, setColor] = useState("#fff");
@@ -30,6 +32,7 @@ const Tools = ({
   };
   const handleSliderChange = (event, newValue) => {
     setStrokeValue(newValue);
+    setCurrentStrokeWidth(newValue);
   };
   return (
     <div className="flex justify-center border bg-[#e0e2e6] p-2">
@@ -113,6 +116,7 @@ const Tools = ({
                 onChange={handleSliderChange}
                 aria-labelledby="input-slider"
                 valueLabelDisplay="auto"
+                max={20}
               />
               <div className="text-right text-sm text-gray-600">
                 {strokeValue}pt

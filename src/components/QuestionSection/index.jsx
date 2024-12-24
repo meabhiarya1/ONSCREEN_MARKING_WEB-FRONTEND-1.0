@@ -1,4 +1,5 @@
 import React from "react";
+import CustomAddButton from "UI/CustomAddButton";
 
 const index = () => {
   return (
@@ -34,10 +35,7 @@ const index = () => {
                 Q1
               </th>
               <td className="px-6 py-4">
-                <input
-                  className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                />
+                <CustomAddButton />
               </td>
               <td className="px-6 py-4">10</td>
             </tr>

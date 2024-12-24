@@ -25,7 +25,7 @@ const CheckModule = () => {
 
   // Use useCallback to memoize the random image generation
   const generateRandomIcons = useCallback(() => {
-    return Array.from({ length: 10 }, (_, index) => {
+    return Array.from({ length: 70 }, (_, index) => {
       const randomSvg = svgFiles[Math.floor(Math.random() * svgFiles.length)];
       return {
         src: randomSvg,
@@ -34,7 +34,6 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
-  
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
@@ -96,8 +95,7 @@ const CheckModule = () => {
 
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
-  const [scale, setScale] = useState(1); // Initial zoom level
-  const [questionModal, setShowuestionModal] = useState(false);
+  const [questionModal, setShowQuestionModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
@@ -105,7 +103,7 @@ const CheckModule = () => {
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
   const questionHandler = () => {
     console.log("question handler");
-    setShowuestionModal(true);
+    setShowQuestionModal(true);
   };
   useEffect(() => {
     const id = localStorage.getItem("userId");
@@ -129,6 +127,9 @@ const CheckModule = () => {
   return (
     <>
       <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-[#33597a] to-[#33a3a3]  py-5 text-white">
+        <div>
+          <img src="/ios.png" alt="ios_default" />
+        </div>
         <div className="flex w-[70%] items-center justify-around rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
           <section>
             <div>Subject = Engineering Mathematics - III</div>
@@ -237,19 +238,22 @@ const CheckModule = () => {
 
       <div className="flex h-[90vh] w-full flex-row ">
         <div className="h-[100%] w-[8%] ">
-          <div className=" h-[90%] justify-center overflow-auto text-center  ">
-            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white px-2 py-3 text-xl font-bold shadow-md">
-              Answer sheet count <span>40</span>
+          <div className=" h-[90%] justify-center text-center  ">
+            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 text-xl font-bold shadow-md">
+              Answer Sheet Count{" "}
+              <span style={{ fontFamily: "'Roboto', sans-serif" }}>40</span>
             </h2>
-            <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
+            <div className="grid h-[90%]  grid-cols-1 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
+              {Imgicons}
+            </div>
+            <button
+              type="button"
+              className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+              onClick={questionHandler}
+            >
+              Show Questions and Model Answer
+            </button>
           </div>
-          <button
-            type="button"
-            className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
-            onClick={questionHandler}
-          >
-            Show Questions and Model Answer
-          </button>
         </div>
 
         <div id="imgcontainer" className="w-[75%]">

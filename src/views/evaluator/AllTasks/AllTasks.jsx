@@ -21,6 +21,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 const columns = [
   { id: "taskName", label: "Task Name" },
+  { id: "className", label: "Class Name" },
+  { id: "subjectCode", label: "Subject Code" },
   { id: "totalFiles", label: "Total Booklets" },
   {
     id: "status",
@@ -28,6 +30,7 @@ const columns = [
 
     format: (value) => (value ? "Active" : "Inactive"),
   },
+
   { id: "action", label: "Action" },
 ];
 const Dashboard = () => {
@@ -51,7 +54,7 @@ const Dashboard = () => {
   useEffect(() => {});
   const handleStartTask = (rowData) => {
     console.log(rowData);
-    // navigate("/evaluator/osmmodule", { replace: true });
+    navigate("/evaluator/osmmodule", { replace: true });
   };
   console.log(allTasks);
   const AssignedTasks = allTasks.map((row) => (
