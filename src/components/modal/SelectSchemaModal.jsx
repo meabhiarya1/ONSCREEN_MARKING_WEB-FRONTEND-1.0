@@ -143,11 +143,11 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
   if (!showModal) return null;
 
   return (
-    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
-      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
+      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-700">
         {/* Close button */}
         <button
-          className="absolute right-2 top-2 p-2 text-2xl font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-gray-100"
+          className="absolute right-2 top-2 p-2 text-2xl font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-red-700"
           onClick={() => {
             setShowModal(false);
             setAnswerSheet(null);
@@ -165,7 +165,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
           <select
             value={selectedSchema}
             onChange={(e) => setSelectedSchema(e.target.value)}
-            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-navy-700 dark:text-white"
             required
           >
             <option value=" ">Select a schema</option>
@@ -177,13 +177,13 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
           </select>
 
           {/* Select Questions and AnswerSheet*/}
-          <div className="mb-6 flex items-center space-x-6 rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
+          <div className="mb-6 flex items-center space-x-6 rounded-lg border border-gray-200 bg-white dark:bg-navy-700 p-4 shadow-lg">
             {/* Question Sheet Upload */}
             <label
               className={`flex w-3/4 cursor-pointer items-center justify-between rounded-lg px-5 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
                 questionSheet
                   ? "bg-green-700 hover:bg-green-800 focus:ring-green-700"
-                  : "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-400"
+                  : "bg-amber-600 hover:bg-amber-800 focus:ring-amber-400"
               }`}
             >
               <span>
@@ -202,7 +202,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
               className={`flex w-3/4 cursor-pointer items-center justify-between rounded-lg px-5 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
                 answerSheet
                   ? "bg-green-700 hover:bg-green-800 focus:ring-green-700"
-                  : "bg-indigo-500 hover:bg-indigo-600 focus:ring-indigo-400"
+                  : "bg-amber-600 hover:bg-amber-800 focus:ring-amber-400"
               }`}
             >
               <span>{answerSheet ? answerSheet.name : "Answer Sheet"}</span>
@@ -219,7 +219,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             type="text"
             value={relationName}
             onChange={(e) => setRelationName(e.target.value)}
-            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-navy-700"
             required
             placeholder="Enter Relation Name"
           />
