@@ -8,6 +8,8 @@ const AssignPage = () => {
   const { id } = useParams();
   const [subjects, setSubjects] = useState([]);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showDropDownModal, setShowDropDownModal] = useState(false);
+  const [currentSubject, setCurrentSubject] = useState([]);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -76,23 +78,66 @@ const AssignPage = () => {
                 <td className="whitespace-nowrap   px-4 py-2 ">
                   {subject?.status || "Not Assigned"}
                 </td>
-
-                <td className="whitespace-nowrap px-3 py-1.5 ">
-                  <div class="flex h-full items-center justify-center gap-12">
-                    <div class="from-stone-300/40 to-transparent rounded-[16px] bg-gradient-to-b p-[4px]">
-                      <button
-                        class="to-stone-200/40 group rounded-[12px] bg-gradient-to-b from-white p-[4px] shadow-[0_1px_3px_rgba(0,0,0,0.5)] active:scale-[0.995] active:shadow-[0_0px_1px_rgba(0,0,0,0.5)]"
-                        onClick={() => setShowAssignModal(!showAssignModal)}
+                <td className="relative whitespace-nowrap px-3 py-1.5">
+                  {/* Drop Menu Buton*/}
+                  <div
+                    className="absolute right-2 top-1"
+                    onClick={() => setShowDropDownModal(!showDropDownModal)}
+                  >
+                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white">
+                      <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800">
+                        <span className="sr-only">Menu</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="size-4"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>{" "}
+                </td>{" "}
+                {/* Drop Menu */}
+                {showDropDownModal && (
+                  <div
+                    className="absolute right-6 top-48 z-50 mt-2 w-36 rounded-md border border-gray-100 bg-white shadow-lg "
+                    role="menu"
+                  >
+                    <div className="p-2">
+                      <div
+                        className="block   cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 "
+                        role="menuitem"
+                        onClick={() => {
+                          setShowAssignModal(true);
+                          setShowDropDownModal(!showDropDownModal);
+                          setCurrentSubject(subject);
+                        }}
                       >
-                        <div class="from-stone-200/40 rounded-[8px] bg-gradient-to-b to-white/80 px-2 py-2">
-                          <div class="flex items-center gap-2">
-                            <span class="font-semibold">Assign Task</span>
-                          </div>
-                        </div>
+                        Assign Task
+                      </div>
+
+                      <div
+                        className="block  cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                        role="menuitem"
+                      >
+                        Edit
+                      </div>
+
+                      <button
+                        className="flex w-full cursor-pointer  items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                        role="menuitem"
+                      >
+                        Delete
                       </button>
                     </div>
                   </div>
-                </td>
+                )}
               </tr>
             </tbody>
           </table>
@@ -102,6 +147,7 @@ const AssignPage = () => {
         <AssignModal
           showAssignModal={showAssignModal}
           setShowAssignModal={setShowAssignModal}
+          currentSubject={currentSubject}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import ImageContainer from "components/Imagecontainer/index";
+import ImageContainer from "components/Imagecontainer/ImageContainer";
 import { getUserDetails, getAllUsers } from "services/common";
 import { FiSearch } from "react-icons/fi";
 import { RiMoonFill, RiSunFill } from "react-icons/ri";
@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
 import { setIndex } from "store/evaluatorSlice";
+
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const evaluatorState = useSelector((state) => state.evaluator);
@@ -32,14 +33,10 @@ const CheckModule = () => {
     });
   }, [svgFiles]);
 
-
-
   useEffect(() => {
     setIcons(generateRandomIcons());
   }, []);
 
-
-  
   const Imgicons = icons.map((icon, index) => {
     const active =
       index + 1 === evaluatorState.currentIndex
@@ -80,7 +77,7 @@ const CheckModule = () => {
     start,
     pause,
     reset,
-  } = useStopwatch({ autoStart: true });
+  } = useStopwatch({ autoStart: false });
   // Capture login time when the component mounts (tab is opened)
   useEffect(() => {
     const loginTime = new Date().toLocaleTimeString();
@@ -94,6 +91,7 @@ const CheckModule = () => {
     evaluationStartTime.setSeconds(evaluationStartTime.getSeconds() + 1); // Start right away (0 delay)
     start(evaluationStartTime);
   }, [start]);
+
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
   const [scale, setScale] = useState(1); // Initial zoom level
@@ -121,20 +119,18 @@ const CheckModule = () => {
     };
     fetchData();
   }, [authState.isAuthenticated, navigate]);
+
   const [loginHours, loginMinutes, loginSeconds] = loginTime
     ? loginTime.split(":")
     : ["--", "--", "--"];
 
-
-
-    
   return (
     <>
-      <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gray-700  py-5 text-white">
-        <div className="flex w-[70%] items-center justify-around rounded-sm border py-1 shadow-lg backdrop-blur-2xl">
+      <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-[#33597a] to-[#33a3a3]  py-5 text-white">
+        <div className="flex w-[70%] items-center justify-around rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
           <section>
-            <div>Subject: Engineering Mathematics - III</div>
-            <div>Evaluation Id: 46758390</div>
+            <div>Subject = Engineering Mathematics - III</div>
+            <div>Evaluation Id = 46758390</div>
           </section>
           <section>
             <div>
@@ -148,6 +144,7 @@ const CheckModule = () => {
               <span className="inline-block w-[30px] text-center font-mono">
                 {hours}
               </span>
+              :
               <span className="inline-block w-[30px] text-center font-mono">
                 {minutes}
               </span>
@@ -236,21 +233,20 @@ const CheckModule = () => {
         </div>
       </div>
 
-      {/* <PDFViewer pdfUrl="/PROJECT REPORT.pdf" /> */}
       <div className="flex h-[90vh] w-full flex-row ">
         <div className="h-[100%] w-[8%] ">
           <div className=" h-[90%] justify-center overflow-auto text-center  ">
-            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white p-4 text-xl font-bold shadow-md">
-              Total <span>40</span> Pages
+            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white px-2 py-3 text-xl font-bold shadow-md">
+              Answer sheet count <span>40</span>
             </h2>
             <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
           </div>
           <button
             type="button"
-            className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+            className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
             onClick={questionHandler}
           >
-            Questions
+            Show Questions and Model Answer
           </button>
         </div>
 
@@ -258,8 +254,6 @@ const CheckModule = () => {
           <ImageContainer />
         </div>
 
-        {/* <MyComponent /> */}
-        {/* </div> */}
         <div className="w-[20%]">
           <QuestionSection />
         </div>

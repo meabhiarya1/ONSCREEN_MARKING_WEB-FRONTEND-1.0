@@ -31,7 +31,7 @@ const index = () => {
                 scope="row"
                 className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
               >
-                Question 1
+                Q1
               </th>
               <td className="px-6 py-4">
                 <input
@@ -46,7 +46,7 @@ const index = () => {
                 scope="row"
                 className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
               >
-                Question 2
+                Q2
               </th>
               <td className="px-6 py-4">
                 <input
@@ -61,7 +61,7 @@ const index = () => {
                 scope="row"
                 className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
               >
-                Question 3
+                Q3
               </th>
               <td className="px-6 py-4">
                 <input
@@ -76,7 +76,7 @@ const index = () => {
                 scope="row"
                 className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
               >
-                Question 3
+                Q3
               </th>
               <td className="px-6 py-4">
                 <input
@@ -91,7 +91,7 @@ const index = () => {
                 scope="row"
                 className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
               >
-                Question 3
+                Q3
               </th>
               <td className="px-6 py-4">
                 <input
@@ -106,7 +106,7 @@ const index = () => {
                 scope="row"
                 className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
               >
-                Question 3
+                Q3
               </th>
               <td className="px-6 py-4">
                 <input
@@ -146,8 +146,7 @@ const index = () => {
         type="button"
         className="mb-2  w-[100%] rounded-lg border border-green-700 px-5 py-2.5 text-center text-sm font-medium text-green-700 hover:bg-green-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-green-300 dark:border-green-500 dark:text-red-500 dark:hover:bg-red-600 dark:hover:text-white dark:focus:ring-red-900"
       >
-        SUBMIT  BOOKLET
-
+        SUBMIT BOOKLET
       </button>
     </div>
   );

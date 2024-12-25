@@ -1,5 +1,5 @@
 import MainDashboard from "views/admin/default";
-import EvaluatorDashboard from "views/evaluator/default";
+import EvaluatorTasks from "views/evaluator/AllTasks/AllTasks";
 import Upload from "views/admin/upload";
 import Classes from "views/admin/classes";
 import Profile from "views/admin/profile";
@@ -29,14 +29,7 @@ const routes = [
     component: <MainDashboard />,
     hidden: false,
   },
-  {
-    name: "Evaluator",
-    layout: "/evaluator",
-    path: "default",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <EvaluatorDashboard />,
-    hidden: false,
-  },
+
   {
     name: "Classes",
     layout: "/admin",
@@ -135,12 +128,28 @@ const routes = [
     hidden: false,
   },
   {
-    name: "Tasks",
+    name: "Assign Tasks",
     layout: "/admin",
     path: "subjects/:id",
     icon: <BiTask className="h-6 w-6" />,
     component: <AssignPage />,
-    hidden: true,
+    hidden: false,
+  },
+  {
+    name: "Dashboard",
+    layout: "/evaluator",
+    path: "default",
+    icon: <MdHome className="h-6 w-6" />,
+    component: <MainDashboard />,
+    hidden: false,
+  },
+  {
+    name: "Assigned Tasks",
+    layout: "/evaluator",
+    path: "assignedtasks",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <EvaluatorTasks />,
+    hidden: false,
   },
 ];
 
