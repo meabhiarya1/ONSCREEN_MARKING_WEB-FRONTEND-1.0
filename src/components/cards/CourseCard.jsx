@@ -41,7 +41,7 @@ const CourseCard = ({
   return (
     <div
       key={subject?._id}
-      className="mt-4 block rounded-lg bg-white p-4 shadow-sm shadow-indigo-100"
+      className="block rounded-lg bg-white p-4 shadow-sm shadow-indigo-50 dark:bg-navy-700 dark:text-white transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:shadow-lg dark:border-blue-300 dark:shadow-gray-800 dark:hover:border"
     >
       <div className="mt-2">
         <dl>
@@ -76,9 +76,10 @@ const CourseCard = ({
         </div>
       </div>
       <div>
-        <span className="inline-flex -space-x-px overflow-hidden rounded-md border bg-white shadow-sm">
+        <span className="flex justify-evenly items-center flex-wrap overflow-hidden rounded-md border bg-white shadow-sm dark:bg-navy-700 dark:border-navy-600">
+          
           <button
-            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            className="inline-block px-4 py-2 text-sm font-medium focus:relative rounded-lg text-gray-700 transition-colors duration-200 hover:bg-amber-100 hover:text-amber-600 focus:outline-none focus:ring-amber-300 dark:border-amber-500 dark:text-gray-400 dark:hover:bg-amber-800 dark:hover:text-amber-100 dark:focus:ring-amber-700"
             onClick={() => {
               setIsEditOpen(true);
               setCurrentSubject(subject);
@@ -88,7 +89,7 @@ const CourseCard = ({
           </button>
 
           <button
-            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            className="inline-block px-4 py-2 text-sm font-medium focus:relative rounded-lg text-gray-700 transition-colors duration-200 hover:bg-purple-100 hover:text-purple-600 focus:outline-none focus:ring-purple-300 dark:border-purple-500 dark:text-gray-400 dark:hover:bg-purple-800 dark:hover:text-purple-100 dark:focus:ring-purple-700"
             onClick={() => {
               currentSetSubId(subject?._id);
               setShowModal(true);
@@ -98,7 +99,7 @@ const CourseCard = ({
           </button>
 
           <button
-            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            className="inline-block px-4 py-2 text-sm font-medium focus:relative rounded-lg text-gray-700 transition-colors duration-200 hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-red-300 dark:border-red-500 dark:text-gray-400 dark:hover:bg-red-800 dark:hover:text-red-100 dark:focus:ring-red-700"
             onClick={() => {
               setSubjectId(subject?._id);
               setConfirmationModal(true);
@@ -106,8 +107,9 @@ const CourseCard = ({
           >
             Delete
           </button>
+
           <button
-            className="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative"
+            className="inline-block px-4 py-2 text-sm font-medium focus:relative rounded-lg text-gray-700 transition-colors duration-200 hover:bg-green-100 hover:text-green-600 focus:outline-none focus:ring-green-300 dark:border-green-500 dark:text-gray-400 dark:hover:bg-green-800 dark:hover:text-green-100 dark:focus:ring-green-700"
             onClick={() => {
               setSubjectId(subject?._id);
               navigate(`/admin/subjects/${subject?._id}`);
@@ -115,6 +117,7 @@ const CourseCard = ({
           >
             Assign Page
           </button>
+
         </span>
       </div>
       <SelectSchemaModal
@@ -127,3 +130,5 @@ const CourseCard = ({
 };
 
 export default CourseCard;
+
+// inline-flex -space-x-px overflow-hidden rounded-md border bg-white shadow-sm dark:bg-navy-700 dark:border-navy-600

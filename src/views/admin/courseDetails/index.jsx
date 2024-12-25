@@ -98,7 +98,6 @@ const Index = () => {
     }
   };
 
-
   return (
     <div>
       <div
@@ -126,7 +125,7 @@ const Index = () => {
         setCourses={setSubjects}
       />
 
-      <div className="grid w-full grid-cols-3 gap-4">
+      <div className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-10 gap-5">
         {subjects.length > 0 ? (
           subjects.map((subject) => (
             <CourseCard

@@ -39,15 +39,20 @@ const Index = () => {
     e.preventDefault();
 
     if (!formData) {
-      toast.warning("All the fields are required.")
+      toast.warning("All the fields are required.");
       return;
     }
 
+    console.log(formData);
 
-    console.log(formData)
-
-    if (!formData.className || !formData.classCode || !formData.duration || !formData.session || !formData.year) {
-      toast.warning("All the fields are required.")
+    if (
+      !formData.className ||
+      !formData.classCode ||
+      !formData.duration ||
+      !formData.session ||
+      !formData.year
+    ) {
+      toast.warning("All the fields are required.");
       return;
     }
 
@@ -67,17 +72,16 @@ const Index = () => {
       toast.success("Class added successfully.");
       setIsOpen(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error(error.response.data.error);
-    }
-    finally {
+    } finally {
       setFormData({
         className: "",
         classCode: "",
         duration: "",
         session: "",
         year: "",
-      })
+      });
     }
   };
 
@@ -96,19 +100,18 @@ const Index = () => {
       setClasses(classes.filter((class_) => class_._id !== classId));
     } catch (error) {
       console.log(error);
-    }
-    finally {
-      setClassId("")
-      setConfirmationModal(false)
+    } finally {
+      setClassId("");
+      setConfirmationModal(false);
     }
   };
 
   return (
     <div>
       <div
-        className="hover:bg-indigo-700  mt-12 inline-block cursor-pointer rounded 
-        border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm 
-        font-medium text-white hover:text-white-600 focus:outline-none focus:ring active:text-white-500"
+        className="hover:text-white-600  active:text-white-500 ml-2 mt-12 inline-block 
+        cursor-pointer rounded-md border border-indigo-600 bg-indigo-600 px-12 
+        py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring mb-4"
         onClick={() => setIsOpen(true)}
       >
         Create Class
@@ -132,7 +135,7 @@ const Index = () => {
         setClasses={setClasses}
       />
 
-      <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {classes.length > 0 ? (
           classes.map((class_, index) => (
             <CardClasses
@@ -146,8 +149,8 @@ const Index = () => {
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center col-span-full mt-12">
-            <p className="text-gray-700 text-lg font-semibold">
+          <div className="col-span-full mt-12 flex flex-col items-center justify-center">
+            <p className="text-lg font-semibold text-gray-700">
               No classes available. Create one to get started!
             </p>
           </div>
@@ -163,7 +166,6 @@ const Index = () => {
         message="Are you sure you want to remove this class? Please note that removing this class will also permanently delete all associated subjects and data. This action cannot be undone."
         type="error" // Options: 'success', 'warning', 'error'
       />
-
     </div>
   );
 };
