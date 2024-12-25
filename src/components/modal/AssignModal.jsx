@@ -114,8 +114,8 @@ const AssignModal = ({
   };
 
   return (
-    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50  ">
-      <div className="mx-auto max-w-[800px]  rounded-xl bg-white shadow-lg drop-shadow-md">
+    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+      <div className="mx-auto max-w-[800px]  rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white">
         <div className="flex justify-between px-4 py-3">
           <div>
             <h2 className="font-bold" style={{ fontSize: "32px" }}>
@@ -182,14 +182,14 @@ const AssignModal = ({
           <div className="relative">
             {/* Dropdown Of users */}
             <div
-              className="my-2 inline-flex w-full cursor-pointer items-center overflow-hidden rounded-md border bg-white"
+              className="my-2 inline-flex w-full cursor-pointer items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700 dark:text-white"
               onClick={() => setShowUserModal(!showUserModal)}
             >
-              <div className="w-full border-e px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700 ">
+              <div className="w-full border-e px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-navy-900">
                 {selectedUser}
               </div>
 
-              <button className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700">
+              <button className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-navy-900">
                 <span className="sr-only">Menu</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -213,9 +213,9 @@ const AssignModal = ({
               >
                 {users &&
                   users.map((user) => (
-                    <div className="cursor-pointer px-4" key={user._id}>
+                    <div className="cursor-pointer px-4 dark:bg-navy-700 dark:text-white" key={user._id}>
                       <div
-                        className="block rounded-lg px-4  py-3 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                        className="block rounded-lg px-4  py-3 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:bg-navy-700 dark:text-white dark:hover:bg-navy-900 dark:hover:text-white"
                         role="menuitem"
                         onClick={() => setSelectedUser(user.email)}
                       >
@@ -235,7 +235,7 @@ const AssignModal = ({
             autoComplete="off"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
-            className="bg-transparent h-10 w-full rounded-lg border border-gray-200 px-4 text-sm  focus:border-green-600 focus:outline-none "
+            className="bg-transparent h-10 w-full rounded-lg border border-gray-200 px-4 text-sm  focus:border-green-600 focus:outline-none dark:bg-navy-700 dark:text-white"
           />
         </div>{" "}
         <div className="mx-3 mb-2 flex items-center ">
@@ -246,7 +246,7 @@ const AssignModal = ({
             placeholder="Upload File"
             autoComplete="off"
             value={selectedPath}
-            className="bg-transparent h-12 w-full rounded-l-md border border-green-600 px-4 text-sm  focus:border-green-600 focus:outline-none "
+            className="bg-transparent h-12 w-full rounded-l-md border border-green-600 px-4 text-sm  focus:border-green-600 focus:outline-none dark:bg-navy-700 dark:text-white"
           />
           <button className="duration-250 group  relative z-30 flex cursor-pointer  items-center justify-center overflow-hidden rounded-r-lg rounded-tr-lg bg-green-700 px-4 py-2.5 text-white shadow-lg transition-all hover:bg-green-600 hover:shadow-xl focus:bg-green-600 focus:shadow-xl focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg ">
             <svg
@@ -261,7 +261,7 @@ const AssignModal = ({
             </svg>
 
             <input
-              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              className="absolute inset-0 h-full w-full cursor-pointer opacity-0 "
               name="text"
               onClick={() => handleFileSelection()}
             />
