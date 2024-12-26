@@ -3,9 +3,9 @@ import axios from "axios";
 import { BsArrowRepeat } from "react-icons/bs";
 import { MdEditSquare } from "react-icons/md";
 import { MdAutoDelete } from "react-icons/md";
-import FolderModal from "components/modal/FolderModal";
+import EditAssingModal from "components/modal/EditAssingModal";
 import { getAllUsers } from "services/common";
-import { use } from "react";
+import ReassignModal from "components/modal/ReassignModal";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -13,6 +13,9 @@ const Tasks = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(undefined);
   const [filteredTasks, setFilteredTasks] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentTask, setCurrentTask] = useState(false);
+  const [showReAssignModal, setShowReAssignModal] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -174,6 +177,10 @@ const Tasks = () => {
                       <label
                         htmlFor="html"
                         className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-gray-600   peer-checked:bg-blue-50 peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300"
+                        onClick={() => {
+                          setShowReAssignModal(true);
+                          setShowTaskModal(false);
+                        }}
                       >
                         <div>Re Assign</div>
                         <BsArrowRepeat className="m-2 text-lg " />
@@ -181,6 +188,11 @@ const Tasks = () => {
                       <label
                         htmlFor="css"
                         className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-indigo-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300"
+                        onClick={() => {
+                          setShowEditModal(true);
+                          setCurrentTask(filteredTask);
+                          setShowTaskModal(false);
+                        }}
                       >
                         <div>Edit</div>
                         <MdEditSquare className="m-2 text-lg " />
@@ -198,6 +210,23 @@ const Tasks = () => {
               </tbody>
             ))}
           </table>
+          {showEditModal && (
+            <EditAssingModal
+              setShowEditModal={setShowEditModal}
+              currentTask={currentTask}
+              users={users}
+              setShowTaskModal={setShowTaskModal}
+              setCurrentTask={setCurrentTask}
+            />
+          )}
+
+          {showReAssignModal && (
+            <ReassignModal
+              setShowReAssignModal={setShowReAssignModal}
+              showReAssignModal={showReAssignModal}
+              users={users}
+            />
+          )}
         </div>
       </div>
     </div>
