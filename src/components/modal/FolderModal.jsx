@@ -1,18 +1,44 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { getUserDetails } from "services/common";
 const FolderModal = ({ showFolderModal, setShowFolderModal, selectedTask }) => {
-    
+  const [user, setUser] = useState("");
+
   useEffect(() => {
     try {
       const fetchUserDetails = async () => {
         const response = await getUserDetails(localStorage.getItem("token"));
-        console.log(response);
+        // console.log(response);
       };
       fetchUserDetails();
     } catch (error) {
       console.error(error);
     }
   }, []);
+
+  useEffect(() => {
+    try {
+      if (selectedTask?.userId) {
+        const fetchUserDetails = async () => {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/auth/${selectedTask?.userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          console.log(response.data);
+          setUser(response.data);
+        };
+        fetchUserDetails();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [selectedTask]);
+
+  console.log(selectedTask)
 
   return (
     <div className=" ">
@@ -78,9 +104,7 @@ const FolderModal = ({ showFolderModal, setShowFolderModal, selectedTask }) => {
               </div>{" "}
               <div className="flex">
                 <p className="font-bold text-gray-700"> Assigned To: </p>{" "}
-                <p className="mx-2 text-gray-700">
-                  {selectedTask?.totalFiles || "Not Assigned"}
-                </p>
+                <p className="mx-2 text-gray-700">{user?.email}</p>
               </div>
               <div className="relative">
                 {/* Dropdown Of users */}
