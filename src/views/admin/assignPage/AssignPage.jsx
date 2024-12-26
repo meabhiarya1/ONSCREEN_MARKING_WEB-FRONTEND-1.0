@@ -41,38 +41,38 @@ const AssignPage = () => {
           className={
             showAssignModal
               ? "pointer-events-none blur-sm"
-              : "mt-8 overflow-x-auto rounded-lg border border-gray-200"
+              : "mt-8 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
           }
           key={subject._id}
         >
-          <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-            <thead className="bg-gray-100 ltr:text-left rtl:text-right ">
+          <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:bg-navy-700 dark:text-white">
+            <thead className="bg-gray-100 ltr:text-left rtl:text-right dark:bg-navy-900">
               <tr>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Relation Name
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Count Answer Images
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Count Question Images
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Status
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"></th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-200">
               <tr>
-                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   {subject?.relationName}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                <td className="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-white">
                   {subject?.countOfAnswerImages}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                <td className="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-white">
                   {subject?.countOfQuestionImages}
                 </td>
                 <td className="whitespace-nowrap   px-4 py-2 ">
@@ -84,8 +84,8 @@ const AssignPage = () => {
                     className="absolute right-2 top-1"
                     onClick={() => setShowDropDownModal(!showDropDownModal)}
                   >
-                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white">
-                      <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800">
+                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700">
+                      <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-navy-700 dark:text-white">
                         <span className="sr-only">Menu</span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -106,12 +106,12 @@ const AssignPage = () => {
                 {/* Drop Menu */}
                 {showDropDownModal && (
                   <div
-                    className="absolute right-6 top-48 z-50 mt-2 w-36 rounded-md border border-gray-100 bg-white shadow-lg "
+                    className="absolute right-6 top-48 z-50 mt-2 w-36 rounded-md border border-gray-100 bg-white shadow-lg dark:bg-navy-700 dark:text-white"
                     role="menu"
                   >
                     <div className="p-2">
                       <div
-                        className="block   cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 "
+                        className="block   cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-navy-900 dark:hover:text-white"
                         role="menuitem"
                         onClick={() => {
                           setShowAssignModal(true);
@@ -123,14 +123,14 @@ const AssignPage = () => {
                       </div>
 
                       <div
-                        className="block  cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                        className="block  cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:hover:bg-navy-900 dark:hover:text-white"
                         role="menuitem"
                       >
                         Edit
                       </div>
 
                       <button
-                        className="flex w-full cursor-pointer  items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                        className="flex w-full cursor-pointer  items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:hover:text-red-400"
                         role="menuitem"
                       >
                         Delete

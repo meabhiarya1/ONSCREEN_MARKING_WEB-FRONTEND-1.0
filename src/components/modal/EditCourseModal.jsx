@@ -61,8 +61,8 @@ const EditCourseModal = ({
   return (
     <div>
       {isEditOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300">
-          <div className="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl transform transition-all duration-500 scale-95 sm:scale-100">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 backdrop-blur-sm">
+          <div className="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl transform transition-all duration-500 scale-95 sm:scale-100 dark:bg-navy-700">
             <button
               className="absolute top-4 right-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none transition-colors duration-300"
               onClick={() => {
@@ -89,7 +89,7 @@ const EditCourseModal = ({
                 id="name"
                 name="name"
                 placeholder="Enter Course Name"
-                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-navy-700 dark:text-white"
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -105,7 +105,7 @@ const EditCourseModal = ({
                 id="code"
                 name="code"
                 placeholder="Enter Subject / Course Code"
-                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-navy-700 dark:text-white"
                 value={formData.code}
                 onChange={handleChange}
               />
