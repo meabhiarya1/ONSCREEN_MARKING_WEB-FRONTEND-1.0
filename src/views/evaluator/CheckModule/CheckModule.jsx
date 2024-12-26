@@ -31,9 +31,9 @@ const CheckModule = () => {
       try {
         setLoading(true);
         const response = await getTaskById(id);
-        const { answerPdfDetails } = response;
+        const { answerPdfDetails, extractedImagesFolder } = response;
         setAnswerSheetCount(answerPdfDetails.totalImages);
-        console.log(answerPdfDetails);
+        console.log(response);
       } catch (error) {
         console.log(error);
       } finally {
@@ -44,7 +44,7 @@ const CheckModule = () => {
   }, []);
   // Use useCallback to memoize the random image generation
   const generateRandomIcons = useCallback(() => {
-    return Array.from({ length: 70 }, (_, index) => {
+    return Array.from({ length: answerSheetCount }, (_, index) => {
       const randomSvg = svgFiles[Math.floor(Math.random() * svgFiles.length)];
       return {
         src: randomSvg,
@@ -55,7 +55,7 @@ const CheckModule = () => {
 
   useEffect(() => {
     setIcons(generateRandomIcons());
-  }, []);
+  }, [answerSheetCount]);
 
   const Imgicons = icons.map((icon, index) => {
     const active =
@@ -65,7 +65,7 @@ const CheckModule = () => {
     return (
       <div
         key={index}
-        className={`my-2 cursor-pointer rounded py-2 text-center hover:bg-gray-300 active:bg-gray-400  ${active}`}
+        className={`my-1 cursor-pointer rounded py-2 text-center hover:bg-gray-300 active:bg-gray-400  ${active}`}
         onClick={() => {
           dispatch(setIndex({ index: index + 1 }));
         }}
@@ -264,9 +264,12 @@ const CheckModule = () => {
                 {answerSheetCount}
               </span>
             </h2>
-            <div className="grid h-[90%]  grid-cols-1 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
-              {Imgicons}
+            <div className="h-[90%] ">
+              <div className="grid  grid-cols-2 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
+                {Imgicons}
+              </div>
             </div>
+
             <button
               type="button"
               className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
@@ -282,7 +285,7 @@ const CheckModule = () => {
         </div>
 
         <div className="w-[20%]">
-          <QuestionSection sheetCount={answerSheetCount} />
+          <QuestionSection sheetCount={answerSheetCount}  />
         </div>
       </div>
     </>
