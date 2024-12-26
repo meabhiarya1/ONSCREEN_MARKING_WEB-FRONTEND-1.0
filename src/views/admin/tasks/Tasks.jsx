@@ -12,6 +12,7 @@ const Tasks = () => {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(undefined);
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -48,12 +49,13 @@ const Tasks = () => {
     fetchUsers();
   }, []);
 
-  const handlerChangeOptions = (value) => {
-    console.log(value);
-    // const selectedUser = users.find((user) => user.email === value);
-    // setSelectedUser(selectedUser);
-  };
-  console.log(selectedUser);
+  useEffect(() => {
+    setFilteredTasks(
+      selectedUser === undefined
+        ? tasks
+        : tasks.filter((task) => task.userId?.email === selectedUser.email)
+    );
+  }, [selectedUser, tasks]);
 
   return (
     <div className=" h-[650px] rounded-lg bg-gray-300 px-4 py-2">
@@ -78,7 +80,7 @@ const Tasks = () => {
           </option>
           {users.map((user) => (
             <option
-              value={selectedUser?.email}
+              // value={selectedUser?.email}
               key={user?._id}
               className="my-4 rounded-lg bg-gray-200 py-2 text-gray-700"
               style={{ cursor: "pointer" }}
@@ -115,30 +117,35 @@ const Tasks = () => {
               </tr>
             </thead>
 
-            {tasks.map((task) => (
-              <tbody className="divide-y divide-gray-200" key={task?._id}>
+            {filteredTasks.map((filteredTask) => (
+              <tbody
+                className="divide-y divide-gray-200"
+                key={filteredTask?._id}
+              >
                 <tr className="odd:bg-gray-50">
                   <td className="whitespace-nowrap px-4 py-2 font-medium   text-gray-900">
-                    {task?.taskName}
+                    {filteredTask?.taskName}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2  font-medium   text-gray-700">
-                    {task?.subjectCode}
+                    {filteredTask?.subjectCode}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 font-medium  text-gray-700">
-                    {task?.className}
+                    {filteredTask?.className}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 font-medium  text-gray-700">
-                    {task?.totalFiles}
+                    {filteredTask?.totalFiles}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 font-medium   text-gray-700">
-                    {task?.userId?.email}
+                    {filteredTask?.userId?.email}
                   </td>
                   <td
                     className={`whitespace-nowrap px-4 py-2 font-semibold text-gray-700 ${
-                      task?.status === false ? "text-red-600" : "text-green-600"
+                      filteredTask?.status === false
+                        ? "text-red-600"
+                        : "text-green-600"
                     } `}
                   >
-                    {task?.status === false ? "Pending" : "Completed"}
+                    {filteredTask?.status === false ? "Pending" : "Completed"}
                   </td>
                   <td className="relative">
                     <button
