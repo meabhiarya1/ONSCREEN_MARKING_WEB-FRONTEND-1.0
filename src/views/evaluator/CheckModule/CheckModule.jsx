@@ -7,22 +7,41 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { useStopwatch } from "react-timer-hook";
-import QuestionSection from "components/QuestionSection";
+import QuestionSection from "components/QuestionSection/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
 import { setIndex } from "store/evaluatorSlice";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
-
+import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
+import { useParams } from "react-router-dom";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
   const svgFiles = [
     "/pageicons/red.svg",
     "/pageicons/green.svg",
     "/pageicons/yellow.svg",
   ];
-
+  const { id } = useParams();
+  useEffect(() => {
+    const getTaskDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await getTaskById(id);
+        const { answerPdfDetails } = response;
+        setAnswerSheetCount(answerPdfDetails.totalImages);
+        console.log(answerPdfDetails);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getTaskDetails();
+  }, []);
   // Use useCallback to memoize the random image generation
   const generateRandomIcons = useCallback(() => {
     return Array.from({ length: 70 }, (_, index) => {
@@ -241,7 +260,9 @@ const CheckModule = () => {
           <div className=" h-[90%] justify-center text-center  ">
             <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 text-xl font-bold shadow-md">
               Answer Sheet Count{" "}
-              <span style={{ fontFamily: "'Roboto', sans-serif" }}>40</span>
+              <span style={{ fontFamily: "'Roboto', sans-serif" }}>
+                {answerSheetCount}
+              </span>
             </h2>
             <div className="grid h-[90%]  grid-cols-1 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
               {Imgicons}
@@ -261,7 +282,7 @@ const CheckModule = () => {
         </div>
 
         <div className="w-[20%]">
-          <QuestionSection />
+          <QuestionSection sheetCount={answerSheetCount} />
         </div>
       </div>
     </>

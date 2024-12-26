@@ -53,8 +53,8 @@ const Dashboard = () => {
 
   useEffect(() => {});
   const handleStartTask = (rowData) => {
-    console.log(rowData);
-    navigate("/evaluator/osmmodule", { replace: true });
+    console.log(rowData._id);
+    navigate(`/evaluator/task/${rowData._id}`);
   };
   console.log(allTasks);
   const AssignedTasks = allTasks.map((row) => (

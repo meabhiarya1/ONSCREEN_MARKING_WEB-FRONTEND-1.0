@@ -56,7 +56,7 @@ console.log(role)
     <Routes>
       <Route path="auth/*" element={<AuthLayout />} />
       <Route path="admin/*" element={<AdminLayout />} />
-      <Route path="evaluator/osmmodule" element={<CheckModule />} />
+      <Route path="evaluator/task/:id" element={<CheckModule />} />
       <Route path="evaluator/*" element={<EvaluatorLayout />} />
       <Route path="/" element={<Navigate to="/admin/default" replace />} />
     </Routes>

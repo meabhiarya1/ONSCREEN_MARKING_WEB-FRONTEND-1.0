@@ -1,7 +1,8 @@
 import React from "react";
 import CustomAddButton from "UI/CustomAddButton";
-
-const index = () => {
+import IconButton from "@mui/material/IconButton";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+const index = ( props) => {
   return (
     <div>
       <button
@@ -35,7 +36,9 @@ const index = () => {
                 Q1
               </th>
               <td className="px-6 py-4">
-                <CustomAddButton />
+                <IconButton color="primary" aria-label="add to shopping cart">
+                  <AddCircleOutlineIcon />
+                </IconButton>
               </td>
               <td className="px-6 py-4">10</td>
             </tr>
