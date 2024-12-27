@@ -6,6 +6,7 @@ const initialState = {
   iconSelected: null,
   currentIndex: 1,
   currentQuestion: 1,
+  baseImageUrl: "",
 };
 
 const evaluatorSlice = createSlice({
@@ -38,9 +39,14 @@ const evaluatorSlice = createSlice({
       const { index } = action.payload;
       state.currentQuestion = index;
     },
+    setBaseImageUrl: (state, action) => {
+      const extractedImagesFolder = action.payload;
+
+      state.baseImageUrl = extractedImagesFolder;
+    },
   },
 });
 
-export const { login, logout, rehydrateToken, setIndex } =
+export const { login, logout, rehydrateToken, setIndex, setBaseImageUrl } =
   evaluatorSlice.actions;
 export default evaluatorSlice.reducer;

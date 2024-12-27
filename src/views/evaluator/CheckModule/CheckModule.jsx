@@ -11,14 +11,19 @@ import QuestionSection from "components/QuestionSection/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
-import { setIndex } from "store/evaluatorSlice";
+import { setIndex, setBaseImageUrl } from "store/evaluatorSlice";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
 import { useParams } from "react-router-dom";
+import { getAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
+import { updateAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
+import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const [loading, setLoading] = useState(false);
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
+  const [answerImageDetails, setAnswerImageDetails] = useState([]);
+  const [questionDefinition, setQuestionDefinition] = useState([]);
   const evaluatorState = useSelector((state) => state.evaluator);
   const svgFiles = [
     "/pageicons/red.svg",
@@ -31,9 +36,25 @@ const CheckModule = () => {
       try {
         setLoading(true);
         const response = await getTaskById(id);
-        const { answerPdfDetails, extractedImagesFolder } = response;
-        setAnswerSheetCount(answerPdfDetails.totalImages);
-        console.log(response);
+
+        const {
+          answerPdfDetails,
+          answerPdfImages,
+          extractedImagesFolder,
+          // questionDefinitions,
+          task,
+        } = response;
+        // setQuestionDefinition(questionDefinitions);
+        // setAnswerImageDetails(answerPdfImages);
+        console.log(extractedImagesFolder);
+        const response2 = await getQuestionSchemaById(
+          answerPdfDetails.taskId,
+          answerPdfDetails._id
+        );
+        console.log(response2);
+        setQuestionDefinition(response2);
+        dispatch(setBaseImageUrl(extractedImagesFolder));
+        setAnswerSheetCount(answerPdfDetails);
       } catch (error) {
         console.log(error);
       } finally {
@@ -42,6 +63,22 @@ const CheckModule = () => {
     };
     getTaskDetails();
   }, []);
+
+  useEffect(() => {
+    const getEvaluatorTasks = async (taskId) => {
+      try {
+        const res = await getAnswerPdfById(taskId);
+        setAnswerImageDetails(res);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (answerSheetCount) {
+      // console.log(answerSheetCount)
+      getEvaluatorTasks(answerSheetCount._id);
+    }
+  }, [evaluatorState.currentIndex, answerSheetCount]);
   // Use useCallback to memoize the random image generation
   const generateRandomIcons = useCallback(() => {
     return Array.from({ length: answerSheetCount }, (_, index) => {
@@ -54,10 +91,11 @@ const CheckModule = () => {
   }, [svgFiles]);
 
   useEffect(() => {
-    setIcons(generateRandomIcons());
+    // setIcons(generateRandomIcons());
   }, [answerSheetCount]);
-
-  const Imgicons = icons.map((icon, index) => {
+  const Imgicons = answerImageDetails.map((item, index) => {
+    const svgIcon =
+      item.status === "notVisited" ? 2 : item.status === "submitted" ? 1 : 0;
     const active =
       index + 1 === evaluatorState.currentIndex
         ? "bg-gray-600 text-white border rounded"
@@ -67,20 +105,32 @@ const CheckModule = () => {
         key={index}
         className={`my-1 cursor-pointer rounded py-2 text-center hover:bg-gray-300 active:bg-gray-400  ${active}`}
         onClick={() => {
-          dispatch(setIndex({ index: index + 1 }));
+          handleUpdateImageDetail(item, index);
         }}
       >
         <img
-          src={icon.src}
+          src={svgFiles[svgIcon]}
           width={50}
           height={50}
           alt="icon"
           className="mx-auto"
         />
-        <div>{icon.label}</div>
+        <div>{index + 1}</div>
       </div>
     );
   });
+  const handleUpdateImageDetail = async (item, index) => {
+    try {
+      console.log("called");
+      console.log(item._id);
+
+      const response = await updateAnswerPdfById(item._id, "visited");
+      dispatch(setIndex({ index: index + 1 }));
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // State for the login time (when the tab is opened)
   const [loginTime, setLoginTime] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -256,23 +306,23 @@ const CheckModule = () => {
       </div>
 
       <div className="flex h-[90vh] w-full flex-row ">
-        <div className="h-[100%] w-[8%] ">
-          <div className=" h-[90%] justify-center text-center  ">
-            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 text-xl font-bold shadow-md">
+        <div className=" w-[8%] sm:w-[20%] md:w-[12%] lg:w-[8%]">
+          <div className="h-[100%]  justify-center text-center  ">
+            <h2 className="sticky top-0 z-10  border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 text-xl font-bold shadow-md">
               Answer Sheet Count{" "}
               <span style={{ fontFamily: "'Roboto', sans-serif" }}>
-                {answerSheetCount}
+                {/* {answerSheetCount} */}
               </span>
             </h2>
-            <div className="h-[90%] ">
-              <div className="grid  grid-cols-2 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
+            <div className="h-[80%] ">
+              <div className="grid h-[100%]  grid-cols-2 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
                 {Imgicons}
               </div>
             </div>
 
             <button
               type="button"
-              className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+              className="mb-2 me-2 w-full bg-gradient-to-r from-[#33597a] to-[#33a3a3] px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
               onClick={questionHandler}
             >
               Show Questions and Model Answer
@@ -280,12 +330,15 @@ const CheckModule = () => {
           </div>
         </div>
 
-        <div id="imgcontainer" className="w-[75%]">
+        <div
+          id="imgcontainer"
+          className="h-full flex-grow  sm:w-[60%] md:w-[65%] lg:w-[72%]"
+        >
           <ImageContainer />
         </div>
 
-        <div className="w-[20%]">
-          <QuestionSection sheetCount={answerSheetCount}  />
+        <div className=" h-full sm:w-[30%] md:w-[25%] lg:block lg:w-[20%]">
+          <QuestionSection questionDefinition={questionDefinition} />
         </div>
       </div>
     </>

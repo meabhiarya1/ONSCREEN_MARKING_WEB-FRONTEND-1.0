@@ -42,6 +42,7 @@ const ImageContainer = (props) => {
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
   const currentQuestionNo = evaluatorState.currentQuestion;
+  const baseImageUrl = evaluatorState.baseImageUrl;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
 
@@ -327,6 +328,9 @@ const ImageContainer = (props) => {
       alt="icon"
     />
   ));
+  console.log(
+    `${process.env.REACT_APP_API_URL}\\${baseImageUrl}image_${currentIndex}.png`
+  );
   const handleZoomValueClick = () => {};
   const ZoomModal = Array.from({ length: 12 }, (_, index) => {
     const zoomValue = 40 + index * 10;
@@ -398,7 +402,7 @@ const ImageContainer = (props) => {
           }}
         >
           <img
-            src={`/sampleimg/CS603_1119_page-${currentIndex}.jpg`}
+            src={`${process.env.REACT_APP_API_URL}\\${baseImageUrl}\\image_${currentIndex}.png`}
             alt="Viewer"
           />
           {/* Render all placed icons */}
