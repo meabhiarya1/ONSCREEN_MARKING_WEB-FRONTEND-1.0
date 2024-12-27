@@ -52,10 +52,10 @@ const AssignPage = () => {
                   Relation Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                  Count Answer Images
+                Answer Images
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                  Count Question Images
+                Question Images
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Status
@@ -66,25 +66,24 @@ const AssignPage = () => {
 
             <tbody className="divide-y divide-gray-200">
               <tr>
-                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+                <td className="whitespace-nowrap px-10 py-2 font-medium text-gray-900 dark:text-white">
                   {subject?.relationName}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-white">
+                <td className="whitespace-nowrap px-14 py-2 text-gray-700 dark:text-white">
                   {subject?.countOfAnswerImages}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-gray-700 dark:text-white">
+                <td className="whitespace-nowrap px-14 py-2 text-gray-700 dark:text-white">
                   {subject?.countOfQuestionImages}
                 </td>
                 <td className="whitespace-nowrap   px-4 py-2 ">
                   {subject?.status || "Not Assigned"}
                 </td>
-                <td className="relative whitespace-nowrap px-3 py-1.5">
+                <td className="relative whitespace-nowrap px-3 py-1.5 text-right">
                   {/* Drop Menu Buton*/}
                   <div
-                    className="absolute right-2 top-1"
                     onClick={() => setShowDropDownModal(!showDropDownModal)}
                   >
-                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700">
+                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700 cursor-pointer px-2 text-gray-700 dark:text-white">Select
                       <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-navy-700 dark:text-white">
                         <span className="sr-only">Menu</span>
                         <svg
