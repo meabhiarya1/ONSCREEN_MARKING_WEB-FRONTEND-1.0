@@ -90,18 +90,18 @@ const CreateUser = () => {
 
 
   return (
-    <section className="bg-gray-50 min-h-screen">
+    <section>
       <div className="w-full h-full">
-        <main className="flex items-center justify-center px-4 py-6 sm:px-8 lg:py-12 lg:px-16">
-          <div className="max-w-xl lg:max-w-3xl w-full">
+        <main className="flex items-center justify-center dark:bg-navy-900">
+          <div className="max-w-xl lg:max-w-3xl w-full mt-8">
             <form
-              className="mt-8 grid grid-cols-6 gap-6 rounded-md border border-gray-300 p-6 bg-white shadow-lg overflow-y-auto max-h-[80vh]"
+              className="grid grid-cols-6 gap-6 rounded-md border border-gray-700 p-6 bg-white shadow-lg overflow-y-auto max-h-[80vh] dark:bg-navy-700"
               onSubmit={handleFormSubmit}
             >
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="FullName"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Full Name
                 </label>
@@ -109,7 +109,8 @@ const CreateUser = () => {
                   type="text"
                   id="FullName"
                   name="full_name"
-                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter the Name"
+                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                   onChange={(e) =>
                     setUserDetails({
                       ...userDetails,
@@ -123,7 +124,7 @@ const CreateUser = () => {
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="mobile"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Mobile Number
                 </label>
@@ -131,7 +132,8 @@ const CreateUser = () => {
                   type="text"
                   id="mobile"
                   name="mobile"
-                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter Mobile Number"
+                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                   maxLength="10"
                   pattern="\d*"
                   onChange={(e) => {
@@ -147,7 +149,7 @@ const CreateUser = () => {
               <div className="col-span-6">
                 <label
                   htmlFor="Email"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Email
                 </label>
@@ -155,7 +157,8 @@ const CreateUser = () => {
                   type="email"
                   id="Email"
                   name="email"
-                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter Email"
+                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                   onChange={(e) =>
                     setUserDetails({
                       ...userDetails,
@@ -169,14 +172,14 @@ const CreateUser = () => {
               <div className="col-span-6">
                 <label
                   htmlFor="Role"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Role
                 </label>
                 <select
                   id="role"
                   name="role"
-                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                   onChange={(e) =>
                     setUserDetails({ ...userDetails, role: e.target.value })
                   }
@@ -192,7 +195,7 @@ const CreateUser = () => {
               <div className="col-span-6">
                 <label
                   htmlFor="permissions"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Permissions
                 </label>
@@ -231,7 +234,7 @@ const CreateUser = () => {
                       />
                       <label
                         htmlFor={route.name}
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-sm text-gray-700 dark:text-white"
                       >
                         {route.name}
                       </label>
@@ -243,7 +246,7 @@ const CreateUser = () => {
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="Password"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Password
                 </label>
@@ -252,7 +255,8 @@ const CreateUser = () => {
                     type={visibility ? "text" : "password"}
                     id="Password"
                     name="password"
-                    className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter Password"
+                    className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -278,7 +282,7 @@ const CreateUser = () => {
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="PasswordConfirmation"
-                  className="text-md block font-medium text-gray-700"
+                  className="text-md block font-medium text-gray-700 dark:text-white"
                 >
                   Password Confirmation
                 </label>
@@ -287,7 +291,8 @@ const CreateUser = () => {
                     type={visibility ? "text" : "password"}
                     id="PasswordConfirmation"
                     name="password_confirmation"
-                    className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Confirm Password"
+                    className="mt-1 w-full rounded-md border-gray-300 p-2 bg-gray-50 text-gray-700 focus:ring focus:ring-blue-500 focus:border-blue-500 dark:bg-navy-900 dark:text-white"
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -343,7 +348,7 @@ const CreateUser = () => {
                     "Create User"
                   )}
                 </button>
-                <h2 className="text-xl font-semibold text-blue-600 hover:text-blue-800 underline decoration-blue-500 decoration-2 hover:underline-offset-4 transition-all duration-300">
+                <h2 className="text-xl font-semibold text-blue-600 decoration-blue-500 decoration-2 hover:underline-offset-4 transition-all duration-300 dark:text-white">
                   <Link to={'/admin/uploadcsv'}>
                     Create user by CSV
                   </Link>

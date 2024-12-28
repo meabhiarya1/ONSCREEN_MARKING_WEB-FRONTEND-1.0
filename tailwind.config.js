@@ -120,6 +120,7 @@ module.exports = {
       animation: {
         fadeIn: "fadeIn 0.5s ease-out",
         bounceCustom: "bounceCustom 1.5s infinite ease-in-out",
+        spin: "spin 1s linear infinite",
       },
     },
     keyframes: {
@@ -130,6 +131,10 @@ module.exports = {
       bounceCustom: {
         "0%, 100%": { transform: "translateY(0)" },
         "50%": { transform: "translateY(-3px)" },
+      },
+      spin: {
+        "0%": { transform: "rotate(0deg)" },
+        "100%": { transform: "rotate(360deg)" },
       },
     },
     screens: {

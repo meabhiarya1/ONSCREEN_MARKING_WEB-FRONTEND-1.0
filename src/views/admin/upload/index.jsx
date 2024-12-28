@@ -164,15 +164,15 @@ const Upload = () => {
 
   return (
     <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 py-4">
-      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:border-blue-500">
+      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:border-indigo-500 dark:bg-navy-700 dark:text-white">
         <div>
-          <h3 className="text-xl font-semibold text-gray-900">Upload CSV File</h3>
-          <p className="text-md text-gray-500">User Creation</p>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Upload CSV File</h3>
+          <p className="text-md text-gray-500 dark:text-white">User Creation</p>
         </div>
 
         <div className="flex justify-between items-center">
           <div
-            className="text-md group mt-4 inline-flex items-center gap-2 font-medium text-blue-600 hover:text-blue-700 transition-all"
+            className="text-md group mt-4 inline-flex items-center gap-2 font-medium text-blue-600 hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 transition-all"
             onClick={downloadSampleCsv}
           >
             <span>Download Sample</span>
@@ -181,7 +181,7 @@ const Upload = () => {
 
           <div className="mt-4 inline-flex items-center gap-2">
             <label
-              className="text-md group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600 hover:text-blue-700 transition-all"
+              className="text-md group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600 hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 transition-all"
               onClick={() => disabled && toast.warning("Please select a role")}
             >
               Upload CSV
@@ -203,15 +203,15 @@ const Upload = () => {
         {loading && <div className="mt-4 text-blue-600">Uploading...</div>}
       </article>
 
-      <div className="flex flex-col space-y-2">
-        <label htmlFor="userRole" className="text-lg font-medium text-gray-700">
+      <div className="flex flex-col space-y-2 dark:bg-navy-700 px-6 py-4 rounded-lg border border-gray-200 shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:border-indigo-500 bg-white">
+        <label htmlFor="userRole" className="text-lg font-medium text-gray-700 dark:text-white">
           Select Role
         </label>
         <select
           id="userRole"
           value={selectedRole}
           onChange={handleChange}
-          className="rounded-lg border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          className="rounded-lg border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:bg-navy-900 dark:text-white"
         >
           <option value="null">Select Role</option>
           <option value="admin">Admin</option>
@@ -220,7 +220,7 @@ const Upload = () => {
         </select>
 
         <div
-          className="hover:bg-transparent inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 hover:bg-white transition duration-300 ease-in-out focus:outline-none focus:ring active:text-indigo-500 cursor-pointer"
+          className="hover:bg-transparent inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:text-indigo-600 hover:bg-white transition duration-300 ease-in-out focus:outline-none focus:ring active:text-indigo-500 cursor-pointer text-center"
           onClick={handleSubmit}
         >
           Upload CSV
