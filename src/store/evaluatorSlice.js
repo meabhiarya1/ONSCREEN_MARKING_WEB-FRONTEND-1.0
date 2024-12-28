@@ -7,6 +7,10 @@ const initialState = {
   currentIndex: 1,
   currentQuestion: 1,
   baseImageUrl: "",
+  currentIcon: null,
+  isDraggingIcon: false,
+  currentIconMark: null,
+  currentMarkDetails: null,
 };
 
 const evaluatorSlice = createSlice({
@@ -36,7 +40,7 @@ const evaluatorSlice = createSlice({
       }
     },
     setCurrentQuestion: (state, action) => {
-      const { index } = action.payload;
+      const index = action.payload;
       state.currentQuestion = index;
     },
     setBaseImageUrl: (state, action) => {
@@ -44,9 +48,32 @@ const evaluatorSlice = createSlice({
 
       state.baseImageUrl = extractedImagesFolder;
     },
+    setCurrentIcon: (state, action) => {
+      const icon = action.payload;
+      state.currentIcon = icon;
+    },
+    setIsDraggingIcon: (state, action) => {
+      state.isDraggingIcon = action.payload;
+    },
+    setCurrentIconMark: (state, action) => {
+      state.currentIconMark = action.payload;
+    },
+    setCurrentMarkDetails: (state, action) => {
+      state.currentMarkDetails = action.payload;
+    },
   },
 });
 
-export const { login, logout, rehydrateToken, setIndex, setBaseImageUrl } =
-  evaluatorSlice.actions;
+export const {
+  login,
+  logout,
+  rehydrateToken,
+  setIndex,
+  setBaseImageUrl,
+  setCurrentIcon,
+  setIsDraggingIcon,
+  setCurrentIconMark,
+  setCurrentQuestion,
+  setCurrentMarkDetails,
+} = evaluatorSlice.actions;
 export default evaluatorSlice.reducer;

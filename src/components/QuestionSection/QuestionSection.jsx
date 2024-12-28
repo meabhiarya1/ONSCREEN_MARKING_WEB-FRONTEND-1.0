@@ -4,34 +4,59 @@ import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
 import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCurrentIcon,
+  setIsDraggingIcon,
+  setCurrentQuestion,
+  setCurrentMarkDetails,
+} from "store/evaluatorSlice";
 const QuestionDefinition = (props) => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [rotationStates, setRotationStates] = useState({});
-
-  
+  const [marked, setMarked] = useState(false);
+  const [totalMarks, setTotalMarks] = useState(null);
+  const evaluatorState = useSelector((state) => state.evaluator);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (props.questionDefinition.length !== 0) {
-      setAllQuestions(props.questionDefinition);
+    const fetchQuestionDetails = async (answerPdfDetails) => {
+      try {
+        const response2 = await getQuestionSchemaById(
+          answerPdfDetails.taskId,
+          answerPdfDetails._id
+        );
+        const reducedArr = response2.reduce((total, item) => {
+          return total + item.allottedMarks;
+        }, 0);
+        setTotalMarks(reducedArr);
+        setAllQuestions(response2);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (props.answerPdfDetails) {
+      fetchQuestionDetails(props.answerPdfDetails);
     }
-  }, [props.questionDefinition]);
-  console.log(props);
+  }, [props.answerPdfDetails, marked]);
+
   const handleRotate = (index) => {
     setRotationStates({
       [index]: rotationStates[index] === 45 ? 0 : 45, // Toggle only the current index
     });
   };
 
-  const generateNumbers = (maxNumber, difference) => {
+  const generateNumbers = (minMarks, maxNumber, difference) => {
     const numbers = [];
     // Start from 1, then keep adding the difference until it exceeds maxNumber
-    for (let i = 1; i <= maxNumber; i += difference) {
+    for (let i = minMarks; i <= maxNumber; i += difference) {
       numbers.push(i);
     }
-
     return numbers;
   };
-  const handleListClick = async (item, mark) => {
+  const handleListClick = async (item, mark, index) => {
     const { _id, answerPdfId } = item;
+    console.log(answerPdfId);
     try {
       const body = {
         questionDefinitionId: _id,
@@ -39,20 +64,31 @@ const QuestionDefinition = (props) => {
         allottedMarks: mark,
         timerStamps: new Date().toLocaleString(),
       };
-      const response = await postMarkById(body);
-      console.log(response);
+      dispatch(setCurrentMarkDetails(body));
+      dispatch(setCurrentIcon("/check.png"));
+      dispatch(setIsDraggingIcon(true));
+      dispatch(setCurrentQuestion(index + 1));
+      // const response = await postMarkById(body);
+      setMarked((prev) => !prev);
+      setRotationStates({
+        [index]: (rotationStates[index] = 0), // Toggle only the current index
+      });
+      // console.log(response);
     } catch (error) {}
     console.log(item, mark);
   };
   const QuestionData = allQuestions.map((item, index) => {
     const isRotated = rotationStates[index] === 45;
-    const marksDifference = item.marksDifference;
     const allotedMarks = item.allottedMarks;
-
-    const marks = generateNumbers(item.maxMarks, item.marksDifference);
+    const bg = allotedMarks !== 0 ? "bg-green-100" : "bg-red-100";
+    const marks = generateNumbers(
+      item.minMarks,
+      item.maxMarks,
+      item.marksDifference
+    );
 
     return (
-      <tr className="h-16 border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+      <tr className={`h-16 border  bg-green-100  dark:border-gray-700 ${bg} `}>
         <th
           scope="row"
           className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -80,7 +116,7 @@ const QuestionDefinition = (props) => {
             {/* Modal */}
             {isRotated && (
               <div
-                className="absolute left-8 top-0 z-10 ml-2 w-24  rounded-md border border-gray-300 bg-white  shadow-lg"
+                className="absolute left--2 top-12 z-10 ml-2 w-24  rounded-md border border-gray-300 bg-white  shadow-lg"
                 style={{
                   transform: "translateX(0)", // Position to the left of the button
                 }}
@@ -92,7 +128,7 @@ const QuestionDefinition = (props) => {
                   {marks.map((mark, i) => {
                     return (
                       <li
-                        onClick={() => handleListClick(item, mark)}
+                        onClick={() => handleListClick(item, mark, index)}
                         className="cursor-pointer border text-center hover:bg-gray-200 hover:text-blue-500" // Adds pointer cursor and hover effect
                         key={i}
                       >
@@ -119,47 +155,50 @@ const QuestionDefinition = (props) => {
         Next Booklet
       </buTton>
 
-      <div className="relative h-[73%] overflow-x-auto shadow-md   sm:rounded-lg">
-        <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Q.No
-              </th>
-
-              <th scope="col" className="px-6 py-3">
-                Alloted Marks
-              </th>
-              {/* <th scope="col" className="px-6 py-3">
-                Min Marks
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Max Marks
-              </th> */}
-            </tr>
-          </thead>
-          <tbody className=" overflow-auto">
-            {QuestionData}
-            <hr />
-            <tr className="h-4 bg-white dark:bg-gray-800">
-              <th
-                scope="row"
-                className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-              >
-                TOTAL
-              </th>
-              <td className="px-2 py-3">
-                <input
-                  className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                />
-              </td>
-              {/* <td className="px-6 py-4"></td>
-              <td className="px-6 py-4"></td> */}
-            </tr>
-          </tbody>
-        </table>
+      <div className="relative h-[73%] overflow-hidden shadow-md sm:rounded-lg">
+        {/* Scrollable content */}
+        <div className="h-[calc(100%-4rem)] overflow-y-auto">
+          {" "}
+          {/* Adjust height as needed */}
+          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  Q.No
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Alloted Marks
+                </th>
+              </tr>
+            </thead>
+            <tbody>{QuestionData}</tbody>
+          </table>
+        </div>
+        {/* Footer always visible */}
+        <div className="bg-white dark:bg-gray-800">
+          <table className="w-full">
+            <tfoot>
+              <tr className="h-4 bg-white dark:bg-gray-800">
+                <th
+                  scope="row"
+                  className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                >
+                  TOTAL
+                </th>
+                <td className="px-2 py-3">
+                  <input
+                    className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    type="text"
+                    value={totalMarks}
+                    readOnly
+                  />
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
+
       <div className="my-2 mt-4">
         <button
           type="button"

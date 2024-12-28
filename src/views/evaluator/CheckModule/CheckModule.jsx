@@ -24,6 +24,7 @@ const CheckModule = () => {
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const [answerImageDetails, setAnswerImageDetails] = useState([]);
   const [questionDefinition, setQuestionDefinition] = useState([]);
+  const [taskDetails, setTaskDetails] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
   const svgFiles = [
     "/pageicons/red.svg",
@@ -46,13 +47,9 @@ const CheckModule = () => {
         } = response;
         // setQuestionDefinition(questionDefinitions);
         // setAnswerImageDetails(answerPdfImages);
-        console.log(extractedImagesFolder);
-        const response2 = await getQuestionSchemaById(
-          answerPdfDetails.taskId,
-          answerPdfDetails._id
-        );
-        console.log(response2);
-        setQuestionDefinition(response2);
+        console.log(response);
+
+        setTaskDetails(task);
         dispatch(setBaseImageUrl(extractedImagesFolder));
         setAnswerSheetCount(answerPdfDetails);
       } catch (error) {
@@ -199,20 +196,41 @@ const CheckModule = () => {
         <div>
           <img src="/ios.png" alt="ios_default" />
         </div>
-        <div className="flex w-[70%] items-center justify-around rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
-          <section>
-            <div>Subject = Engineering Mathematics - III</div>
-            <div>Evaluation Id = 46758390</div>
-          </section>
-          <section>
+        <div className="flex w-[70%] items-center justify-between rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
+          {/* Evaluator Section */}
+          <section className="flex-1 basis-1/3 space-y-1 px-4 ">
             <div>
-              Login Time =
+              <span className="font-semibold text-gray-600">Evaluator ID</span>{" "}
+              : <span className="font-bold text-gray-200">46758390</span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-600">Subject</span> :{" "}
+              <span className="font-bold text-gray-200">
+                Engineering Mathematics - III
+              </span>
+            </div>
+          </section>
+
+          {/* Booklet Section */}
+          <section className="flex-1 basis-1/3 space-y-1 px-4 text-center">
+            <div>
+              Booklet Title: {answerSheetCount?.answerPdfName || "Loading..."}
+            </div>
+            <div>
+              Current Booklet Index: {taskDetails?.currentFileIndex || "N/A"}
+            </div>
+          </section>
+
+          {/* Timing Section */}
+          <section className="flex-1 basis-1/3 space-y-1 px-4 text-end">
+            <div>
+              Login Time:
               <span className="inline-block w-[100px] text-center font-mono">
-                {loginTime ? loginTime : "Loading..."}
+                {loginTime || "Loading..."}
               </span>
             </div>
             <div>
-              Evaluation Time =
+              Evaluation Time:
               <span className="inline-block w-[30px] text-center font-mono">
                 {hours}
               </span>
@@ -311,7 +329,7 @@ const CheckModule = () => {
             <h2 className="sticky top-0 z-10  border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 text-xl font-bold shadow-md">
               Answer Sheet Count{" "}
               <span style={{ fontFamily: "'Roboto', sans-serif" }}>
-                {/* {answerSheetCount} */}
+                {answerSheetCount?.totalImages}
               </span>
             </h2>
             <div className="h-[80%] ">
@@ -338,7 +356,7 @@ const CheckModule = () => {
         </div>
 
         <div className=" h-full sm:w-[30%] md:w-[25%] lg:block lg:w-[20%]">
-          <QuestionSection questionDefinition={questionDefinition} />
+          <QuestionSection answerPdfDetails={answerSheetCount} />
         </div>
       </div>
     </>

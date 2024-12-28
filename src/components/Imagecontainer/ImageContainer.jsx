@@ -4,11 +4,13 @@ import { LuPencilLine } from "react-icons/lu";
 import { BiCommentAdd } from "react-icons/bi";
 import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Tools from "./Tools";
 import throttle from "lodash.throttle";
 import { jwtDecode } from "jwt-decode";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
+
+import { setCurrentIcon, setIsDraggingIcon } from "store/evaluatorSlice";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
@@ -18,8 +20,8 @@ const IconsData = [
 const ImageContainer = (props) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [icons, setIcons] = useState([]); // State for placed icons
-  const [isDraggingIcon, setIsDraggingIcon] = useState(false); // Track if an icon is being dragged
-  const [currentIcon, setCurrentIcon] = useState(null); // Store the currently selected icon
+  // const [isDraggingIcon, setIsDraggingIcon] = useState(false); // Track if an icon is being dragged
+  // const [currentIcon, setCurrentIcon] = useState(null); // Store the currently selected icon
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // Track mouse position for preview
   const [iconModal, setIconModal] = useState(false);
   const [draggedIconIndex, setDraggedIconIndex] = useState(null);
@@ -43,9 +45,12 @@ const ImageContainer = (props) => {
   const currentIndex = evaluatorState.currentIndex;
   const currentQuestionNo = evaluatorState.currentQuestion;
   const baseImageUrl = evaluatorState.baseImageUrl;
+  const currentIcon = evaluatorState.currentIcon;
+  const isDraggingIcon = evaluatorState.isDraggingIcon;
+  const currentMarkDetails = evaluatorState.currentMarkDetails;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
-
+  const dispatch = useDispatch();
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
 
@@ -271,7 +276,8 @@ const ImageContainer = (props) => {
   // Handle icon selection
   const handleIconClick = (iconUrl) => {
     setIsDraggingIcon(true); // Enable dragging mode
-    setCurrentIcon(iconUrl); // Set the selected icon
+    dispatch(setCurrentIcon(iconUrl));
+    // setCurrentIcon(iconUrl); // Set the selected icon
     setIconModal(false); // Close the icon modal
   };
 
@@ -286,17 +292,21 @@ const ImageContainer = (props) => {
       setIcons([
         ...icons,
         {
+          question: currentQuestionNo,
+          currentMarkDetails: currentMarkDetails,
           timestamp: new Date().toLocaleString(),
           iconUrl: currentIcon,
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         },
       ]);
-      setCurrentIcon(null);
+      // setCurrentIcon(null);
+      dispatch(setCurrentIcon(null));
+
       setIsDraggingIcon(false);
     }
   };
-
+  console.log(currentMarkDetails);
   // Start dragging an existing icon
   const handleIconDragStart = (index, e) => {
     setDraggedIconIndex(index);
@@ -347,7 +357,7 @@ const ImageContainer = (props) => {
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
-
+  console.log(icons);
   return (
     <>
       <Tools
@@ -410,45 +420,41 @@ const ImageContainer = (props) => {
             <div
               key={index}
               ref={(el) => (iconRefs.current[index] = el)}
+              className={`absolute z-10 rounded-lg  p-2 transition-transform duration-200 
+      ${selectedIcon === index ? "border-2 border-blue-500" : ""}
+    `}
               style={{
-                position: "absolute",
-                top: `${icon.y}px`, // Scale the position
-                left: `${icon.x}px`, // Scale the position
-                zIndex: 10,
-                border: selectedIcon === index ? "2px dashed black" : "none", // Show border if selected
-                cursor: "pointer",
-                padding: "5px",
-                transform: `scale(${scale})`, // Scale the icon size
-                transformOrigin: "top left", // Ensure proper scaling
-                transition: "transform 0.2s ease-in-out", // Smooth transition
+                top: `${icon.y}px`,
+                left: `${icon.x}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
               }}
               onMouseDown={(e) => {
                 handleIconDragStart(index, e);
-                // addTimestampToIcon(index); // Add timestamp
-              }} // Allow dragging
-              // onMouseUp={(e) => addTimestampToIcon(index)}
-              onDoubleClick={() => handleIconDoubleClick(index)} // Show border and cross button
+              }}
+              onDoubleClick={() => handleIconDoubleClick(index)}
             >
-              <img src={icon.iconUrl} alt="icon" width={40} height={40} />
-              <div>{icon.timestamp || "No Timestamp"}</div>
-              {/* Cross button for deletion */}
+              {/* Icon Image */}
+              <img
+                src={icon.iconUrl}
+                alt="icon"
+                className="mx-auto h-10 w-10"
+              />
+
+              {/* Allotted Marks and Question */}
+              <div className="mt-2 text-center text-sm font-semibold text-gray-700">
+                {`Q${icon.question} → ${icon?.currentMarkDetails?.allottedMarks}`}
+              </div>
+
+              {/* Timestamp */}
+              <div className="mt-1 text-center text-xs italic text-gray-500">
+                {icon.timestamp || "No Timestamp"}
+              </div>
+
+              {/* Cross Button for Deletion */}
               {selectedIcon === index && (
                 <button
-                  style={{
-                    position: "absolute",
-                    top: "-10px",
-                    right: "-10px",
-                    backgroundColor: "red",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "20px",
-                    height: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
+                  className="absolute -right-3 -top-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
                   onClick={() => handleDeleteIcon(index)}
                 >
                   ✖
