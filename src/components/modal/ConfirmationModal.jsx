@@ -81,7 +81,7 @@ const ConfirmationModal = ({
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-end py-3 px-3">
+                            <div className="flex justify-end py-3 px-3 gap-4 sm:gap-0">
                                 <button
                                     type="button"
                                     onClick={onSubmitHandler}
