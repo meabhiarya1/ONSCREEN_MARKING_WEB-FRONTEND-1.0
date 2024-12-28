@@ -83,7 +83,7 @@ const AssignPage = () => {
                   <div
                     onClick={() => setShowDropDownModal(!showDropDownModal)}
                   >
-                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700 cursor-pointer px-2 text-gray-700 dark:text-white">Select
+                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700 cursor-pointer px-2 py-1 text-gray-700 dark:text-white">Select
                       <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-navy-700 dark:text-white">
                         <span className="sr-only">Menu</span>
                         <svg
