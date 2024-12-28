@@ -95,3 +95,23 @@ export const updateAnswerPdfById = async (answerPdfId, status) => {
     return error.response; // return full error response to handle status outside
   }
 };
+
+export const postMarkById = async (body) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/evaluation/marks/create`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};

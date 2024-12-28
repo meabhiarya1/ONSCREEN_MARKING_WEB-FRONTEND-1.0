@@ -3,9 +3,12 @@ import CustomAddButton from "UI/CustomAddButton";
 import IconButton from "@mui/material/IconButton";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
+import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
 const QuestionDefinition = (props) => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [rotationStates, setRotationStates] = useState({});
+
+  
   useEffect(() => {
     if (props.questionDefinition.length !== 0) {
       setAllQuestions(props.questionDefinition);
@@ -27,12 +30,27 @@ const QuestionDefinition = (props) => {
 
     return numbers;
   };
+  const handleListClick = async (item, mark) => {
+    const { _id, answerPdfId } = item;
+    try {
+      const body = {
+        questionDefinitionId: _id,
+        answerPdfId: answerPdfId,
+        allottedMarks: mark,
+        timerStamps: new Date().toLocaleString(),
+      };
+      const response = await postMarkById(body);
+      console.log(response);
+    } catch (error) {}
+    console.log(item, mark);
+  };
   const QuestionData = allQuestions.map((item, index) => {
     const isRotated = rotationStates[index] === 45;
     const marksDifference = item.marksDifference;
-    console.log(marksDifference);
+    const allotedMarks = item.allottedMarks;
+
     const marks = generateNumbers(item.maxMarks, item.marksDifference);
-    console.log(marks);
+
     return (
       <tr className="h-16 border-b bg-white dark:border-gray-700 dark:bg-gray-800">
         <th
@@ -56,30 +74,39 @@ const QuestionDefinition = (props) => {
             </IconButton>
             <input
               className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={allotedMarks}
               type="text"
             />
             {/* Modal */}
             {isRotated && (
               <div
-                className="absolute left-8 top-0 z-10 ml-2 max-h-[300px] w-40 overflow-y-auto rounded-lg border border-gray-300 bg-white  shadow-lg"
+                className="absolute left-8 top-0 z-10 ml-2 w-24  rounded-md border border-gray-300 bg-white  shadow-lg"
                 style={{
                   transform: "translateX(0)", // Position to the left of the button
                 }}
               >
-                <p className="bg-gray-200  text-sm text-gray-700">
-                  {`Select Marks(Diff:${marksDifference})`}
+                <p className=" sticky top-0 bg-gray-200 text-center  text-sm text-gray-700">
+                  {`Select Marks`}
                 </p>
-                <ul className="list-disc pl-5 text-sm text-gray-700">
+                <ul className=" h-full max-h-[300px]  overflow-y-auto text-sm text-gray-700">
                   {marks.map((mark, i) => {
-                    return <li key={i}> {mark}</li>;
+                    return (
+                      <li
+                        onClick={() => handleListClick(item, mark)}
+                        className="cursor-pointer border text-center hover:bg-gray-200 hover:text-blue-500" // Adds pointer cursor and hover effect
+                        key={i}
+                      >
+                        {mark}
+                      </li>
+                    );
                   })}
                 </ul>
               </div>
             )}
           </div>
         </td>
-        <td className="px-6 py-4">{item.minMarks}</td>
-        <td className="px-6 py-4">{item.maxMarks}</td>
+        {/* <td className="px-6 py-4">{item.minMarks}</td>
+        <td className="px-6 py-4">{item.maxMarks}</td> */}
       </tr>
     );
   });
@@ -103,12 +130,12 @@ const QuestionDefinition = (props) => {
               <th scope="col" className="px-6 py-3">
                 Alloted Marks
               </th>
-              <th scope="col" className="px-6 py-3">
+              {/* <th scope="col" className="px-6 py-3">
                 Min Marks
               </th>
               <th scope="col" className="px-6 py-3">
                 Max Marks
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody className=" overflow-auto">
@@ -127,7 +154,8 @@ const QuestionDefinition = (props) => {
                   type="text"
                 />
               </td>
-              <td className="px-6 py-4"></td>
+              {/* <td className="px-6 py-4"></td>
+              <td className="px-6 py-4"></td> */}
             </tr>
           </tbody>
         </table>
