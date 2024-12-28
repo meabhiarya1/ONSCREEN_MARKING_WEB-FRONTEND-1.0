@@ -191,7 +191,7 @@ const AssignModal = ({
           <div className="relative">
             {/* Dropdown Of users */}
 
-            <div className="mt-5 flex items-center gap-7 px-2">
+            <div className="mt-5 flex items-center gap-7 px-1">
               <div className="text-gray-700 dark:text-white">
                 <label htmlFor="">
                   Select User:
@@ -224,7 +224,7 @@ const AssignModal = ({
               </div> */}
 
               <div className="w-4/5 ">
-                <select name="cars" id="cars" className="w-full bg-transparent h-10 rounded-lg border border-gray-200 px-4 text-sm focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white text-gray-700 overflow-auto">
+                <select name="cars" id="cars" className="w-full bg-transparent h-10 rounded-lg border border-gray-200 px-2 text-sm focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white text-gray-700 overflow-auto">
                   <option value="">Select User to Assign</option>
                 {
                   users && 
@@ -275,7 +275,7 @@ const AssignModal = ({
                 autoComplete="off"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
-                className="bg-transparent h-10 w-full rounded-lg border border-gray-200 px-4 text-sm focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white"
+                className="bg-transparent h-10 w-full rounded-lg border border-gray-200 px-5 text-sm focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white"
               />
             </div>
           </div>

@@ -83,7 +83,6 @@ const CreateSchemaStructure = () => {
     return null;
   };
 
-
   const generateFolders = (count) => {
     const folders = [];
     for (let i = 1; i <= count; i++) {
@@ -117,8 +116,6 @@ const CreateSchemaStructure = () => {
 
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
-
-  // console.log(savedQuestionData);
 
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
@@ -301,7 +298,7 @@ const CreateSchemaStructure = () => {
           },
         }
       );
-      console.log(response?.data?.data);
+      // console.log(response?.data?.data);
       toggleInputsVisibility(folderId);
       const subQuestionsNumber =
         response?.data?.data?.parentQuestion.numberOfSubQuestions || [];
@@ -344,6 +341,28 @@ const CreateSchemaStructure = () => {
       setFolders((prevFolders) => updateFolders(prevFolders));
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handleFinalSubmit = () => {
+    const updatedSchemaData = {
+      ...schemaData,
+      status: true,
+    };
+
+    try {
+      const response = axios.put(
+        `${process.env.REACT_APP_API_URL}/api/schemas/update/schema/${id}`,
+        updatedSchemaData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Schema data updated successfully");
+    } catch (error) {
       toast.error(error.response.data.message);
     }
   };
@@ -500,7 +519,6 @@ const CreateSchemaStructure = () => {
             >
               {isSaving ? "Saving..." : "Save"}
             </button>
-            
           </div>
 
           {/* Sub Questions Input Fields */}
@@ -557,8 +575,16 @@ const CreateSchemaStructure = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
-      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+    <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
+      <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
+        <div className="flex justify-end">
+          <span
+            className="cursor-pointer rounded-lg bg-green-700 p-2 text-white hover:bg-green-800"
+            onClick={handleFinalSubmit}
+          >
+            Submit
+          </span>
+        </div>
         {folders.map((folder) => renderFolder(folder))}
       </div>
     </div>

@@ -6,6 +6,7 @@ import { MdAutoDelete } from "react-icons/md";
 import EditAssingModal from "components/modal/EditAssingModal";
 import { getAllUsers } from "services/common";
 import ReassignModal from "components/modal/ReassignModal";
+import DeleteConfirmationModalAssignTask from "components/modal/DeleteConfirmationModalAssignTask";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,8 +15,10 @@ const Tasks = () => {
   const [selectedUser, setSelectedUser] = useState(undefined);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [currentTask, setCurrentTask] = useState(false);
+  const [currentTask, setCurrentTask] = useState({});
   const [showReAssignModal, setShowReAssignModal] = useState(false);
+  const [deleteAssignModal, setDeleteAssign] = useState(false);
+
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -200,6 +203,10 @@ const Tasks = () => {
                       <label
                         htmlFor="javascript"
                         className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-red-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300"
+                        onClick={() => {
+                          setDeleteAssign(true);
+                          setCurrentTask(filteredTask);
+                        }}
                       >
                         <div>Delete</div>
                         <MdAutoDelete className="m-2 text-lg " />
@@ -225,6 +232,13 @@ const Tasks = () => {
               setShowReAssignModal={setShowReAssignModal}
               showReAssignModal={showReAssignModal}
               users={users}
+            />
+          )}
+
+          {deleteAssignModal && (
+            <DeleteConfirmationModalAssignTask
+              setDeleteAssign={setDeleteAssign}
+              currentTask={currentTask}
             />
           )}
         </div>

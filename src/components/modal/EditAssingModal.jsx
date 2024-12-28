@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { getUserDetails } from "services/common";
 import FileManagerModal from "./FileManagerModal";
+import { toast } from "react-toastify";
 
 const EditAssingModal = ({
   setShowEditModal,
@@ -13,10 +13,31 @@ const EditAssingModal = ({
   const [showFileManager, setShowFileManager] = useState(false);
   const [selectedPath, setSelectedPath] = useState("");
 
-
   useEffect(() => {
     setSelectedPath(currentTask?.folderPath);
   }, []);
+
+  const handleSubmitButton = async (currentTask) => {
+    const updatedTask = { ...currentTask, folderPath: selectedPath };
+
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/tasks/update/task/${currentTask._id}`,
+        updatedTask,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response);
+      toast.success("Task updated successfully");
+      setShowEditModal(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating task");
+    }
+  };
 
   return (
     <div>
@@ -111,7 +132,6 @@ const EditAssingModal = ({
               />
             </div>
           </div>{" "}
-          {console.log(currentTask)}
           <div
             className="mx-3 mb-2 flex items-center "
             onClick={() => {
@@ -129,10 +149,9 @@ const EditAssingModal = ({
               className="bg-transparent h-12 w-full rounded-l-md border border-green-600 px-4 text-sm  focus:border-green-600 focus:outline-none "
               disabled
               onChange={(e) =>
-                setCurrentTask((prev) => ({
-                  ...prev,
-                  folderPath: selectedPath,
-                }))
+                selectedPath
+                  ? setSelectedPath(e.target.value)
+                  : setSelectedPath(currentTask?.folderPath)
               }
             />
             <button className="duration-250 group  relative z-30 flex cursor-pointer  items-center justify-center overflow-hidden rounded-r-lg rounded-tr-lg bg-green-700 px-4 py-2.5 text-white shadow-lg transition-all hover:bg-green-600 hover:shadow-xl focus:bg-green-600 focus:shadow-xl focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg ">
@@ -161,6 +180,7 @@ const EditAssingModal = ({
               style={{ backgroundColor: "#00A400" }}
               onClick={() => {
                 setShowEditModal(false);
+                handleSubmitButton(currentTask);
               }}
             >
               Submit
@@ -175,7 +195,6 @@ const EditAssingModal = ({
           setSelectedPath={setSelectedPath}
         />
       )}
-
     </div>
   );
 };
