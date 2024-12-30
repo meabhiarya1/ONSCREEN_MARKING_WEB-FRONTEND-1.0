@@ -19,7 +19,6 @@ const Tasks = () => {
   const [showReAssignModal, setShowReAssignModal] = useState(false);
   const [deleteAssignModal, setDeleteAssign] = useState(false);
 
-
   useEffect(() => {
     const fetchTasks = async () => {
       try {

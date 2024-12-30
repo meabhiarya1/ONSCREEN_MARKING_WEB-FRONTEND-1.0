@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { isAction } from "@reduxjs/toolkit";
 
 const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
@@ -19,6 +20,7 @@ const CreateSchemaStructure = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
+  // const [allottedQuestionRemaining, setAllottedQuestionRemaining] = useState(0);
 
   useEffect(() => {
     if (currentQuestionNo && !/^\d+-\d+$/.test(currentQuestionNo)) {
@@ -39,6 +41,7 @@ const CreateSchemaStructure = () => {
           }
         );
         const data = response?.data;
+
         setSchemaData((prev) => ({ ...prev, ...data }));
         if (data?.totalQuestions) {
           setFolders(generateFolders(data.totalQuestions));
@@ -62,8 +65,8 @@ const CreateSchemaStructure = () => {
           }
         );
         const data = response?.data.data || []; // Fallback to an empty array if no data
-
         setSavedQuestionData(data);
+
         // toast.success("Question data fetched successfully");
       } catch (error) {
         console.error("Error fetching schema data:", error);
@@ -349,6 +352,7 @@ const CreateSchemaStructure = () => {
     const updatedSchemaData = {
       ...schemaData,
       status: true,
+      isActive: true,
     };
 
     try {
@@ -577,7 +581,13 @@ const CreateSchemaStructure = () => {
   return (
     <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
       <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
-        <div className="flex justify-end">
+        <div className="flex justify-between">
+          <span className="cursor-pointer rounded-lg bg-indigo-700 p-2 text-white hover:bg-green-800">
+            Remaining Marks To Allot:{" "}
+            {schemaData?.totalQuestions - savedQuestionData?.length === 0
+              ? 0
+              : schemaData?.totalQuestions - savedQuestionData?.length}
+          </span>
           <span
             className="cursor-pointer rounded-lg bg-green-700 p-2 text-white hover:bg-green-800"
             onClick={handleFinalSubmit}

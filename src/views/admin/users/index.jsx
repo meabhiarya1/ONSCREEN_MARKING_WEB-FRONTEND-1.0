@@ -6,7 +6,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ConfirmationModal from "components/modal/ConfirmationModal";
 
-
 const Index = () => {
   const [users, setUsers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +19,9 @@ const Index = () => {
     const fetchUsers = async () => {
       try {
         const response = await getAllUsers();
-        setUsers(response);
+        if (Array.isArray(response)) {
+          setUsers(response);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -51,14 +52,11 @@ const Index = () => {
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
-    }
-    finally {
-      setConfirmationModal(false)
+    } finally {
+      setConfirmationModal(false);
       setUserId("");
     }
   };
-
-
 
   return (
     <div className="mt-12 overflow-x-auto rounded-md">
@@ -68,15 +66,15 @@ const Index = () => {
             {visibleFields?.map((key) => (
               <th
                 key={key}
-                className="whitespace-nowrap px-6 py-3 text-left text-md font-bold text-gray-700 uppercase tracking-wider dark:text-white"
+                className="text-md whitespace-nowrap px-6 py-3 text-left font-bold uppercase tracking-wider text-gray-700 dark:text-white"
               >
                 {key.charAt(0).toUpperCase() + key.slice(1)}
               </th>
             ))}
-            <th className="whitespace-nowrap font-bold px-6 py-3 text-left text-md  text-gray-700 uppercase tracking-wider dark:text-white">
+            <th className="text-md whitespace-nowrap px-6 py-3 text-left font-bold  uppercase tracking-wider text-gray-700 dark:text-white">
               Edit
             </th>
-            <th className="whitespace-nowrap px-6 py-3 text-left text-md font-bold text-gray-700 uppercase tracking-wider dark:text-white">
+            <th className="text-md whitespace-nowrap px-6 py-3 text-left font-bold uppercase tracking-wider text-gray-700 dark:text-white">
               Remove
             </th>
           </tr>
@@ -87,7 +85,10 @@ const Index = () => {
             users?.map((user) => (
               <tr key={user._id} className="bg-white hover:bg-gray-50">
                 {visibleFields?.map((field) => (
-                  <td key={field} className="whitespace-nowrap px-6 py-4 text-sm text-gray-700 dark:bg-navy-700 dark:text-white">
+                  <td
+                    key={field}
+                    className="whitespace-nowrap px-6 py-4 text-sm text-gray-700 dark:bg-navy-700 dark:text-white"
+                  >
                     {field === "date"
                       ? new Date(user[field]).toLocaleDateString()
                       : user[field]}
@@ -108,8 +109,8 @@ const Index = () => {
                     <button
                       className="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-red-700"
                       onClick={() => {
-                        setConfirmationModal(true)
-                        setUserId(user._id)
+                        setConfirmationModal(true);
+                        setUserId(user._id);
                       }}
                     >
                       Remove
@@ -126,7 +127,6 @@ const Index = () => {
         <Modal user={selectedUser} isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
 
-
       <ConfirmationModal
         confirmationModal={confirmationModal}
         onSubmitHandler={onUserRemoveHandler}
@@ -136,9 +136,7 @@ const Index = () => {
         message="Are you sure you want to remove this user? This action cannot be undone."
         type="error" // Options: 'success', 'warning', 'error'
       />
-
     </div>
-
   );
 };
 

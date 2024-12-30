@@ -36,35 +36,35 @@ const AssignPage = () => {
 
   return (
     <div>
-      {subjects.map((subject) => (
-        <div
-          className={
-            showAssignModal
-              ? "pointer-events-none blur-sm"
-              : "mt-8 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
-          }
-          key={subject._id}
-        >
-          <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:bg-navy-700 dark:text-white">
-            <thead className="bg-gray-100 ltr:text-left rtl:text-right dark:bg-navy-900">
-              <tr>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                  Relation Name
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                Answer Images
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                Question Images
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                  Status
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"></th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y divide-gray-200">
+      <table className="mt-8 min-w-full divide-y-2 divide-gray-200 bg-white text-sm dark:bg-navy-700 dark:text-white">
+        <thead className="bg-gray-100 dark:bg-navy-900 ltr:text-left rtl:text-right">
+          <tr>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+              Relation Name
+            </th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+              Answer Images
+            </th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+              Question Images
+            </th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+              Status
+            </th>
+            <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white"></th>
+          </tr>
+        </thead>{" "}
+        {/* <div
+            className={
+              showAssignModal
+                ? "pointer-events-none blur-sm"
+                : "mt-0 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
+            }
+            key={subject._id}
+          > */}
+        {subjects.map(
+          (subject) => (
+            <tbody className="divide-y divide-gray-200" key={subject._id}>
               <tr>
                 <td className="whitespace-nowrap px-10 py-2 font-medium text-gray-900 dark:text-white">
                   {subject?.relationName}
@@ -80,11 +80,10 @@ const AssignPage = () => {
                 </td>
                 <td className="relative whitespace-nowrap px-3 py-1.5 text-right">
                   {/* Drop Menu Buton*/}
-                  <div
-                    onClick={() => setShowDropDownModal(!showDropDownModal)}
-                  >
-                    <div className="inline-flex items-center overflow-hidden rounded-md border bg-white dark:bg-navy-700 cursor-pointer px-2 py-1 text-gray-700 dark:text-white">Select
-                      <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-navy-700 dark:text-white">
+                  <div onClick={() => setShowDropDownModal(!showDropDownModal)}>
+                    <div className="inline-flex cursor-pointer items-center overflow-hidden rounded-md border bg-white px-2 py-1 text-gray-700 dark:bg-navy-700 dark:text-white">
+                      Select
+                      <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-white dark:hover:bg-navy-700">
                         <span className="sr-only">Menu</span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -139,9 +138,11 @@ const AssignPage = () => {
                 )}
               </tr>
             </tbody>
-          </table>
-        </div>
-      ))}
+          )
+          // </div>
+        )}
+      </table>
+
       {showAssignModal && (
         <AssignModal
           showAssignModal={showAssignModal}
