@@ -28,7 +28,6 @@ const CheckModule = () => {
   const [loading, setLoading] = useState(false);
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const [answerImageDetails, setAnswerImageDetails] = useState([]);
-  // const [taskDetails, setTaskDetails] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
   const taskDetails = evaluatorState?.currentTaskDetails;
   const currentBookletIndex = evaluatorState.currentBookletIndex;
@@ -50,7 +49,6 @@ const CheckModule = () => {
           // questionDefinitions,
           task,
         } = response;
-      
 
         dispatch(setCurrentTaskDetails(task));
         dispatch(setCurrentBookletIndex(task.currentFileIndex));
