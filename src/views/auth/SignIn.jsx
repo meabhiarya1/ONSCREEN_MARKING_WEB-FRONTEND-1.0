@@ -24,6 +24,7 @@ export function SignIn() {
   const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [verify, setVerify] = useState(false);
 
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@ export function SignIn() {
 
   const handleSubmitEmailPassword = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (localStorage.getItem("token")) localStorage.removeItem("token");
     const updatedUser = { ...user, type: "password" };
     try {
@@ -51,10 +53,12 @@ export function SignIn() {
       toast.error("Login failed. Please try again.");
       console.log(error);
       setUser({
-        email: "",
-        password: "",
-        type: "",
+        email: user.email,
+        password: user.password,
+        type: user.type,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,6 +87,7 @@ export function SignIn() {
   };
 
   const verifyOTP = async () => {
+    setVerify(true);
     const userId = localStorage.getItem("userId");
     const otp = user.otp;
     try {
@@ -100,6 +105,8 @@ export function SignIn() {
       }
     } catch (error) {
       toast.error(error?.response.data.message);
+    } finally {
+      setVerify(false)
     }
   };
 
@@ -194,13 +201,13 @@ export function SignIn() {
                       value={user.email}
                     />
                     <button
-                      className={`hover:bg-transparent inline-block rounded-md border w-32 border-indigo-600 bg-indigo-600 hover:bg-indigo-700 p-2 text-sm font-medium text-white transition hover:text-white ${loading ? 'cursor-not-allowed' : ''}`}
+                      className={`hover:bg-transparent inline-block rounded-md border w-32 border-indigo-600 bg-indigo-600 hover:bg-indigo-700 h-10 text-sm font-medium text-white transition hover:text-white ${loading ? 'cursor-not-allowed' : ''}`}
                       disabled={loading}
                     >
                       {loading ? (
-                        <div className="flex items-center">
+                        <div className={`flex items-center h-full w-full ${loading ? "bg-indigo-400":"bg-indigo-600"}`}>
                           <svg
-                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            className="animate-spin h-5 w-5 mr-2 text-white ml-1"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
@@ -256,12 +263,35 @@ export function SignIn() {
 
                 <div className="col-span-6 items-center gap-2 sm:justify-between">
                   <button
-                    className={`hover:bg-transparent inline-block rounded-md border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 px-12 py-3 text-sm font-medium text-white transition hover:bg-bulue-700 hover:text-white ${forgotPassword || otp ? "w-full" : "sm:w-2/3"
+                    className={`hover:bg-transparent inline-block rounded-md border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 h-10 text-sm font-medium text-white transition hover:bg-bulue-700 hover:text-white ${forgotPassword || otp ? "w-full" : "sm:w-2/3"
                       } `}
                     onClick={verifyOTP}
                     type="button"
+                    disabled={verify}
                   >
-                    {forgotPassword ? "Verify" : "Login with OTP"}
+                    {verify ? <div className={`flex items-center justify-center h-full w-full ${verify ? "bg-indigo-400":"bg-indigo-600"}`}>
+                          <svg
+                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                            />
+                          </svg>
+                          Verifying...
+                        </div> : "Login with OTP"}
                   </button>
 
                   {forgotPassword ? null : (
@@ -270,6 +300,7 @@ export function SignIn() {
                         onClick={() => setOtp(!otp)}
                         className="text-indigo-600 mt-5"
                         cursor="pointer"
+                        disabled={verify}
                       >
                         Password based login
                       </button>
@@ -333,25 +364,53 @@ export function SignIn() {
                 </div>
 
                 <div className="col-span-6 flex flex-col items-center gap-4">
-                  <button className="hover:bg-transparent inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 px-12 py-3 text-sm font-medium text-white transition  ">
-                    Login with Email
+                  <button className="hover:bg-transparent inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 h-10 text-md font-medium text-white transition" disabled={loading}>
+                  {loading ? (
+                        <div className={`flex items-center justify-center h-full w-full ${loading ? "bg-indigo-400":"bg-indigo-600"}`}>
+                          <svg
+                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                            />
+                          </svg>
+                          Logging In...
+                        </div>
+                      ) : (
+                        "Login with Email"
+                      )}
                   </button>
                   <div className="flex justify-center gap-5">
                     <p className="text-sm text-gray-500">
                       <button
                         onClick={() => setOtp(!otp)}
-                        className="text-indigo-600 p-3 rounded-md brder"
+                        className={`p-3 rounded-md ${loading ? "text-indigo-400":"text-indigo-600"}`}
+                        disabled={loading}
                       >
                         OTP based login
                       </button>
                     </p>
                     <p className="text-sm text-gray-500">
                       <button
-                        className="text-indigo-600 p-3 rounded-md"
+                        className={`p-3 rounded-md ${loading ? "text-indigo-400":"text-indigo-600"}`}
                         onClick={() => {
                           setForgotPassword(!forgotPassword);
                           setOtp(!otp);
                         }}
+                        disabled={loading}
                       >
                         Forgot your password?
                       </button>
