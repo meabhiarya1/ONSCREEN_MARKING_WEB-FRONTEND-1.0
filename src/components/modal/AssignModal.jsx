@@ -87,7 +87,7 @@ const AssignModal = ({
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/tasks/create/task`,
         {
-          userId: users.find((user) => user.email === selectedUser)?._id,
+          userId: selectedUser,
           subjectSchemaRelationId: currentSubject?._id,
           folderPath: selectedPath,
           status: false,
@@ -101,7 +101,7 @@ const AssignModal = ({
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       setShowAssignModal(false);
       toast.success("Task Assigned Successfully");
     } catch (error) {
@@ -121,7 +121,6 @@ const AssignModal = ({
             <h2 className="font-bold" style={{ fontSize: "32px" }}>
               Assign Task
             </h2>
-            
           </div>
           <div
             className="cursor-pointer text-gray-600"
@@ -147,7 +146,7 @@ const AssignModal = ({
         </div>
         <hr className="bg-gray-600" />
         <div className="mt-2 min-w-[400px] space-y-2 px-5 pb-6 pt-3">
-          <div className="flex space-x-3 justify-evenly">
+          <div className="flex justify-evenly space-x-3">
             <div className="flex">
               <p className="pl-2 font-bold text-gray-700 dark:text-white">
                 Relation Name:{" "}
@@ -167,7 +166,7 @@ const AssignModal = ({
               </p>
             </div>
           </div>
-          <div className="flex space-x-3 justify-evenly">
+          <div className="flex justify-evenly space-x-3">
             <div className="flex">
               <p className="pl-2 font-bold text-gray-700 dark:text-white">
                 {" "}
@@ -193,9 +192,7 @@ const AssignModal = ({
 
             <div className="mt-5 flex items-center gap-7 px-1">
               <div className="text-gray-700 dark:text-white">
-                <label htmlFor="">
-                  Select User:
-                </label>
+                <label htmlFor="">Select User:</label>
               </div>
 
               {/* <div
@@ -224,17 +221,23 @@ const AssignModal = ({
               </div> */}
 
               <div className="w-4/5 ">
-                <select name="cars" id="cars" className="w-full bg-transparent h-10 rounded-lg border border-gray-200 px-2 text-sm focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white text-gray-700 overflow-auto">
+                <select
+                  name="cars"
+                  id="cars"
+                  className="bg-transparent h-10 w-full overflow-auto rounded-lg border border-gray-200 px-2 text-sm text-gray-700 focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white"
+                  onChange={(e) => {
+                    setSelectedUser(e.target.value);
+                  }}
+                >
                   <option value="">Select User to Assign</option>
-                {
-                  users && 
-                   users.map((user)=>(
-                    <option key={user._id} value={user._id}>{user.email}</option>
-                   ))
-                }
-              </select>
+                  {users &&
+                    users.map((user) => (
+                      <option key={user._id} value={user._id}>
+                        {user.email}
+                      </option>
+                    ))}
+                </select>
               </div>
-
             </div>
 
             {/* {showUserModal && (

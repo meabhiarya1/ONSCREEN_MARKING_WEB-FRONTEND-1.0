@@ -32,6 +32,7 @@ const SelectCoordinates = () => {
     answerImages: [],
   });
   const [showAnswerModel, setShowAnswerModel] = useState(false);
+  const [getSubjectbyIdData, setGetsubjectbyIdData] = useState([]);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -44,6 +45,7 @@ const SelectCoordinates = () => {
             },
           }
         );
+        setGetsubjectbyIdData(response.data);
         const schemaId = response?.data?.schemaId;
 
         if (schemaId) {
@@ -369,10 +371,22 @@ const SelectCoordinates = () => {
     }
   };
 
+  console.log(getSubjectbyIdData);
+
   const handleFinalSubmitButton = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/subjects/relations/getallsubjectschemarelationstatustrue/${id}`,
+      const updatedData = new FormData();
+
+      updatedData.append("schemaId", getSubjectbyIdData?.schemaId);
+      updatedData.append("subjectId", getSubjectbyIdData?.subjectId);
+      updatedData.append("relationName", getSubjectbyIdData?.relationName);
+      updatedData.append("coordinateStatus", true);
+      updatedData.append("questionPdf", getSubjectbyIdData?.questionPdfPath);
+      updatedData.append("answerImages", getSubjectbyIdData?.answerPdfPath);
+
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/subjects/relations/updatesubjectbyid/${id}`,
+        updatedData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
