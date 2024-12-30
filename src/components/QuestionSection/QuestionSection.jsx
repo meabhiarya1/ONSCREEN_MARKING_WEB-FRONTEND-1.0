@@ -10,13 +10,18 @@ import {
   setIsDraggingIcon,
   setCurrentQuestion,
   setCurrentMarkDetails,
+  setCurrentTaskDetails,
 } from "store/evaluatorSlice";
+import { changeCurrentIndexById } from "components/Helper/Evaluator/EvalRoute";
+import { setCurrentBookletIndex } from "store/evaluatorSlice";
 const QuestionDefinition = (props) => {
   const [allQuestions, setAllQuestions] = useState([]);
   const [rotationStates, setRotationStates] = useState({});
   const [marked, setMarked] = useState(false);
   const [totalMarks, setTotalMarks] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
+  const taskDetails = evaluatorState.currentTaskDetails;
+  const currentBookletIndex = evaluatorState.currentBookletIndex;
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchQuestionDetails = async (answerPdfDetails) => {
@@ -25,6 +30,7 @@ const QuestionDefinition = (props) => {
           answerPdfDetails.taskId,
           answerPdfDetails._id
         );
+        console.log(response2);
         const reducedArr = response2.reduce((total, item) => {
           return total + item.allottedMarks;
         }, 0);
@@ -146,14 +152,59 @@ const QuestionDefinition = (props) => {
       </tr>
     );
   });
+
+  const handleNextBooklet = async () => {
+    try {
+      if (currentBookletIndex < taskDetails.totalFiles) {
+        const taskId = taskDetails._id;
+        const response = await changeCurrentIndexById(
+          taskId,
+          taskDetails.currentFileIndex + 1
+        );
+        dispatch(setCurrentBookletIndex(response));
+        // console.log(response);
+      }
+      // console.log(taskDetails);
+      //
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handlePrevBooklet = async () => {
+    try {
+      if (currentBookletIndex > 1) {
+        const taskId = taskDetails._id;
+        const response = await changeCurrentIndexById(
+          taskId,
+          currentBookletIndex - 1
+        );
+        dispatch(setCurrentBookletIndex(currentBookletIndex - 1));
+        console.log(response);
+      }
+      // console.log(taskDetails);
+      //
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="h-[90vh]">
-      <buTton
-        type="button"
-        className="mb-2 h-[7%] w-[100%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-      >
-        Next Booklet
-      </buTton>
+      <div className="flex h-[7%]">
+        <buTton
+          type="button"
+          className="mb-2  w-[100%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          onClick={handlePrevBooklet}
+        >
+          {"<"} Prev Booklet
+        </buTton>
+        <buTton
+          type="button"
+          className="mb-2  w-[100%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          onClick={handleNextBooklet}
+        >
+          Next Booklet {">"}
+        </buTton>
+      </div>
 
       <div className="relative h-[73%] overflow-hidden shadow-md sm:rounded-lg">
         {/* Scrollable content */}

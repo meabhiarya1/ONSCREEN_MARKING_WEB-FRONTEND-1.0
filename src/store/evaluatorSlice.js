@@ -11,6 +11,8 @@ const initialState = {
   isDraggingIcon: false,
   currentIconMark: null,
   currentMarkDetails: null,
+  currentTaskDetails: null,
+  currentBookletIndex: null,
 };
 
 const evaluatorSlice = createSlice({
@@ -61,6 +63,12 @@ const evaluatorSlice = createSlice({
     setCurrentMarkDetails: (state, action) => {
       state.currentMarkDetails = action.payload;
     },
+    setCurrentTaskDetails: (state, action) => {
+      state.currentTaskDetails = action.payload;
+    },
+    setCurrentBookletIndex: (state, action) => {
+      state.currentBookletIndex = action.payload;
+    },
   },
 });
 
@@ -75,5 +83,7 @@ export const {
   setCurrentIconMark,
   setCurrentQuestion,
   setCurrentMarkDetails,
+  setCurrentTaskDetails,
+  setCurrentBookletIndex,
 } = evaluatorSlice.actions;
 export default evaluatorSlice.reducer;

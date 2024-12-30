@@ -115,3 +115,23 @@ export const postMarkById = async (body) => {
     return error.response; // return full error response to handle status outside
   }
 };
+
+export const changeCurrentIndexById = async (id, nextIndex) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/tasks/update/task/currentIndex/${id}`,
+      { currentIndex: nextIndex },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};

@@ -11,20 +11,27 @@ import QuestionSection from "components/QuestionSection/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
-import { setIndex, setBaseImageUrl } from "store/evaluatorSlice";
+import {
+  setIndex,
+  setBaseImageUrl,
+  setCurrentTaskDetails,
+} from "store/evaluatorSlice";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
 import { useParams } from "react-router-dom";
 import { getAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
 import { updateAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
 import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
+import { setCurrentBookletIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
   const [loading, setLoading] = useState(false);
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const [answerImageDetails, setAnswerImageDetails] = useState([]);
-  const [taskDetails, setTaskDetails] = useState(null);
+  // const [taskDetails, setTaskDetails] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
+  const taskDetails = evaluatorState?.currentTaskDetails;
+  const currentBookletIndex = evaluatorState.currentBookletIndex;
   const svgFiles = [
     "/pageicons/red.svg",
     "/pageicons/green.svg",
@@ -36,7 +43,6 @@ const CheckModule = () => {
       try {
         setLoading(true);
         const response = await getTaskById(id);
-
         const {
           answerPdfDetails,
           answerPdfImages,
@@ -44,11 +50,10 @@ const CheckModule = () => {
           // questionDefinitions,
           task,
         } = response;
-        // setQuestionDefinition(questionDefinitions);
-        // setAnswerImageDetails(answerPdfImages);
-        console.log(response);
+      
 
-        setTaskDetails(task);
+        dispatch(setCurrentTaskDetails(task));
+        dispatch(setCurrentBookletIndex(task.currentFileIndex));
         dispatch(setBaseImageUrl(extractedImagesFolder));
         setAnswerSheetCount(answerPdfDetails);
       } catch (error) {
@@ -58,11 +63,12 @@ const CheckModule = () => {
       }
     };
     getTaskDetails();
-  }, []);
+  }, [currentBookletIndex]);
 
   useEffect(() => {
     const getEvaluatorTasks = async (taskId) => {
       try {
+        console.log(taskId);
         const res = await getAnswerPdfById(taskId);
         setAnswerImageDetails(res);
         console.log(res);
