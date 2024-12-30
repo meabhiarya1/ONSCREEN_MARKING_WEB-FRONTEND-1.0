@@ -23,7 +23,6 @@ const CheckModule = () => {
   const [loading, setLoading] = useState(false);
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const [answerImageDetails, setAnswerImageDetails] = useState([]);
-  const [questionDefinition, setQuestionDefinition] = useState([]);
   const [taskDetails, setTaskDetails] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
   const svgFiles = [
@@ -76,20 +75,7 @@ const CheckModule = () => {
       getEvaluatorTasks(answerSheetCount._id);
     }
   }, [evaluatorState.currentIndex, answerSheetCount]);
-  // Use useCallback to memoize the random image generation
-  const generateRandomIcons = useCallback(() => {
-    return Array.from({ length: answerSheetCount }, (_, index) => {
-      const randomSvg = svgFiles[Math.floor(Math.random() * svgFiles.length)];
-      return {
-        src: randomSvg,
-        label: `0${index + 1}`,
-      };
-    });
-  }, [svgFiles]);
 
-  useEffect(() => {
-    // setIcons(generateRandomIcons());
-  }, [answerSheetCount]);
   const Imgicons = answerImageDetails.map((item, index) => {
     const svgIcon =
       item.status === "notVisited" ? 2 : item.status === "submitted" ? 1 : 0;
@@ -214,23 +200,36 @@ const CheckModule = () => {
           {/* Booklet Section */}
           <section className="flex-1 basis-1/3 space-y-1 px-4 text-center">
             <div>
-              Booklet Title: {answerSheetCount?.answerPdfName || "Loading..."}
+              <span className="font-semibold text-gray-600">Booklet Title</span>
+              :
+              <span className="font-bold text-gray-200">
+                {answerSheetCount?.answerPdfName || "Loading..."}
+              </span>
             </div>
             <div>
-              Current Booklet Index: {taskDetails?.currentFileIndex || "N/A"}
+              <span className="font-semibold text-gray-600">
+                Current Booklet Index
+              </span>
+              :
+              <span className="font-bold text-gray-200">
+                {taskDetails?.currentFileIndex || "N/A"}
+              </span>
             </div>
           </section>
 
           {/* Timing Section */}
           <section className="flex-1 basis-1/3 space-y-1 px-4 text-end">
             <div>
-              Login Time:
+              <span className="font-semibold text-gray-600">Login Time</span>:
               <span className="inline-block w-[100px] text-center font-mono">
                 {loginTime || "Loading..."}
               </span>
             </div>
             <div>
-              Evaluation Time:
+              <span className="font-semibold text-gray-600">
+                Evaluation Time
+              </span>
+              :
               <span className="inline-block w-[30px] text-center font-mono">
                 {hours}
               </span>
@@ -326,9 +325,14 @@ const CheckModule = () => {
       <div className="flex h-[90vh] w-full flex-row ">
         <div className=" w-[8%] sm:w-[20%] md:w-[12%] lg:w-[8%]">
           <div className="h-[100%]  justify-center text-center  ">
-            <h2 className="sticky top-0 z-10  border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 text-xl font-bold shadow-md">
-              Answer Sheet Count{" "}
-              <span style={{ fontFamily: "'Roboto', sans-serif" }}>
+            <h2 className="sticky top-0 z-10  border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 font-bold shadow-md md:text-base lg:text-xl">
+              Answer Sheet Count
+              <span
+                style={{
+                  fontFamily: "'Roboto', sans-serif",
+                  marginLeft: "4px",
+                }}
+              >
                 {answerSheetCount?.totalImages}
               </span>
             </h2>
