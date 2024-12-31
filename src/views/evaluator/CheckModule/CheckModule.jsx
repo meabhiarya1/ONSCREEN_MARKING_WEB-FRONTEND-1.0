@@ -7,37 +7,82 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { useStopwatch } from "react-timer-hook";
-import QuestionSection from "components/QuestionSection";
+import QuestionSection from "components/QuestionSection/QuestionSection";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../store/authSlice";
 import avatar from "assets/img/avatars/avatar4.png";
-import { setIndex } from "store/evaluatorSlice";
-
+import {
+  setIndex,
+  setBaseImageUrl,
+  setCurrentTaskDetails,
+} from "store/evaluatorSlice";
+import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
+import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
+import { useParams } from "react-router-dom";
+import { getAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
+import { updateAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
+import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
+import { setCurrentBookletIndex } from "store/evaluatorSlice";
 const CheckModule = () => {
   const [icons, setIcons] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [answerSheetCount, setAnswerSheetCount] = useState(null);
+  const [answerImageDetails, setAnswerImageDetails] = useState([]);
   const evaluatorState = useSelector((state) => state.evaluator);
+  const taskDetails = evaluatorState?.currentTaskDetails;
+  const currentBookletIndex = evaluatorState.currentBookletIndex;
   const svgFiles = [
     "/pageicons/red.svg",
     "/pageicons/green.svg",
     "/pageicons/yellow.svg",
   ];
+  const { id } = useParams();
+  useEffect(() => {
+    const getTaskDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await getTaskById(id);
+        const {
+          answerPdfDetails,
+          answerPdfImages,
+          extractedImagesFolder,
+          // questionDefinitions,
+          task,
+        } = response;
 
-  // Use useCallback to memoize the random image generation
-  const generateRandomIcons = useCallback(() => {
-    return Array.from({ length: 10 }, (_, index) => {
-      const randomSvg = svgFiles[Math.floor(Math.random() * svgFiles.length)];
-      return {
-        src: randomSvg,
-        label: `0${index + 1}`,
-      };
-    });
-  }, [svgFiles]);
+        dispatch(setCurrentTaskDetails(task));
+        dispatch(setCurrentBookletIndex(task.currentFileIndex));
+        dispatch(setBaseImageUrl(extractedImagesFolder));
+        setAnswerSheetCount(answerPdfDetails);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getTaskDetails();
+  }, [currentBookletIndex]);
 
   useEffect(() => {
-    setIcons(generateRandomIcons());
-  }, []);
+    const getEvaluatorTasks = async (taskId) => {
+      try {
+        console.log(taskId);
+        const res = await getAnswerPdfById(taskId);
+        setAnswerImageDetails(res);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (answerSheetCount) {
+      // console.log(answerSheetCount)
+      getEvaluatorTasks(answerSheetCount._id);
+    }
+  }, [evaluatorState.currentIndex, answerSheetCount]);
 
-  const Imgicons = icons.map((icon, index) => {
+  const Imgicons = answerImageDetails.map((item, index) => {
+    const svgIcon =
+      item.status === "notVisited" ? 2 : item.status === "submitted" ? 1 : 0;
     const active =
       index + 1 === evaluatorState.currentIndex
         ? "bg-gray-600 text-white border rounded"
@@ -45,22 +90,34 @@ const CheckModule = () => {
     return (
       <div
         key={index}
-        className={`my-2 cursor-pointer rounded py-2 text-center hover:bg-gray-300 active:bg-gray-400  ${active}`}
+        className={`my-1 cursor-pointer rounded py-2 text-center hover:bg-gray-300 active:bg-gray-400  ${active}`}
         onClick={() => {
-          dispatch(setIndex({ index: index + 1 }));
+          handleUpdateImageDetail(item, index);
         }}
       >
         <img
-          src={icon.src}
+          src={svgFiles[svgIcon]}
           width={50}
           height={50}
           alt="icon"
           className="mx-auto"
         />
-        <div>{icon.label}</div>
+        <div>{index + 1}</div>
       </div>
     );
   });
+  const handleUpdateImageDetail = async (item, index) => {
+    try {
+      console.log("called");
+      console.log(item._id);
+
+      const response = await updateAnswerPdfById(item._id, "visited");
+      dispatch(setIndex({ index: index + 1 }));
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // State for the login time (when the tab is opened)
   const [loginTime, setLoginTime] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -94,8 +151,7 @@ const CheckModule = () => {
 
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
-  const [scale, setScale] = useState(1); // Initial zoom level
-  const [questionModal, setShowuestionModal] = useState(false);
+  const [questionModal, setShowQuestionModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
@@ -103,7 +159,7 @@ const CheckModule = () => {
     useSelector((state) => state.auth.token) || localStorage.getItem("token");
   const questionHandler = () => {
     console.log("question handler");
-    setShowuestionModal(true);
+    setShowQuestionModal(true);
   };
   useEffect(() => {
     const id = localStorage.getItem("userId");
@@ -127,20 +183,57 @@ const CheckModule = () => {
   return (
     <>
       <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-[#33597a] to-[#33a3a3]  py-5 text-white">
-        <div className="flex w-[70%] items-center justify-around rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
-          <section>
-            <div>Subject = Engineering Mathematics - III</div>
-            <div>Evaluation Id = 46758390</div>
-          </section>
-          <section>
+        <div>
+          <img src="/ios.png" alt="ios_default" />
+        </div>
+        <div className="flex w-[70%] items-center justify-between rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
+          {/* Evaluator Section */}
+          <section className="flex-1 basis-1/3 space-y-1 px-4 ">
             <div>
-              Login Time =
-              <span className="inline-block w-[100px] text-center font-mono">
-                {loginTime ? loginTime : "Loading..."}
+              <span className="font-semibold text-gray-600">Evaluator ID</span>{" "}
+              : <span className="font-bold text-gray-200">46758390</span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-600">Subject</span> :{" "}
+              <span className="font-bold text-gray-200">
+                Engineering Mathematics - III
+              </span>
+            </div>
+          </section>
+
+          {/* Booklet Section */}
+          <section className="flex-1 basis-1/3 space-y-1 px-4 text-center">
+            <div>
+              <span className="font-semibold text-gray-600">Booklet Title</span>
+              :
+              <span className="font-bold text-gray-200">
+                {answerSheetCount?.answerPdfName || "Loading..."}
               </span>
             </div>
             <div>
-              Evaluation Time =
+              <span className="font-semibold text-gray-600">
+                Current Booklet Index
+              </span>
+              :
+              <span className="font-bold text-gray-200">
+                {taskDetails?.currentFileIndex || "N/A"}
+              </span>
+            </div>
+          </section>
+
+          {/* Timing Section */}
+          <section className="flex-1 basis-1/3 space-y-1 px-4 text-end">
+            <div>
+              <span className="font-semibold text-gray-600">Login Time</span>:
+              <span className="inline-block w-[100px] text-center font-mono">
+                {loginTime || "Loading..."}
+              </span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-600">
+                Evaluation Time
+              </span>
+              :
               <span className="inline-block w-[30px] text-center font-mono">
                 {hours}
               </span>
@@ -234,28 +327,44 @@ const CheckModule = () => {
       </div>
 
       <div className="flex h-[90vh] w-full flex-row ">
-        <div className="h-[100%] w-[8%] ">
-          <div className=" h-[90%] justify-center overflow-auto text-center  ">
-            <h2 className="sticky top-0 z-10 border-b border-gray-300 bg-white px-2 py-3 text-xl font-bold shadow-md">
-              Answer sheet count <span>40</span>
+        <div className=" w-[8%] sm:w-[20%] md:w-[12%] lg:w-[8%]">
+          <div className="h-[100%]  justify-center text-center  ">
+            <h2 className="sticky top-0 z-10  border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 font-bold shadow-md md:text-base lg:text-xl">
+              Answer Sheet Count
+              <span
+                style={{
+                  fontFamily: "'Roboto', sans-serif",
+                  marginLeft: "4px",
+                }}
+              >
+                {answerSheetCount?.totalImages}
+              </span>
             </h2>
-            <div className="grid grid-cols-1  md:grid-cols-2">{Imgicons}</div>
+            <div className="h-[80%] ">
+              <div className="grid h-[100%]  grid-cols-2 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
+                {Imgicons}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="mb-2 me-2 w-full bg-gradient-to-r from-[#33597a] to-[#33a3a3] px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+              onClick={questionHandler}
+            >
+              Show Questions and Model Answer
+            </button>
           </div>
-          <button
-            type="button"
-            className="mb-2 me-2 w-full bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
-            onClick={questionHandler}
-          >
-            Show Questions and Model Answer
-          </button>
         </div>
 
-        <div id="imgcontainer" className="w-[75%]">
+        <div
+          id="imgcontainer"
+          className="h-full flex-grow  sm:w-[60%] md:w-[65%] lg:w-[72%]"
+        >
           <ImageContainer />
         </div>
 
-        <div className="w-[20%]">
-          <QuestionSection />
+        <div className=" h-full sm:w-[30%] md:w-[25%] lg:block lg:w-[20%]">
+          <QuestionSection answerPdfDetails={answerSheetCount} />
         </div>
       </div>
     </>
