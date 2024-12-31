@@ -44,7 +44,7 @@ const QuestionDefinition = (props) => {
     if (props.answerPdfDetails) {
       fetchQuestionDetails(props.answerPdfDetails);
     }
-  }, [props.answerPdfDetails, marked]);
+  }, [props.answerPdfDetails, marked, evaluatorState.rerender]);
 
   const handleRotate = (index) => {
     setRotationStates({
@@ -61,13 +61,16 @@ const QuestionDefinition = (props) => {
     return numbers;
   };
   const handleListClick = async (item, mark, index) => {
-    const { _id, answerPdfId } = item;
-    console.log(answerPdfId);
+    const { _id, answerPdfId, allottedMarks } = item;
+    // const allotedMarks = answerPdfId.allottedMarks;
+    // console.log(answerPdfId.allottedMarks);
+    // console.log(allotedMarks);
+    // console.log(item);
     try {
       const body = {
         questionDefinitionId: _id,
         answerPdfId: answerPdfId,
-        allottedMarks: mark,
+        allottedMarks: +allottedMarks + +mark,
         timerStamps: new Date().toLocaleString(),
       };
       dispatch(setCurrentMarkDetails(body));
@@ -92,6 +95,29 @@ const QuestionDefinition = (props) => {
       item.maxMarks,
       item.marksDifference
     );
+    const handleAllotZeroListClick = async (item, mark, index) => {
+      const { _id, answerPdfId, allottedMarks } = item;
+
+      try {
+        const body = {
+          questionDefinitionId: _id,
+          answerPdfId: answerPdfId,
+          allottedMarks: 0,
+          timerStamps: new Date().toLocaleString(),
+        };
+        dispatch(setCurrentMarkDetails(body));
+        dispatch(setCurrentIcon("/close.png"));
+        dispatch(setIsDraggingIcon(true));
+        dispatch(setCurrentQuestion(index + 1));
+
+        setMarked((prev) => !prev);
+        setRotationStates({
+          [index]: (rotationStates[index] = 0), // Toggle only the current index
+        });
+        // console.log(response);
+      } catch (error) {}
+      console.log(item, mark);
+    };
 
     return (
       <tr className={`h-16 border  bg-green-100  dark:border-gray-700 ${bg} `}>
@@ -142,6 +168,12 @@ const QuestionDefinition = (props) => {
                       </li>
                     );
                   })}
+                  <li
+                    className="cursor-pointer border bg-gray-100 text-center font-bold hover:bg-gray-200 hover:text-red-500"
+                    onClick={() => handleAllotZeroListClick(item, 0, index)} // Optional click action
+                  >
+                    Allot 0
+                  </li>
                 </ul>
               </div>
             )}

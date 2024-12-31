@@ -10,7 +10,11 @@ import throttle from "lodash.throttle";
 import { jwtDecode } from "jwt-decode";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 
-import { setCurrentIcon, setIsDraggingIcon } from "store/evaluatorSlice";
+import {
+  setCurrentIcon,
+  setIsDraggingIcon,
+  setRerender,
+} from "store/evaluatorSlice";
 import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
@@ -29,7 +33,6 @@ const ImageContainer = (props) => {
   const [isDrawing, setIsDrawing] = useState(false); // Drawing mode toggle
   const [drawing, setDrawing] = useState([]); // Store strokes
   const evaluatorState = useSelector((state) => state.evaluator);
-  const [activeDrawing, setActiveDrawing] = useState(false);
   const [scalePercent, setScalePercent] = useState(100);
   const [isZoomMenuOpen, setIsZoomMenuOpen] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
@@ -99,7 +102,7 @@ const ImageContainer = (props) => {
     setCurrentImage(currentIndex); // Track the currently displayed image
     loadCanvasState();
   }, [currentIndex]);
-
+  useEffect(() => {}, [icons]);
   // Function to update canvas size when image is scaled
   useEffect(() => {
     if (canvasRef.current) {
@@ -228,6 +231,40 @@ const ImageContainer = (props) => {
       // Add starting point to differentiate new drawing
     ]);
   };
+  const handleResizeStart = (index, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const initialX = e.clientX;
+    const initialY = e.clientY;
+    const initialWidth = icons[index].width;
+    const initialHeight = icons[index].height;
+
+    const handleMouseMove = (moveEvent) => {
+      const deltaX = moveEvent.clientX - initialX;
+      const deltaY = moveEvent.clientY - initialY;
+
+      setIcons((prevIcons) =>
+        prevIcons.map((icon, i) =>
+          i === index
+            ? {
+                ...icon,
+                width: Math.max(20, initialWidth + deltaX), // Minimum size constraint
+                height: Math.max(20, initialHeight + deltaY),
+              }
+            : icon
+        )
+      );
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
 
   // Stop drawing when the mouse is released
   const handleCanvasMouseUp = () => {
@@ -281,7 +318,6 @@ const ImageContainer = (props) => {
     // setCurrentIcon(iconUrl); // Set the selected icon
     setIconModal(false); // Close the icon modal
   };
-  console.log(icons);
   // Handle dropping the icon on the image
   const handleImageClick = async (e) => {
     if (containerRef.current && currentIcon) {
@@ -298,6 +334,7 @@ const ImageContainer = (props) => {
         timerStamps: currentTimeStamp,
       };
       const response = await postMarkById(body);
+      dispatch(setRerender());
       setIcons([
         ...icons,
         {
@@ -307,6 +344,8 @@ const ImageContainer = (props) => {
           iconUrl: currentIcon,
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
+          width: 120, // Default width
+          height: 50,
         },
       ]);
 
@@ -316,7 +355,7 @@ const ImageContainer = (props) => {
       setIsDraggingIcon(false);
     }
   };
-  console.log(currentMarkDetails);
+  console.log(icons);
   // Start dragging an existing icon
   const handleIconDragStart = (index, e) => {
     setDraggedIconIndex(index);
@@ -348,9 +387,7 @@ const ImageContainer = (props) => {
       alt="icon"
     />
   ));
-  console.log(
-    `${process.env.REACT_APP_API_URL}\\${baseImageUrl}image_${currentIndex}.png`
-  );
+
   const handleZoomValueClick = () => {};
   const ZoomModal = Array.from({ length: 12 }, (_, index) => {
     const zoomValue = 40 + index * 10;
@@ -367,6 +404,7 @@ const ImageContainer = (props) => {
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
+
   return (
     <>
       <Tools
@@ -435,7 +473,9 @@ const ImageContainer = (props) => {
               style={{
                 top: `${icon.y}px`,
                 left: `${icon.x}px`,
-                transform: `scale(${scale})`,
+                // transform: `scale(${scale})`,
+                width: `${icon.width}px`,
+                height: `${icon.height}px`,
                 transformOrigin: "top left",
               }}
               onMouseDown={(e) => {
@@ -443,11 +483,24 @@ const ImageContainer = (props) => {
               }}
               onDoubleClick={() => handleIconDoubleClick(index)}
             >
+              {/* Resizing Handle */}
+              {selectedIcon === index && (
+                <div
+                  className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize bg-blue-500"
+                  onMouseDown={(e) => handleResizeStart(index, e)}
+                ></div>
+              )}
+
               {/* Icon Image */}
               <img
                 src={icon.iconUrl}
                 alt="icon"
-                className="mx-auto h-10 w-10"
+                className="mx-auto "
+                style={{
+                  width: "100%", // Ensures the image resizes with the div
+                  height: "100%", // Ensures the image resizes with the div
+                  objectFit: "contain", // Adjusts image to fit without distortion
+                }}
               />
 
               {/* Allotted Marks and Question */}

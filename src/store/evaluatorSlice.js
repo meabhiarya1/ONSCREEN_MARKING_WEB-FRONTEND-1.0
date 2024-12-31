@@ -13,6 +13,7 @@ const initialState = {
   currentMarkDetails: null,
   currentTaskDetails: null,
   currentBookletIndex: null,
+  rerender: false,
 };
 
 const evaluatorSlice = createSlice({
@@ -69,6 +70,9 @@ const evaluatorSlice = createSlice({
     setCurrentBookletIndex: (state, action) => {
       state.currentBookletIndex = action.payload;
     },
+    setRerender: (state) => {
+      state.rerender = !state.rerender;
+    },
   },
 });
 
@@ -77,6 +81,7 @@ export const {
   logout,
   rehydrateToken,
   setIndex,
+  setRerender,
   setBaseImageUrl,
   setCurrentIcon,
   setIsDraggingIcon,

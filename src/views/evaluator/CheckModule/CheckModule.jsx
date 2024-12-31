@@ -327,9 +327,12 @@ const CheckModule = () => {
       </div>
 
       <div className="flex h-[90vh] w-full flex-row ">
-        <div className=" w-[8%] sm:w-[20%] md:w-[12%] lg:w-[8%]">
-          <div className="h-[100%]  justify-center text-center  ">
-            <h2 className="sticky top-0 z-10  border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 font-bold shadow-md md:text-base lg:text-xl">
+        <div className=" h-full w-[8%] bg-blueSecondary sm:w-[20%] md:w-[12%] lg:w-[8%]">
+          <div className="h-[100%]  justify-center text-center ">
+            <h2
+              className="sticky top-0 z-10 h-[10%] border-b border-gray-300 bg-[#FFFFFF] px-2 py-3 font-bold shadow-md md:text-base lg:text-xl"
+              style={{ fontSize: "1vw" }}
+            >
               Answer Sheet Count
               <span
                 style={{
@@ -340,7 +343,7 @@ const CheckModule = () => {
                 {answerSheetCount?.totalImages}
               </span>
             </h2>
-            <div className="h-[80%] ">
+            <div className="h-[82%] ">
               <div className="grid h-[100%]  grid-cols-2 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
                 {Imgicons}
               </div>
@@ -348,7 +351,7 @@ const CheckModule = () => {
 
             <button
               type="button"
-              className="mb-2 me-2 w-full bg-gradient-to-r from-[#33597a] to-[#33a3a3] px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+              className="h-[8%] w-full bg-gradient-to-r from-[#33597a] to-[#33a3a3] px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
               onClick={questionHandler}
             >
               Show Questions and Model Answer
