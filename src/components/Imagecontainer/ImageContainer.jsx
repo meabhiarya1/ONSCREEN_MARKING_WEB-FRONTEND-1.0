@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 
 import { setCurrentIcon, setIsDraggingIcon } from "store/evaluatorSlice";
+import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
@@ -280,26 +281,35 @@ const ImageContainer = (props) => {
     // setCurrentIcon(iconUrl); // Set the selected icon
     setIconModal(false); // Close the icon modal
   };
-
+  console.log(icons);
   // Handle dropping the icon on the image
-  const handleImageClick = (e) => {
+  const handleImageClick = async (e) => {
     if (containerRef.current && currentIcon) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
       const scrollOffsetY = containerRef.current.scrollTop;
       // const updatedIcons = [...icons];
       // updatedIcons[index].timestamp = new Date().toLocaleString();
+      const currentTimeStamp = new Date().toLocaleString();
+      const body = {
+        questionDefinitionId: currentMarkDetails.questionDefinitionId,
+        answerPdfId: currentMarkDetails.answerPdfId,
+        allottedMarks: currentMarkDetails.allottedMarks,
+        timerStamps: currentTimeStamp,
+      };
+      const response = await postMarkById(body);
       setIcons([
         ...icons,
         {
           question: currentQuestionNo,
           currentMarkDetails: currentMarkDetails,
-          timestamp: new Date().toLocaleString(),
+          timestamp: currentTimeStamp,
           iconUrl: currentIcon,
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         },
       ]);
+
       // setCurrentIcon(null);
       dispatch(setCurrentIcon(null));
 
@@ -357,7 +367,6 @@ const ImageContainer = (props) => {
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
-  console.log(icons);
   return (
     <>
       <Tools
