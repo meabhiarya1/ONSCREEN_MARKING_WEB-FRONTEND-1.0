@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { isAction } from "@reduxjs/toolkit";
 
 const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
@@ -19,6 +20,7 @@ const CreateSchemaStructure = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
+  // const [allottedQuestionRemaining, setAllottedQuestionRemaining] = useState(0);
 
   useEffect(() => {
     if (currentQuestionNo && !/^\d+-\d+$/.test(currentQuestionNo)) {
@@ -39,6 +41,7 @@ const CreateSchemaStructure = () => {
           }
         );
         const data = response?.data;
+
         setSchemaData((prev) => ({ ...prev, ...data }));
         if (data?.totalQuestions) {
           setFolders(generateFolders(data.totalQuestions));
@@ -62,8 +65,8 @@ const CreateSchemaStructure = () => {
           }
         );
         const data = response?.data.data || []; // Fallback to an empty array if no data
-
         setSavedQuestionData(data);
+
         // toast.success("Question data fetched successfully");
       } catch (error) {
         console.error("Error fetching schema data:", error);
@@ -82,7 +85,6 @@ const CreateSchemaStructure = () => {
     }
     return null;
   };
-
 
   const generateFolders = (count) => {
     const folders = [];
@@ -117,8 +119,6 @@ const CreateSchemaStructure = () => {
 
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
-
-  // console.log(savedQuestionData);
 
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
@@ -301,7 +301,7 @@ const CreateSchemaStructure = () => {
           },
         }
       );
-      console.log(response?.data?.data);
+      // console.log(response?.data?.data);
       toggleInputsVisibility(folderId);
       const subQuestionsNumber =
         response?.data?.data?.parentQuestion.numberOfSubQuestions || [];
@@ -344,6 +344,29 @@ const CreateSchemaStructure = () => {
       setFolders((prevFolders) => updateFolders(prevFolders));
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handleFinalSubmit = () => {
+    const updatedSchemaData = {
+      ...schemaData,
+      status: true,
+      isActive: true,
+    };
+
+    try {
+      const response = axios.put(
+        `${process.env.REACT_APP_API_URL}/api/schemas/update/schema/${id}`,
+        updatedSchemaData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Schema data updated successfully");
+    } catch (error) {
       toast.error(error.response.data.message);
     }
   };
@@ -500,7 +523,6 @@ const CreateSchemaStructure = () => {
             >
               {isSaving ? "Saving..." : "Save"}
             </button>
-            
           </div>
 
           {/* Sub Questions Input Fields */}
@@ -557,8 +579,22 @@ const CreateSchemaStructure = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
-      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+    <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
+      <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
+        <div className="flex justify-between">
+          <span className="cursor-pointer rounded-lg bg-indigo-700 p-2 text-white hover:bg-green-800">
+            Remaining Marks To Allot:{" "}
+            {schemaData?.totalQuestions - savedQuestionData?.length === 0
+              ? 0
+              : schemaData?.totalQuestions - savedQuestionData?.length}
+          </span>
+          <span
+            className="cursor-pointer rounded-lg bg-green-700 p-2 text-white hover:bg-green-800"
+            onClick={handleFinalSubmit}
+          >
+            Submit
+          </span>
+        </div>
         {folders.map((folder) => renderFolder(folder))}
       </div>
     </div>

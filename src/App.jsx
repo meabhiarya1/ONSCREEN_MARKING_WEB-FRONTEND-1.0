@@ -28,7 +28,6 @@ const App = () => {
   };
 
   const role = getRoleFromToken();
-console.log(role)
   useEffect(() => {
     if (!token) {
       // Redirect to sign-in only if not already on an auth route

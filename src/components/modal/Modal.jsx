@@ -84,25 +84,25 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
-          <div className="relative w-full max-w-lg scale-95 transform rounded-xl bg-white p-8 shadow-2xl transition-all duration-300 sm:scale-100">
+          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
+          <div className="relative w-full max-w-lg scale-95 transform rounded-xl bg-white p-3 sm:p-5 shadow-2xl transition-all duration-300 sm:scale-100 dark:bg-navy-700">
             <button
-              className="absolute right-4 top-4 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
+              className="absolute right-4 sm:top-4 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
               onClick={toggleModal}
             >
               <GiCrossMark />
             </button>
 
-            <section className="px-6 py-8">
-              <h2 className="mb-4 text-3xl font-semibold text-gray-900">
+            <section className="sm:px-4 sm:py-4">
+              <h2 className="mb-2 sm:mb-4 text-xl sm:text-3xl font-semibold text-gray-900 dark:text-white">
                 Edit User Details
               </h2>
-              <div className="rounded-xl bg-gray-100 p-6 shadow-inner">
-                <form className="space-y-6" onSubmit={handleFormSubmit}>
+              <div className="rounded-xl bg-gray-100 p-3 sm:p-6 shadow-inner dark:bg-navy-800">
+                <form className="space-y-1 sm:space-y-6" onSubmit={handleFormSubmit}>
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-white"
                     >
                       Name
                     </label>
@@ -111,16 +111,16 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                      className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500  dark:bg-navy-900 dark:text-white"
                       placeholder="Enter name"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-1 sm:gap-6 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
+                        className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
                       >
                         Email
                       </label>
@@ -129,7 +129,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                        className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white"
                         placeholder="Enter email"
                       />
                     </div>
@@ -137,7 +137,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                     <div>
                       <label
                         htmlFor="phone"
-                        className="block text-sm font-medium text-gray-700"
+                        className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
                       >
                         Phone
                       </label>
@@ -146,7 +146,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                        className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white"
                         placeholder="Enter phone number"
                       />
                     </div>
@@ -155,7 +155,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                   <div>
                     <label
                       htmlFor="role"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
                     >
                       Role
                     </label>
@@ -163,7 +163,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                      className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white"
                     >
                       <option value="">Select a role</option>
                       <option value="admin">Admin</option>
@@ -175,11 +175,11 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                   <div>
                     <label
                       htmlFor="permissions"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
                     >
                       Permissions
                     </label>
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <div className="mt-2 flex flex-wrap items-center gap-0.5 sm:gap-2">
                       {routes.map((route, index) => (
                         <div
                           key={index}
@@ -198,7 +198,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                           />
                           <label
                             htmlFor={`route-${index}`}
-                            className="text-sm text-gray-700"
+                            className="text-sm text-gray-700 dark:text-white"
                           >
                             {route.name}
                           </label>
@@ -210,7 +210,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                   <div className="mt-6">
                     <button
                       type="submit"
-                      className="w-full rounded-lg bg-indigo-600 py-3 font-medium text-white shadow-lg transition duration-300 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
+                      className="w-full rounded-lg bg-indigo-600 py-1 sm:py-3 mt-2 font-medium text-white shadow-lg transition duration-300 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
                     >
                       UPDATE
                     </button>

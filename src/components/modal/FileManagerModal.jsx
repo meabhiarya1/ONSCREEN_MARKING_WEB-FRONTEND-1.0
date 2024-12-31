@@ -6,63 +6,24 @@ import {
   Toolbar,
   DetailsView,
 } from "@syncfusion/ej2-react-filemanager";
-import axios from "axios";
+// import axios from "axios";
+// import { FileOpenEventArgs } from "@syncfusion/ej2-filemanager";
 
-const FileManagerModal = ({ setShowFileManager }) => {
-  const [selectedPath, setSelectedPath] = useState(["scanned"]);
+const FileManagerModal = ({
+  setShowFileManager,
+  selectedPath,
+  setSelectedPath,
+}) => {
   const [errorMessage, setErrorMessage] = useState(null); // State to store error message
   const fileManagerRef = useRef(null); // Reference to FileManagerComponent
 
-  const onFolderCreate = async (newName) => {
-    if (!selectedPath) {
-      setErrorMessage("Please select a folder to create inside.");
-      return;
-    }
-
-    try {
-      // Send request to create folder
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/filemanager/create`,
-        {
-          name: newName,
-          path: selectedPath, // Path where the folder will be created
-        }
-      );
-
-      if (response.data) {
-        alert("Folder created successfully");
-        // Refresh the file manager after creating the folder
-        if (fileManagerRef.current) {
-          fileManagerRef.current.refresh(); // Refresh FileManager UI
-        }
-      }
-    } catch (error) {
-      // Display the error message from the server response
-      if (error.response && error.response.data) {
-        setErrorMessage(
-          error.response.data.error || error.response.data.message
-        );
-      } else {
-        setErrorMessage("An unexpected error occurred.");
-      }
+  const handleFileSelect = (args) => {
+    if (args.fileDetails.isFile === false) {
+      const path = args.fileDetails.filterPath;
+      const mainPath = "scannedData" + path + args.fileDetails.name;
+      setSelectedPath(mainPath);
     }
   };
-
-  const onFileSelect = (args) => {
-    console.log(args)
-    if (args.action === "select") {
-      if (selectedPath.includes(args.fileDetails.name)) return;
-      setSelectedPath([...selectedPath, args.fileDetails.name]);
-    } else if (args.action === "unselect") {
-      if (selectedPath.includes(args.fileDetails.name)) {
-        setSelectedPath(
-          selectedPath.filter((path) => path !== args.fileDetails.name)
-        );
-      }
-    }
-  };
-
-  console.log(selectedPath);
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
@@ -88,16 +49,17 @@ const FileManagerModal = ({ setShowFileManager }) => {
         </span>
 
         <div className="control-section">
+          {" "}
           <div id="file-manager-container">
             <FileManagerComponent
               id="file_manager"
               ref={fileManagerRef}
               ajaxSettings={{
-                createUrl: `${process.env.REACT_APP_API_URL}/api/filemanager/create`,
-                url: `${process.env.REACT_APP_API_URL}/api/filemanager/list`,
-                uploadUrl: `${process.env.REACT_APP_API_URL}/api/filemanager/upload`,
-                downloadUrl: `${process.env.REACT_APP_API_URL}/api/filemanager/download`,
-                deleteUrl: `${process.env.REACT_APP_API_URL}/api/filemanager/delete`,
+                url: `${process.env.REACT_APP_API_URL}/api/syncfusion`,
+                // createUrl: `http://192.168.1.43:8090/api/filemanager/create`,
+                // uploadUrl: `http://192.168.1.43:8090/api/filemanager/upload`,
+                // downloadUrl: `http://192.168.1.43:8090/api/filemanager/download`,
+                // deleteUrl: `http://192.168.1.43:8090/api/filemanager/delete`,
               }}
               toolbarSettings={{
                 items: [
@@ -115,22 +77,40 @@ const FileManagerModal = ({ setShowFileManager }) => {
                   "Details",
                 ],
               }}
+              enablePersistence={true}
+              allowDragAndDrop={false}
               showFileExtension={true}
               showThumbnail={true}
               view="LargeIcons"
-              fileSelect={(e) => onFileSelect(e)}
+              fileSelect={handleFileSelect}
             >
+              {" "}
               <Inject services={[NavigationPane, Toolbar, DetailsView]} />
             </FileManagerComponent>
-
-            <button onClick={() => onFolderCreate("New Folder")}>
-              Create Folder
-            </button>
 
             {/* Display error message */}
             {errorMessage && (
               <div className="error-message">{errorMessage}</div>
             )}
+          </div>{" "}
+          <div className="flex items-center justify-between gap-4">
+            {/* Left Side */}
+            <div className="flex">
+              <p className="text-md flex items-center justify-center font-bold text-gray-700">
+                Selected Path:
+              </p>
+              <div className="text-md px-2 font-medium text-gray-800">
+                {selectedPath}
+              </div>
+            </div>
+
+            {/* Right Side */}
+            <button
+              className="my-2 flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white"
+              onClick={() => setShowFileManager(false)}
+            >
+              Submit
+            </button>
           </div>
         </div>
       </div>

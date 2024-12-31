@@ -134,10 +134,10 @@ const routes = [
     path: "subjects/:id",
     icon: <BiTask className="h-6 w-6" />,
     component: <AssignPage />,
-    hidden: false,
+    hidden: true,
   },
   {
-    name: "Evaluator",
+    name: "Evaluator Dashboard",
     layout: "/evaluator",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,

@@ -29,10 +29,10 @@ export const getAllUsers = async () => {
         },
       }
     );
-    return response.data; // return the full response to handle status outside
+    return response?.data; // return the full response to handle status outside
   } catch (error) {
     console.error(error);
-    return error.response; // return full error response to handle status outside
+    return error?.response; // return full error response to handle status outside
   }
 };
 

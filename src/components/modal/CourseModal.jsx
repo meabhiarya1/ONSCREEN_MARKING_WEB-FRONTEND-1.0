@@ -22,7 +22,7 @@ const CourseModal = ({
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
-          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-2xl transition-all duration-300 sm:scale-100">
+          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-2xl transition-all duration-300 sm:scale-100 dark:bg-navy-700">
             <button
               className="absolute right-4 top-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
               onClick={() => {
@@ -43,34 +43,34 @@ const CourseModal = ({
                 className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
               >
 
-                <span className="text-xs font-medium text-gray-700">
+                {/* <span className="text-xs font-medium text-gray-700">
                   Course
-                </span>
+                </span> */}
 
-                <span className="text-sm font-medium text-gray-800">Course Name</span>
+                <span className="text-sm font-medium text-gray-800 dark:text-white">Course Name</span>
 
                 <input
                   type="text"
                   id="name"
                   name="name"
                   placeholder="Enter Course Name"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                   value={formData.name}
                   onChange={handleChange} // Handle changes
                 />
-              </label>;
+              </label>
 
               <label
                 htmlFor="code"
                 className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
               >
-                <span className="text-sm font-medium text-gray-800">Course Code</span>
+                <span className="text-sm font-medium text-gray-800 dark:text-white">Course Code</span>
                 <input
                   type="text"
                   id="code"
                   name="code"
                   placeholder="Enter Course Code"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
                   value={formData.code}
                   onChange={handleChange} // Handle changes
                 />

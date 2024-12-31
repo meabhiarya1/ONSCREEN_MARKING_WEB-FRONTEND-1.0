@@ -57,7 +57,7 @@ export default function Evaluator(props) {
       }
     });
   };
-console.log(getRoutes(routes))
+// console.log(getRoutes(routes))
   document.documentElement.dir = "ltr";
 
 

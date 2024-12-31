@@ -16,7 +16,7 @@ const Sidebar = ({ open, onClose }) => {
 
         let filteredRoutes = [];
         if (data?.role === "admin") {
-          console.log(data?.role);
+          // console.log(data?.role);
           filteredRoutes = routes.filter(
             (route) =>
               data?.permissions?.includes(route?.name) &&
