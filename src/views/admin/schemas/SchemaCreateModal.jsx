@@ -62,6 +62,11 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
       return;
     }
 
+    if (Number(formData?.compulsoryQuestions) > Number(formData?.totalQuestions)) {
+      toast.error("Compulsory Questions cannot be more than Total Question.");
+      return;
+    }
+
 
     try {
       const response = await axios.post(
