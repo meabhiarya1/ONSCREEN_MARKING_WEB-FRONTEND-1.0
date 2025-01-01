@@ -114,7 +114,7 @@ const AssignModal = ({
   };
 
   return (
-    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+    <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
       <div className="mx-6 w-full rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white md:w-2/3 lg:w-7/12 2xl:w-5/12">
         <div className="flex justify-between px-7 py-5">
           <div>
