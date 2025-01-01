@@ -405,7 +405,7 @@ const CreateSchemaStructure = () => {
 
     return (
       <div
-        className={`${folderStyle} p-4 ${color} rounded-md shadow dark:bg-navy-900 dark:text-white`}
+        className={`${folderStyle} p-4 ${color} rounded-md shadow bg-white dark:bg-navy-900 dark:text-white`}
         key={folder.id}
       >
         {level > 0 && (
