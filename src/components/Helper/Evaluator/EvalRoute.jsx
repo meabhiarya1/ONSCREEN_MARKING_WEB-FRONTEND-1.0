@@ -135,3 +135,46 @@ export const changeCurrentIndexById = async (id, nextIndex) => {
     return error.response; // return full error response to handle status outside
   }
 };
+
+export const createIcon = async (body) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/evaluation/icons/create`,
+      { ...body },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};
+
+export const getIconsByImageId = async (
+  questionDefinitionId,
+  answerPdfImageId
+) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/evaluation/icons/geticons?questionDefinitionId=${questionDefinitionId}&answerPdfImageId= ${answerPdfImageId}
+      `,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};

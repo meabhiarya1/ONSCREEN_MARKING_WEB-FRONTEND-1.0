@@ -15,6 +15,7 @@ import {
   setIndex,
   setBaseImageUrl,
   setCurrentTaskDetails,
+  setCurrentAnswerPdfImageId,
 } from "store/evaluatorSlice";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
@@ -108,10 +109,9 @@ const CheckModule = () => {
   });
   const handleUpdateImageDetail = async (item, index) => {
     try {
-      console.log("called");
-      console.log(item._id);
-
+      // console.log(item);
       const response = await updateAnswerPdfById(item._id, "visited");
+      dispatch(setCurrentAnswerPdfImageId(item._id));
       dispatch(setIndex({ index: index + 1 }));
       console.log(response);
     } catch (error) {
@@ -344,7 +344,7 @@ const CheckModule = () => {
               </span>
             </h2>
             <div className="h-[82%] ">
-              <div className="grid h-[100%]  grid-cols-2 overflow-auto bg-[#F5F5F5] md:grid-cols-2">
+              <div className="grid h-[100%]  grid-cols-1 overflow-auto bg-[#F5F5F5] md:grid-cols-1 lg:grid-cols-2">
                 {Imgicons}
               </div>
             </div>
@@ -354,7 +354,7 @@ const CheckModule = () => {
               className="h-[8%] w-full bg-gradient-to-r from-[#33597a] to-[#33a3a3] px-1.5 py-2.5 text-center text-sm font-medium  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:focus:ring-cyan-800"
               onClick={questionHandler}
             >
-              Show Questions and Model Answer
+              Show Questions
             </button>
           </div>
         </div>

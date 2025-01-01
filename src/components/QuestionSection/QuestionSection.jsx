@@ -11,10 +11,12 @@ import {
   setCurrentQuestion,
   setCurrentMarkDetails,
   setCurrentTaskDetails,
+  setCurrentQuestionDefinitionId,
 } from "store/evaluatorSlice";
 import { changeCurrentIndexById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
 const QuestionDefinition = (props) => {
+  const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [rotationStates, setRotationStates] = useState({});
   const [marked, setMarked] = useState(false);
@@ -73,6 +75,7 @@ const QuestionDefinition = (props) => {
         allottedMarks: +allottedMarks + +mark,
         timerStamps: new Date().toLocaleString(),
       };
+      dispatch(setCurrentQuestionDefinitionId(_id));
       dispatch(setCurrentMarkDetails(body));
       dispatch(setCurrentIcon("/check.png"));
       dispatch(setIsDraggingIcon(true));
@@ -89,12 +92,20 @@ const QuestionDefinition = (props) => {
   const QuestionData = allQuestions.map((item, index) => {
     const isRotated = rotationStates[index] === 45;
     const allotedMarks = item.allottedMarks;
-    const bg = allotedMarks !== 0 ? "bg-green-100" : "bg-red-100";
+
     const marks = generateNumbers(
       item.minMarks,
       item.maxMarks,
       item.marksDifference
     );
+    const background =
+      allotedMarks !== 0
+        ? selectedQuestion === index
+          ? "bg-red-300" // Marks allocated and index matches
+          : "bg-green-100" // Marks allocated and index doesn't match
+        : selectedQuestion === index
+        ? "bg-green-300" // No marks allocated but index matches
+        : "bg-red-100"; // No marks allocated and index doesn't match
     const handleAllotZeroListClick = async (item, mark, index) => {
       const { _id, answerPdfId, allottedMarks } = item;
 
@@ -120,7 +131,12 @@ const QuestionDefinition = (props) => {
     };
 
     return (
-      <tr className={`h-16 border  bg-green-100  dark:border-gray-700 ${bg} `}>
+      <tr
+        className={`h-16 border    dark:border-gray-700   ${background} `}
+        onClick={() => {
+          setSelectedQuestion(index);
+        }}
+      >
         <th
           scope="row"
           className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"

@@ -16,6 +16,8 @@ import {
   setRerender,
 } from "store/evaluatorSlice";
 import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
+import { createIcon } from "components/Helper/Evaluator/EvalRoute";
+import { getIconsByImageId } from "components/Helper/Evaluator/EvalRoute";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
@@ -52,9 +54,16 @@ const ImageContainer = (props) => {
   const currentIcon = evaluatorState.currentIcon;
   const isDraggingIcon = evaluatorState.isDraggingIcon;
   const currentMarkDetails = evaluatorState.currentMarkDetails;
+  const currentAnswerImageId = evaluatorState.currentAnswerPdfImageId;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   const fetchAllIcons = () => {
+  //     const icons = getIconsByImageId(currentAnswerImageId);
+  //   };
+  // }, []);
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
 
@@ -318,6 +327,7 @@ const ImageContainer = (props) => {
     // setCurrentIcon(iconUrl); // Set the selected icon
     setIconModal(false); // Close the icon modal
   };
+  console.log(currentMarkDetails);
   // Handle dropping the icon on the image
   const handleImageClick = async (e) => {
     if (containerRef.current && currentIcon) {
@@ -327,13 +337,34 @@ const ImageContainer = (props) => {
       // const updatedIcons = [...icons];
       // updatedIcons[index].timestamp = new Date().toLocaleString();
       const currentTimeStamp = new Date().toLocaleString();
-      const body = {
+      // const body = {
+      //   questionDefinitionId: currentMarkDetails.questionDefinitionId,
+      //   answerPdfImageId: currentMarkDetails.answerPdfId,
+      //   allottedMarks: currentMarkDetails.allottedMarks,
+      //   timerStamps: currentTimeStamp,
+      //   x: "string",
+      //   y: "string",
+      //   width: "string",
+      //   height: "string",
+      //   mark: "string",
+      // };
+
+      // const response = await postMarkById(body);
+      const iconBody = {
+        answerPdfImageId: currentAnswerImageId,
         questionDefinitionId: currentMarkDetails.questionDefinitionId,
-        answerPdfId: currentMarkDetails.answerPdfId,
-        allottedMarks: currentMarkDetails.allottedMarks,
-        timerStamps: currentTimeStamp,
+        iconUrl: currentIcon,
+        question: currentQuestionNo,
+        timeStamps: currentTimeStamp,
+
+        x: (e.clientX - containerRect.left + scrollOffsetX) / scale,
+        y: (e.clientY - containerRect.top + scrollOffsetY) / scale,
+        width: 120,
+        height: 50,
+        mark: currentMarkDetails.allottedMarks,
       };
-      const response = await postMarkById(body);
+      const res = await createIcon(iconBody);
+      console.log(res);
       dispatch(setRerender());
       setIcons([
         ...icons,
@@ -463,67 +494,80 @@ const ImageContainer = (props) => {
             alt="Viewer"
           />
           {/* Render all placed icons */}
-          {icons.map((icon, index) => (
-            <div
-              key={index}
-              ref={(el) => (iconRefs.current[index] = el)}
-              className={`absolute z-10 rounded-lg  p-2 transition-transform duration-200 
+          {icons.map((icon, index) => {
+            const isCheck = icon.iconUrl === "/check.png";
+            const checkClass = isCheck
+              ? "text-green-600 ring-2 ring-green-600"
+              : "text-red-600 ring-2 ring-red-600";
+            // console.log(icon);
+            return (
+              <div
+                key={index}
+                ref={(el) => (iconRefs.current[index] = el)}
+                className={`absolute z-10 rounded-lg  p-2 transition-transform duration-200 
       ${selectedIcon === index ? "border-2 border-blue-500" : ""}
     `}
-              style={{
-                top: `${icon.y}px`,
-                left: `${icon.x}px`,
-                // transform: `scale(${scale})`,
-                width: `${icon.width}px`,
-                height: `${icon.height}px`,
-                transformOrigin: "top left",
-              }}
-              onMouseDown={(e) => {
-                handleIconDragStart(index, e);
-              }}
-              onDoubleClick={() => handleIconDoubleClick(index)}
-            >
-              {/* Resizing Handle */}
-              {selectedIcon === index && (
-                <div
-                  className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize bg-blue-500"
-                  onMouseDown={(e) => handleResizeStart(index, e)}
-                ></div>
-              )}
-
-              {/* Icon Image */}
-              <img
-                src={icon.iconUrl}
-                alt="icon"
-                className="mx-auto "
                 style={{
-                  width: "100%", // Ensures the image resizes with the div
-                  height: "100%", // Ensures the image resizes with the div
-                  objectFit: "contain", // Adjusts image to fit without distortion
+                  top: `${icon.y}px`,
+                  left: `${icon.x}px`,
+                  // transform: `scale(${scale})`,
+                  width: `${icon.width}px`,
+                  height: `${icon.height}px`,
+                  transformOrigin: "top left",
                 }}
-              />
+                onMouseDown={(e) => {
+                  handleIconDragStart(index, e);
+                }}
+                onDoubleClick={() => handleIconDoubleClick(index)}
+              >
+                {/* Resizing Handle */}
+                {selectedIcon === index && (
+                  <div
+                    className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize bg-blue-500"
+                    onMouseDown={(e) => handleResizeStart(index, e)}
+                  ></div>
+                )}
 
-              {/* Allotted Marks and Question */}
-              <div className="mt-2 text-center text-sm font-semibold text-gray-700">
-                {`Q${icon.question} → ${icon?.currentMarkDetails?.allottedMarks}`}
+                {/* Icon Image */}
+                <img
+                  src={icon.iconUrl}
+                  alt="icon"
+                  className="mx-auto "
+                  style={{
+                    width: "100%", // Ensures the image resizes with the div
+                    height: "100%", // Ensures the image resizes with the div
+                    objectFit: "contain", // Adjusts image to fit without distortion
+                  }}
+                />
+
+                {/* Allotted Marks and Question */}
+                <div className=" mt-2 gap-1  text-center text-sm font-semibold text-gray-700">
+                  <span className="mr-1">{`Q${icon.question}`}</span>→
+                  <span
+                    className={`ml-1 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-gray-50 p-1 ${checkClass}`}
+                  >
+                    {`${icon?.currentMarkDetails?.allottedMarks}`}
+                  </span>
+                  {/* {`Q${icon.question} → ${icon?.currentMarkDetails?.allottedMarks}`} */}
+                </div>
+
+                {/* Timestamp */}
+                <div className="mt-1 text-center text-xs italic text-gray-500">
+                  {icon.timestamp || "No Timestamp"}
+                </div>
+
+                {/* Cross Button for Deletion */}
+                {selectedIcon === index && (
+                  <button
+                    className="absolute -right-3 -top-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
+                    onClick={() => handleDeleteIcon(index)}
+                  >
+                    ✖
+                  </button>
+                )}
               </div>
-
-              {/* Timestamp */}
-              <div className="mt-1 text-center text-xs italic text-gray-500">
-                {icon.timestamp || "No Timestamp"}
-              </div>
-
-              {/* Cross Button for Deletion */}
-              {selectedIcon === index && (
-                <button
-                  className="absolute -right-3 -top-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
-                  onClick={() => handleDeleteIcon(index)}
-                >
-                  ✖
-                </button>
-              )}
-            </div>
-          ))}
+            );
+          })}
 
           {/* Render the canvas for drawing */}
           <canvas
@@ -564,7 +608,53 @@ const ImageContainer = (props) => {
               top: `${mouseBasePos.y + 5}px`, // Dynamic positioning
             }}
           >
-            {`Q(${currentQuestionNo})`}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="200"
+              height="100"
+              viewBox="0 0 200 100"
+            >
+              {/* Background */}
+              <rect width="200" height="100" fill="white" />
+              {/* Text "Q1" */}
+              <text
+                x="10"
+                y="50"
+                fontSize="24"
+                fontFamily="Arial, sans-serif"
+                fontWeight="bold"
+                fill="black"
+                textAnchor="start"
+                alignmentBaseline="middle"
+              >
+                {`Q${1}`}
+              </text>
+              {/* Arrow */}
+              <path d="M50,50 H70" stroke="black" strokeWidth="2" fill="none" />
+              <polygon points="70,45 75,50 70,55" fill="black" />
+              {/* Circle */}
+              <circle
+                cx="100"
+                cy="50"
+                r="20"
+                fill="#F8F9FA"
+                stroke="#16A34A"
+                strokeWidth="2"
+              />
+              {/* Number inside the circle */}
+              <text
+                x="100"
+                y="50"
+                fontSize="18"
+                fontFamily="Arial, sans-serif"
+                fill="#16A34A"
+                textAnchor="middle"
+                alignmentBaseline="middle"
+              >
+                {2}
+              </text>
+            </svg>
+            {/* {`Q(${currentQuestionNo})`} */}
           </div>
         )}
       </div>
