@@ -579,7 +579,7 @@ const CreateSchemaStructure = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen overflow-hidden rounded-lg bg-lightPrimary p-6 dark:bg-navy-700 dark:text-white">
+    <div className="custom-scrollbar min-h-screen overflow-hidden rounded-lg bg-lightPrimary p-6 mt-2 dark:bg-navy-700 dark:text-white">
       {/* <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4"> */}
         <div className="flex justify-between mb-5">
           <span className="cursor-pointer rounded-lg bg-indigo-700 px-4 py-2 text-white hover:bg-indigo-800">
