@@ -11,11 +11,11 @@ const SchemaEditModal = ({
 }) => {
   const [formData, setFormData] = useState({
     name: "",
-    totalQuestions: 0,
-    maxMarks: 0,
-    minMarks: 0,
-    compulsoryQuestions: 0,
-    evaluationTime: 0,
+    totalQuestions: "",
+    maxMarks: "",
+    minMarks: "",
+    compulsoryQuestions: "",
+    evaluationTime: "",
     isActive: true,
   });
 
@@ -23,11 +23,11 @@ const SchemaEditModal = ({
     if (selectedSchema) {
       setFormData({
         name: selectedSchema.name || "",
-        maxMarks: selectedSchema.maxMarks || 0,
-        minMarks: selectedSchema.minMarks || 0,
-        totalQuestions: selectedSchema.totalQuestions || 0,
-        compulsoryQuestions: selectedSchema.compulsoryQuestions || 0,
-        evaluationTime: selectedSchema.evaluationTime || 0,
+        maxMarks: selectedSchema.maxMarks || "",
+        minMarks: selectedSchema.minMarks || "",
+        totalQuestions: selectedSchema.totalQuestions || "",
+        compulsoryQuestions: selectedSchema.compulsoryQuestions || "",
+        evaluationTime: selectedSchema.evaluationTime || "",
         isActive: selectedSchema.isActive || true,
         status: false,
       });

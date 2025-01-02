@@ -426,7 +426,7 @@ const SelectCoordinates = () => {
 
     return (
       <div
-        className={`${folderStyle} p-4 ${color} rounded text-gray-700 shadow`}
+        className={`${folderStyle} p-4 ${color} rounded text-gray-700 shadow dark:bg-navy-900 dark:text-white`}
         key={folder.id}
       >
         {level > 0 && (
@@ -440,9 +440,9 @@ const SelectCoordinates = () => {
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
         <div className="w-full flex-col gap-4">
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-3 xl:gap-4">
             <span
-              className="text-black-500 cursor-pointer font-semibold"
+              className="text-black-500 cursor-pointer font-semibold w-20"
               onClick={() => handleFolderClick(folder.id)}
             >
               {isAvailable ? "☑️" : "📁"}
@@ -451,7 +451,7 @@ const SelectCoordinates = () => {
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg w-32 text-center dark:bg-navy-700 dark:text-white">
               Max Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -460,7 +460,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-32 text-center dark:bg-navy-700 dark:text-white">
               Min Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -469,7 +469,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-32 text-center dark:bg-navy-700 dark:text-white">
               Bonus Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -478,7 +478,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-40 text-center dark:bg-navy-700 dark:text-white">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -499,7 +499,7 @@ const SelectCoordinates = () => {
               }
             />
 
-            <label className={`text-sm font-medium  ${"text-gray-800"}`}>
+            <label className={`text-sm font-medium  ${"text-gray-800"} dark:bg-navy-700 dark:text-white`}>
               Sub Questions
             </label>
 
@@ -554,23 +554,23 @@ const SelectCoordinates = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
-      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6 dark:bg-navy-700">
+      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700">
         {" "}
         <div className="flex justify-end">
           <span
-            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border px-5 py-2 text-indigo-600 transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
+            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border dark:border-gray-700 px-5 py-2 transition-colors bg-indigo-500 text-white hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
             onClick={handleFinalSubmitButton}
           >
             <span
-              className="font-medium transition-colors group-hover:text-white"
+              className="font-medium transition-colors group-hover:text-white dark:text-white"
               onClick={handleFinalSubmitButton}
             >
               {" "}
               Submit{" "}
             </span>
 
-            <span className="shrink-0 rounded-full border border-indigo-600 bg-white p-2 group-active:border-indigo-500">
+            <span className="shrink-0 rounded-full border border-indigo-600 bg-navy-700 p-2 group-active:border-indigo-500">
               <svg
                 className="size-5 rtl:rotate-180"
                 xmlns="http://www.w3.org/2000/svg"

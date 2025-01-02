@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { decode } from "tiff";
@@ -23,6 +23,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
   const [loading, setLoading] = useState(false);
   const [relationName, setRelationName] = useState("");
   const navigate = useNavigate();
+  const abortControllerRef = useRef(null);
 
   // Fetch schemas on component mount
   useEffect(() => {
@@ -92,7 +93,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
       !relationName
     ) {
       toast.error(
-        "Please select all Schema,Question, Answer Sheets, Relation name"
+        "Please select all Schema, Question, Answer Sheets, Relation name"
       );
       return;
     }
@@ -106,6 +107,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
 
     try {
       setLoading(true);
+      abortControllerRef.current = new AbortController(); // Create a new AbortController
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/subjects/relations/createsubjectschemarel`,
         formData,
@@ -114,6 +116,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
+          signal: abortControllerRef.current.signal, // Pass the AbortController's signal
         }
       );
       toast.success("Files uploaded successfully!");
@@ -122,11 +125,35 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
         `/admin/schema/create/structure/coordinates/${response.data?._id}`
       );
     } catch (error) {
-      console.error("Error uploading files:", error);
-      toast.error("Failed to upload files.");
-      setErrorMessage("Failed to upload files.");
+      if (error.name === "CanceledError") {
+        console.log("Request canceled by the user.");
+        toast.error("File upload canceled.");
+        setSelectedSchema("");
+        setQuestionSheet(null);
+        setAnswerSheet(null);
+        setSelectedSchemaData(null);
+        setRelationName("");
+      } else {
+        setSelectedSchema("");
+        setQuestionSheet(null);
+        setAnswerSheet(null);
+        setSelectedSchemaData(null);
+        setRelationName("");
+        console.error("Error uploading files:", error);
+        toast.error("Failed to upload files.");
+        setErrorMessage("Failed to upload files.");
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setAnswerSheet(null);
+    setQuestionSheet(null);
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort(); // Cancel the API request
     }
   };
 
@@ -144,14 +171,12 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
-      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-700">
+      <div className="relative m-5 w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-navy-700">
         {/* Close button */}
         <button
           className="absolute right-2 top-2 p-2 text-2xl font-bold text-gray-600 hover:text-red-700 dark:text-gray-400 dark:hover:text-red-700"
           onClick={() => {
-            setShowModal(false);
-            setAnswerSheet(null);
-            setQuestionSheet(null);
+            handleCancel();
           }}
         >
           <GiCrossMark />
@@ -167,6 +192,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             onChange={(e) => setSelectedSchema(e.target.value)}
             className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-navy-700 dark:text-white"
             required
+            disabled={loading}
           >
             <option value=" ">Select a schema</option>
             {schemas.map((schema) => (
@@ -177,13 +203,13 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
           </select>
 
           {/* Select Questions and AnswerSheet*/}
-          <div className="mb-6 flex items-center space-x-6 rounded-lg border border-gray-200 bg-white dark:bg-navy-700 p-4 shadow-lg">
+          <div className="mb-6 flex items-center gap-2 rounded-lg border border-gray-200 bg-white p-4 shadow-lg dark:bg-navy-700 sm:gap-4">
             {/* Question Sheet Upload */}
             <label
-              className={`flex w-3/4 cursor-pointer items-center justify-between rounded-lg px-5 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
+              className={`flex w-2/4 cursor-pointer items-center justify-center rounded-lg px-1 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
                 questionSheet
                   ? "bg-green-700 hover:bg-green-800 focus:ring-green-700"
-                  : "bg-amber-600 hover:bg-amber-800 focus:ring-amber-400"
+                  : "bg-indigo-600 hover:bg-indigo-800 focus:ring-indigo-400"
               }`}
             >
               <span>
@@ -194,15 +220,16 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
                 accept=".pdf, .tiff, .tif"
                 onChange={(e) => handleFileChange(e, "question")}
                 className="hidden"
+                disabled={loading}
               />
             </label>
 
             {/* Answer Sheet Upload */}
             <label
-              className={`flex w-3/4 cursor-pointer items-center justify-between rounded-lg px-5 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
+              className={`flex w-2/4 cursor-pointer items-center justify-center rounded-lg px-1 py-3 text-base font-semibold text-white shadow-md transition focus:outline-none focus:ring-2 ${
                 answerSheet
                   ? "bg-green-700 hover:bg-green-800 focus:ring-green-700"
-                  : "bg-amber-600 hover:bg-amber-800 focus:ring-amber-400"
+                  : "bg-indigo-600 hover:bg-indigo-800 focus:ring-indigo-400"
               }`}
             >
               <span>{answerSheet ? answerSheet.name : "Answer Sheet"}</span>
@@ -211,6 +238,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
                 accept=".pdf, .tiff, .tif"
                 onChange={(e) => handleFileChange(e, "answer")}
                 className="hidden"
+                disabled={loading}
               />
             </label>
           </div>
@@ -219,15 +247,17 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             type="text"
             value={relationName}
             onChange={(e) => setRelationName(e.target.value)}
-            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-navy-700"
+            className="mb-5 w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-600 dark:bg-navy-700"
             required
             placeholder="Enter Relation Name"
+            disabled={loading}
           />
 
           {/* Submit Upload Button */}
           <button
             onClick={handleFileUpload}
             className="w-full rounded-lg bg-indigo-600 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            disabled={loading}
           >
             {loading ? (
               <div className="flex items-center justify-center">
