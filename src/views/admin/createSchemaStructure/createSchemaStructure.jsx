@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { isAction } from "@reduxjs/toolkit";
-
 const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
   const [savedQuestionData, setSavedQuestionData] = useState([]);
@@ -371,7 +369,7 @@ const CreateSchemaStructure = () => {
   const handleFinalSubmit = () => {
     const updatedSchemaData = {
       ...schemaData,
-      status: true,
+      status: true, 
       isActive: true,
     };
 
