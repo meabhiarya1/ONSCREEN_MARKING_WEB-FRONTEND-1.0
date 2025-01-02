@@ -77,7 +77,7 @@ const Schema = () => {
       console.log(error);
       toast.error(error.response.data.message);
     } finally {
-      setEditShowModal(false); // Close the modal after updating
+      // setEditShowModal(false); // Close the modal after updating
     }
   };
 
