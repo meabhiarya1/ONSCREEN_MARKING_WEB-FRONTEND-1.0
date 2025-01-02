@@ -55,15 +55,25 @@ const ImageContainer = (props) => {
   const isDraggingIcon = evaluatorState.isDraggingIcon;
   const currentMarkDetails = evaluatorState.currentMarkDetails;
   const currentAnswerImageId = evaluatorState.currentAnswerPdfImageId;
+  const currentQuestionDefinitionId =
+    evaluatorState.currentQuestionDefinitionId;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const fetchAllIcons = () => {
-  //     const icons = getIconsByImageId(currentAnswerImageId);
-  //   };
-  // }, []);
+  useEffect(() => {
+    console.log(currentQuestionDefinitionId, currentAnswerImageId);
+    const fetchAllIcons = async () => {
+      const icons = await getIconsByImageId(
+        currentAnswerImageId,
+        currentQuestionDefinitionId
+      );
+      setIcons(icons);
+    };
+    if (currentQuestionDefinitionId && currentAnswerImageId) {
+      fetchAllIcons();
+    }
+  }, [currentQuestionDefinitionId, currentAnswerImageId]);
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
 
@@ -608,53 +618,7 @@ const ImageContainer = (props) => {
               top: `${mouseBasePos.y + 5}px`, // Dynamic positioning
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="200"
-              height="100"
-              viewBox="0 0 200 100"
-            >
-              {/* Background */}
-              <rect width="200" height="100" fill="white" />
-              {/* Text "Q1" */}
-              <text
-                x="10"
-                y="50"
-                fontSize="24"
-                fontFamily="Arial, sans-serif"
-                fontWeight="bold"
-                fill="black"
-                textAnchor="start"
-                alignmentBaseline="middle"
-              >
-                {`Q${1}`}
-              </text>
-              {/* Arrow */}
-              <path d="M50,50 H70" stroke="black" strokeWidth="2" fill="none" />
-              <polygon points="70,45 75,50 70,55" fill="black" />
-              {/* Circle */}
-              <circle
-                cx="100"
-                cy="50"
-                r="20"
-                fill="#F8F9FA"
-                stroke="#16A34A"
-                strokeWidth="2"
-              />
-              {/* Number inside the circle */}
-              <text
-                x="100"
-                y="50"
-                fontSize="18"
-                fontFamily="Arial, sans-serif"
-                fill="#16A34A"
-                textAnchor="middle"
-                alignmentBaseline="middle"
-              >
-                {2}
-              </text>
-            </svg>
-            {/* {`Q(${currentQuestionNo})`} */}
+            {`Q(${currentQuestionNo})`}
           </div>
         )}
       </div>

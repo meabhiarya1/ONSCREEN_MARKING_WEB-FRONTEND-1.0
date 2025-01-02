@@ -24,6 +24,7 @@ const QuestionDefinition = (props) => {
   const evaluatorState = useSelector((state) => state.evaluator);
   const taskDetails = evaluatorState.currentTaskDetails;
   const currentBookletIndex = evaluatorState.currentBookletIndex;
+  const currentQuestion = evaluatorState.currentQuestion;
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchQuestionDetails = async (answerPdfDetails) => {
@@ -37,6 +38,10 @@ const QuestionDefinition = (props) => {
           return total + item.allottedMarks;
         }, 0);
         setTotalMarks(reducedArr);
+        // console.log(response2[currentQuestion]);
+        dispatch(
+          setCurrentQuestionDefinitionId(response2[currentQuestion - 1]._id)
+        );
         setAllQuestions(response2);
       } catch (error) {
         console.log(error);
@@ -64,10 +69,7 @@ const QuestionDefinition = (props) => {
   };
   const handleListClick = async (item, mark, index) => {
     const { _id, answerPdfId, allottedMarks } = item;
-    // const allotedMarks = answerPdfId.allottedMarks;
-    // console.log(answerPdfId.allottedMarks);
-    // console.log(allotedMarks);
-    // console.log(item);
+
     try {
       const body = {
         questionDefinitionId: _id,
@@ -99,13 +101,21 @@ const QuestionDefinition = (props) => {
       item.marksDifference
     );
     const background =
-      allotedMarks !== 0
-        ? selectedQuestion === index
-          ? "bg-red-300" // Marks allocated and index matches
-          : "bg-green-100" // Marks allocated and index doesn't match
-        : selectedQuestion === index
-        ? "bg-green-300" // No marks allocated but index matches
-        : "bg-red-100"; // No marks allocated and index doesn't match
+      selectedQuestion === index
+        ? allotedMarks !== 0
+          ? "bg-green-300"
+          : "bg-red-300"
+        : allotedMarks === 0
+        ? "bg-red-100"
+        : "bg-green-100";
+    // const background =
+    //   allotedMarks !== 0
+    //     ? selectedQuestion === index
+    //       ? "bg-green-300" // Marks allocated and index matches
+    //       : "bg-green-100" // Marks allocated and index doesn't match
+    //     : selectedQuestion === index
+    //     ? "bg-green-300" // No marks allocated but index matches
+    //     : "bg-red-100"; // No marks allocated and index doesn't match
     const handleAllotZeroListClick = async (item, mark, index) => {
       const { _id, answerPdfId, allottedMarks } = item;
 

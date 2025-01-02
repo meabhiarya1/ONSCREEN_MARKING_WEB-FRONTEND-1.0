@@ -53,6 +53,7 @@ const CheckModule = () => {
 
         dispatch(setCurrentTaskDetails(task));
         dispatch(setCurrentBookletIndex(task.currentFileIndex));
+
         dispatch(setBaseImageUrl(extractedImagesFolder));
         setAnswerSheetCount(answerPdfDetails);
       } catch (error) {
@@ -67,10 +68,12 @@ const CheckModule = () => {
   useEffect(() => {
     const getEvaluatorTasks = async (taskId) => {
       try {
-        console.log(taskId);
         const res = await getAnswerPdfById(taskId);
+        console.log(res)
+        dispatch(
+          setCurrentAnswerPdfImageId(res[evaluatorState.currentIndex]._id)
+        );
         setAnswerImageDetails(res);
-        console.log(res);
       } catch (error) {
         console.log(error);
       }

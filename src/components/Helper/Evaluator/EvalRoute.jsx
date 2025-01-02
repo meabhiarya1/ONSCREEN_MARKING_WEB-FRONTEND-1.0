@@ -163,8 +163,8 @@ export const getIconsByImageId = async (
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/evaluation/icons/geticons?questionDefinitionId=${questionDefinitionId}&answerPdfImageId= ${answerPdfImageId}
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/evaluation/icons/geticons?questionDefinitionId=${answerPdfImageId}&answerPdfImageId=${questionDefinitionId}
       `,
       {
         headers: {
