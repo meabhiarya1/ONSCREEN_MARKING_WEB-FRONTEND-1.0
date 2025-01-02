@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { isAction } from "@reduxjs/toolkit";
-
 const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
   const [savedQuestionData, setSavedQuestionData] = useState([]);
@@ -20,6 +18,7 @@ const CreateSchemaStructure = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
+  const [error, setError] = useState(false);
   // const [allottedQuestionRemaining, setAllottedQuestionRemaining] = useState(0);
 
   useEffect(() => {
@@ -120,11 +119,20 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
+  const remainingMarks =
+    schemaData?.maxMarks -
+    savedQuestionData?.reduce((acc, question) => acc + question?.maxMarks, 0);
+
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
     setCurrentQuesNo(folderId);
 
     if (savingStatus[folderId]) return;
+
+    if (error)
+      return toast.error(
+        `Marks cannot be greater than remaining marks in Question: ${folderId}`
+      );
 
     const currentQ =
       savedQuestionData &&
@@ -183,6 +191,16 @@ const CreateSchemaStructure = () => {
         return;
       }
     }
+
+    if (maxMarks > remainingMarks)
+      return toast.error("Marks cannot be greater than remaining marks");
+    if (maxMarks % marksDifference != 0 || maxMarks < marksDifference)
+      return toast.error(
+        "Marks Difference cannot be greater than Max marks or Marks Difference Always Multiple of Max marks"
+      );
+
+    if (bonusMarks > maxMarks)
+      return toast.error("Bonus Marks cannot be greater than Max marks");
 
     const updatedQuestionData = {
       schemaId: id,
@@ -351,9 +369,11 @@ const CreateSchemaStructure = () => {
   const handleFinalSubmit = () => {
     const updatedSchemaData = {
       ...schemaData,
-      status: true,
+      status: true, 
       isActive: true,
     };
+
+    if (remainingMarks) return toast.error("Remaining marks should be 0");
 
     try {
       const response = axios.put(
@@ -380,8 +400,22 @@ const CreateSchemaStructure = () => {
     // console.log("folderId", folderId);
 
     const handleMarkChange = (inputBoxName, inputValue) => {
+      if (inputBoxName.includes("maxMarks")) {
+        if (inputValue > remainingMarks) {
+          toast.error("Marks cannot be greater than remaining marks");
+          setError(true);
+          return;
+        }
+      } else if (inputBoxName.includes("marksDifference")) {
+        if (inputValue > remainingMarks) {
+          toast.error("Marks cannot be greater than remaining marks");
+          setError(true);
+          return;
+        }
+      }
       setCurrentQuesNo(folderId);
       formRefs.current[inputBoxName] = inputValue;
+      setError(false);
     };
 
     let currentQ = [];
@@ -579,14 +613,20 @@ const CreateSchemaStructure = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen overflow-hidden rounded-lg bg-lightPrimary p-6 mt-2 dark:bg-navy-700 dark:text-white">
-      {/* <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4"> */}
-        <div className="flex justify-between mb-5">
-          <span className="cursor-pointer rounded-lg bg-indigo-700 px-4 py-2 text-white hover:bg-indigo-800">
-            Remaining Marks To Allot:{" "}
-            {schemaData?.totalQuestions - savedQuestionData?.length === 0
+
+    <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
+      <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
+        <div className="flex justify-between">
+          <span className="cursor-pointer rounded-lg bg-indigo-700 p-2 text-white hover:bg-green-800">
+            Questions To Allot:{" "}
+            {schemaData?.totalQuestions - savedQuestionData?.length === 0 ||
+            schemaData?.totalQuestions < savedQuestionData?.length
+
               ? 0
               : schemaData?.totalQuestions - savedQuestionData?.length}
+          </span>
+          <span className="cursor-pointer rounded-lg bg-orange-700 p-2 text-white hover:bg-orange-800">
+            Marks To Allot: {remainingMarks}
           </span>
           <span
             className="cursor-pointer rounded-lg bg-indigo-700 px-4 py-2 text-white hover:bg-indigo-800"

@@ -20,13 +20,19 @@ const Tools = ({
   currentIcon,
   IconModal,
   setSelectedColor,
+  setCurrentStrokeWidth,
+  currentStrokeWidth,
 }) => {
   const [pencilIconModal, setShowPencilIconModal] = useState(false);
   const [color, setColor] = useState("#fff");
-
+  const [strokeValue, setStrokeValue] = useState(20);
   const handleChangeComplete = (newColor) => {
     setSelectedColor(newColor.hex);
     setColor(newColor.hex);
+  };
+  const handleSliderChange = (event, newValue) => {
+    setStrokeValue(newValue);
+    setCurrentStrokeWidth(newValue);
   };
   return (
     <div className="flex justify-center border bg-[#e0e2e6] p-2">
@@ -93,47 +99,43 @@ const Tools = ({
         </button>
         {pencilIconModal && (
           <div className="absolute z-10 mt-9 grid w-[240px] border-spacing-1 grid-cols-1 gap-2 border bg-gray-50 p-2 shadow-md sm:grid-cols-2 md:grid-cols-3">
-            <div className="z-12">
-              <SketchPicker
-                color={color}
-                disableAlpha
-                onChangeComplete={handleChangeComplete}
+            {/* <div className="z-12"> */}
+            <SketchPicker
+              color={color}
+              disableAlpha
+              onChangeComplete={handleChangeComplete}
+            />
+
+            {/* Stroke Slider */}
+            <div className="col-span-6 mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Stroke
+              </label>
+              <Slider
+                value={strokeValue}
+                onChange={handleSliderChange}
+                aria-labelledby="input-slider"
+                valueLabelDisplay="auto"
+                max={20}
               />
+              <div className="text-right text-sm text-gray-600">
+                {strokeValue}pt
+              </div>
+            </div>
+
+            {/* Opacity Slider */}
+            <div className="col-span-6 mt-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Opacity
+              </label>
               <Slider
                 defaultValue={50}
                 aria-label="Default"
                 valueLabelDisplay="auto"
               />
-              {/* Stroke Slider */}
-              <div className="col-span-6 mt-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Stroke
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="50"
-                  value="20"
-                  className="w-full"
-                />
-                <div className="text-right text-sm text-gray-600">20pt</div>
-              </div>
-
-              {/* Opacity Slider */}
-              <div className="col-span-6 mt-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Opacity
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value="54"
-                  className="w-full"
-                />
-                <div className="text-right text-sm text-gray-600">54%</div>
-              </div>
+              <div className="text-right text-sm text-gray-600">54%</div>
             </div>
+            {/* </div> */}
           </div>
         )}
       </div>

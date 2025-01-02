@@ -4,9 +4,13 @@ import { LuPencilLine } from "react-icons/lu";
 import { BiCommentAdd } from "react-icons/bi";
 import { IoIosArrowDown } from "react-icons/io";
 import { GrRedo, GrUndo } from "react-icons/gr";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Tools from "./Tools";
 import throttle from "lodash.throttle";
+import { jwtDecode } from "jwt-decode";
+import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
+
+import { setCurrentIcon, setIsDraggingIcon } from "store/evaluatorSlice";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
@@ -16,8 +20,8 @@ const IconsData = [
 const ImageContainer = (props) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [icons, setIcons] = useState([]); // State for placed icons
-  const [isDraggingIcon, setIsDraggingIcon] = useState(false); // Track if an icon is being dragged
-  const [currentIcon, setCurrentIcon] = useState(null); // Store the currently selected icon
+  // const [isDraggingIcon, setIsDraggingIcon] = useState(false); // Track if an icon is being dragged
+  // const [currentIcon, setCurrentIcon] = useState(null); // Store the currently selected icon
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 }); // Track mouse position for preview
   const [iconModal, setIconModal] = useState(false);
   const [draggedIconIndex, setDraggedIconIndex] = useState(null);
@@ -36,13 +40,20 @@ const ImageContainer = (props) => {
   const [mouseUp, setMouseUp] = useState(false);
   const [selectedColor, setSelectedColor] = useState("red");
   const [isCursorInside, setIsCursorInside] = useState(false);
+  const [currentStrokeWidth, setCurrentStrokeWidth] = useState(10);
   const containerRef = useRef(null);
   const currentIndex = evaluatorState.currentIndex;
   const currentQuestionNo = evaluatorState.currentQuestion;
+  const baseImageUrl = evaluatorState.baseImageUrl;
+  const currentIcon = evaluatorState.currentIcon;
+  const isDraggingIcon = evaluatorState.isDraggingIcon;
+  const currentMarkDetails = evaluatorState.currentMarkDetails;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
+  const dispatch = useDispatch();
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
+
   useEffect(() => {
     const handleOutsideDoubleClick = (event) => {
       if (selectedIcon !== null) {
@@ -112,31 +123,40 @@ const ImageContainer = (props) => {
     if (startDrawing) {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
+
+      // Clear the canvas for redraw
       context.clearRect(0, 0, canvas.width, canvas.height);
-      context.lineWidth = 2;
-      context.strokeStyle = selectedColor;
-      context.lineJoin = "round";
+
+      context.lineJoin = "round"; // Smooth line joins
 
       let prevX = null;
       let prevY = null;
 
-      drawing.forEach(({ x, y, mode }) => {
+      // Iterate through the drawing array
+      drawing.forEach(({ x, y, mode, strokeWidth, color }) => {
         if (mode === "start") {
+          // Update previous coordinates for the start of a new stroke
           prevX = x;
           prevY = y;
         }
         if (mode === "draw") {
           context.beginPath();
-          context.moveTo(prevX, prevY);
-          context.lineTo(x, y);
+          context.lineWidth = strokeWidth || currentStrokeWidth; // Use strokeWidth or default to currentStrokeWidth
+          context.strokeStyle = color || selectedColor; // Use color or default to selectedColor
+
+          context.moveTo(prevX, prevY); // Start from the previous point
+          context.lineTo(x, y); // Draw to the current point
+          context.stroke(); // Render the line
           context.closePath();
-          context.stroke();
+
+          // Update previous coordinates
           prevX = x;
           prevY = y;
         }
       });
     }
-  }, [drawing, scale]);
+  }, [drawing, scale, startDrawing, currentStrokeWidth, selectedColor]);
+
   const handleIconDoubleClick = (index) => {
     setSelectedIcon(index); // Mark the icon as selected
   };
@@ -177,7 +197,7 @@ const ImageContainer = (props) => {
       [currentImage]: dataURL, // Save the canvas state for the current image
     }));
   };
-  console.log(canvasStates);
+  // console.log(canvasStates);
   const handleDeleteIcon = (index) => {
     setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
     setSelectedIcon(null); // Reset selected icon
@@ -197,7 +217,14 @@ const ImageContainer = (props) => {
 
     setDrawing((prev) => [
       ...prev,
-      { x, y, mode: "start" }, // Add starting point to differentiate new drawing
+      {
+        x,
+        y,
+        mode: "start",
+        strokeWidth: currentStrokeWidth, // Include current stroke width
+        color: selectedColor,
+      },
+      // Add starting point to differentiate new drawing
     ]);
   };
 
@@ -232,7 +259,16 @@ const ImageContainer = (props) => {
         const rect = canvasRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left) / scale;
         const y = (e.clientY - rect.top) / scale;
-        setDrawing((prev) => [...prev, { x, y, mode: "draw" }]);
+        setDrawing((prev) => [
+          ...prev,
+          {
+            x,
+            y,
+            mode: "draw",
+            color: selectedColor, // Store the current color
+            strokeWidth: currentStrokeWidth,
+          },
+        ]);
       }
     }
   };
@@ -240,7 +276,8 @@ const ImageContainer = (props) => {
   // Handle icon selection
   const handleIconClick = (iconUrl) => {
     setIsDraggingIcon(true); // Enable dragging mode
-    setCurrentIcon(iconUrl); // Set the selected icon
+    dispatch(setCurrentIcon(iconUrl));
+    // setCurrentIcon(iconUrl); // Set the selected icon
     setIconModal(false); // Close the icon modal
   };
 
@@ -255,17 +292,21 @@ const ImageContainer = (props) => {
       setIcons([
         ...icons,
         {
+          question: currentQuestionNo,
+          currentMarkDetails: currentMarkDetails,
           timestamp: new Date().toLocaleString(),
           iconUrl: currentIcon,
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
         },
       ]);
-      setCurrentIcon(null);
+      // setCurrentIcon(null);
+      dispatch(setCurrentIcon(null));
+
       setIsDraggingIcon(false);
     }
   };
-
+  console.log(currentMarkDetails);
   // Start dragging an existing icon
   const handleIconDragStart = (index, e) => {
     setDraggedIconIndex(index);
@@ -297,6 +338,9 @@ const ImageContainer = (props) => {
       alt="icon"
     />
   ));
+  console.log(
+    `${process.env.REACT_APP_API_URL}\\${baseImageUrl}image_${currentIndex}.png`
+  );
   const handleZoomValueClick = () => {};
   const ZoomModal = Array.from({ length: 12 }, (_, index) => {
     const zoomValue = 40 + index * 10;
@@ -313,12 +357,7 @@ const ImageContainer = (props) => {
   const handleZoomMenu = () => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
-  // Function to add timestamp
-  const addTimestampToIcon = (index) => {
-    const updatedIcons = [...icons];
-    updatedIcons[index].timestamp = new Date().toLocaleString(); // Add the current date and time
-    setIcons(updatedIcons); // Update state
-  };
+  console.log(icons);
   return (
     <>
       <Tools
@@ -335,6 +374,7 @@ const ImageContainer = (props) => {
         currentIcon={currentIcon}
         IconModal={IconModal}
         setSelectedColor={setSelectedColor}
+        setCurrentStrokeWidth={setCurrentStrokeWidth}
       />
 
       {/* Image Viewer Section */}
@@ -372,7 +412,7 @@ const ImageContainer = (props) => {
           }}
         >
           <img
-            src={`/sampleimg/CS603_1119_page-${currentIndex}.jpg`}
+            src={`${process.env.REACT_APP_API_URL}\\${baseImageUrl}\\image_${currentIndex}.png`}
             alt="Viewer"
           />
           {/* Render all placed icons */}
@@ -380,45 +420,41 @@ const ImageContainer = (props) => {
             <div
               key={index}
               ref={(el) => (iconRefs.current[index] = el)}
+              className={`absolute z-10 rounded-lg  p-2 transition-transform duration-200 
+      ${selectedIcon === index ? "border-2 border-blue-500" : ""}
+    `}
               style={{
-                position: "absolute",
-                top: `${icon.y}px`, // Scale the position
-                left: `${icon.x}px`, // Scale the position
-                zIndex: 10,
-                border: selectedIcon === index ? "2px dashed black" : "none", // Show border if selected
-                cursor: "pointer",
-                padding: "5px",
-                transform: `scale(${scale})`, // Scale the icon size
-                transformOrigin: "top left", // Ensure proper scaling
-                transition: "transform 0.2s ease-in-out", // Smooth transition
+                top: `${icon.y}px`,
+                left: `${icon.x}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
               }}
               onMouseDown={(e) => {
                 handleIconDragStart(index, e);
-                // addTimestampToIcon(index); // Add timestamp
-              }} // Allow dragging
-              // onMouseUp={(e) => addTimestampToIcon(index)}
-              onDoubleClick={() => handleIconDoubleClick(index)} // Show border and cross button
+              }}
+              onDoubleClick={() => handleIconDoubleClick(index)}
             >
-              <img src={icon.iconUrl} alt="icon" width={40} height={40} />
-              <div>{icon.timestamp || "No Timestamp"}</div>
-              {/* Cross button for deletion */}
+              {/* Icon Image */}
+              <img
+                src={icon.iconUrl}
+                alt="icon"
+                className="mx-auto h-10 w-10"
+              />
+
+              {/* Allotted Marks and Question */}
+              <div className="mt-2 text-center text-sm font-semibold text-gray-700">
+                {`Q${icon.question} → ${icon?.currentMarkDetails?.allottedMarks}`}
+              </div>
+
+              {/* Timestamp */}
+              <div className="mt-1 text-center text-xs italic text-gray-500">
+                {icon.timestamp || "No Timestamp"}
+              </div>
+
+              {/* Cross Button for Deletion */}
               {selectedIcon === index && (
                 <button
-                  style={{
-                    position: "absolute",
-                    top: "-10px",
-                    right: "-10px",
-                    backgroundColor: "red",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "20px",
-                    height: "20px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
+                  className="absolute -right-3 -top-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
                   onClick={() => handleDeleteIcon(index)}
                 >
                   ✖

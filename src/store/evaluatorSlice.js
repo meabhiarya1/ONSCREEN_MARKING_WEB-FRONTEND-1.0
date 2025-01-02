@@ -6,6 +6,13 @@ const initialState = {
   iconSelected: null,
   currentIndex: 1,
   currentQuestion: 1,
+  baseImageUrl: "",
+  currentIcon: null,
+  isDraggingIcon: false,
+  currentIconMark: null,
+  currentMarkDetails: null,
+  currentTaskDetails: null,
+  currentBookletIndex: null,
 };
 
 const evaluatorSlice = createSlice({
@@ -35,12 +42,48 @@ const evaluatorSlice = createSlice({
       }
     },
     setCurrentQuestion: (state, action) => {
-      const { index } = action.payload;
+      const index = action.payload;
       state.currentQuestion = index;
+    },
+    setBaseImageUrl: (state, action) => {
+      const extractedImagesFolder = action.payload;
+
+      state.baseImageUrl = extractedImagesFolder;
+    },
+    setCurrentIcon: (state, action) => {
+      const icon = action.payload;
+      state.currentIcon = icon;
+    },
+    setIsDraggingIcon: (state, action) => {
+      state.isDraggingIcon = action.payload;
+    },
+    setCurrentIconMark: (state, action) => {
+      state.currentIconMark = action.payload;
+    },
+    setCurrentMarkDetails: (state, action) => {
+      state.currentMarkDetails = action.payload;
+    },
+    setCurrentTaskDetails: (state, action) => {
+      state.currentTaskDetails = action.payload;
+    },
+    setCurrentBookletIndex: (state, action) => {
+      state.currentBookletIndex = action.payload;
     },
   },
 });
 
-export const { login, logout, rehydrateToken, setIndex } =
-  evaluatorSlice.actions;
+export const {
+  login,
+  logout,
+  rehydrateToken,
+  setIndex,
+  setBaseImageUrl,
+  setCurrentIcon,
+  setIsDraggingIcon,
+  setCurrentIconMark,
+  setCurrentQuestion,
+  setCurrentMarkDetails,
+  setCurrentTaskDetails,
+  setCurrentBookletIndex,
+} = evaluatorSlice.actions;
 export default evaluatorSlice.reducer;
