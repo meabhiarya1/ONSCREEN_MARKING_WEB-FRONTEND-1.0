@@ -24,44 +24,63 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-
-    if (!formData) {
-      toast.warning("All fields are required.");
-      return;
-    }
-
-    // Validate compulsoryQuestions
-    if (!formData.compulsoryQuestions || Number(formData?.compulsoryQuestions) < 0) {
-      toast.warning("Compulsory Questions must be a postive number.");
-      return;
-    }
-
-    if (!formData.evaluationTime || Number(formData?.evaluationTime) < 0) {
-      toast.warning("Evaluation Time must be a non-negative number.");
-      return;
-    }
-
-    if (!formData.maxMarks || Number(formData?.maxMarks) < 0) {
-      toast.warning("Max Marks must be greater than zero.");
-      return;
-    }
-
-    if (!formData.minMarks || Number(formData?.minMarks) < 0 || Number(formData?.minMarks) > Number(formData?.maxMarks)) {
-      toast.warning("Min Marks must be a positive number and less than or equal to Max Marks.");
+    if (
+      !formData.name ||
+      !formData.maxMarks ||
+      !formData.minMarks ||
+      !formData.totalQuestions ||
+      !formData.compulsoryQuestions ||
+      !formData.evaluationTime
+    ) {
+      toast.error("All fields are required.");
       return;
     }
 
     if (!formData.name || formData?.name.trim().length === 0) {
-      toast.warning("Name is required.");
+      toast.error("Name is required.");
+      return;
+    }
+    if (!formData.maxMarks || Number(formData?.maxMarks) < 0) {
+      toast.error("Max Marks must be greater than zero.");
+      return;
+    }
+
+    if (
+      !formData.minMarks ||
+      Number(formData?.minMarks) < 0 ||
+      Number(formData?.minMarks) > Number(formData?.maxMarks)
+    ) {
+      toast.error(
+        "Min Marks must be a positive number and less than or equal to Max Marks."
+      );
       return;
     }
 
     if (!formData.totalQuestions || Number(formData?.totalQuestions) <= 0) {
-      toast.warning("Total Questions must be greater than zero.");
+      toast.error("Total Questions must be greater than zero.");
       return;
     }
 
+    // Validate compulsoryQuestions
+    if (
+      !formData.compulsoryQuestions ||
+      Number(formData?.compulsoryQuestions) < 0
+    ) {
+      toast.error("Compulsory Questions must be a postive number.");
+      return;
+    }
+
+    if (
+      Number(formData?.compulsoryQuestions) > Number(formData?.totalQuestions)
+    ) {
+      toast.error("Compulsory Questions cannot be more than Total Question.");
+      return;
+    }
+
+    if (!formData.evaluationTime || Number(formData?.evaluationTime) < 0) {
+      toast.error("Evaluation Time must be a postive number.");
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -94,29 +113,36 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${createShowModal ? "block" : "hidden"}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md ${
+        createShowModal ? "block" : "hidden"
+      }`}
     >
       <div
-        className="fixed inset-0 bg-gray-800 opacity-60 backdrop-blur-md"
+        className="fixed inset-0 opacity-60"
         onClick={() => setCreateShowModal(false)}
       ></div>
 
-      <div className="z-10 w-11/12 max-w-lg transform-gpu rounded-lg bg-white p-8 shadow-xl transition-transform">
+      <div className="z-10 m-2 transform-gpu rounded-lg bg-white p-5 shadow-xl transition-transform dark:bg-navy-700 sm:w-11/12 sm:max-w-lg sm:p-8">
         {/* Close button */}
         <button
-          className="absolute right-4 top-4 text-3xl p-2 text-gray-700 hover:text-red-700"
+          className="absolute right-4 top-4 p-2 text-3xl text-gray-700 hover:text-red-700"
           onClick={() => setCreateShowModal(false)}
         >
           <GiCrossMark />
         </button>
 
         {/* Header */}
-        <h2 className="mb-6 text-center text-3xl font-semibold text-gray-800">Create Schema</h2>
+        <h2 className="mb-3 text-center text-xl font-semibold text-indigo-800 dark:text-white sm:mb-6 sm:text-3xl">
+          Create Schema
+        </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="sm:space-y-6">
           {/* Schema Name */}
-          <div>
-            <label className="mb-2 block text-lg font-medium text-gray-700" htmlFor="name">
+          <div className="mb-2 sm:mb-0">
+            <label
+              className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+              htmlFor="name"
+            >
               Schema Name:
             </label>
             <input
@@ -125,15 +151,17 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required
-              className="w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
             />
           </div>
 
           {/* Total Questions */}
-          <div className="flex justify-between">
-            <div>
-              <label className="mb-2 block text-lg font-medium text-gray-700" htmlFor="totalQuestions">
+          <div className="flex flex-col justify-between sm:flex-row">
+            <div className="mb-2 sm:mb-0">
+              <label
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+                htmlFor="totalQuestions"
+              >
                 Total Questions:
               </label>
               <input
@@ -142,12 +170,14 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="totalQuestions"
                 value={formData.totalQuestions}
                 onChange={handleChange}
-                required
-                className="w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
-            <div>
-              <label className="mb-2 block text-lg font-medium text-gray-700" htmlFor="maxMarks">
+            <div className="mb-2 sm:mb-0">
+              <label
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+                htmlFor="maxMarks"
+              >
                 Max Marks:
               </label>
               <input
@@ -156,15 +186,17 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="maxMarks"
                 value={formData.maxMarks}
                 onChange={handleChange}
-                required
-                className="w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
           </div>
           {/* Min Marks */}
-          <div className="flex justify-between">
-            <div>
-              <label className="mb-2 block text-lg font-medium text-gray-700" htmlFor="minMarks">
+          <div className="flex flex-col justify-between sm:flex-row">
+            <div className="mb-2 sm:mb-0">
+              <label
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+                htmlFor="minMarks"
+              >
                 Min Marks:
               </label>
               <input
@@ -173,12 +205,14 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="minMarks"
                 value={formData.minMarks}
                 onChange={handleChange}
-                required
-                className="w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
-            <div>
-              <label className="mb-2 block text-lg font-medium text-gray-700" htmlFor="compulsoryQuestions">
+            <div className="mb-2 sm:mb-0">
+              <label
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+                htmlFor="compulsoryQuestions"
+              >
                 Compulsory Questions:
               </label>
               <input
@@ -187,13 +221,15 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="compulsoryQuestions"
                 value={formData.compulsoryQuestions}
                 onChange={handleChange}
-                required
-                className="w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
           </div>
-          <div>
-            <label className="mb-2 block text-lg font-medium text-gray-700" htmlFor="evaluationTime">
+          <div className="mb-2 sm:mb-0">
+            <label
+              className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+              htmlFor="evaluationTime"
+            >
               Evaluation Time (in minutes):
             </label>
             <input
@@ -202,16 +238,15 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleChange}
-              required
-              className="w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
             />
           </div>
 
           {/* Submit Button */}
-          <div className="mt-6">
+          <div className="mt-4 sm:mt-6">
             <button
               type="submit"
-              className="w-full rounded-md bg-blue-600 py-2 text-white font-medium transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md bg-indigo-600 py-1.5 font-medium text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:py-3"
             >
               Create Schema
             </button>

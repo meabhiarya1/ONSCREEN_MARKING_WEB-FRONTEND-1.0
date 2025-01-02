@@ -439,7 +439,7 @@ const CreateSchemaStructure = () => {
 
     return (
       <div
-        className={`${folderStyle} p-4 ${color} rounded shadow`}
+        className={`${folderStyle} p-4 ${color} rounded-md shadow bg-white dark:bg-navy-900 dark:text-white`}
         key={folder.id}
       >
         {level > 0 && (
@@ -469,7 +469,7 @@ const CreateSchemaStructure = () => {
               }}
               type="text"
               placeholder="Max"
-              className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+              className="ml-2 w-12 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-800 dark:text-white"
               defaultValue={
                 (currentQ?.length > 0 || currentQ !== undefined) &&
                 parseInt(currentQ[0]?.questionsName) === folderId
@@ -490,7 +490,7 @@ const CreateSchemaStructure = () => {
                   ? currentQ[0]?.minMarks
                   : ""
               }
-              className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+              className="ml-2 w-12 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-800 dark:text-white"
             />
 
             <input
@@ -499,7 +499,7 @@ const CreateSchemaStructure = () => {
               }}
               type="text"
               placeholder="Bonus"
-              className="ml-2 w-14 rounded border px-2 py-1 text-sm"
+              className="ml-2 w-14 rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-800 dark:text-white"
               defaultValue={
                 (currentQ?.length > 0 || currentQ !== undefined) &&
                 parseInt(currentQ[0]?.questionsName) === folderId
@@ -523,7 +523,7 @@ const CreateSchemaStructure = () => {
                   ? currentQ[0]?.marksDifference
                   : ""
               }
-              className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
+              className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-800 dark:text-white"
             />
 
             <input
@@ -541,11 +541,11 @@ const CreateSchemaStructure = () => {
               }}
             />
 
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-gray-700 dark:text-white">
               Sub Questions
             </label>
             <button
-              className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
+              className="font-md rounded-lg border-2 border-gray-900 bg-indigo-700 hover:bg-indigo-800 px-3 py-1 text-white"
               disabled={isSaving}
               onClick={() =>
                 handleSubQuestionsChange(
@@ -613,6 +613,7 @@ const CreateSchemaStructure = () => {
   };
 
   return (
+
     <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
       <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
         <div className="flex justify-between">
@@ -620,6 +621,7 @@ const CreateSchemaStructure = () => {
             Questions To Allot:{" "}
             {schemaData?.totalQuestions - savedQuestionData?.length === 0 ||
             schemaData?.totalQuestions < savedQuestionData?.length
+
               ? 0
               : schemaData?.totalQuestions - savedQuestionData?.length}
           </span>
@@ -627,15 +629,15 @@ const CreateSchemaStructure = () => {
             Marks To Allot: {remainingMarks}
           </span>
           <span
-            className="cursor-pointer rounded-lg bg-green-700 p-2 text-white hover:bg-green-800"
+            className="cursor-pointer rounded-lg bg-indigo-700 px-4 py-2 text-white hover:bg-indigo-800"
             onClick={handleFinalSubmit}
           >
             Submit
           </span>
         </div>
         {folders.map((folder) => renderFolder(folder))}
-      </div>
-    </div>
+      {/* </div> */}
+    </div>  
   );
 };
 
