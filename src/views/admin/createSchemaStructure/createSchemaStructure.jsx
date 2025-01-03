@@ -19,6 +19,8 @@ const CreateSchemaStructure = () => {
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
   const [error, setError] = useState(false);
+  const [remainingMarks, setRemainingMarks] = useState("");
+  const [questionToAllot, setQuestionToAllot] = useState("");
   // const [allottedQuestionRemaining, setAllottedQuestionRemaining] = useState(0);
 
   useEffect(() => {
@@ -65,7 +67,16 @@ const CreateSchemaStructure = () => {
         );
         const data = response?.data.data || []; // Fallback to an empty array if no data
         setSavedQuestionData(data);
-
+        setRemainingMarks(
+          schemaData?.maxMarks -
+            data?.reduce((acc, question) => acc + question?.maxMarks, 0)
+        );
+        setQuestionToAllot(
+          schemaData?.totalQuestions - data?.length === 0 ||
+            schemaData?.totalQuestions < data?.length
+            ? 0
+            : schemaData?.totalQuestions - data?.length
+        );
         // toast.success("Question data fetched successfully");
       } catch (error) {
         console.error("Error fetching schema data:", error);
@@ -74,7 +85,7 @@ const CreateSchemaStructure = () => {
       }
     };
     fetchedData();
-  }, [id, token]);
+  }, [id, token, schemaData, savedQuestionData, questionToAllot]);
 
   const extractParentId = (key, arrayOfObjects) => {
     for (let obj of arrayOfObjects) {
@@ -119,9 +130,9 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  const remainingMarks =
-    schemaData?.maxMarks -
-    savedQuestionData?.reduce((acc, question) => acc + question?.maxMarks, 0);
+  // const remainingMarks =
+  //   schemaData?.maxMarks -
+  //   savedQuestionData?.reduce((acc, question) => acc + question?.maxMarks, 0);
 
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
@@ -369,7 +380,7 @@ const CreateSchemaStructure = () => {
   const handleFinalSubmit = () => {
     const updatedSchemaData = {
       ...schemaData,
-      status: true, 
+      status: true,
       isActive: true,
     };
 
@@ -617,11 +628,7 @@ const CreateSchemaStructure = () => {
       <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
         <div className="flex justify-between">
           <span className="cursor-pointer rounded-lg bg-indigo-700 p-2 text-white hover:bg-green-800">
-            Questions To Allot:{" "}
-            {schemaData?.totalQuestions - savedQuestionData?.length === 0 ||
-            schemaData?.totalQuestions < savedQuestionData?.length
-              ? 0
-              : schemaData?.totalQuestions - savedQuestionData?.length}
+            Questions To Allot: {questionToAllot}
           </span>
           <span className="cursor-pointer rounded-lg bg-orange-700 p-2 text-white hover:bg-orange-800">
             Marks To Allot: {remainingMarks}
