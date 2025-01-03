@@ -213,12 +213,11 @@ const ImageModal = ({
     <div>
       {/* Question Image Modal */}
       {showImageModal && !showAnswerModel && (
-        <div className="bg-black fixed inset-0 z-50 flex  items-center justify-center bg-opacity-50">
+        <div className="bg-black fixed inset-0 z-50 flex  items-center justify-center bg-opacity-50 backdrop-blur-md">
           <div
-            className="relative h-[950px] w-[700px] rounded-lg border border-gray-900 bg-white p-6 shadow-lg"
-            style={{ maxWidth: "700px", maxHeight: "900px" }}
+            className="relative rounded-lg border w-11/12 sm:w-8/12 lg:w-6/12 xl:w-4/12 h-11/12 border-gray-900 bg-white p-6 m-5 shadow-lg dark:bg-navy-700"
           >
-            <div className="mb-4 flex items-center justify-between ">
+            <div className="mb-4 flex items-center justify-between dark:bg-navy-700">
               <div className="text-lg font-bold text-gray-800 dark:text-white ">
                 Questions PDF
               </div>
@@ -252,12 +251,11 @@ const ImageModal = ({
             <img
               src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/image_${currentImageIndex}.png`} // Use the current image URL
               alt={`Slide ${currentImageIndex}`}
-              className={`mb-2 h-[750px] w-full rounded-lg object-contain ${
+              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto ${
                 checkboxStatus[currentImageIndex]
                   ? "border-2 border-green-700 shadow-lg hover:shadow-2xl "
                   : ""
               }`}
-              style={{ maxWidth: "100%", maxHeight: "100%", cursor: "pointer" }}
               onClick={() => {
                 handleSelectedImage(
                   currentImageIndex,
@@ -323,7 +321,7 @@ const ImageModal = ({
                       </div>
 
                       <div>
-                        <strong className="font-bold font-medium text-gray-700">
+                        <strong className="font-bold text-gray-700 dark:text-white">
                           {" "}
                           Page : {currentImageIndex}{" "}
                         </strong>
@@ -339,10 +337,9 @@ const ImageModal = ({
 
       {/* Answer Image Modal */}
       {showAnswerModel && (
-        <div className="bg-black fixed inset-0 z-50 flex  items-center justify-center bg-opacity-50">
+        <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
           <div
-            className="relative h-[950px] w-[700px] rounded-lg border border-gray-900 bg-white p-6 shadow-lg"
-            style={{ maxWidth: "700px", maxHeight: "900px" }}
+            className="relative rounded-lg border w-11/12 sm:w-8/12 lg:w-6/12 xl:w-4/12 h-11/12 border-gray-900 bg-white p-6 m-5 shadow-lg dark:bg-navy-700"
           >
             <div className="mb-4 flex items-center justify-between ">
               <div className="text-lg font-bold text-gray-800 dark:text-white ">
@@ -378,12 +375,11 @@ const ImageModal = ({
             <img
               src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedAnswerPdfImages/${answersPdfPath}/image_${currentImageIndex}.png`}
               alt={`Slide ${currentImageIndex}`}
-              className={`mb-1 h-[750px] w-full rounded-lg object-contain ${
+              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto ${
                 checkboxStatus[currentImageIndex]
                   ? "border-2 border-green-700"
                   : ""
               }`}
-              style={{ maxWidth: "100%", maxHeight: "100%", cursor: "pointer" }}
               onClick={() => {
                 handleSelectedImage(
                   currentImageIndex,
@@ -455,7 +451,7 @@ const ImageModal = ({
                       </div>
 
                       <div>
-                        <strong className="font-bold font-medium text-gray-700">
+                        <strong className="font-bold text-gray-700 dark:text-white">
                           {" "}
                           Page : {currentImageIndex}{" "}
                         </strong>
