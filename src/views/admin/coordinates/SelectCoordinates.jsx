@@ -102,7 +102,7 @@ const SelectCoordinates = () => {
         );
         setQuestionDone(response?.data);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         toast.error(error?.response?.data?.message);
       }
     };
@@ -169,7 +169,7 @@ const SelectCoordinates = () => {
         prev.filter((item) => item.questionId !== formData.questionId)
       );
 
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message);
     }
   };
@@ -229,7 +229,7 @@ const SelectCoordinates = () => {
         prev.filter((item) => item.questionId !== formData.questionId)
       );
 
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message);
     }
   };
@@ -366,14 +366,19 @@ const SelectCoordinates = () => {
       toggleInputsVisibility(folderId);
       setFolders((prevFolders) => updateFolders(prevFolders));
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(error.response.data.message);
     }
   };
 
-  console.log(getSubjectbyIdData);
+  // console.log(getSubjectbyIdData);
 
   const handleFinalSubmitButton = async () => {
+    if(filterOutQuestionDone.length!=folders.length){
+      toast.error("Please select all questions");
+      console.log("Please select all questions");
+      return;
+    }
     try {
       const updatedData = new FormData();
 
@@ -424,6 +429,8 @@ const SelectCoordinates = () => {
       (item) => parseInt(item.questionsName) === folderId
     );
 
+    // console.log(filterOutQuestionDone.length,folders.length);
+
     return (
       <div
         className={`${folderStyle} p-4 ${color} rounded text-gray-700 shadow dark:bg-navy-900 dark:text-white`}
@@ -440,7 +447,7 @@ const SelectCoordinates = () => {
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
         <div className="w-full flex-col gap-4">
-          <div className="flex items-center gap-3 xl:gap-4">
+          <div className="flex items-center gap-1 3xl:gap-4">
             <span
               className="text-black-500 cursor-pointer font-semibold w-20"
               onClick={() => handleFolderClick(folder.id)}
@@ -478,7 +485,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-40 text-center dark:bg-navy-700 dark:text-white">
+            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-44 text-center dark:bg-navy-700 dark:text-white">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -499,18 +506,22 @@ const SelectCoordinates = () => {
               }
             />
 
-            <label className={`text-sm font-medium  ${"text-gray-800"} dark:bg-navy-700 dark:text-white`}>
+            <label className={`text-sm font-medium  ${"text-gray-800"} dark:bg-navy-700 dark:text-white w-28`}>
               Sub Questions
             </label>
 
             <button
-              className={`font-md rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white  ${
-                isAvailable ? "px-[25px]" : "px-3"
-              }`}
+              className={`font-md rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white w-28`}
               disabled={isSaving}
               onClick={() => handleSelectCoordinates(folder)}
             >
               {isAvailable ? "Update" : "Questions"}
+            </button>
+
+            <button
+              className={`font-md rounded-lg border-2 bg-green-600 hover:bg-green-700 py-1.5 text-white w-24`}
+            >
+              View
             </button>
           </div>
 
@@ -554,8 +565,8 @@ const SelectCoordinates = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6 dark:bg-navy-700">
-      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700">
+    <>
+    <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
         {" "}
         <div className="flex justify-end">
           <span
@@ -608,7 +619,7 @@ const SelectCoordinates = () => {
           formData={formData}
         />
       )}
-    </div>
+    </>
   );
 };
 
