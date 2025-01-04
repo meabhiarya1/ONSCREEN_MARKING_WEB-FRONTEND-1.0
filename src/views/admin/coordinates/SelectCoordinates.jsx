@@ -376,7 +376,7 @@ const SelectCoordinates = () => {
   const handleFinalSubmitButton = async () => {
     if(filterOutQuestionDone.length!=folders.length){
       toast.error("Please select all questions");
-      console.log("Please select all questions");
+      // console.log("Please select all questions");
       return;
     }
     try {
@@ -400,7 +400,7 @@ const SelectCoordinates = () => {
       );
       toast.success("Saved successfully");
       navigate("/admin/courses");
-      console.log(response?.data);
+      // console.log(response?.data);
     } catch (error) {
       toast.error(error?.response?.data?.message);
       console.log(error);
