@@ -102,8 +102,8 @@ const SelectCoordinates = () => {
         );
         setQuestionDone(response?.data);
       } catch (error) {
-        // console.log(error);
-        toast.error(error?.response?.data?.message);
+        console.log(error);
+        // toast.error(error?.response?.data?.message);
       }
     };
     fetchedData();
@@ -300,6 +300,22 @@ const SelectCoordinates = () => {
     }));
   };
 
+  const handleAllSelectedImage = (folder) => {
+    setFolderIdQuestion(folder.id); // Set the folder ID
+    setShowImageModal(true); // Show the modal
+    setQuestionId(
+      savedQuestionData.filter(
+        (savedQuestion) =>
+          parseInt(savedQuestion.questionsName) === folder.id || undefined
+      )
+    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      questionImages: [],
+      answerImages: [],
+    }));
+  };
+
   const handleFolderClick = async (folderId) => {
     const currentQuestionInfo =
       savedQuestionData &&
@@ -374,7 +390,7 @@ const SelectCoordinates = () => {
   // console.log(getSubjectbyIdData);
 
   const handleFinalSubmitButton = async () => {
-    if(filterOutQuestionDone.length!=folders.length){
+    if (filterOutQuestionDone.length != folders.length) {
       toast.error("Please select all questions");
       console.log("Please select all questions");
       return;
@@ -449,7 +465,7 @@ const SelectCoordinates = () => {
         <div className="w-full flex-col gap-4">
           <div className="flex items-center gap-1 3xl:gap-4">
             <span
-              className="text-black-500 cursor-pointer font-semibold w-20"
+              className="text-black-500 w-20 cursor-pointer font-semibold"
               onClick={() => handleFolderClick(folder.id)}
             >
               {isAvailable ? "☑️" : "📁"}
@@ -458,7 +474,7 @@ const SelectCoordinates = () => {
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg w-32 text-center dark:bg-navy-700 dark:text-white">
+            <span className="relative w-32 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Max Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -467,7 +483,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-32 text-center dark:bg-navy-700 dark:text-white">
+            <span className="lg relative w-32 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Min Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -476,7 +492,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-32 text-center dark:bg-navy-700 dark:text-white">
+            <span className="lg relative w-32 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Bonus Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -485,7 +501,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg lg w-44 text-center dark:bg-navy-700 dark:text-white">
+            <span className="lg relative w-44 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -506,12 +522,14 @@ const SelectCoordinates = () => {
               }
             />
 
-            <label className={`text-sm font-medium  ${"text-gray-800"} dark:bg-navy-700 dark:text-white w-28`}>
+            <label
+              className={`text-sm font-medium  ${"text-gray-800"} w-28 dark:bg-navy-700 dark:text-white`}
+            >
               Sub Questions
             </label>
 
             <button
-              className={`font-md rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white w-28`}
+              className={`font-md w-28 rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white`}
               disabled={isSaving}
               onClick={() => handleSelectCoordinates(folder)}
             >
@@ -519,7 +537,8 @@ const SelectCoordinates = () => {
             </button>
 
             <button
-              className={`font-md rounded-lg border-2 bg-green-600 hover:bg-green-700 py-1.5 text-white w-24`}
+              className={`font-md w-24 rounded-lg border-2 bg-green-600 py-1.5 text-white hover:bg-green-700`}
+              onClick={() => handleAllSelectedImage(folder)}
             >
               View
             </button>
@@ -566,11 +585,11 @@ const SelectCoordinates = () => {
 
   return (
     <>
-    <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
+      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
         {" "}
         <div className="flex justify-end">
           <span
-            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border dark:border-gray-700 px-5 py-2 transition-colors bg-indigo-500 text-white hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
+            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border bg-indigo-500 px-5 py-2 text-white transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500 dark:border-gray-700"
             onClick={handleFinalSubmitButton}
           >
             <span
