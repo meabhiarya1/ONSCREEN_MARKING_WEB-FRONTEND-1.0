@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ImageModal from "components/modal/ImageModal";
+import ViewImageModel from "components/modal/ViewImageModel";
 
 const SelectCoordinates = () => {
   const [schemaData, setSchemaData] = useState(null);
@@ -21,6 +22,7 @@ const SelectCoordinates = () => {
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showViewImageModal, setShowViewImageModal] = useState(false);
   const [folderIdQuestion, setFolderIdQuestion] = useState(undefined);
   const [questionId, setQuestionId] = useState("");
   const [questionDone, setQuestionDone] = useState([]);
@@ -33,6 +35,7 @@ const SelectCoordinates = () => {
   });
   const [showAnswerModel, setShowAnswerModel] = useState(false);
   const [getSubjectbyIdData, setGetsubjectbyIdData] = useState([]);
+  const [folderid, setFolderId] = useState();
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -196,7 +199,6 @@ const SelectCoordinates = () => {
       answerImages: formData.answerImages,
       questionImages: formData.questionImages,
     };
-
     // console.log(updatedData)
     // return
 
@@ -302,7 +304,8 @@ const SelectCoordinates = () => {
 
   const handleAllSelectedImage = (folder) => {
     setFolderIdQuestion(folder.id); // Set the folder ID
-    setShowImageModal(true); // Show the modal
+    setFolderId(folder.id);
+    setShowViewImageModal(true); // Show the modal
     setQuestionId(
       savedQuestionData.filter(
         (savedQuestion) =>
@@ -391,7 +394,7 @@ const SelectCoordinates = () => {
 
   const handleFinalSubmitButton = async () => {
     if (filterOutQuestionDone.length != folders.length) {
-      toast.error("Please select all questions");
+      toast.error("Please select all questions images & answers images");
       // console.log("Please select all questions");
       return;
     }
@@ -537,8 +540,9 @@ const SelectCoordinates = () => {
             </button>
 
             <button
-              className={`font-md w-24 rounded-lg border-2 bg-green-600 py-1.5 text-white hover:bg-green-700`}
+              className={`font-md w-24 rounded-lg border-2 py-1.5 text-white ${!isAvailable?"bg-green-400 cursor-not-allowed":"bg-green-600 hover:bg-green-700"}`}
               onClick={() => handleAllSelectedImage(folder)}
+              disabled={!isAvailable}
             >
               View
             </button>
@@ -636,6 +640,25 @@ const SelectCoordinates = () => {
           )}
           questionDone={questionDone}
           formData={formData}
+        />
+      )}
+
+      {showViewImageModal && (
+        <ViewImageModel
+        showViewImageModal={showViewImageModal}
+        setShowViewImageModal={setShowViewImageModal}
+        questionId={questionId[0]?._id}
+        handleSubmitButton={handleSubmitButton}
+        setFormData={setFormData}
+        showAnswerModel={showAnswerModel}
+        setShowAnswerModel={setShowAnswerModel}
+        handleUpdateButton={handleUpdateButton}
+        isAvailable={filterOutQuestionDone.some(
+          (item) => parseInt(item.questionsName) === folderIdQuestion // Calculate based on folderId
+        )}
+        questionDone={questionDone}
+        formData={formData}
+        folderid={folderid}
         />
       )}
     </>
