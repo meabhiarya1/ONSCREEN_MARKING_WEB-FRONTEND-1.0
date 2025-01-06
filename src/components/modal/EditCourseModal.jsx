@@ -67,10 +67,10 @@ const EditCourseModal = ({
               className="absolute top-4 right-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none transition-colors duration-300"
               onClick={() => {
                 setIsEditOpen(false)
-                setFormData({
-                  name: "",
-                  code: "",
-                })
+                // setFormData({
+                //   name: "",
+                //   code: "",
+                // })
               }}
             >
               <GiCrossMark />
