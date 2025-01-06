@@ -101,6 +101,8 @@ const CreateUser = () => {
     moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
   };
 
+  console.log(routes)
+
   return (
     <section>
       <div className="h-full w-full">
