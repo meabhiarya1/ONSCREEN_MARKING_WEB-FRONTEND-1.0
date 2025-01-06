@@ -4,7 +4,7 @@ import Links from "./components/Links";
 import routes from "routes.js";
 import { useEffect, useState } from "react";
 import { getUserDetails } from "../../services/common";
-import logo from "../../assets/img/dashboards/omr _logo.jpg";
+import logo from "../../assets/img/dashboards/omr _logo.png";
 import { GiCrossMark } from "react-icons/gi";
 
 const Sidebar = ({ open, onClose }) => {
@@ -54,8 +54,8 @@ const Sidebar = ({ open, onClose }) => {
         {/* <HiX className="text-navy-100" /> */}
         <GiCrossMark className="text-navy-100" />
       </span>{" "}
-      <div className="mx-[56px] mt-4 flex justify-center  rounded-lg font-poppins font-bold uppercase text-navy-700 dark:text-white">
-        <img src={logo} alt="logo" className="m-2 h-36 w-36" />
+      <div className="mx-[48px] mt-2 flex justify-center  rounded-lg font-poppins font-bold uppercase text-navy-700 dark:text-white">
+        <img src={logo} alt="logo" className="mt-2 h-36 w-36" />
       </div>
       {/* <div
         className={`mx-[56px]   flex flex-col items-center space-y-4`}
