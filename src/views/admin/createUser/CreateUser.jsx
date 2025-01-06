@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import routes from "routes.js";
 import { createUser } from "services/common";
@@ -17,6 +17,30 @@ const CreateUser = () => {
   });
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
+
+  const hardcodedPermissions = {
+    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+  };
+
+  useEffect(() => {
+    if (userDetails.role) {
+      if (userDetails.role === "admin") {
+        setUserDetails({
+          ...userDetails,
+          permissions: routes.map((route) => route.name),
+        });
+      } else {
+        const permissionsForRole = hardcodedPermissions[userDetails.role] || [];
+        setUserDetails({
+          ...userDetails,
+          permissions: permissionsForRole,
+        });
+      }
+    }
+  }, [userDetails.role]);
+
+  console.log(routes) // only show major block
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +72,8 @@ const CreateUser = () => {
       !userDetails?.email ||
       !userDetails?.mobile ||
       !userDetails?.role ||
-      !userDetails?.password
+      !userDetails?.password ||
+      userDetails?.permissions?.length === 0
     ) {
       toast.error("All fields are required!");
       setLoading(false);
@@ -95,13 +120,6 @@ const CreateUser = () => {
       setLoading(false);
     }
   };
-
-  const hardcodedPermissions = {
-    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
-    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
-  };
-
-  console.log(routes)
 
   return (
     <section>
