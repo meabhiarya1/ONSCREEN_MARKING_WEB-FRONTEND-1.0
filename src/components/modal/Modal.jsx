@@ -167,7 +167,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                     >
                       <option value="">Select a role</option>
                       <option value="admin">Admin</option>
-                      <option value="reviewer">Reviewer</option>
+                      <option value="evaluator">Evaluator</option>
                       <option value="moderator">Moderator</option>
                     </select>
                   </div>
