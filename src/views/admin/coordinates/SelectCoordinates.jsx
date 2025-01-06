@@ -395,7 +395,6 @@ const SelectCoordinates = () => {
   const handleFinalSubmitButton = async () => {
     if (filterOutQuestionDone.length != folders.length) {
       toast.error("Please select all questions images & answers images");
-      // console.log("Please select all questions");
       return;
     }
     try {
@@ -526,7 +525,7 @@ const SelectCoordinates = () => {
             />
 
             <label
-              className={`text-sm font-medium  ${"text-gray-800"} w-28 dark:bg-navy-700 dark:text-white`}
+              className={`text-sm font-medium  ${"text-gray-800"} w-28 dark:bg-navy-900 dark:text-white`}
             >
               Sub Questions
             </label>
@@ -540,7 +539,7 @@ const SelectCoordinates = () => {
             </button>
 
             <button
-              className={`font-md w-24 rounded-lg border-2 py-1.5 text-white ${!isAvailable?"bg-green-400 cursor-not-allowed":"bg-green-600 hover:bg-green-700"}`}
+              className={`font-md w-24 rounded-lg py-1.5 text-white ${!isAvailable?"bg-green-400 cursor-not-allowed":"bg-green-600 hover:bg-green-700"}`}
               onClick={() => handleAllSelectedImage(folder)}
               disabled={!isAvailable}
             >
@@ -551,11 +550,11 @@ const SelectCoordinates = () => {
           {/* Sub Questions Input Fields */}
           {folder.showInputs && (
             <div className="ml-12 mt-4 flex items-center gap-4">
-              <label className={`ml-2 text-sm font-bold  ${"text-gray-700"} `}>
+              <label className={`ml-2 text-sm font-bold  ${"text-gray-700"} dark:text-white `}>
                 No. of Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-bold ${"text-gray-700"}`}
+                className={`px-2 py-1 text-sm font-bold ${"text-gray-700"} dark:text-white`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -563,11 +562,11 @@ const SelectCoordinates = () => {
                     : "0"
                   : "0"}
               </span>
-              <label className={`ml-2 text-sm font-bold ${"text-gray-700"} `}>
+              <label className={`ml-2 text-sm font-bold ${"text-gray-700"} dark:text-white`}>
                 No. of compulsory Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"}`}
+                className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"} dark:text-white`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -598,7 +597,6 @@ const SelectCoordinates = () => {
           >
             <span
               className="font-medium transition-colors group-hover:text-white dark:text-white"
-              onClick={handleFinalSubmitButton}
             >
               {" "}
               Submit{" "}

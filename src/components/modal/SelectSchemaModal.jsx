@@ -190,7 +190,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
           <select
             value={selectedSchema}
             onChange={(e) => setSelectedSchema(e.target.value)}
-            className="mb-5 w-full rounded-lg border border-gray-300 p-2 dark:border-gray-600 dark:bg-navy-700 dark:text-white"
+            className="mb-5 w-full rounded-lg p-2 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
             required
             disabled={loading}
           >
@@ -247,7 +247,7 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
             type="text"
             value={relationName}
             onChange={(e) => setRelationName(e.target.value)}
-            className="mb-5 w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-600 dark:bg-navy-700"
+            className="mb-5 w-full rounded-lg p-2 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
             required
             placeholder="Enter Relation Name"
             disabled={loading}
