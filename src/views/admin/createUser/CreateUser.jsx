@@ -142,7 +142,11 @@ const CreateUser = () => {
                   id="FullName"
                   name="full_name"
                   placeholder="Enter the Name"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
+                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   onChange={(e) =>
                     setUserDetails({
                       ...userDetails,
@@ -165,7 +169,11 @@ const CreateUser = () => {
                   id="mobile"
                   name="mobile"
                   placeholder="Enter Mobile Number"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
+                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   maxLength="10"
                   pattern="\d*"
                   onChange={(e) => {
@@ -190,7 +198,11 @@ const CreateUser = () => {
                   id="Email"
                   name="email"
                   placeholder="Enter Email"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
+                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   onChange={(e) =>
                     setUserDetails({
                       ...userDetails,
@@ -211,7 +223,11 @@ const CreateUser = () => {
                 <select
                   id="role"
                   name="role"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
+                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   onChange={(e) =>
                     setUserDetails({ ...userDetails, role: e.target.value })
                   }
@@ -239,7 +255,11 @@ const CreateUser = () => {
                         id={route.name}
                         name="permissions"
                         value={route.name}
+
+//                         className="sm:h-5 sm:w-5 rounded border-2 border-gray-300 bg-gray-50 text-indigo-600 focus:ring-indigo-500"
+
                         className="rounded border-2 border-gray-300 bg-gray-50 text-blue-600 focus:ring-blue-500 sm:h-5 sm:w-5"
+
                         checked={
                           userDetails?.role === "admin"
                             ? userDetails.permissions
@@ -290,7 +310,11 @@ const CreateUser = () => {
                     id="Password"
                     name="password"
                     placeholder="Enter Password"
-                    className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
+                    className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -326,7 +350,11 @@ const CreateUser = () => {
                     id="PasswordConfirmation"
                     name="password_confirmation"
                     placeholder="Confirm Password"
-                    className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
+                    className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,

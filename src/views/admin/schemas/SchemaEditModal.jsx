@@ -144,7 +144,7 @@ const SchemaEditModal = ({
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:p-3"
+              className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:p-3"
             />
           </div>
 
@@ -159,7 +159,7 @@ const SchemaEditModal = ({
                 name="maxMarks"
                 value={formData.maxMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:p-3"
+                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -171,7 +171,7 @@ const SchemaEditModal = ({
                 name="minMarks"
                 value={formData.minMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:p-3"
+                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ const SchemaEditModal = ({
                 name="totalQuestions"
                 value={formData.totalQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:p-3"
+                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -198,7 +198,7 @@ const SchemaEditModal = ({
                 name="compulsoryQuestions"
                 value={formData.compulsoryQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:p-3"
+                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
           </div>
@@ -215,7 +215,7 @@ const SchemaEditModal = ({
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleInputChange}
-              className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:p-3"
+              className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
             />
           </div>
         </div>

@@ -235,7 +235,7 @@ const ImageModal = ({
 
             {/* Close button */}
             <button
-              className="absolute right-0 top-0 pl-2 pr-1 text-3xl font-bold text-gray-600 hover:text-gray-900"
+              className="absolute right-0 top-0 pl-2 pr-1 text-3xl font-bold text-gray-600 hover:text-gray-900 dark:hover:text-gray-100"
               onClick={() => {
                 setShowImageModal(false);
                 setQuestionsPdfPath(questionsPdfPath);
@@ -358,7 +358,7 @@ const ImageModal = ({
             </div>
             {/* Close button */}
             <button
-              className="absolute right-0 top-0 pl-2 pr-1 text-3xl font-bold text-gray-600 hover:text-gray-900"
+              className="absolute right-0 top-0 pl-2 pr-1 text-3xl font-bold text-gray-600 hover:text-gray-900 dark:hover:text-gray-100"
               onClick={() => {
                 setShowAnswerModel(false);
                 setAnswersPdfPath(undefined);

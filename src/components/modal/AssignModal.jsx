@@ -224,7 +224,7 @@ const AssignModal = ({
                 <select
                   name="cars"
                   id="cars"
-                  className="bg-transparent h-10 w-full overflow-auto rounded-lg border border-gray-200 px-2 text-sm text-gray-700 focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white"
+                  className="bg-transparent h-10 w-full overflow-auto rounded-lg px-2 text-sm text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                   onChange={(e) => {
                     setSelectedUser(e.target.value);
                   }}
@@ -278,7 +278,7 @@ const AssignModal = ({
                 autoComplete="off"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
-                className="bg-transparent h-10 w-full rounded-lg border border-gray-200 px-5 text-sm focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white"
+                className="bg-transparent h-10 w-full rounded-lg px-5 text-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
               />
             </div>
           </div>
@@ -296,7 +296,7 @@ const AssignModal = ({
                 placeholder="Upload File"
                 autoComplete="off"
                 value={selectedPath}
-                className="bg-transparent h-12 w-full rounded-l-md border border-indigo-600 px-4 text-sm  focus:border-indigo-600 focus:outline-none dark:bg-navy-700 dark:text-white"
+                className="bg-transparent h-12 w-full rounded-l-md px-4 text-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
               />
               <button className="duration-250 group  relative z-30 flex cursor-pointer  items-center justify-center overflow-hidden rounded-r-lg rounded-tr-lg bg-indigo-600 px-4 py-2.5 text-white shadow-lg transition-all hover:bg-indigo-700 hover:shadow-xl focus:bg-indigo-600 focus:shadow-xl focus:outline-none focus:ring-0 active:bg-indigo-700 active:shadow-lg ">
                 <svg

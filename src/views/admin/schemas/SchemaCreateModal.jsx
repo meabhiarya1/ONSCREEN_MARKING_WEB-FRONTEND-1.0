@@ -151,7 +151,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
+              className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
             />
           </div>
 
@@ -170,7 +170,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="totalQuestions"
                 value={formData.totalQuestions}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -186,7 +186,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="maxMarks"
                 value={formData.maxMarks}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
           </div>
@@ -205,7 +205,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="minMarks"
                 value={formData.minMarks}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -221,7 +221,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="compulsoryQuestions"
                 value={formData.compulsoryQuestions}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleChange}
-              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-800 dark:text-white sm:w-full sm:px-4 sm:py-2"
+              className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
             />
           </div>
 
