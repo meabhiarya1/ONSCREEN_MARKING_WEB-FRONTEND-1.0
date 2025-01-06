@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import routes from "routes.js";
 import { createUser } from "services/common";
@@ -18,6 +18,29 @@ const CreateUser = () => {
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
 
+  const hardcodedPermissions = {
+    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+  };
+
+  useEffect(() => {
+    if (userDetails.role) {
+      if (userDetails.role === "admin") {
+        setUserDetails({
+          ...userDetails,
+          permissions: routes.map((route) => route.name),
+        });
+      } else {
+        const permissionsForRole = hardcodedPermissions[userDetails.role] || [];
+        setUserDetails({
+          ...userDetails,
+          permissions: permissionsForRole,
+        });
+      }
+    }
+  }, [userDetails.role]);
+
+  console.log(routes) // only show major block
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +67,14 @@ const CreateUser = () => {
     }
 
     // Check if required fields are filled
-    if (!userDetails?.name || !userDetails?.email || !userDetails?.mobile || !userDetails?.role || !userDetails?.password) {
+    if (
+      !userDetails?.name ||
+      !userDetails?.email ||
+      !userDetails?.mobile ||
+      !userDetails?.role ||
+      !userDetails?.password ||
+      userDetails?.permissions?.length === 0
+    ) {
       toast.error("All fields are required!");
       setLoading(false);
       return;
@@ -72,7 +102,10 @@ const CreateUser = () => {
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error(error?.response?.data?.message || "Failed to create user. Please try again later.");
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to create user. Please try again later."
+      );
     } finally {
       // Reset form fields
       setUserDetails({
@@ -88,20 +121,19 @@ const CreateUser = () => {
     }
   };
 
-
   return (
     <section>
-      <div className="w-full h-full">
+      <div className="h-full w-full">
         <main className="flex items-center justify-center dark:bg-navy-900">
-          <div className="max-w-xl lg:max-w-3xl w-full mt-8">
+          <div className="mt-8 w-full max-w-xl lg:max-w-3xl">
             <form
-              className="grid grid-cols-6 gap-6 rounded-md border border-gray-700 p-6 bg-white shadow-lg overflow-y-auto max-h-[80vh] dark:bg-navy-700"
+              className="grid max-h-[80vh] grid-cols-6 gap-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-6 shadow-lg dark:bg-navy-700"
               onSubmit={handleFormSubmit}
             >
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="FullName"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Full Name
                 </label>
@@ -110,7 +142,11 @@ const CreateUser = () => {
                   id="FullName"
                   name="full_name"
                   placeholder="Enter the Name"
+
                   className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   onChange={(e) =>
                     setUserDetails({
                       ...userDetails,
@@ -124,7 +160,7 @@ const CreateUser = () => {
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="mobile"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Mobile Number
                 </label>
@@ -133,7 +169,11 @@ const CreateUser = () => {
                   id="mobile"
                   name="mobile"
                   placeholder="Enter Mobile Number"
+
                   className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   maxLength="10"
                   pattern="\d*"
                   onChange={(e) => {
@@ -149,7 +189,7 @@ const CreateUser = () => {
               <div className="col-span-6">
                 <label
                   htmlFor="Email"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Email
                 </label>
@@ -158,7 +198,11 @@ const CreateUser = () => {
                   id="Email"
                   name="email"
                   placeholder="Enter Email"
+
                   className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   onChange={(e) =>
                     setUserDetails({
                       ...userDetails,
@@ -172,14 +216,18 @@ const CreateUser = () => {
               <div className="col-span-6">
                 <label
                   htmlFor="Role"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Role
                 </label>
                 <select
                   id="role"
                   name="role"
+
                   className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                   onChange={(e) =>
                     setUserDetails({ ...userDetails, role: e.target.value })
                   }
@@ -187,19 +235,19 @@ const CreateUser = () => {
                 >
                   <option value="">Select a role</option>
                   <option value="admin">Admin</option>
-                  <option value="reviewer">Reviewer</option>
                   <option value="moderator">Moderator</option>
+                  <option value="evaluator">Evaluator</option>
                 </select>
               </div>
 
               <div className="col-span-6">
                 <label
                   htmlFor="permissions"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Permissions
                 </label>
-                <div className="grid grid-cols-2 sm:gap-4 p-1 sm:grid-cols-3 lg:grid-cols-4">
+                <div className="grid grid-cols-2 p-1 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                   {routes.map((route, index) => (
                     <div className="flex items-center" key={index}>
                       <input
@@ -207,11 +255,17 @@ const CreateUser = () => {
                         id={route.name}
                         name="permissions"
                         value={route.name}
-                        className="sm:h-5 sm:w-5 rounded border-2 border-gray-300 bg-gray-50 text-indigo-600 focus:ring-indigo-500"
+
+//                         className="sm:h-5 sm:w-5 rounded border-2 border-gray-300 bg-gray-50 text-indigo-600 focus:ring-indigo-500"
+
+                        className="rounded border-2 border-gray-300 bg-gray-50 text-blue-600 focus:ring-blue-500 sm:h-5 sm:w-5"
+
                         checked={
                           userDetails?.role === "admin"
                             ? userDetails.permissions
-                            : userDetails.permissions.includes(route.name)
+                            : hardcodedPermissions[userDetails.role]?.includes(
+                                route.name
+                              )
                         }
                         onChange={(e) => {
                           if (e.target.checked) {
@@ -246,7 +300,7 @@ const CreateUser = () => {
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="Password"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Password
                 </label>
@@ -256,7 +310,11 @@ const CreateUser = () => {
                     id="Password"
                     name="password"
                     placeholder="Enter Password"
+
                     className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -282,7 +340,7 @@ const CreateUser = () => {
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="PasswordConfirmation"
-                  className="text-sm sm:text-md block font-medium text-gray-700 dark:text-white"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
                   Password Confirmation
                 </label>
@@ -292,7 +350,11 @@ const CreateUser = () => {
                     id="PasswordConfirmation"
                     name="password_confirmation"
                     placeholder="Confirm Password"
+
                     className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+
+//                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
@@ -315,15 +377,17 @@ const CreateUser = () => {
                 </div>
               </div>
 
-              <div className="col-span-6 flex sm:flex-row justify-center items-center gap-2 sm:gap-5">
+              <div className="col-span-6 flex items-center justify-center gap-2 sm:flex-row sm:gap-5">
                 <button
-                  className={`rounded-md bg-indigo-600 px-2 py-1 sm:px-2 sm:py-1 lg:px-4 lg:py-2 text-lg text-white transition hover:bg-indigo-700 ${loading ? 'cursor-not-allowed' : ''}`}
+                  className={`rounded-md bg-indigo-600 px-2 py-1 text-lg text-white transition hover:bg-indigo-700 sm:px-2 sm:py-1 lg:px-4 lg:py-2 ${
+                    loading ? "cursor-not-allowed" : ""
+                  }`}
                   disabled={loading}
                 >
                   {loading ? (
                     <div className="flex items-center">
                       <svg
-                        className="animate-spin h-5 w-5 mr-2 text-white"
+                        className="mr-2 h-5 w-5 animate-spin text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -348,12 +412,9 @@ const CreateUser = () => {
                     "Create User"
                   )}
                 </button>
-                <h2 className="text-lg rounded-md bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 sm:px-2 sm:py-1 lg:px-4 lg:py-2 transition-all duration-300">
-                  <Link to={'/admin/uploadcsv'}>
-                    Create user by CSV
-                  </Link>
+                <h2 className="rounded-md bg-indigo-600 px-2 py-1 text-lg text-white transition-all duration-300 hover:bg-indigo-700 sm:px-2 sm:py-1 lg:px-4 lg:py-2">
+                  <Link to={"/admin/uploadcsv"}>Create user by CSV</Link>
                 </h2>
-
               </div>
             </form>
           </div>
