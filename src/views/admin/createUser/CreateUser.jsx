@@ -127,7 +127,7 @@ const CreateUser = () => {
         <main className="flex items-center justify-center dark:bg-navy-900">
           <div className="mt-8 w-full max-w-xl lg:max-w-3xl">
             <form
-              className="grid max-h-[80vh] grid-cols-6 gap-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-6 shadow-lg dark:bg-navy-700"
+              className="grid max-h-[80vh] grid-cols-6 gap-6 3xl:mt-8 overflow-y-auto rounded-md border border-gray-700 bg-white p-6 shadow-lg dark:bg-navy-700"
               onSubmit={handleFormSubmit}
             >
               <div className="col-span-6 sm:col-span-3">

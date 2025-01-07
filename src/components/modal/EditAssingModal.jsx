@@ -46,15 +46,15 @@ const EditAssingModal = ({
           !showFileManager ? "z-50" : "z-0"
         } flex items-center justify-center bg-opacity-50 backdrop-blur-md`}
       >
-        <div className="mx-auto max-w-[800px]  rounded-xl bg-white shadow-lg drop-shadow-md">
+        <div className="mx-auto max-w-[330px] sm:max-w-[400px] rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white">
           <div className="flex justify-between px-4 py-3">
             <div>
-              <h2 className="font-bold" style={{ fontSize: "32px" }}>
+              <h2 className="font-bold text-xl sm:text-3xl">
                 Task Details
               </h2>
             </div>
             <div
-              className="cursor-pointer text-gray-600"
+              className="cursor-pointer text-gray-600 hover:text-red-700"
               onClick={() => setShowEditModal(false)}
             >
               <svg
@@ -76,12 +76,12 @@ const EditAssingModal = ({
           <hr className="bg-gray-600" />
           <div className="mt-2 min-w-[400px] space-y-3 px-3 pb-6 pt-3 ">
             <div className="flex w-full flex-col space-y-3">
-              <div className="flex">
-                <p className="font-bold text-gray-700">Task Name: </p>{" "}
+              <div className="flex px-4 sm:px-0 sm:justify-center gap-8">
+                <p className="font-bold text-gray-700 dark:text-white text-sm sm:text-md">Task Name: </p>{" "}
                 <input
                   type="text"
                   value={currentTask?.taskName}
-                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px]"
+                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px] border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-md"
                   onChange={(e) =>
                     setCurrentTask((prev) => ({
                       ...prev,
@@ -91,43 +91,43 @@ const EditAssingModal = ({
                 />
               </div>
 
-              <div className="flex">
-                <p className="font-bold text-gray-700">Class Name: </p>{" "}
+              <div className="flex px-4 sm:px-0 sm:justify-center gap-6">
+                <p className="font-bold text-gray-700 dark:text-white text-sm sm:text-md">Class Name: </p>{" "}
                 <input
                   type="text"
                   value={currentTask?.className}
-                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px]"
+                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px] border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-md"
                   disabled
                 />
               </div>
             </div>
-            <div className="flex flex-col ">
-              <div className="flex space-y-3">
-                <p className="font-bold text-gray-700"> Subject Code: </p>{" "}
+            {/* <div className="flex flex-col "> */}
+              <div className="flex px-4 sm:px-0 sm:justify-center gap-3">
+                <p className="font-bold text-gray-700 dark:text-white text-sm sm:text-md"> Subject Code: </p>{" "}
                 <input
                   type="text"
                   value={currentTask?.subjectCode}
-                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px]"
+                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px] border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-md"
                   disabled
                 />
               </div>
 
-              <div className="flex">
-                <p className="font-bold text-gray-700"> Total Files: </p>{" "}
+              <div className="flex px-4 sm:px-0 sm:justify-center">
+                <p className="font-bold text-gray-700 dark:text-white text-sm sm:text-md"> Total Files: </p>{" "}
                 <input
                   type="text"
                   value={currentTask?.totalFiles}
-                  className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px]"
+                  className="mx-2 rounded-md ml-11 bg-gray-200 px-2 py-[2px] border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-md"
                   disabled
                 />
               </div>
-            </div>{" "}
-            <div className="flex space-y-3">
-              <p className="font-bold text-gray-700"> Assigned To: </p>{" "}
+            {/* </div>{" "} */}
+            <div className="flex px-4 sm:px-0 sm:justify-center gap-5">
+              <p className="font-bold text-gray-700 dark:text-white text-sm sm:text-md"> Assigned To: </p>{" "}
               <input
                 type="text"
                 value={currentTask?.userId?.email}
-                className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px]"
+                className="mx-2 rounded-md  bg-gray-200 px-2 py-[2px] border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-md"
                 disabled
               />
             </div>
@@ -146,7 +146,7 @@ const EditAssingModal = ({
               placeholder="Upload File"
               autoComplete="off"
               value={selectedPath}
-              className="bg-transparent h-12 w-full rounded-l-md border border-green-600 px-4 text-sm  focus:border-green-600 focus:outline-none "
+              className="bg-transparent h-12 w-full rounded-l-md px-4 text-sm  border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
               disabled
               onChange={(e) =>
                 selectedPath
@@ -154,7 +154,7 @@ const EditAssingModal = ({
                   : setSelectedPath(currentTask?.folderPath)
               }
             />
-            <button className="duration-250 group  relative z-30 flex cursor-pointer  items-center justify-center overflow-hidden rounded-r-lg rounded-tr-lg bg-green-700 px-4 py-2.5 text-white shadow-lg transition-all hover:bg-green-600 hover:shadow-xl focus:bg-green-600 focus:shadow-xl focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg ">
+            <button className="duration-250 group  relative z-30 flex cursor-pointer  items-center justify-center overflow-hidden rounded-r-lg rounded-tr-lg bg-indigo-700 px-4 py-2.5 text-white shadow-lg transition-all hover:bg-indigo-600 hover:shadow-xl focus:bg-indigo-600 focus:shadow-xl focus:outline-none focus:ring-0 active:bg-indigo-700 active:shadow-lg ">
               <svg
                 fill="#fff"
                 xmlns="http://www.w3.org/2000/svg"
@@ -171,13 +171,12 @@ const EditAssingModal = ({
                 name="text"
               />
 
-              <span className="duration-350 absolute inset-0  z-[-1] cursor-pointer rounded-tr-lg bg-green-600 transition-all group-hover:w-full"></span>
+              <span className="duration-350 absolute inset-0  z-[-1] cursor-pointer rounded-tr-lg bg-indigo-600 transition-all group-hover:w-full"></span>
             </button>
           </div>
           <div class="mx-3 text-center">
             <button
-              class="my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white"
-              style={{ backgroundColor: "#00A400" }}
+              class="my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700"
               onClick={() => {
                 setShowEditModal(false);
                 handleSubmitButton(currentTask);

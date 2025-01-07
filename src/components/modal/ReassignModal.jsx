@@ -8,15 +8,15 @@ const ReassignModal = ({ showReAssignModal, users, setShowReAssignModal }) => {
           !showReAssignModal ? "z-50" : "z-0"
         } flex items-center justify-center bg-opacity-50 backdrop-blur-md`}
       >
-        <div className="mx-auto max-w-[800px]  rounded-xl bg-white shadow-lg drop-shadow-md">
+        <div className="mx-auto max-w-[300px] sm:max-w-[360px]  rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white">
           <div className="flex justify-between px-4 py-3">
             <div>
-              <h2 className="font-bold" style={{ fontSize: "32px" }}>
+              <h2 className="font-bold text-xl sm:text-3xl">
                 All Users
               </h2>
             </div>
             <div
-              className="cursor-pointer text-gray-600"
+              className="cursor-pointer text-gray-600 hover:text-red-700"
               onClick={() => setShowReAssignModal(false)}
             >
               <svg
@@ -42,8 +42,8 @@ const ReassignModal = ({ showReAssignModal, users, setShowReAssignModal }) => {
                 <select
                   name="HeadlineAct"
                   id="HeadlineAct"
-                  className="mt-1.5 w-full rounded-lg border border-gray-300 p-2   text-gray-700 focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs 
-                  sm:text-sm justify-center items-center"
+                  className="mt-1.5 w-8/12 sm:w-10/12 rounded-lg p-2 text-gray-700 sm:max-w-xs 
+                  sm:text-sm justify-center items-center border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-700 dark:text-white text-sm sm:text-md"
                 >
                   {users.map((user) => (
                     <option>{user.email}</option>
@@ -54,8 +54,7 @@ const ReassignModal = ({ showReAssignModal, users, setShowReAssignModal }) => {
           </div>{" "}
           <div class="mx-3 text-center">
             <button
-              class="my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white"
-              style={{ backgroundColor: "#00A400" }}
+              class="my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700"
               //   onClick={() => {
               //     setShowEditModal(false);
               //   }}
