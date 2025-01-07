@@ -11,10 +11,13 @@ import {
   setCurrentQuestion,
   setCurrentMarkDetails,
   setCurrentTaskDetails,
+  setCurrentQuestionDefinitionId,
 } from "store/evaluatorSlice";
 import { changeCurrentIndexById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
+import { generateNumbers } from "services/Evaluator/generateNumber";
 const QuestionDefinition = (props) => {
+  const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [rotationStates, setRotationStates] = useState({});
   const [marked, setMarked] = useState(false);
@@ -22,6 +25,7 @@ const QuestionDefinition = (props) => {
   const evaluatorState = useSelector((state) => state.evaluator);
   const taskDetails = evaluatorState.currentTaskDetails;
   const currentBookletIndex = evaluatorState.currentBookletIndex;
+  const currentQuestion = evaluatorState.currentQuestion;
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchQuestionDetails = async (answerPdfDetails) => {
@@ -35,6 +39,10 @@ const QuestionDefinition = (props) => {
           return total + item.allottedMarks;
         }, 0);
         setTotalMarks(reducedArr);
+        // console.log(response2[currentQuestion]);
+        dispatch(
+          setCurrentQuestionDefinitionId(response2[currentQuestion - 1]._id)
+        );
         setAllQuestions(response2);
       } catch (error) {
         console.log(error);
@@ -44,7 +52,7 @@ const QuestionDefinition = (props) => {
     if (props.answerPdfDetails) {
       fetchQuestionDetails(props.answerPdfDetails);
     }
-  }, [props.answerPdfDetails, marked]);
+  }, [props.answerPdfDetails, marked, evaluatorState.rerender]);
 
   const handleRotate = (index) => {
     setRotationStates({
@@ -52,24 +60,24 @@ const QuestionDefinition = (props) => {
     });
   };
 
-  const generateNumbers = (minMarks, maxNumber, difference) => {
-    const numbers = [];
-    // Start from 1, then keep adding the difference until it exceeds maxNumber
-    for (let i = minMarks; i <= maxNumber; i += difference) {
-      numbers.push(i);
-    }
-    return numbers;
-  };
   const handleListClick = async (item, mark, index) => {
-    const { _id, answerPdfId } = item;
-    console.log(answerPdfId);
+    const { _id, answerPdfId, allottedMarks, maxMarks } = item;
+    console.log(item);
+
+    if (allottedMarks + mark > maxMarks) {
+      alert("You have exceeded the maximum marks for this question");
+      return;
+    }
+    const totalAllocatedMarks = allottedMarks + mark;
     try {
       const body = {
         questionDefinitionId: _id,
         answerPdfId: answerPdfId,
-        allottedMarks: mark,
+        allottedMarks: +mark,
+        totalAllocatedMarks: totalAllocatedMarks,
         timerStamps: new Date().toLocaleString(),
       };
+      dispatch(setCurrentQuestionDefinitionId(_id));
       dispatch(setCurrentMarkDetails(body));
       dispatch(setCurrentIcon("/check.png"));
       dispatch(setIsDraggingIcon(true));
@@ -86,15 +94,60 @@ const QuestionDefinition = (props) => {
   const QuestionData = allQuestions.map((item, index) => {
     const isRotated = rotationStates[index] === 45;
     const allotedMarks = item.allottedMarks;
-    const bg = allotedMarks !== 0 ? "bg-green-100" : "bg-red-100";
+
     const marks = generateNumbers(
       item.minMarks,
       item.maxMarks,
       item.marksDifference
     );
+    const background =
+      selectedQuestion === index
+        ? allotedMarks !== 0
+          ? "bg-green-300"
+          : "bg-red-300"
+        : allotedMarks === 0
+        ? "bg-red-100"
+        : "bg-green-100";
+    // const background =
+    //   allotedMarks !== 0
+    //     ? selectedQuestion === index
+    //       ? "bg-green-300" // Marks allocated and index matches
+    //       : "bg-green-100" // Marks allocated and index doesn't match
+    //     : selectedQuestion === index
+    //     ? "bg-green-300" // No marks allocated but index matches
+    //     : "bg-red-100"; // No marks allocated and index doesn't match
+    const handleAllotZeroListClick = async (item, mark, index) => {
+      const { _id, answerPdfId, allottedMarks } = item;
+
+      try {
+        const body = {
+          questionDefinitionId: _id,
+          answerPdfId: answerPdfId,
+          allottedMarks: 0,
+          timerStamps: new Date().toLocaleString(),
+        };
+        dispatch(setCurrentMarkDetails(body));
+        dispatch(setCurrentIcon("/close.png"));
+        dispatch(setIsDraggingIcon(true));
+        dispatch(setCurrentQuestion(index + 1));
+
+        setMarked((prev) => !prev);
+        setRotationStates({
+          [index]: (rotationStates[index] = 0), // Toggle only the current index
+        });
+        // console.log(response);
+      } catch (error) {}
+      console.log(item, mark);
+    };
 
     return (
-      <tr className={`h-16 border  bg-green-100  dark:border-gray-700 ${bg} `}>
+      <tr
+        className={`h-16 border    dark:border-gray-700   ${background} `}
+        onClick={() => {
+          setSelectedQuestion(index);
+        }}
+        key={index}
+      >
         <th
           scope="row"
           className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -142,6 +195,12 @@ const QuestionDefinition = (props) => {
                       </li>
                     );
                   })}
+                  <li
+                    className="cursor-pointer border bg-gray-100 text-center font-bold hover:bg-gray-200 hover:text-red-500"
+                    onClick={() => handleAllotZeroListClick(item, 0, index)} // Optional click action
+                  >
+                    Allot 0
+                  </li>
                 </ul>
               </div>
             )}
