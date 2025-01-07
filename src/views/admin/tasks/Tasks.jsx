@@ -63,12 +63,12 @@ const Tasks = () => {
   }, [selectedUser, tasks]);
 
   return (
-    <div className=" h-[650px] rounded-lg bg-gray-300 px-4 py-2">
-      <div className="flex items-center justify-end gap-4">
+    <div className=" h-[650px] rounded-lg bg-lightPrimary px-4 py-2 dark:bg-navy-900">
+      <div className="flex items-center justify-end gap-4 mt-8">
         <select
           name="HeadlineAct"
           id="HeadlineAct"
-          className="mt-1.5 w-1/6 cursor-pointer rounded-lg border-gray-300 px-4 py-2 text-gray-700 sm:text-sm"
+          className="mt-1.5 cursor-pointer rounded-lg px-4 py-2 text-gray-700 sm:text-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-700 dark:text-white"
           onChange={(e) =>
             setSelectedUser(users.find((user) => user.email === e.target.value))
           }
@@ -77,7 +77,7 @@ const Tasks = () => {
           <option
             value=""
             selected
-            className="my-4 cursor-pointer rounded-lg bg-gray-200  text-gray-700"
+            className="my-4 cursor-pointer rounded-lg bg-gray-200 text-gray-700"
             style={{ cursor: "pointer" }}
           >
             {" "}
@@ -96,28 +96,30 @@ const Tasks = () => {
           ))}
         </select>
       </div>
-      <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200">
+      <div className="mt-4 overflow-x-auto rounded-lg ">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-            <thead className="ltr:text-left rtl:text-right">
+          <table className="min-w-full dark:text-white divide-y-2 divide-gray-200 rounded-md bg-white text-sm dark:divide-gray-700 dark:bg-navy-700">
+            <thead className="ltr:text-left rtl:text-right bg-gray-100 dark:bg-navy-800">
               <tr>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Task Name
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Subject Code
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Class Name
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Total Files
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Assigned To
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Status
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                 </th>
               </tr>
             </thead>
@@ -127,20 +129,20 @@ const Tasks = () => {
                 className="divide-y divide-gray-200"
                 key={filteredTask?._id}
               >
-                <tr className="odd:bg-gray-50">
-                  <td className="whitespace-nowrap px-4 py-2 font-medium   text-gray-900">
+                <tr className="odd:bg-white dark:bg-navy-700">
+                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                     {filteredTask?.taskName}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2  font-medium   text-gray-700">
+                  <td className="whitespace-nowrap px-4 py-2  font-medium text-gray-700 dark:text-white">
                     {filteredTask?.subjectCode}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 font-medium  text-gray-700">
+                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {filteredTask?.className}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 font-medium  text-gray-700">
+                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {filteredTask?.totalFiles}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 font-medium   text-gray-700">
+                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {filteredTask?.userId?.email}
                   </td>
                   <td
@@ -154,7 +156,7 @@ const Tasks = () => {
                   </td>
                   <td className="relative">
                     <button
-                      className="mx-2 mt-2 rounded-full text-gray-600 transition-all duration-200 ease-in-out hover:rotate-180 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="mx-2 mt-2 rounded-full text-gray-600 transition-all duration-200 ease-in-out hover:rotate-180 hover:text-gray-800 dark:hover:text-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
                       onClick={() => setShowTaskModal(!showTaskModal)}
                     >
                       <svg
@@ -175,10 +177,10 @@ const Tasks = () => {
                     {/* Dropdown */}
                   </td>{" "}
                   {showTaskModal && (
-                    <div className="absolute right-20 top-60 z-50 mt-2 flex w-[200px] flex-col items-center justify-center gap-1 rounded-md bg-white px-4  py-5 shadow-lg">
+                    <div className="absolute right-20 top-64 z-50 mt-2 flex w-[200px] flex-col items-center justify-center gap-1 rounded-md bg-white px-4 py-5 shadow-lg dark:bg-navy-700">
                       <label
                         htmlFor="html"
-                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-gray-600   peer-checked:bg-blue-50 peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300"
+                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-gray-600 peer-checked:bg-blue-50 peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-gray-700"
                         onClick={() => {
                           setShowReAssignModal(true);
                           setShowTaskModal(false);
@@ -189,7 +191,7 @@ const Tasks = () => {
                       </label>
                       <label
                         htmlFor="css"
-                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-indigo-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300"
+                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-indigo-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-indigo-600"
                         onClick={() => {
                           setShowEditModal(true);
                           setCurrentTask(filteredTask);
@@ -201,7 +203,7 @@ const Tasks = () => {
                       </label>
                       <label
                         htmlFor="javascript"
-                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-red-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300"
+                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-red-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-red-600"
                         onClick={() => {
                           setDeleteAssign(true);
                           setCurrentTask(filteredTask);

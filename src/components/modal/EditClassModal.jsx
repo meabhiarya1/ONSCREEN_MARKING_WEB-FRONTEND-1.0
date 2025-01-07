@@ -31,19 +31,25 @@ const EditClassModal = ({
     e.preventDefault();
 
     if (!formData) {
-      toast.warning("All the fields are required.")
+      toast.warning("All the fields are required.");
       return;
     }
 
-    if (!formData.className || !formData.classCode || !formData.duration || !formData.session || !formData.year) {
-      toast.warning("All the fields are required.")
+    if (
+      !formData.className ||
+      !formData.classCode ||
+      !formData.duration ||
+      !formData.session ||
+      !formData.year
+    ) {
+      toast.warning("All the fields are required.");
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/classes/update/classs/${currentClass._id}`,
+        `${process.env.REACT_APP_API_URL}/api/classes/update/classes/${currentClass._id}`,
         formData,
         {
           headers: {
@@ -62,37 +68,36 @@ const EditClassModal = ({
       setClasses(updatedClasses);
       setEditIsOpen(false);
       toast.success("Class updated successfully");
-      setEditIsOpen(false);
-    } catch (error) {
-      toast.error(error?.response?.data?.error)
-    }
-    finally {
       setFormData({
         className: "",
         classCode: "",
         duration: "",
         session: "",
         year: "",
-      })
+      });
+      setEditIsOpen(false);
+    } catch (error) {
+      toast.error(error?.response?.data?.error);
+    } finally {
     }
   };
 
   return (
     <div>
       {isEditOpen && (
-        <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 transition-opacity duration-300 backdrop-blur-md">
-          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg border border-b-gray-700 transition-all duration-300 sm:scale-100 dark:bg-navy-700 dark:border dark:border-gray-400">
+        <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md transition-opacity duration-300">
+          <div className="relative w-full max-w-lg scale-95 transform rounded-lg border border-b-gray-700 bg-white p-8 shadow-lg transition-all duration-300 dark:border dark:border-gray-400 dark:bg-navy-700 sm:scale-100">
             <button
               className="absolute right-2 top-2 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
               onClick={() => {
-                setEditIsOpen(false)
-                setFormData({
-                  className: "",
-                  classCode: "",
-                  duration: "",
-                  session: "",
-                  year: "",
-                })
+                setEditIsOpen(false);
+                // setFormData({
+                //   className: "",
+                //   classCode: "",
+                //   duration: "",
+                //   session: "",
+                //   year: "",
+                // })
               }}
             >
               <GiCrossMark />
@@ -104,13 +109,15 @@ const EditClassModal = ({
                 htmlFor="class"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 dark:bg-navy-700"
               >
-                <span className="text-xs font-medium text-gray-700 dark:text-white">Class</span>
+                <span className="text-xs font-medium text-gray-700 dark:text-white">
+                  Class
+                </span>
                 <input
                   type="text"
                   id="class"
                   name="className"
                   placeholder="B.Tech / B.A etc"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 dark:bg-navy-700 dark:text-white sm:text-sm"
                   value={formData.className || ""} // Use formData instead of currentCourse
                   onChange={handleChange}
                 />
@@ -128,7 +135,7 @@ const EditClassModal = ({
                   id="classCode"
                   name="classCode"
                   placeholder="Enter Class code"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 dark:bg-navy-700 dark:text-white sm:text-sm"
                   value={formData.classCode || ""}
                   onChange={handleChange}
                 />
@@ -147,7 +154,7 @@ const EditClassModal = ({
                     id="duration"
                     name="duration"
                     placeholder="Enter duration"
-                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
+                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 dark:bg-navy-700 dark:text-white sm:text-sm"
                     value={formData.duration || ""}
                     onChange={handleChange}
                   />
@@ -165,7 +172,7 @@ const EditClassModal = ({
                     id="session"
                     name="session"
                     placeholder="Enter session"
-                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
+                    className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 dark:bg-navy-700 dark:text-white sm:text-sm"
                     value={formData.session || ""} // Use formData instead of currentCourse
                     onChange={handleChange}
                   />
@@ -176,13 +183,15 @@ const EditClassModal = ({
                 htmlFor="year"
                 className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
               >
-                <span className="text-xs font-medium text-gray-700 dark:text-white">Year</span>
+                <span className="text-xs font-medium text-gray-700 dark:text-white">
+                  Year
+                </span>
                 <input
                   type="text"
                   id="year"
                   name="year"
                   placeholder="Enter year"
-                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 sm:text-sm dark:bg-navy-700 dark:text-white"
+                  className="focus:border-transparent mt-1 w-full border-none p-0 focus:outline-none focus:ring-0 dark:bg-navy-700 dark:text-white sm:text-sm"
                   value={formData.year || ""} // Use formData instead of currentCourse
                   onChange={handleChange}
                 />

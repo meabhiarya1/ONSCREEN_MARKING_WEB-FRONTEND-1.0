@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ImageModal from "components/modal/ImageModal";
+import ViewImageModel from "components/modal/ViewImageModel";
 
 const SelectCoordinates = () => {
   const [schemaData, setSchemaData] = useState(null);
@@ -21,6 +22,7 @@ const SelectCoordinates = () => {
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showViewImageModal, setShowViewImageModal] = useState(false);
   const [folderIdQuestion, setFolderIdQuestion] = useState(undefined);
   const [questionId, setQuestionId] = useState("");
   const [questionDone, setQuestionDone] = useState([]);
@@ -33,6 +35,7 @@ const SelectCoordinates = () => {
   });
   const [showAnswerModel, setShowAnswerModel] = useState(false);
   const [getSubjectbyIdData, setGetsubjectbyIdData] = useState([]);
+  const [folderid, setFolderId] = useState();
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -103,7 +106,7 @@ const SelectCoordinates = () => {
         setQuestionDone(response?.data);
       } catch (error) {
         console.log(error);
-        toast.error(error?.response?.data?.message);
+        // toast.error(error?.response?.data?.message);
       }
     };
     fetchedData();
@@ -169,7 +172,7 @@ const SelectCoordinates = () => {
         prev.filter((item) => item.questionId !== formData.questionId)
       );
 
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message);
     }
   };
@@ -196,7 +199,6 @@ const SelectCoordinates = () => {
       answerImages: formData.answerImages,
       questionImages: formData.questionImages,
     };
-
     // console.log(updatedData)
     // return
 
@@ -229,7 +231,7 @@ const SelectCoordinates = () => {
         prev.filter((item) => item.questionId !== formData.questionId)
       );
 
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message);
     }
   };
@@ -287,6 +289,23 @@ const SelectCoordinates = () => {
   const handleSelectCoordinates = async (folder) => {
     setFolderIdQuestion(folder.id); // Set the folder ID
     setShowImageModal(true); // Show the modal
+    setQuestionId(
+      savedQuestionData.filter(
+        (savedQuestion) =>
+          parseInt(savedQuestion.questionsName) === folder.id || undefined
+      )
+    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      questionImages: [],
+      answerImages: [],
+    }));
+  };
+
+  const handleAllSelectedImage = (folder) => {
+    setFolderIdQuestion(folder.id); // Set the folder ID
+    setFolderId(folder.id);
+    setShowViewImageModal(true); // Show the modal
     setQuestionId(
       savedQuestionData.filter(
         (savedQuestion) =>
@@ -366,14 +385,18 @@ const SelectCoordinates = () => {
       toggleInputsVisibility(folderId);
       setFolders((prevFolders) => updateFolders(prevFolders));
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(error.response.data.message);
     }
   };
 
-  console.log(getSubjectbyIdData);
+  // console.log(getSubjectbyIdData);
 
   const handleFinalSubmitButton = async () => {
+    if (filterOutQuestionDone.length != folders.length) {
+      toast.error("Please select all questions images & answers images");
+      return;
+    }
     try {
       const updatedData = new FormData();
 
@@ -424,9 +447,11 @@ const SelectCoordinates = () => {
       (item) => parseInt(item.questionsName) === folderId
     );
 
+    // console.log(filterOutQuestionDone.length,folders.length);
+
     return (
       <div
-        className={`${folderStyle} p-4 ${color} rounded text-gray-700 shadow`}
+        className={`${folderStyle} p-4 ${color} rounded text-gray-700 shadow dark:bg-navy-900 dark:text-white`}
         key={folder.id}
       >
         {level > 0 && (
@@ -440,9 +465,9 @@ const SelectCoordinates = () => {
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
         <div className="w-full flex-col gap-4">
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-1 3xl:gap-4">
             <span
-              className="text-black-500 cursor-pointer font-semibold"
+              className="text-black-500 w-20 cursor-pointer font-semibold"
               onClick={() => handleFolderClick(folder.id)}
             >
               {isAvailable ? "☑️" : "📁"}
@@ -451,7 +476,7 @@ const SelectCoordinates = () => {
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="relative w-32 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Max Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -460,7 +485,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="lg relative w-32 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Min Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -469,7 +494,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="lg relative w-32 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Bonus Marks :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -478,7 +503,7 @@ const SelectCoordinates = () => {
                 : "0"}
             </span>
 
-            <span className="relative cursor-pointer rounded-md border bg-white px-2 py-1 text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg">
+            <span className="lg relative w-44 cursor-pointer rounded-md border bg-white px-2 py-1 text-center text-sm font-medium shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg dark:bg-navy-700 dark:text-white">
               Marks Difference :{" "}
               {currentQ?.length > 0 || currentQ !== undefined
                 ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -499,29 +524,37 @@ const SelectCoordinates = () => {
               }
             />
 
-            <label className={`text-sm font-medium  ${"text-gray-800"}`}>
+            <label
+              className={`text-sm font-medium  ${"text-gray-800"} w-28 dark:bg-navy-900 dark:text-white`}
+            >
               Sub Questions
             </label>
 
             <button
-              className={`font-md rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white  ${
-                isAvailable ? "px-[25px]" : "px-3"
-              }`}
+              className={`font-md w-28 rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white`}
               disabled={isSaving}
               onClick={() => handleSelectCoordinates(folder)}
             >
               {isAvailable ? "Update" : "Questions"}
+            </button>
+
+            <button
+              className={`font-md w-24 rounded-lg py-1.5 text-white ${!isAvailable?"bg-green-400 cursor-not-allowed":"bg-green-600 hover:bg-green-700"}`}
+              onClick={() => handleAllSelectedImage(folder)}
+              disabled={!isAvailable}
+            >
+              View
             </button>
           </div>
 
           {/* Sub Questions Input Fields */}
           {folder.showInputs && (
             <div className="ml-12 mt-4 flex items-center gap-4">
-              <label className={`ml-2 text-sm font-bold  ${"text-gray-700"} `}>
+              <label className={`ml-2 text-sm font-bold  ${"text-gray-700"} dark:text-white `}>
                 No. of Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-bold ${"text-gray-700"}`}
+                className={`px-2 py-1 text-sm font-bold ${"text-gray-700"} dark:text-white`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -529,11 +562,11 @@ const SelectCoordinates = () => {
                     : "0"
                   : "0"}
               </span>
-              <label className={`ml-2 text-sm font-bold ${"text-gray-700"} `}>
+              <label className={`ml-2 text-sm font-bold ${"text-gray-700"} dark:text-white`}>
                 No. of compulsory Sub-Questions:
               </label>
               <span
-                className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"}`}
+                className={`px-2 py-1 text-sm font-bold ${"  text-gray-700"} dark:text-white`}
               >
                 {currentQ?.length > 0 || currentQ !== undefined
                   ? parseInt(currentQ[0]?.questionsName) === folderId
@@ -554,23 +587,22 @@ const SelectCoordinates = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen bg-gray-100 p-6">
-      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4">
+    <>
+      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
         {" "}
         <div className="flex justify-end">
           <span
-            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border px-5 py-2 text-indigo-600 transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500"
+            className="border-current group flex w-[150px] cursor-pointer items-center justify-end gap-4 rounded-lg border bg-indigo-500 px-5 py-2 text-white transition-colors hover:bg-indigo-600 focus:outline-none focus:ring active:bg-indigo-500 dark:border-gray-700"
             onClick={handleFinalSubmitButton}
           >
             <span
-              className="font-medium transition-colors group-hover:text-white"
-              onClick={handleFinalSubmitButton}
+              className="font-medium transition-colors group-hover:text-white dark:text-white"
             >
               {" "}
               Submit{" "}
             </span>
 
-            <span className="shrink-0 rounded-full border border-indigo-600 bg-white p-2 group-active:border-indigo-500">
+            <span className="shrink-0 rounded-full border border-indigo-600 bg-navy-700 p-2 group-active:border-indigo-500">
               <svg
                 className="size-5 rtl:rotate-180"
                 xmlns="http://www.w3.org/2000/svg"
@@ -608,7 +640,26 @@ const SelectCoordinates = () => {
           formData={formData}
         />
       )}
-    </div>
+
+      {showViewImageModal && (
+        <ViewImageModel
+        showViewImageModal={showViewImageModal}
+        setShowViewImageModal={setShowViewImageModal}
+        questionId={questionId[0]?._id}
+        handleSubmitButton={handleSubmitButton}
+        setFormData={setFormData}
+        showAnswerModel={showAnswerModel}
+        setShowAnswerModel={setShowAnswerModel}
+        handleUpdateButton={handleUpdateButton}
+        isAvailable={filterOutQuestionDone.some(
+          (item) => parseInt(item.questionsName) === folderIdQuestion // Calculate based on folderId
+        )}
+        questionDone={questionDone}
+        formData={formData}
+        folderid={folderid}
+        />
+      )}
+    </>
   );
 };
 

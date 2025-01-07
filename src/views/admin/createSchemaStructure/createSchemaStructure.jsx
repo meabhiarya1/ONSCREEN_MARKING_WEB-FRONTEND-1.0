@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { isAction } from "@reduxjs/toolkit";
-
 const CreateSchemaStructure = () => {
   const [schemaData, setSchemaData] = useState(null);
   const [savedQuestionData, setSavedQuestionData] = useState([]);
@@ -20,6 +18,9 @@ const CreateSchemaStructure = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState([]);
   const [subQuestionsFirst, setSubQuestionsFirst] = useState([]);
+  const [error, setError] = useState(false);
+  const [remainingMarks, setRemainingMarks] = useState("");
+  const [questionToAllot, setQuestionToAllot] = useState("");
   // const [allottedQuestionRemaining, setAllottedQuestionRemaining] = useState(0);
 
   useEffect(() => {
@@ -66,7 +67,16 @@ const CreateSchemaStructure = () => {
         );
         const data = response?.data.data || []; // Fallback to an empty array if no data
         setSavedQuestionData(data);
-
+        setRemainingMarks(
+          schemaData?.maxMarks -
+            data?.reduce((acc, question) => acc + question?.maxMarks, 0)
+        );
+        setQuestionToAllot(
+          schemaData?.totalQuestions - data?.length === 0 ||
+            schemaData?.totalQuestions < data?.length
+            ? 0
+            : schemaData?.totalQuestions - data?.length
+        );
         // toast.success("Question data fetched successfully");
       } catch (error) {
         console.error("Error fetching schema data:", error);
@@ -75,7 +85,7 @@ const CreateSchemaStructure = () => {
       }
     };
     fetchedData();
-  }, [id, token]);
+  }, [id, token, schemaData, savedQuestionData, questionToAllot]);
 
   const extractParentId = (key, arrayOfObjects) => {
     for (let obj of arrayOfObjects) {
@@ -120,11 +130,20 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
+  // const remainingMarks =
+  //   schemaData?.maxMarks -
+  //   savedQuestionData?.reduce((acc, question) => acc + question?.maxMarks, 0);
+
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
     setCurrentQuesNo(folderId);
 
     if (savingStatus[folderId]) return;
+
+    if (error)
+      return toast.error(
+        `Marks cannot be greater than remaining marks in Question: ${folderId}`
+      );
 
     const currentQ =
       savedQuestionData &&
@@ -183,6 +202,16 @@ const CreateSchemaStructure = () => {
         return;
       }
     }
+
+    if (maxMarks > remainingMarks)
+      return toast.error("Marks cannot be greater than remaining marks");
+    if (maxMarks % marksDifference != 0 || maxMarks < marksDifference)
+      return toast.error(
+        "Marks Difference cannot be greater than Max marks or Marks Difference Always Multiple of Max marks"
+      );
+
+    if (bonusMarks > maxMarks)
+      return toast.error("Bonus Marks cannot be greater than Max marks");
 
     const updatedQuestionData = {
       schemaId: id,
@@ -355,6 +384,8 @@ const CreateSchemaStructure = () => {
       isActive: true,
     };
 
+    if (remainingMarks) return toast.error("Remaining marks should be 0");
+
     try {
       const response = axios.put(
         `${process.env.REACT_APP_API_URL}/api/schemas/update/schema/${id}`,
@@ -380,8 +411,22 @@ const CreateSchemaStructure = () => {
     // console.log("folderId", folderId);
 
     const handleMarkChange = (inputBoxName, inputValue) => {
+      if (inputBoxName.includes("maxMarks")) {
+        if (inputValue > remainingMarks) {
+          toast.error("Marks cannot be greater than remaining marks");
+          setError(true);
+          return;
+        }
+      } else if (inputBoxName.includes("marksDifference")) {
+        if (inputValue > remainingMarks) {
+          toast.error("Marks cannot be greater than remaining marks");
+          setError(true);
+          return;
+        }
+      }
       setCurrentQuesNo(folderId);
       formRefs.current[inputBoxName] = inputValue;
+      setError(false);
     };
 
     let currentQ = [];
@@ -405,7 +450,7 @@ const CreateSchemaStructure = () => {
 
     return (
       <div
-        className={`${folderStyle} p-4 ${color} rounded shadow`}
+        className={`${folderStyle} p-4 ${color} rounded shadow dark:bg-navy-900 dark:text-white`}
         key={folder.id}
       >
         {level > 0 && (
@@ -418,117 +463,137 @@ const CreateSchemaStructure = () => {
         {level > 0 && (
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
-        <div className="w-full flex-col gap-2">
-          <div className="flex items-center gap-4">
-            <span
-              className="text-black-500 cursor-pointer font-semibold"
-              onClick={() => handleFolderClick(folder.id)}
-            >
-              📁 {folder?.name}
-            </span>
+        <div className="w-full">
+          <div className="flex items-center justify-start gap-6">
+            
+            <div className="w-20">
+              <span
+                className="text-black-500 cursor-pointer font-semibold"
+                onClick={() => handleFolderClick(folder.id)}
+              >
+                📁 {folder?.name}
+              </span>
+            </div>
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-maxMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Max"
-              className="ml-2 w-12 rounded border px-2 py-1 text-sm"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.maxMarks
-                  : ""
-              }
-            />
+            <div className="w-20">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(`${folder.id}-maxMarks`, e.target.value);
+                }}
+                type="text"
+                placeholder="Max"
+                className="w-full rounded border border-gray-300 px-2 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.maxMarks
+                    : ""
+                }
+              />
+            </div>
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-minMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Min"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.minMarks
-                  : ""
-              }
-              className="ml-2 w-12 rounded border px-2 py-1 text-sm"
-            />
+            <div className="w-20">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(`${folder.id}-minMarks`, e.target.value);
+                }}
+                type="text"
+                placeholder="Min"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.minMarks
+                    : ""
+                }
+                className="w-full rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+              />
+            </div>
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-bonusMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Bonus"
-              className="ml-2 w-14 rounded border px-2 py-1 text-sm"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.bonusMarks
-                  : ""
-              }
-            />
+            <div className="w-20">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(`${folder.id}-bonusMarks`, e.target.value);
+                }}
+                type="text"
+                placeholder="Bonus"
+                className="w-full rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.bonusMarks
+                    : ""
+                }
+              />
+            </div>
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(
-                  `${folder.id}-marksDifference`,
-                  e.target.value
-                );
-              }}
-              type="text"
-              placeholder="Marks Difference"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.marksDifference
-                  : ""
-              }
-              className="ml-2 w-[8rem] rounded border px-3 py-1 text-sm"
-            />
+            <div className="w-40">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(
+                    `${folder.id}-marksDifference`,
+                    e.target.value
+                  );
+                }}
+                type="text"
+                placeholder="Marks Difference"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.marksDifference
+                    : ""
+                }
+                className="w-full rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+              />
+            </div>
 
-            <input
-              type="checkbox"
-              className="ml-2 cursor-pointer"
-              defaultChecked={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.isSubQuestion
-                  : false
-              }
-              onChange={() => {
-                toggleInputsVisibility(folder?.id);
-                setIsSubQuestion((prev) => !prev);
-              }}
-            />
+            <div className="flex w-28 justify-center items-center gap-2">
+              <input
+                id="isSubQuestion"
+                type="checkbox"
+                className="cursor-pointer dark:bg-navy-900 dark:text-white"
+                defaultChecked={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.isSubQuestion
+                    : false
+                }
+                onChange={() => {
+                  toggleInputsVisibility(folder?.id);
+                  setIsSubQuestion((prev) => !prev);
+                }}
+              />
 
-            <label className="text-sm font-medium text-gray-700">
-              Sub Questions
-            </label>
-            <button
-              className="font-md rounded-lg border-2 border-gray-900 bg-blue-800 px-3 text-white"
-              disabled={isSaving}
-              onClick={() =>
-                handleSubQuestionsChange(
-                  folder,
-                  countRef?.current?.value,
-                  level
-                )
-              }
-            >
-              {isSaving ? "Saving..." : "Save"}
-            </button>
+              <label
+                htmlFor="isSubQuestion"
+                className="w-full text-sm font-medium text-gray-700 dark:text-white cursor-pointer"
+              >
+                Sub Questions
+              </label>
+            </div>
+
+            <div className="w-20">
+              <button
+                className="font-md w-20 rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 px-2 text-white"
+                disabled={isSaving}
+                onClick={() =>
+                  handleSubQuestionsChange(
+                    folder,
+                    countRef?.current?.value,
+                    level
+                  )
+                }
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </button>
+            </div>
           </div>
 
           {/* Sub Questions Input Fields */}
           {folder.showInputs && (
             <div className="ml-12 mt-4 flex items-center gap-4">
-              <label className="ml-2 text-sm text-gray-700">
+              <label className="ml-2 text-sm text-gray-700 dark:text-white">
                 No. of Sub-Questions:
               </label>
               <input
@@ -539,7 +604,7 @@ const CreateSchemaStructure = () => {
                   );
                 }}
                 type="text"
-                className="w-12 rounded border px-3 py-1 text-sm"
+                className="w-20 rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
                 defaultValue={
                   (currentQ?.length > 0 || currentQ !== undefined) &&
                   parseInt(currentQ[0]?.questionsName) === folderId
@@ -547,7 +612,7 @@ const CreateSchemaStructure = () => {
                     : ""
                 }
               />
-              <label className="ml-2 text-sm text-gray-700">
+              <label className="ml-2 text-sm text-gray-700 dark:text-white">
                 No. of compulsory Sub-Questions
               </label>
               <input
@@ -564,7 +629,7 @@ const CreateSchemaStructure = () => {
                     ? currentQ[0]?.compulsorySubQuestions
                     : ""
                 }
-                className="ml-2 w-12 rounded border px-2 py-1 text-sm"
+                className="w-20 rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
               />
             </div>
           )}
@@ -579,25 +644,25 @@ const CreateSchemaStructure = () => {
   };
 
   return (
-    <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
-      <div className="max-h-[75vh] min-w-[1000px] overflow-auto rounded-lg border border-gray-300 p-4">
-        <div className="flex justify-between">
-          <span className="cursor-pointer rounded-lg bg-indigo-700 p-2 text-white hover:bg-green-800">
-            Remaining Marks To Allot:{" "}
-            {schemaData?.totalQuestions - savedQuestionData?.length === 0
-              ? 0
-              : schemaData?.totalQuestions - savedQuestionData?.length}
-          </span>
-          <span
-            className="cursor-pointer rounded-lg bg-green-700 p-2 text-white hover:bg-green-800"
-            onClick={handleFinalSubmit}
-          >
-            Submit
-          </span>
-        </div>
-        {folders.map((folder) => renderFolder(folder))}
+    // <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
+    <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
+      <div className="flex justify-between">
+        <span className="cursor-pointer rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">
+          Questions To Allot: {questionToAllot}
+        </span>
+        <span className="cursor-pointer rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">
+          Marks To Allot: {remainingMarks}
+        </span>
+        <span
+          className="cursor-pointer rounded-lg bg-indigo-600 py-2 px-4 text-white hover:bg-indigo-700"
+          onClick={handleFinalSubmit}
+        >
+          Submit
+        </span>
       </div>
+      {folders.map((folder) => renderFolder(folder))}
     </div>
+    // </div>
   );
 };
 
