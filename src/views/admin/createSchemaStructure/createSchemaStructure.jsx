@@ -463,111 +463,131 @@ const CreateSchemaStructure = () => {
         {level > 0 && (
           <div className="absolute left-[-16px] top-[16px] h-[2px] w-4 rounded-md bg-gradient-to-r from-gray-400 to-gray-500"></div>
         )}
-        <div className="w-full flex-col gap-2">
-          <div className="flex items-center gap-4">
-            <span
-              className="text-black-500 cursor-pointer font-semibold"
-              onClick={() => handleFolderClick(folder.id)}
-            >
-              📁 {folder?.name}
-            </span>
+        <div className="w-full">
+          <div className="flex items-center justify-start gap-6">
+            
+            <div className="w-20">
+              <span
+                className="text-black-500 cursor-pointer font-semibold"
+                onClick={() => handleFolderClick(folder.id)}
+              >
+                📁 {folder?.name}
+              </span>
+            </div>
 
             {/* {console.log("currentQuestion", currentQuestion)} */}
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-maxMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Max"
-              className="ml-2 w-12 px-3 py-1 rounded border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.maxMarks
-                  : ""
-              }
-            />
+            <div className="w-20">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(`${folder.id}-maxMarks`, e.target.value);
+                }}
+                type="text"
+                placeholder="Max"
+                className="w-full rounded border border-gray-300 px-2 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.maxMarks
+                    : ""
+                }
+              />
+            </div>
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-minMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Min"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.minMarks
-                  : ""
-              }
-              className="ml-2 w-12 px-3 py-1 rounded border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-            />
+            <div className="w-20">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(`${folder.id}-minMarks`, e.target.value);
+                }}
+                type="text"
+                placeholder="Min"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.minMarks
+                    : ""
+                }
+                className="w-full rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+              />
+            </div>
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(`${folder.id}-bonusMarks`, e.target.value);
-              }}
-              type="text"
-              placeholder="Bonus"
-              className="ml-2 w-14 px-3 py-1 rounded border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.bonusMarks
-                  : ""
-              }
-            />
+            <div className="w-20">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(`${folder.id}-bonusMarks`, e.target.value);
+                }}
+                type="text"
+                placeholder="Bonus"
+                className="w-full rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.bonusMarks
+                    : ""
+                }
+              />
+            </div>
 
-            <input
-              onChange={(e) => {
-                handleMarkChange(
-                  `${folder.id}-marksDifference`,
-                  e.target.value
-                );
-              }}
-              type="text"
-              placeholder="Marks Difference"
-              defaultValue={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.marksDifference
-                  : ""
-              }
-              className="ml-2 w-[8rem] rounded px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-            />
+            <div className="w-40">
+              <input
+                onChange={(e) => {
+                  handleMarkChange(
+                    `${folder.id}-marksDifference`,
+                    e.target.value
+                  );
+                }}
+                type="text"
+                placeholder="Marks Difference"
+                defaultValue={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.marksDifference
+                    : ""
+                }
+                className="w-full rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+              />
+            </div>
 
-            <input
-              type="checkbox"
-              className="ml-2 cursor-pointer dark:bg-navy-900 dark:text-white"
-              defaultChecked={
-                (currentQ?.length > 0 || currentQ !== undefined) &&
-                parseInt(currentQ[0]?.questionsName) === folderId
-                  ? currentQ[0]?.isSubQuestion
-                  : false
-              }
-              onChange={() => {
-                toggleInputsVisibility(folder?.id);
-                setIsSubQuestion((prev) => !prev);
-              }}
-            />
+            <div className="flex w-28 justify-center items-center gap-2">
+              <input
+                id="isSubQuestion"
+                type="checkbox"
+                className="cursor-pointer dark:bg-navy-900 dark:text-white"
+                defaultChecked={
+                  (currentQ?.length > 0 || currentQ !== undefined) &&
+                  parseInt(currentQ[0]?.questionsName) === folderId
+                    ? currentQ[0]?.isSubQuestion
+                    : false
+                }
+                onChange={() => {
+                  toggleInputsVisibility(folder?.id);
+                  setIsSubQuestion((prev) => !prev);
+                }}
+              />
 
-            <label className="text-sm font-medium text-gray-700 dark:text-white">
-              Sub Questions
-            </label>
-            <button
-              className="font-md w-20 rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 text-white"
-              disabled={isSaving}
-              onClick={() =>
-                handleSubQuestionsChange(
-                  folder,
-                  countRef?.current?.value,
-                  level
-                )
-              }
-            >
-              {isSaving ? "Saving..." : "Save"}
-            </button>
+              <label
+                htmlFor="isSubQuestion"
+                className="w-full text-sm font-medium text-gray-700 dark:text-white cursor-pointer"
+              >
+                Sub Questions
+              </label>
+            </div>
+
+            <div className="w-20">
+              <button
+                className="font-md w-20 rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 px-2 text-white"
+                disabled={isSaving}
+                onClick={() =>
+                  handleSubQuestionsChange(
+                    folder,
+                    countRef?.current?.value,
+                    level
+                  )
+                }
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </button>
+            </div>
           </div>
 
           {/* Sub Questions Input Fields */}
@@ -584,7 +604,7 @@ const CreateSchemaStructure = () => {
                   );
                 }}
                 type="text"
-                className="w-12 rounded px-3 py-1 text-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+                className="w-20 rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
                 defaultValue={
                   (currentQ?.length > 0 || currentQ !== undefined) &&
                   parseInt(currentQ[0]?.questionsName) === folderId
@@ -609,7 +629,7 @@ const CreateSchemaStructure = () => {
                     ? currentQ[0]?.compulsorySubQuestions
                     : ""
                 }
-                className="ml-2 w-12 rounded px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+                className="w-20 rounded border border-gray-300 py-1 text-center focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
               />
             </div>
           )}
@@ -625,23 +645,23 @@ const CreateSchemaStructure = () => {
 
   return (
     // <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
-      <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
-        <div className="flex justify-between">
-          <span className="cursor-pointer rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">
-            Questions To Allot: {questionToAllot}
-          </span>
-          <span className="cursor-pointer rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">
-            Marks To Allot: {remainingMarks}
-          </span>
-          <span
-            className="cursor-pointer rounded-lg bg-indigo-600 p-2 text-white hover:bg-indigo-700"
-            onClick={handleFinalSubmit}
-          >
-            Submit
-          </span>
-        </div>
-        {folders.map((folder) => renderFolder(folder))}
+    <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
+      <div className="flex justify-between">
+        <span className="cursor-pointer rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">
+          Questions To Allot: {questionToAllot}
+        </span>
+        <span className="cursor-pointer rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">
+          Marks To Allot: {remainingMarks}
+        </span>
+        <span
+          className="cursor-pointer rounded-lg bg-indigo-600 py-2 px-4 text-white hover:bg-indigo-700"
+          onClick={handleFinalSubmit}
+        >
+          Submit
+        </span>
       </div>
+      {folders.map((folder) => renderFolder(folder))}
+    </div>
     // </div>
   );
 };
