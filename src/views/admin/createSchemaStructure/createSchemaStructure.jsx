@@ -80,12 +80,12 @@ const CreateSchemaStructure = () => {
         // toast.success("Question data fetched successfully");
       } catch (error) {
         console.error("Error fetching schema data:", error);
-        toast.error(error.response.data.message);
+        // toast.error(error.response.data.message);
         setSavedQuestionData([]); // Reset to an empty array on error
       }
     };
     fetchedData();
-  }, [id, token, schemaData, savedQuestionData, questionToAllot]);
+  }, [id, token, schemaData, questionToAllot]);
 
   const extractParentId = (key, arrayOfObjects) => {
     for (let obj of arrayOfObjects) {
@@ -465,7 +465,6 @@ const CreateSchemaStructure = () => {
         )}
         <div className="w-full">
           <div className="flex items-center justify-start gap-6">
-            
             <div className="w-20">
               <span
                 className="text-black-500 cursor-pointer font-semibold"
@@ -548,7 +547,7 @@ const CreateSchemaStructure = () => {
               />
             </div>
 
-            <div className="flex w-28 justify-center items-center gap-2">
+            <div className="flex w-28 items-center justify-center gap-2">
               <input
                 id="isSubQuestion"
                 type="checkbox"
@@ -567,7 +566,7 @@ const CreateSchemaStructure = () => {
 
               <label
                 htmlFor="isSubQuestion"
-                className="w-full text-sm font-medium text-gray-700 dark:text-white cursor-pointer"
+                className="w-full cursor-pointer text-sm font-medium text-gray-700 dark:text-white"
               >
                 Sub Questions
               </label>
@@ -575,7 +574,7 @@ const CreateSchemaStructure = () => {
 
             <div className="w-20">
               <button
-                className="font-md w-20 rounded-lg border-2 border-gray-900 bg-blue-800 py-1.5 px-2 text-white"
+                className="font-md w-20 rounded-lg border-2 border-gray-900 bg-blue-800 px-2 py-1.5 text-white"
                 disabled={isSaving}
                 onClick={() =>
                   handleSubQuestionsChange(
@@ -648,13 +647,16 @@ const CreateSchemaStructure = () => {
     <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
       <div className="flex justify-between">
         <span className="cursor-pointer rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">
-          Questions To Allot: {questionToAllot}
+          {console.log(questionToAllot, remainingMarks, schemaData)}
+          Questions To Allot:{" "}
+          {questionToAllot ? questionToAllot : schemaData?.totalQuestions}
         </span>
         <span className="cursor-pointer rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">
-          Marks To Allot: {remainingMarks}
+          Marks To Allot:{" "}
+          {remainingMarks ? remainingMarks : schemaData?.maxMarks}
         </span>
         <span
-          className="cursor-pointer rounded-lg bg-indigo-600 py-2 px-4 text-white hover:bg-indigo-700"
+          className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
           onClick={handleFinalSubmit}
         >
           Submit

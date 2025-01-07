@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-import { LineCapStyle } from "pdf-lib";
 
 const CreateSchema = () => {
   const [totalQuestions, setTotalQuestions] = useState(0);
