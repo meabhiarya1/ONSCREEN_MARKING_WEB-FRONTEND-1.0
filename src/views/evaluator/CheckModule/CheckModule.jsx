@@ -16,6 +16,7 @@ import {
   setBaseImageUrl,
   setCurrentTaskDetails,
   setCurrentAnswerPdfImageId,
+  setCurrentAnswerPdfId,
 } from "store/evaluatorSlice";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
@@ -24,8 +25,8 @@ import { getAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
 import { updateAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
 import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
+import EvalQuestionModal from "components/modal/EvalQuestionModal";
 const CheckModule = () => {
-  const [icons, setIcons] = useState([]);
   const [loading, setLoading] = useState(false);
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const [answerImageDetails, setAnswerImageDetails] = useState([]);
@@ -37,6 +38,8 @@ const CheckModule = () => {
     "/pageicons/green.svg",
     "/pageicons/yellow.svg",
   ];
+  const icons = evaluatorState.icons;
+  const rerenderer = evaluatorState.rerender;
   const { id } = useParams();
   useEffect(() => {
     const getTaskDetails = async () => {
@@ -50,11 +53,13 @@ const CheckModule = () => {
           // questionDefinitions,
           task,
         } = response;
-
+        // console.log(answerPdfDetails._id);
+        dispatch(setCurrentAnswerPdfId(answerPdfDetails._id));
         dispatch(setCurrentTaskDetails(task));
         dispatch(setCurrentBookletIndex(task.currentFileIndex));
 
         dispatch(setBaseImageUrl(extractedImagesFolder));
+
         setAnswerSheetCount(answerPdfDetails);
       } catch (error) {
         console.log(error);
@@ -69,10 +74,11 @@ const CheckModule = () => {
     const getEvaluatorTasks = async (taskId) => {
       try {
         const res = await getAnswerPdfById(taskId);
-        console.log(res)
+
         dispatch(
-          setCurrentAnswerPdfImageId(res[evaluatorState.currentIndex]._id)
+          setCurrentAnswerPdfImageId(res[evaluatorState.currentIndex - 1]._id)
         );
+
         setAnswerImageDetails(res);
       } catch (error) {
         console.log(error);
@@ -82,11 +88,14 @@ const CheckModule = () => {
       // console.log(answerSheetCount)
       getEvaluatorTasks(answerSheetCount._id);
     }
-  }, [evaluatorState.currentIndex, answerSheetCount]);
+    if (icons.length > 0) {
+      getEvaluatorTasks(answerSheetCount._id);
+    }
+  }, [evaluatorState.currentIndex, answerSheetCount, rerenderer]);
 
   const Imgicons = answerImageDetails.map((item, index) => {
     const svgIcon =
-      item.status === "notVisited" ? 2 : item.status === "submitted" ? 1 : 0;
+      item.status === "notVisited" ? 2 : item.status === "submitted" ? 0 : 1;
     const active =
       index + 1 === evaluatorState.currentIndex
         ? "bg-gray-600 text-white border rounded"
@@ -112,15 +121,18 @@ const CheckModule = () => {
   });
   const handleUpdateImageDetail = async (item, index) => {
     try {
-      // console.log(item);
-      const response = await updateAnswerPdfById(item._id, "visited");
+      console.log(item);
+      if (item.status === "notVisited") {
+        const response = await updateAnswerPdfById(item._id, "visited");
+      }
+
       dispatch(setCurrentAnswerPdfImageId(item._id));
       dispatch(setIndex({ index: index + 1 }));
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
+
   // State for the login time (when the tab is opened)
   const [loginTime, setLoginTime] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -373,6 +385,15 @@ const CheckModule = () => {
           <QuestionSection answerPdfDetails={answerSheetCount} />
         </div>
       </div>
+
+      {questionModal && (
+        <EvalQuestionModal
+          show={questionModal}
+          onHide={() => {
+            setShowQuestionModal(false);
+          }}
+        />
+      )}
     </>
   );
 };

@@ -15,6 +15,7 @@ import {
 } from "store/evaluatorSlice";
 import { changeCurrentIndexById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
+import { generateNumbers } from "services/Evaluator/generateNumber";
 const QuestionDefinition = (props) => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
@@ -59,22 +60,21 @@ const QuestionDefinition = (props) => {
     });
   };
 
-  const generateNumbers = (minMarks, maxNumber, difference) => {
-    const numbers = [];
-    // Start from 1, then keep adding the difference until it exceeds maxNumber
-    for (let i = minMarks; i <= maxNumber; i += difference) {
-      numbers.push(i);
-    }
-    return numbers;
-  };
   const handleListClick = async (item, mark, index) => {
-    const { _id, answerPdfId, allottedMarks } = item;
+    const { _id, answerPdfId, allottedMarks, maxMarks } = item;
+    console.log(item);
 
+    if (allottedMarks + mark > maxMarks) {
+      alert("You have exceeded the maximum marks for this question");
+      return;
+    }
+    const totalAllocatedMarks = allottedMarks + mark;
     try {
       const body = {
         questionDefinitionId: _id,
         answerPdfId: answerPdfId,
-        allottedMarks: +allottedMarks + +mark,
+        allottedMarks: +mark,
+        totalAllocatedMarks: totalAllocatedMarks,
         timerStamps: new Date().toLocaleString(),
       };
       dispatch(setCurrentQuestionDefinitionId(_id));
@@ -146,6 +146,7 @@ const QuestionDefinition = (props) => {
         onClick={() => {
           setSelectedQuestion(index);
         }}
+        key={index}
       >
         <th
           scope="row"

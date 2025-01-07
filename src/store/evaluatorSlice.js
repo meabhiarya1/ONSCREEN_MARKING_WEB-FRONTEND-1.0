@@ -16,6 +16,8 @@ const initialState = {
   rerender: false,
   currentAnswerPdfImageId: null,
   currentQuestionDefinitionId: null,
+  currentAnswerPdfId: null,
+  icons: [],
 };
 
 const evaluatorSlice = createSlice({
@@ -81,6 +83,12 @@ const evaluatorSlice = createSlice({
     setCurrentQuestionDefinitionId: (state, action) => {
       state.currentQuestionDefinitionId = action.payload;
     },
+    setCurrentAnswerPdfId: (state, action) => {
+      state.currentAnswerPdfId = action.payload;
+    },
+    setIcons: (state, action) => {
+      state.icons = action.payload;
+    },
   },
 });
 
@@ -100,5 +108,7 @@ export const {
   setCurrentBookletIndex,
   setCurrentAnswerPdfImageId,
   setCurrentQuestionDefinitionId,
+  setCurrentAnswerPdfId,
+  setIcons,
 } = evaluatorSlice.actions;
 export default evaluatorSlice.reducer;

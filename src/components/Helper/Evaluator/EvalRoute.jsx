@@ -178,3 +178,45 @@ export const getIconsByImageId = async (
     return error.response; // return full error response to handle status outside
   }
 };
+
+export const deleteIconByImageId = async (iconId, answerPdfId) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/evaluation/icons/remove?iconsId=${iconId}&answerPdfId=${answerPdfId}
+      `,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};
+// /api/evaluation/icons/removeall
+
+
+// export const deleteIconByImageId = async (iconId, answerPdfId) => {
+//   const token = localStorage.getItem("token");
+
+//   try {
+//     const response = await axios.delete(
+//       `${process.env.REACT_APP_API_URL}/api/evaluation/icons/remove?iconsId=${iconId}&answerPdfId=${answerPdfId}
+//       `,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+//     return response.data; // return the full response to handle status outside
+//   } catch (error) {
+//     console.error(error);
+//     return error.response; // return full error response to handle status outside
+//   }
+// };

@@ -14,10 +14,12 @@ import {
   setCurrentIcon,
   setIsDraggingIcon,
   setRerender,
+  setIcons,
 } from "store/evaluatorSlice";
 import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
 import { createIcon } from "components/Helper/Evaluator/EvalRoute";
 import { getIconsByImageId } from "components/Helper/Evaluator/EvalRoute";
+import { deleteIconByImageId } from "components/Helper/Evaluator/EvalRoute";
 const IconsData = [
   { imgUrl: "/blank.jpg" },
   { imgUrl: "/close.png" },
@@ -57,23 +59,29 @@ const ImageContainer = (props) => {
   const currentAnswerImageId = evaluatorState.currentAnswerPdfImageId;
   const currentQuestionDefinitionId =
     evaluatorState.currentQuestionDefinitionId;
+  const currentAnswerPdfId = evaluatorState.currentAnswerPdfId;
   const canvasRef = useRef(null);
   const iconRefs = useRef([]);
   const dispatch = useDispatch();
+  // const icons = evaluatorState.icons;
 
   useEffect(() => {
-    console.log(currentQuestionDefinitionId, currentAnswerImageId);
     const fetchAllIcons = async () => {
       const icons = await getIconsByImageId(
         currentAnswerImageId,
         currentQuestionDefinitionId
       );
-      setIcons(icons);
+
+      if (Array.isArray(icons)) setIcons(icons);
     };
     if (currentQuestionDefinitionId && currentAnswerImageId) {
       fetchAllIcons();
     }
-  }, [currentQuestionDefinitionId, currentAnswerImageId]);
+  }, [
+    currentQuestionDefinitionId,
+    currentAnswerImageId,
+    evaluatorState.rerender,
+  ]);
   // Handle clicks outside of selected icon
   // Handle double-click outside of the specific image container
 
@@ -121,7 +129,7 @@ const ImageContainer = (props) => {
     setCurrentImage(currentIndex); // Track the currently displayed image
     loadCanvasState();
   }, [currentIndex]);
-  useEffect(() => {}, [icons]);
+
   // Function to update canvas size when image is scaled
   useEffect(() => {
     if (canvasRef.current) {
@@ -220,10 +228,19 @@ const ImageContainer = (props) => {
       [currentImage]: dataURL, // Save the canvas state for the current image
     }));
   };
-  // console.log(canvasStates);
-  const handleDeleteIcon = (index) => {
-    setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
-    setSelectedIcon(null); // Reset selected icon
+
+  const handleDeleteIcon = async (index, icon) => {
+    if (icon?._id) {
+      const res = await deleteIconByImageId(icon?._id, currentAnswerPdfId);
+
+      setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
+      setSelectedIcon(null); // Reset selected icon
+    } else {
+      setIcons((prevIcons) => prevIcons.filter((_, i) => i !== index)); // Remove the icon
+      setSelectedIcon(null);
+    }
+
+    dispatch(setRerender());
   };
   // Zoom in and out with smooth transition
   const zoomIn = () => setScale((prevScale) => prevScale + 0.1);
@@ -256,8 +273,8 @@ const ImageContainer = (props) => {
 
     const initialX = e.clientX;
     const initialY = e.clientY;
-    const initialWidth = icons[index].width;
-    const initialHeight = icons[index].height;
+    const initialWidth = +icons[index].width;
+    const initialHeight = +icons[index].height;
 
     const handleMouseMove = (moveEvent) => {
       const deltaX = moveEvent.clientX - initialX;
@@ -337,7 +354,7 @@ const ImageContainer = (props) => {
     // setCurrentIcon(iconUrl); // Set the selected icon
     setIconModal(false); // Close the icon modal
   };
-  console.log(currentMarkDetails);
+
   // Handle dropping the icon on the image
   const handleImageClick = async (e) => {
     if (containerRef.current && currentIcon) {
@@ -347,19 +364,7 @@ const ImageContainer = (props) => {
       // const updatedIcons = [...icons];
       // updatedIcons[index].timestamp = new Date().toLocaleString();
       const currentTimeStamp = new Date().toLocaleString();
-      // const body = {
-      //   questionDefinitionId: currentMarkDetails.questionDefinitionId,
-      //   answerPdfImageId: currentMarkDetails.answerPdfId,
-      //   allottedMarks: currentMarkDetails.allottedMarks,
-      //   timerStamps: currentTimeStamp,
-      //   x: "string",
-      //   y: "string",
-      //   width: "string",
-      //   height: "string",
-      //   mark: "string",
-      // };
 
-      // const response = await postMarkById(body);
       const iconBody = {
         answerPdfImageId: currentAnswerImageId,
         questionDefinitionId: currentMarkDetails.questionDefinitionId,
@@ -373,30 +378,39 @@ const ImageContainer = (props) => {
         height: 50,
         mark: currentMarkDetails.allottedMarks,
       };
+      const totalMarksBody = {
+        ...currentMarkDetails,
+        allottedMarks: currentMarkDetails.totalAllocatedMarks,
+      };
+      const response = await postMarkById(totalMarksBody);
+
       const res = await createIcon(iconBody);
-      console.log(res);
-      dispatch(setRerender());
+
       setIcons([
         ...icons,
-        {
-          question: currentQuestionNo,
-          currentMarkDetails: currentMarkDetails,
-          timestamp: currentTimeStamp,
-          iconUrl: currentIcon,
-          x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
-          y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
-          width: 120, // Default width
-          height: 50,
-        },
+        { ...res },
+        // {
+        //   _id: res._id,
+        //   question: currentQuestionNo,
+        //   mark: currentMarkDetails.allottedMarks,
+        //   answerPdfImageId: currentMarkDetails.answerPdfId,
+        //   questionDefinitionId: currentMarkDetails.questionDefinitionId,
+        //   timeStamps: currentTimeStamp,
+        //   iconUrl: currentIcon,
+        //   x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
+        //   y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
+        //   width: 120, // Default width
+        //   height: 50,
+        // },
       ]);
 
       // setCurrentIcon(null);
       dispatch(setCurrentIcon(null));
-
+      dispatch(setRerender());
       setIsDraggingIcon(false);
     }
   };
-  console.log(icons);
+
   // Start dragging an existing icon
   const handleIconDragStart = (index, e) => {
     setDraggedIconIndex(index);
@@ -509,7 +523,7 @@ const ImageContainer = (props) => {
             const checkClass = isCheck
               ? "text-green-600 ring-2 ring-green-600"
               : "text-red-600 ring-2 ring-red-600";
-            // console.log(icon);
+
             return (
               <div
                 key={index}
@@ -556,21 +570,21 @@ const ImageContainer = (props) => {
                   <span
                     className={`ml-1 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-gray-50 p-1 ${checkClass}`}
                   >
-                    {`${icon?.currentMarkDetails?.allottedMarks}`}
+                    {`${icon?.mark}`}
                   </span>
                   {/* {`Q${icon.question} → ${icon?.currentMarkDetails?.allottedMarks}`} */}
                 </div>
 
                 {/* Timestamp */}
                 <div className="mt-1 text-center text-xs italic text-gray-500">
-                  {icon.timestamp || "No Timestamp"}
+                  {icon.timeStamps || "No Timestamp"}
                 </div>
 
                 {/* Cross Button for Deletion */}
                 {selectedIcon === index && (
                   <button
                     className="absolute -right-3 -top-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
-                    onClick={() => handleDeleteIcon(index)}
+                    onClick={() => handleDeleteIcon(index, icon)}
                   >
                     ✖
                   </button>
