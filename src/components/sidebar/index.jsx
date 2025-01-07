@@ -55,7 +55,7 @@ const Sidebar = ({ open, onClose }) => {
         <GiCrossMark className="text-navy-100" />
       </span>{" "}
       <div className="mx-[48px] mt-2 flex justify-center  rounded-lg font-poppins font-bold uppercase text-navy-700 dark:text-white">
-        <img src={logo} alt="logo" className="mt-2 h-36 w-36" />
+        <img src={logo} alt="logo" className="mt-2 h-32 w-32" />
       </div>
       {/* <div
         className={`mx-[56px]   flex flex-col items-center space-y-4`}
