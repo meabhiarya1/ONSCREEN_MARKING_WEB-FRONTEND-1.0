@@ -69,7 +69,7 @@ const DeleteConfirmationModalAssignTask = ({
                 </div>
               </div>
             </div>
-            <div className="flex justify-end px-3 py-3">
+            <div className="flex justify-end px-3 py-3 gap-4 sm:gap-0">
               <button
                 type="button"
                 onClick={onSubmitHandler}

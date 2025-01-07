@@ -94,7 +94,7 @@ const Schema = () => {
             </div>
           </div>
           <table className="min-w-full divide-y-2 divide-gray-200 rounded-md bg-white text-sm dark:divide-gray-700 dark:bg-navy-700">
-            <thead className="ltr:text-left rtl:text-right">
+            <thead className="ltr:text-left rtl:text-right bg-gray-100 dark:bg-navy-800">
               <tr>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Schema
@@ -113,6 +113,15 @@ const Schema = () => {
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Eval Time
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
+                  
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
+                  
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
+                  
                 </th>
               </tr>
             </thead>
