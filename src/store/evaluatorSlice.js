@@ -13,6 +13,11 @@ const initialState = {
   currentMarkDetails: null,
   currentTaskDetails: null,
   currentBookletIndex: null,
+  rerender: false,
+  currentAnswerPdfImageId: null,
+  currentQuestionDefinitionId: null,
+  currentAnswerPdfId: null,
+  icons: [],
 };
 
 const evaluatorSlice = createSlice({
@@ -69,6 +74,21 @@ const evaluatorSlice = createSlice({
     setCurrentBookletIndex: (state, action) => {
       state.currentBookletIndex = action.payload;
     },
+    setRerender: (state) => {
+      state.rerender = !state.rerender;
+    },
+    setCurrentAnswerPdfImageId: (state, action) => {
+      state.currentAnswerPdfImageId = action.payload;
+    },
+    setCurrentQuestionDefinitionId: (state, action) => {
+      state.currentQuestionDefinitionId = action.payload;
+    },
+    setCurrentAnswerPdfId: (state, action) => {
+      state.currentAnswerPdfId = action.payload;
+    },
+    setIcons: (state, action) => {
+      state.icons = action.payload;
+    },
   },
 });
 
@@ -77,6 +97,7 @@ export const {
   logout,
   rehydrateToken,
   setIndex,
+  setRerender,
   setBaseImageUrl,
   setCurrentIcon,
   setIsDraggingIcon,
@@ -85,5 +106,9 @@ export const {
   setCurrentMarkDetails,
   setCurrentTaskDetails,
   setCurrentBookletIndex,
+  setCurrentAnswerPdfImageId,
+  setCurrentQuestionDefinitionId,
+  setCurrentAnswerPdfId,
+  setIcons,
 } = evaluatorSlice.actions;
 export default evaluatorSlice.reducer;
