@@ -67,10 +67,10 @@ const EditCourseModal = ({
               className="absolute top-4 right-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none transition-colors duration-300"
               onClick={() => {
                 setIsEditOpen(false)
-                setFormData({
-                  name: "",
-                  code: "",
-                })
+                // setFormData({
+                //   name: "",
+                //   code: "",
+                // })
               }}
             >
               <GiCrossMark />
@@ -89,7 +89,7 @@ const EditCourseModal = ({
                 id="name"
                 name="name"
                 placeholder="Enter Course Name"
-                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-navy-700 dark:text-white"
+                className="mt-2 w-full px-4 py-2 rounded-md shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                 value={formData.name}
                 onChange={handleChange}
               />
@@ -105,7 +105,7 @@ const EditCourseModal = ({
                 id="code"
                 name="code"
                 placeholder="Enter Subject / Course Code"
-                className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-navy-700 dark:text-white"
+                className="mt-2 w-full px-4 py-2 rounded-md shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                 value={formData.code}
                 onChange={handleChange}
               />
@@ -113,7 +113,7 @@ const EditCourseModal = ({
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Submit
               </button>

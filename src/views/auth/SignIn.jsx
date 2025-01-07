@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 import ForgotPassword from "./ForgotPassword";
 import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
-import logo from "./omr_logo.png"
+import logo from "./omr_logo.png";
 
 export function SignIn() {
   const [otp, setOtp] = useState(false);
@@ -106,7 +106,7 @@ export function SignIn() {
     } catch (error) {
       toast.error(error?.response.data.message);
     } finally {
-      setVerify(false)
+      setVerify(false);
     }
   };
 
@@ -155,95 +155,164 @@ export function SignIn() {
     }
   };
 
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <main className="rounded-3xl border-gray-200 bg-white px-8 pb-8 shadow-2xl sm:px-12 font-poppins m-5 2xl:w-4/12 animate-fadeIn">
-        <div className="logo flex justify-center"><img src={logo} alt="" width={120}/></div>
-          <div className="max-w-xl lg:max-w-3xl">
-            <h1 className="text-2xl font-bold sm:text-3xl md:text-3xl font-poppins text-indigo-600 animate-bounceCustom text-center">
-              {forgotPassword ? "Forgot Password" : <div>Hello, <br /> Welcome Back</div>}
-            </h1>
+  const [otps, setOtps] = useState(Array(6).fill("")); // Array with 6 empty strings
+  const inputRefs = useRef([]); // Array of refs for each input field
+
+  const handleKeyDown = (e) => {
+    if (
+      !/^[0-9]{1}$/.test(e.key) &&
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Tab" &&
+      !e.metaKey
+    ) {
+      e.preventDefault();
+    }
+
+    if (e.key === "Delete" || e.key === "Backspace") {
+      const index = inputRefs.current.indexOf(e.target);
+      if (index > 0) {
+        setOtps((prevOtp) => [
+          ...prevOtp.slice(0, index - 1),
+          "",
+          ...prevOtp.slice(index),
+        ]);
+        inputRefs.current[index - 1].focus();
+      }
+    }
+  };
+
+  const handleInput = (e) => {
+    const { target } = e;
+    const index = inputRefs.current.indexOf(target);
+    if (target.value) {
+      setOtps((prevOtp) => [
+        ...prevOtp.slice(0, index),
+        target.value,
+        ...prevOtp.slice(index + 1),
+      ]);
+      if (index < otp.length - 1) {
+        inputRefs.current[index + 1].focus();
+      }
+    }
+  };
+
+  const handleFocus = (e) => {
+    e.target.select();
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text");
+    if (!new RegExp(`^[0-9]{${otp.length}}$`).test(text)) {
+      return;
+    }
+    const digits = text.split("");
+    setOtps(digits);
+  };
+
+  return (
+    <div className="flex h-screen w-full items-center justify-center">
+      <main className="m-5 animate-fadeIn rounded-3xl border-gray-200 bg-white px-8 pb-8 font-poppins shadow-2xl sm:px-12 2xl:w-4/12">
+        <div className="logo flex justify-center">
+          <img src={logo} alt="" width={120} />
+        </div>
+        <div className="max-w-xl lg:max-w-3xl">
+          <h1 className="animate-bounceCustom text-center font-poppins text-2xl font-bold text-indigo-600 sm:text-3xl md:text-3xl">
             {forgotPassword ? (
-              <p className="mt-4 leading-relaxed text-gray-700">
-                Enter your email address to recover your account.
-              </p>
+              "Forgot Password"
             ) : (
-              <p className="mt-4 leading-relaxed text-gray-700">
-                Enter your email address and password or OTP to access the admin
-                panel.
-              </p>
+              <div>
+                Hello, <br /> Welcome Back
+              </div>
             )}
+          </h1>
+          {forgotPassword ? (
+            <p className="mt-4 leading-relaxed text-gray-700">
+              Enter your email address to recover your account.
+            </p>
+          ) : (
+            <p className="mt-4 leading-relaxed text-gray-700">
+              Enter your email address and password or OTP to access the admin
+              panel.
+            </p>
+          )}
 
-            {otp ? (
-              // OTP form
-              <form
-                className="mt-5 grid grid-cols-6 gap-6"
-                onSubmit={handleSubmitOtpPassword}
-              >
-                <div className="col-span-6">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <div className="mt-1 flex items-center gap-2">
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="bg-transparent focus:ring-sky-500 focus:border-sky-500 rounded-md border w-full border-gray-500 px-4 py-2 text-sm transition duration-300 placeholder:text-gray-700 focus:outline-none focus:ring-2 focus:border-indigo-500"
-                      placeholder="Enter your email"
-                      required
-                      onChange={(e) =>
-                        setUser({ ...user, email: e.target.value })
-                      }
-                      value={user.email}
-                    />
-                    <button
-                      className={`hover:bg-transparent inline-block rounded-md border w-32 border-indigo-600 bg-indigo-600 hover:bg-indigo-700 h-10 text-sm font-medium text-white transition hover:text-white ${loading ? 'cursor-not-allowed' : ''}`}
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <div className={`flex items-center h-full w-full ${loading ? "bg-indigo-400":"bg-indigo-600"}`}>
-                          <svg
-                            className="animate-spin h-5 w-5 mr-2 text-white ml-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            />
-                          </svg>
-                          Sending...
-                        </div>
-                      ) : (
-                        "Send OTP"
-                      )}
-                    </button>
-
-                  </div>
-                </div>
-
-                <div className="col-span-6">
-                  <label
-                    htmlFor="otp"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    OTP
-                  </label>
+          {otp ? (
+            // OTP form
+            <form
+              className="mt-5 grid grid-cols-6 gap-6"
+              onSubmit={handleSubmitOtpPassword}
+            >
+              <div className="col-span-6">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+                <div className="mt-1 flex items-center gap-2">
                   <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="bg-transparent focus:ring-sky-500 focus:border-sky-500 w-full rounded-md border border-gray-500 px-4 py-2 text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
+                    placeholder="Enter your email"
+                    required
+                    onChange={(e) =>
+                      setUser({ ...user, email: e.target.value })
+                    }
+                    value={user.email}
+                  />
+                  <button
+                    className={`hover:bg-transparent inline-block h-10 w-32 rounded-md border border-indigo-600 bg-indigo-600 text-sm font-medium text-white transition hover:bg-indigo-700 hover:text-white ${
+                      loading ? "cursor-not-allowed" : ""
+                    }`}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <div
+                        className={`flex h-full w-full items-center ${
+                          loading ? "bg-indigo-400" : "bg-indigo-600"
+                        }`}
+                      >
+                        <svg
+                          className="ml-1 mr-2 h-5 w-5 animate-spin text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
+                        </svg>
+                        Sending...
+                      </div>
+                    ) : (
+                      "Send OTP"
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="col-span-6">
+                <label
+                  htmlFor="otp"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  OTP
+                </label>
+                {/* <input
                     type="number"
                     id="otp"
                     name="otp"
@@ -258,183 +327,224 @@ export function SignIn() {
                         setUser({ ...user, otp: otpValue });
                       }
                     }}
-                  />
-                </div>
-
-                <div className="col-span-6 items-center gap-2 sm:justify-between">
-                  <button
-                    className={`hover:bg-transparent inline-block rounded-md border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 h-10 text-sm font-medium text-white transition hover:bg-bulue-700 hover:text-white ${forgotPassword || otp ? "w-full" : "sm:w-2/3"
-                      } `}
-                    onClick={verifyOTP}
-                    type="button"
-                    disabled={verify}
-                  >
-                    {verify ? <div className={`flex items-center justify-center h-full w-full ${verify ? "bg-indigo-400":"bg-indigo-600"}`}>
-                          <svg
-                            className="animate-spin h-5 w-5 mr-2 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            />
-                          </svg>
-                          Verifying...
-                        </div> : "Login with OTP"}
-                  </button>
-
-                  {forgotPassword ? null : (
-                    <p className="mt-2 text-sm text-gray-500 flex justify-center">
-                      <button
-                        onClick={() => setOtp(!otp)}
-                        className="text-indigo-600 mt-5"
-                        cursor="pointer"
-                        disabled={verify}
-                      >
-                        Password based login
-                      </button>
-                    </p>
-                  )}
-                </div>
-              </form>
-            ) : (
-              // Password form
-              <form
-                className="mt-5 grid grid-cols-6 gap-6"
-                onSubmit={handleSubmitEmailPassword}
-              >
-                <div className="col-span-6 relative">
-                  <label
-                    htmlFor="Email"
-                    className="block text-sm font-medium text-gray-700 my-1"
-                  >
-                    Email
-                  </label>
-                  <input
-                    name="email"
-                    type="text"
-                    className="bg-transparent focus:ring-sky-500 w-full rounded-md border border-gray-500 px-4 py-2 text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
-                    placeholder="Enter Email"
-                    value={user.email}
-                    required
-                    onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
-                    }
-                  />
-                  <span className="absolute right-3 top-10 h-5 w-5 cursor-pointer">
-                  <FaUser />
-                  </span>
-                </div>
-
-                <div className="col-span-6 relative">
-                  <label
-                    htmlFor="Password"
-                    className="block text-sm font-medium text-gray-700 my-1"
-                  >
-                    Password
-                  </label>
-                  <input
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={user.password}
-                    required
-                    onChange={(e) =>
-                      setUser({ ...user, password: e.target.value })
-                    }
-                    className="bg-transparent focus:ring-sky-500 focus:border-sky-500 w-full rounded-md border border-gray-500 px-4 py-2 text-sm transition duration-300 placeholder:text-gray-700 focus:outline-none focus:ring-2 focus:border-indigo-500"
-                    placeholder="Enter password"
-                  />
-                  <span
-                    className="absolute right-3 top-10 h-5 w-5 cursor-pointer"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
-
-                <div className="col-span-6 flex flex-col items-center gap-4">
-                  <button className="hover:bg-transparent inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 h-10 text-md font-medium text-white transition" disabled={loading}>
-                  {loading ? (
-                        <div className={`flex items-center justify-center h-full w-full ${loading ? "bg-indigo-400":"bg-indigo-600"}`}>
-                          <svg
-                            className="animate-spin h-5 w-5 mr-2 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            />
-                          </svg>
-                          Logging In...
-                        </div>
-                      ) : (
-                        "Login with Email"
-                      )}
-                  </button>
-                  <div className="flex justify-center gap-5">
-                    <p className="text-sm text-gray-500">
-                      <button
-                        onClick={() => setOtp(!otp)}
-                        className={`p-3 rounded-md ${loading ? "text-indigo-400":"text-indigo-600"}`}
-                        disabled={loading}
-                      >
-                        OTP based login
-                      </button>
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      <button
-                        className={`p-3 rounded-md ${loading ? "text-indigo-400":"text-indigo-600"}`}
-                        onClick={() => {
-                          setForgotPassword(!forgotPassword);
-                          setOtp(!otp);
-                        }}
-                        disabled={loading}
-                      >
-                        Forgot your password?
-                      </button>
-                    </p>
+                  /> */}
+                  
+                <section className="dark:bg-dark bg-white py-2">
+                  <div className="container">
+                    <form id="otp-form" className="flex gap-1 sm:gap-2">
+                      {otps.map((digit, index) => (
+                        <input
+                          key={index}
+                          type="text"
+                          maxLength={1}
+                          value={digit}
+                          onChange={handleInput}
+                          onKeyDown={handleKeyDown}
+                          onFocus={handleFocus}
+                          onPaste={handlePaste}
+                          ref={(el) => (inputRefs.current[index] = el)}
+                          className="shadow-xs border-stroke text-gray-5 dark:border-dark-3 flex w-[44px] items-center justify-center rounded-lg border border-gray-500 bg-white p-1 text-center text-lg font-medium outline-none dark:bg-white/5 sm:text-2xl"
+                        />
+                      ))}
+                      {/* You can conditionally render a submit button here based on otp length */}
+                    </form>
                   </div>
-                </div>
-              </form>
-            )}
-          </div>
+                </section>
 
-          {/* Modal */}
-          <ForgotPassword
-            open={open}
-            setOpen={setOpen}
-            setNewPassword={setNewPassword}
-            updatePassword={updatePassword}
-            setConfirmPassword={setConfirmPassword}
-            newPassword={newPassword}
-            setUser={setUser}
-            confirmPassword={confirmPassword}
-          />
-        </main>
-      </div>
-    );
-  }
+              </div>
+
+              <div className="col-span-6 items-center gap-2 sm:justify-between">
+                <button
+                  className={`hover:bg-transparent hover:bg-bulue-700 inline-block h-10 rounded-md border border-indigo-600 bg-indigo-600 text-sm font-medium text-white transition hover:bg-indigo-700 hover:text-white ${
+                    forgotPassword || otp ? "w-full" : "sm:w-2/3"
+                  } `}
+                  onClick={verifyOTP}
+                  type="button"
+                  disabled={verify}
+                >
+                  {verify ? (
+                    <div
+                      className={`flex h-full w-full items-center justify-center ${
+                        verify ? "bg-indigo-400" : "bg-indigo-600"
+                      }`}
+                    >
+                      <svg
+                        className="mr-2 h-5 w-5 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Verifying...
+                    </div>
+                  ) : (
+                    "Login with OTP"
+                  )}
+                </button>
+
+                {forgotPassword ? null : (
+                  <p className="mt-2 flex justify-center text-sm text-gray-500">
+                    <button
+                      onClick={() => setOtp(!otp)}
+                      className="mt-5 text-indigo-600"
+                      cursor="pointer"
+                      disabled={verify}
+                    >
+                      Password based login
+                    </button>
+                  </p>
+                )}
+              </div>
+            </form>
+          ) : (
+            // Password form
+            <form
+              className="mt-5 grid grid-cols-6 gap-6"
+              onSubmit={handleSubmitEmailPassword}
+            >
+              <div className="relative col-span-6">
+                <label
+                  htmlFor="Email"
+                  className="my-1 block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
+                <input
+                  name="email"
+                  type="text"
+                  className="bg-transparent focus:ring-sky-500 w-full rounded-md border border-gray-500 px-4 py-2 text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
+                  placeholder="Enter Email"
+                  value={user.email}
+                  required
+                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                />
+                <span className="absolute right-3 top-10 h-5 w-5 cursor-pointer">
+                  <FaUser />
+                </span>
+              </div>
+
+              <div className="relative col-span-6">
+                <label
+                  htmlFor="Password"
+                  className="my-1 block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={user.password}
+                  required
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
+                  className="bg-transparent focus:ring-sky-500 focus:border-sky-500 w-full rounded-md border border-gray-500 px-4 py-2 text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
+                  placeholder="Enter password"
+                />
+                <span
+                  className="absolute right-3 top-10 h-5 w-5 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </span>
+              </div>
+
+              <div className="col-span-6 flex flex-col items-center gap-4">
+                <button
+                  className="hover:bg-transparent text-md inline-block h-10 w-full rounded-md border border-indigo-600 bg-indigo-600 font-medium text-white transition hover:bg-indigo-700"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div
+                      className={`flex h-full w-full items-center justify-center ${
+                        loading ? "bg-indigo-400" : "bg-indigo-600"
+                      }`}
+                    >
+                      <svg
+                        className="mr-2 h-5 w-5 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Logging In...
+                    </div>
+                  ) : (
+                    "Login with Email"
+                  )}
+                </button>
+                <div className="flex justify-center gap-5">
+                  <p className="text-sm text-gray-500">
+                    <button
+                      onClick={() => setOtp(!otp)}
+                      className={`rounded-md p-3 ${
+                        loading ? "text-indigo-400" : "text-indigo-600"
+                      }`}
+                      disabled={loading}
+                    >
+                      OTP based login
+                    </button>
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    <button
+                      className={`rounded-md p-3 ${
+                        loading ? "text-indigo-400" : "text-indigo-600"
+                      }`}
+                      onClick={() => {
+                        setForgotPassword(!forgotPassword);
+                        setOtp(!otp);
+                      }}
+                      disabled={loading}
+                    >
+                      Forgot your password?
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </form>
+          )}
+        </div>
+
+        {/* Modal */}
+        <ForgotPassword
+          open={open}
+          setOpen={setOpen}
+          setNewPassword={setNewPassword}
+          updatePassword={updatePassword}
+          setConfirmPassword={setConfirmPassword}
+          newPassword={newPassword}
+          setUser={setUser}
+          confirmPassword={confirmPassword}
+        />
+      </main>
+    </div>
+  );
+}
 
 export default SignIn;

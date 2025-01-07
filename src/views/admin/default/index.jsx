@@ -2,10 +2,12 @@ import { IoBagHandle } from "react-icons/io5";
 import BarChart from "./charts/BarChart";
 import DoughnutChart from "./charts/DoughnutChart";
 import Boxes from "./boxes/Boxes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const [expandedChart, setExpandedChart] = useState(null);
+
+  useEffect(()=>{});
 
   const openChart = (chartType) => {
     setExpandedChart(chartType);

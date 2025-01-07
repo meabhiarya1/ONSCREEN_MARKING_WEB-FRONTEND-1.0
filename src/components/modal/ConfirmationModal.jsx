@@ -95,7 +95,7 @@ const ConfirmationModal = ({
                                         setConfirmationModal(false)
                                         setId("")
                                     }}
-                                    className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm dark:bg-navy-700 dark:text-white"
+                                    className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:ml-3 sm:w-auto sm:text-sm"
                                 >
                                     Cancel
                                 </button>

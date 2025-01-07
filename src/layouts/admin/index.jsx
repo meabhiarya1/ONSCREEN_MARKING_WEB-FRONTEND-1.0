@@ -71,8 +71,7 @@ export default function Admin(props) {
 
 
   return (
-    <div className="flex h-full w-full ">
-
+    <div className="flex h-full w-full">
       <Sidebar open={open} onClose={() => setOpen(false)} />
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900 ">
         <main
@@ -86,7 +85,7 @@ export default function Admin(props) {
               secondary={getActiveNavbar(routes)}
               {...rest}
             />
-            <div className="h-[calc(100vh-160px)] overflow-y-auto pt-5">
+            <div className="h-[calc(100vh-148px)] overflow-y-auto pt-5">
               <Routes>
                 {getRoutes(routes)}
                 <Route

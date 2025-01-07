@@ -111,7 +111,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500  dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                       placeholder="Enter name"
                     />
                   </div>
@@ -129,7 +129,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white"
+                        className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                         placeholder="Enter email"
                       />
                     </div>
@@ -146,7 +146,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white"
+                        className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                         placeholder="Enter phone number"
                       />
                     </div>
@@ -163,11 +163,11 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-700 p-2 sm:p-3 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
                     >
                       <option value="">Select a role</option>
                       <option value="admin">Admin</option>
-                      <option value="reviewer">Reviewer</option>
+                      <option value="evaluator">Evaluator</option>
                       <option value="moderator">Moderator</option>
                     </select>
                   </div>

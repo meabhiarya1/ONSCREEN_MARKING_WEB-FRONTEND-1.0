@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import AdminLayout from "layouts/admin";
 import EvaluatorLayout from "layouts/evaluator/index.jsx";
@@ -9,12 +9,15 @@ import CheckModule from "views/evaluator/CheckModule/CheckModule";
 import "./App.css";
 import { jwtDecode } from "jwt-decode"; // Correct import for jwt-decode
 import { useNavigate } from "react-router-dom";
+import { getUserDetails } from "services/common";
+import { toast } from "react-toastify";
 
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation(); // To check current path
   const token = localStorage.getItem("token");
+  const [user, setUser] = useState(token);
 
   const getRoleFromToken = () => {
     if (!token) return null;
@@ -28,8 +31,24 @@ const App = () => {
   };
 
   const role = getRoleFromToken();
+
   useEffect(() => {
-    if (!token) {
+    const fetchUser = async () => {
+      try {
+        const response = await getUserDetails(token);
+        // console.log(response);
+        setUser(response.data);
+      } catch (error) {
+        console.log(error);
+        toast.error(error?.response?.data?.message);
+      }
+    };
+
+    fetchUser();
+  }, [token, setUser]);
+
+  useEffect(() => {
+    if (!token || user.message === "Unauthorized") {
       // Redirect to sign-in only if not already on an auth route
       if (!location.pathname.startsWith("/auth")) {
         navigate("/auth/sign-in");
@@ -45,7 +64,7 @@ const App = () => {
         navigate("/evaluator/default");
       }
     }
-  }, [token, role,location]);
+  }, [token, role, location, navigate, user]);
 
   useEffect(() => {
     dispatch(rehydrateToken());

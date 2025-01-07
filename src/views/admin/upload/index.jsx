@@ -211,7 +211,7 @@ const Upload = () => {
           id="userRole"
           value={selectedRole}
           onChange={handleChange}
-          className="text-sm sm:text-md lg:text-lg rounded-lg border border-gray-300 p-1 sm:p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:bg-navy-900 dark:text-white"
+          className="text-sm sm:text-md lg:text-lg rounded-lg p-1 sm:p-3 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
         >
           <option value="null">Select Role</option>
           <option value="admin">Admin</option>

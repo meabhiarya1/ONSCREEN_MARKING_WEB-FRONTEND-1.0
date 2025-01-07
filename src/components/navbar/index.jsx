@@ -7,9 +7,11 @@ import avatar from "assets/img/avatars/avatar4.png";
 import { getUserDetails } from "services/common";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
+import { FaBars } from "react-icons/fa";
 
 const Navbar = (props) => {
   const { brandText } = props;
+  const { onOpenSidenav } = props;
   const [darkmode, setDarkmode] = useState(false);
   const [userDetails, setUserDetails] = useState("");
   const navigate = useNavigate();
@@ -32,10 +34,11 @@ const Navbar = (props) => {
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
-      <div className="ml-[6px]">
-        <p className="shrink text-[33px] capitalize text-navy-700 dark:text-white">
+      <FaBars onClick={onOpenSidenav} className="cursor-pointer text-2xl mx-2 xl:hidden" />
+      <div className="ml-[6px] ">
+        <p className="mr-4 shrink text-[33px] capitalize text-navy-700 dark:text-white">
           <Link
-            to="#"
+            // to="#"
             className="font-bold capitalize hover:text-navy-700 dark:hover:text-white"
           >
             {brandText}
@@ -93,9 +96,9 @@ const Navbar = (props) => {
               </div>
               <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
 
-              <div className="flex flex-col p-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+              <div className="flex flex-col rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
                 <button
-                  className="px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-200 ease-in-out"
+                  className="mb-4 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                   onClick={() => navigate("/admin/profile")}
                 >
                   Profile
@@ -106,12 +109,11 @@ const Navbar = (props) => {
                     dispatch(logout());
                     navigate("/auth/sign-in");
                   }}
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors duration-200 ease-in-out"
+                  className="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 ease-in-out hover:bg-red-600"
                 >
                   Log Out
                 </button>
               </div>
-
             </div>
           }
           classNames={"py-2 top-8 -left-[180px] w-max"}

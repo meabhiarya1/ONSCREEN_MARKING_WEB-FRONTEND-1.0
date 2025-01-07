@@ -4,8 +4,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const ImageModal = ({
-  showImageModal,
-  setShowImageModal,
+  showViewImageModal,
+  setShowViewImageModal,
   questionId,
   handleSubmitButton,
   setFormData,
@@ -15,40 +15,122 @@ const ImageModal = ({
   isAvailable,
   questionDone,
   formData,
+  folderid,
 }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [questionsPdfPath, setQuestionsPdfPath] = useState(undefined);
   const [answersPdfPath, setAnswersPdfPath] = useState(undefined);
   const [countQuestions, setCountQuestions] = useState(0);
   const [countAnswers, setCountAnswers] = useState(0);
   const [checkboxStatus, setCheckboxStatus] = useState({}); // Object to hold checkbox status for each image
   const { id } = useParams();
+  const [viewquestionImages, setViewquestionImages] = useState([]);
+  const [viewanswerImages, setViewanswerImages] = useState([]);
 
-  // console.log(formData);
+  //   console.log(formData);
 
-  const nextImage = () => {
+  const nextImageQuestion = () => {
     if (showAnswerModel) {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === countAnswers ? 1 : prevIndex + 1
-      );
+      if (currentImageIndex < viewquestionImages.length - 1) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === viewquestionImages.length - 1 ? 0 : prevIndex + 1
+        );
+      } else {
+        setCurrentImageIndex(0);
+      }
     } else {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === countQuestions ? 1 : prevIndex + 1
-      );
+      if (currentImageIndex < viewquestionImages.length - 1) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === viewquestionImages.length - 1 ? 0 : prevIndex + 1
+        );
+      } else {
+        setCurrentImageIndex(0);
+      }
     }
   };
 
-  const prevImage = () => {
+  const nextImageAnswer = () => {
     if (showAnswerModel) {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === 1 ? countAnswers : prevIndex - 1
-      );
+      if (currentImageIndex < viewanswerImages.length - 1) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === viewanswerImages.length - 1 ? 0 : prevIndex + 1
+        );
+      } else {
+        setCurrentImageIndex(0);
+      }
     } else {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === 1 ? countQuestions : prevIndex - 1
-      );
+      if (currentImageIndex < viewanswerImages.length - 1) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === viewanswerImages.length - 1 ? 0 : prevIndex + 1
+        );
+      } else {
+        setCurrentImageIndex(0);
+      }
     }
   };
+
+  const prevImageQuestion = () => {
+    if (showAnswerModel) {
+      if (currentImageIndex > 0) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === 0 ? countAnswers : prevIndex - 1
+        );
+      } else {
+        setCurrentImageIndex(viewquestionImages.length - 1);
+      }
+    } else {
+      if (currentImageIndex > 0) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === 0 ? countAnswers : prevIndex - 1
+        );
+      } else {
+        setCurrentImageIndex(viewquestionImages.length - 1);
+      }
+    }
+  };
+
+  const prevImageAnswer = () => {
+    if (showAnswerModel) {
+      if (currentImageIndex > 0) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === 0 ? countAnswers : prevIndex - 1
+        );
+      } else {
+        setCurrentImageIndex(viewanswerImages.length - 1);
+      }
+    } else {
+      if (currentImageIndex > 0) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === 0 ? countAnswers : prevIndex - 1
+        );
+      } else {
+        setCurrentImageIndex(viewanswerImages.length - 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchedData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/coordinates/getcoordinateallocationbyschemarelationid/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        setViewquestionImages(response.data[folderid-1].questionImages);
+        setViewanswerImages(response.data[folderid-1].answerImages);
+
+      } catch (error) {
+        console.log(error);
+        // toast.error(error?.response?.data?.message);
+      }
+    };
+    fetchedData();
+  }, [id]);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -192,17 +274,17 @@ const ImageModal = ({
     }
     setShowAnswerModel(!showAnswerModel);
     setCheckboxStatus({});
-    setCurrentImageIndex(1);
+    setCurrentImageIndex(0);
   };
 
   const handleDeselectAll = () => {
-    if (showImageModal && !showAnswerModel) {
+    if (showViewImageModal && !showAnswerModel) {
       setCheckboxStatus({});
       setFormData((prevFormData) => ({
         ...prevFormData,
         questionImages: [],
       }));
-    } else if (showImageModal && showAnswerModel) {
+    } else if (showViewImageModal && showAnswerModel) {
       setCheckboxStatus({});
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -214,30 +296,28 @@ const ImageModal = ({
   return (
     <div>
       {/* Question Image Modal */}
-      {showImageModal && !showAnswerModel && (
+      {showViewImageModal && !showAnswerModel && (
         <div className="bg-black fixed inset-0 z-50 flex  items-center justify-center bg-opacity-50 backdrop-blur-md">
-          <div
-            className="relative rounded-lg border w-11/12 sm:w-8/12 lg:w-6/12 xl:w-4/12 h-11/12 border-gray-900 bg-white p-6 m-5 shadow-lg dark:bg-navy-700"
-          >
+          <div className="h-11/12 relative m-5 w-11/12 rounded-lg border border-gray-900 bg-white p-6 shadow-lg dark:bg-navy-700 sm:w-8/12 lg:w-6/12 xl:w-4/12">
             <div className="mb-4 flex items-center justify-between dark:bg-navy-700">
               <div className="text-lg font-bold text-gray-800 dark:text-white ">
                 Questions PDF
               </div>
-              {isAvailable && (
+              {/* {isAvailable && (
                 <div
                   className="text-md cursor-pointer rounded-lg bg-indigo-700 px-3 py-2 font-semibold text-white hover:text-gray-600"
                   onClick={handleDeselectAll}
                 >
                   Deselect All
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Close button */}
             <button
               className="absolute right-0 top-0 pl-2 pr-1 text-3xl font-bold text-gray-600 hover:text-gray-900 dark:hover:text-gray-100"
               onClick={() => {
-                setShowImageModal(false);
+                setShowViewImageModal(false);
                 setQuestionsPdfPath(questionsPdfPath);
                 setAnswersPdfPath(undefined);
                 setFormData((prevFormData) => ({
@@ -251,25 +331,21 @@ const ImageModal = ({
 
             {/* Image Display */}
             <img
-              src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/image_${currentImageIndex}.png`} // Use the current image URL
-              alt={`Slide ${currentImageIndex}`}
-              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto cursor-not-allowed ${
-                checkboxStatus[currentImageIndex]
-                  ? "border-2 border-green-700 shadow-lg hover:shadow-2xl"
-                  : ""
-              }`}
-              onClick={() => {
-                handleSelectedImage(
-                  currentImageIndex,
-                  `image_${currentImageIndex}.png`
-                );
-              }}
-            />
+                src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/${viewquestionImages[currentImageIndex]}`} // Use the current image URL
+                alt={`Slide ${currentImageIndex}`}
+                className={`hover:shadow-2x mb-2 h-[350px] w-full cursor-not-allowed overflow-auto rounded-lg border-2 border-green-700 object-contain shadow-lg sm:h-[650px] xl:h-[670px]`}
+                onClick={() => {
+                  handleSelectedImage(
+                    currentImageIndex,
+                    `image_${currentImageIndex}.png`
+                  );
+                }}
+              />
 
             {/* Pagination Controls */}
             <div className="flex items-center justify-between">
               <button
-                onClick={prevImage}
+                onClick={prevImageQuestion}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
               >
                 Previous
@@ -277,14 +353,14 @@ const ImageModal = ({
               {/* Confirm Button */}
               <div className="flex justify-center space-x-4">
                 <button
-                  className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                  className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-md font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
                   onClick={handleQuestionConfirm}
                 >
-                  Confirm
+                  See Answer
                 </button>
               </div>
               <button
-                onClick={nextImage}
+                onClick={nextImageQuestion}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
               >
                 Next
@@ -325,7 +401,13 @@ const ImageModal = ({
                       <div>
                         <strong className="font-bold text-gray-700 dark:text-white">
                           {" "}
-                          Page : {currentImageIndex}{" "}
+                          Page :{" "}
+                          {
+                            String(viewquestionImages[currentImageIndex])
+                              .split(/[^0-9]/) // Split the string by anything that's not a digit
+                              .filter((part) => part !== "") // Remove empty strings from the resulting array
+                              .map(Number)[0]
+                          }{" "}
                         </strong>
                       </div>
                     </label>
@@ -340,21 +422,19 @@ const ImageModal = ({
       {/* Answer Image Modal */}
       {showAnswerModel && (
         <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
-          <div
-            className="relative rounded-lg border w-11/12 sm:w-8/12 lg:w-6/12 xl:w-4/12 h-11/12 border-gray-900 bg-white p-6 m-5 shadow-lg dark:bg-navy-700"
-          >
+          <div className="h-11/12 relative m-5 w-11/12 rounded-lg border border-gray-900 bg-white p-6 shadow-lg dark:bg-navy-700 sm:w-8/12 lg:w-6/12 xl:w-4/12">
             <div className="mb-4 flex items-center justify-between ">
               <div className="text-lg font-bold text-gray-800 dark:text-white ">
                 Answers PDF
               </div>
-              {isAvailable && (
+              {/* {isAvailable && (
                 <div
                   className="text-md cursor-pointer rounded-lg bg-indigo-700 px-3 py-2 font-semibold text-white hover:text-gray-600"
                   onClick={handleDeselectAll}
                 >
                   Deselect All
                 </div>
-              )}
+              )} */}
             </div>
             {/* Close button */}
             <button
@@ -373,33 +453,28 @@ const ImageModal = ({
             </button>
 
             {/* Answer Image Display */}
-
             <img
-              src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedAnswerPdfImages/${answersPdfPath}/image_${currentImageIndex}.png`}
-              alt={`Slide ${currentImageIndex}`}
-              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto cursor-not-allowed ${
-                checkboxStatus[currentImageIndex]
-                  ? "border-2 border-green-700"
-                  : ""
-              }`}
-              onClick={() => {
-                handleSelectedImage(
-                  currentImageIndex,
-                  `image_${currentImageIndex}.png`
-                );
-              }}
-            />
+                src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/${viewanswerImages[currentImageIndex]}`} // Use the current image URL
+                alt={`Slide ${currentImageIndex}`}
+                className={`hover:shadow-2x mb-2 h-[350px] w-full cursor-not-allowed overflow-auto rounded-lg border-2 border-green-700 object-contain shadow-lg sm:h-[650px] xl:h-[670px]`}
+                onClick={() => {
+                  handleSelectedImage(
+                    currentImageIndex,
+                    `image_${currentImageIndex}.png`
+                  );
+                }}
+              />
 
             {/* Pagination Controls */}
             <div className="flex items-center justify-between">
               <button
-                onClick={prevImage}
+                onClick={prevImageAnswer}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
               >
                 Previous
               </button>
               {/* Confirm Button */}
-              <div className="flex justify-center space-x-4">
+              {/* <div className="flex justify-center space-x-4">
                 <button
                   className="rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
                   onClick={() => {
@@ -410,9 +485,9 @@ const ImageModal = ({
                 >
                   {isAvailable ? "Update" : "Submit"}
                 </button>
-              </div>
+              </div> */}
               <button
-                onClick={nextImage}
+                onClick={nextImageAnswer}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
               >
                 Next
@@ -455,7 +530,13 @@ const ImageModal = ({
                       <div>
                         <strong className="font-bold text-gray-700 dark:text-white">
                           {" "}
-                          Page : {currentImageIndex}{" "}
+                          Page :{" "}
+                          {
+                            String(viewanswerImages[currentImageIndex])
+                              .split(/[^0-9]/) // Split the string by anything that's not a digit
+                              .filter((part) => part !== "") // Remove empty strings from the resulting array
+                              .map(Number)[0]
+                          }{" "}
                         </strong>
                       </div>
                     </label>

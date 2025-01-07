@@ -77,44 +77,51 @@ const Schema = () => {
       console.log(error);
       toast.error(error.response.data.message);
     } finally {
-      setEditShowModal(false); // Close the modal after updating
+      // setEditShowModal(false); // Close the modal after updating
     }
   };
 
   return (
-    <div className="mt-12 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
+    <div className="mt-8 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
       <div className="h-32 rounded-lg lg:col-span-3">
-        <div className="mt-6 overflow-x-auto rounded-lg">
-          <div className="mb-4 flex items-start justify-end rounded-lg">
+        <div className=" overflow-x-auto rounded-lg">
+          <div className="mb-4 flex items-start justify-start rounded-lg sm:justify-end">
             <div
-              className="hover:bg-transparent inline-block cursor-pointer items-center rounded border 
-        border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium 
-        text-white focus:outline-none focus:ring active:text-indigo-500"
+              className="hover:bg-transparent inline-block cursor-pointer items-center rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
               onClick={() => setCreateShowModal(!createShowModal)}
             >
               Create Schema
             </div>
           </div>
-          <table className="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
-            <thead className="ltr:text-left rtl:text-right">
+          <table className="min-w-full divide-y-2 divide-gray-200 rounded-md bg-white text-sm dark:divide-gray-700 dark:bg-navy-700">
+            <thead className="ltr:text-left rtl:text-right bg-gray-100 dark:bg-navy-800">
               <tr>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Schema
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Max Marks
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Min Marks
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Primary Qs
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Compulsory Qs
                 </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
                   Eval Time
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
+                  
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
+                  
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
+                  
                 </th>
               </tr>
             </thead>
@@ -125,24 +132,23 @@ const Schema = () => {
                 key={data._id}
               >
                 <tr>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {data.name}
                   </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {data.maxMarks}
                   </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {data.minMarks}
                   </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {data.totalQuestions}
                   </td>
-
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {data.compulsoryQuestions}
                   </td>
 
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700">
+                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {data.evaluationTime}
                   </td>
 
@@ -175,7 +181,7 @@ const Schema = () => {
                   <td className="whitespace-nowrap px-3 py-2 ">
                     <div
                       className="inline-block cursor-pointer rounded bg-red-600 px-4 py-2 
-                    text-xs font-medium text-white hover:bg-indigo-700   "
+                    text-xs font-medium text-white hover:bg-red-700   "
                       onClick={() => {
                         setConfirmationModal(true);
                         setSchemaId(data._id);
