@@ -80,7 +80,12 @@ const AssignPage = () => {
                 </td>
                 <td className="relative whitespace-nowrap px-3 py-1.5 text-right">
                   {/* Drop Menu Buton*/}
-                  <div onClick={() => setShowDropDownModal(!showDropDownModal)}>
+                  <div
+                    onClick={() => {
+                      setCurrentSubject(subject);
+                      setShowDropDownModal(!showDropDownModal);
+                    }}
+                  >
                     <div className="inline-flex cursor-pointer items-center overflow-hidden rounded-md border bg-white px-2 py-1 text-gray-700 dark:bg-navy-700 dark:text-white">
                       Select
                       <button className="h-full p-1 text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-white dark:hover:bg-navy-700">
@@ -114,7 +119,6 @@ const AssignPage = () => {
                         onClick={() => {
                           setShowAssignModal(true);
                           setShowDropDownModal(!showDropDownModal);
-                          setCurrentSubject(subject);
                         }}
                       >
                         Assign Task
@@ -142,6 +146,7 @@ const AssignPage = () => {
           // </div>
         )}
       </table>
+
 
       {showAssignModal && (
         <AssignModal
