@@ -35,7 +35,7 @@ const Tools = ({
     setCurrentStrokeWidth(newValue);
   };
   return (
-    <div className="flex justify-center border bg-[#e0e2e6] p-2">
+    <div className="h-full flex justify-center border bg-[#e0e2e6] p-2">
       {/* Zoom Menu */}
       <aside className="me-2 flex justify-center">
         <div className="">

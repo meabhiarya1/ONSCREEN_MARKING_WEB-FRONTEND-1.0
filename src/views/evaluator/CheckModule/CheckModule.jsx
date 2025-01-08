@@ -391,7 +391,6 @@ const CheckModule = () => {
       {questionModal && (
         <EvalQuestionModal
           show={questionModal}
-          
           onHide={() => {
             setShowQuestionModal(false);
           }}
