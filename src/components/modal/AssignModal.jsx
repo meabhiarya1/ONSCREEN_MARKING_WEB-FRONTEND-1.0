@@ -74,15 +74,15 @@ const AssignModal = ({
   }, []);
 
   const handleSubmitButton = async () => {
-    // if (
-    //   selectedUser === "Select User to Assign" ||
-    //   selectedPath === "" ||
-    //   taskName === "" ||
-    //   currentSubject?._id === ""
-    // ) {
-    //   toast.error("Please fill all the fields");
-    //   return;
-    // }
+    if (
+      selectedUser === "Select User to Assign" ||
+      selectedPath === "" ||
+      taskName === "" ||
+      currentSubject?._id === ""
+    ) {
+      toast.error("Please fill all the fields");
+      return;
+    }
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
