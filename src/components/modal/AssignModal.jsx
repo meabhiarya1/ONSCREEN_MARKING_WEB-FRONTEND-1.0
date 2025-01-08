@@ -3,6 +3,7 @@ import FileManagerModal from "./FileManagerModal";
 import { getAllUsers } from "services/common";
 import axios from "axios";
 import { toast } from "react-toastify";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const AssignModal = ({
   setShowAssignModal,
@@ -17,6 +18,7 @@ const AssignModal = ({
   const [taskName, setTaskName] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     try {
@@ -82,6 +84,7 @@ const AssignModal = ({
       return;
     }
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
@@ -107,6 +110,8 @@ const AssignModal = ({
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
+    } finally{
+      setLoading(false);
     }
   };
   const handleFileSelection = () => {
@@ -323,10 +328,17 @@ const AssignModal = ({
         </div>
         <div class="px-20 py-3 text-center">
           <button
-            class="my-2 mb-3 w-full rounded-md bg-indigo-600 px-16 py-1 text-lg font-bold text-white hover:bg-indigo-700"
+            class={`my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white ${loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"}`}
             onClick={handleSubmitButton}
+            disabled={loading}
           >
-            Submit
+            {loading ? (
+              <div className={`flex items-center justify-center py-0.5 w-full`}>
+                <MoonLoader color="white" loading={loading} size={20} /> <span className="ml-3">Submitting...</span>
+              </div>
+            ) : (
+              "Submit"
+            )}
           </button>
         </div>
       </div>
