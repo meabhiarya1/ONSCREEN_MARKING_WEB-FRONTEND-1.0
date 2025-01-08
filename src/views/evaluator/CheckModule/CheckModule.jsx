@@ -40,6 +40,7 @@ const CheckModule = () => {
   ];
   const icons = evaluatorState.icons;
   const rerenderer = evaluatorState.rerender;
+  const currentTaskDetails = evaluatorState.currentTaskDetails;
   const { id } = useParams();
   useEffect(() => {
     const getTaskDetails = async () => {
@@ -53,6 +54,7 @@ const CheckModule = () => {
           // questionDefinitions,
           task,
         } = response;
+        console.log(response);
         // console.log(answerPdfDetails._id);
         dispatch(setCurrentAnswerPdfId(answerPdfDetails._id));
         dispatch(setCurrentTaskDetails(task));
@@ -389,6 +391,7 @@ const CheckModule = () => {
       {questionModal && (
         <EvalQuestionModal
           show={questionModal}
+          
           onHide={() => {
             setShowQuestionModal(false);
           }}

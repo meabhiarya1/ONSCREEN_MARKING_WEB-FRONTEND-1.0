@@ -200,23 +200,22 @@ export const deleteIconByImageId = async (iconId, answerPdfId) => {
 };
 // /api/evaluation/icons/removeall
 
+export const getSubjectIdImgUrl = async (subjectRelationId) => {
+  const token = localStorage.getItem("token");
 
-// export const deleteIconByImageId = async (iconId, answerPdfId) => {
-//   const token = localStorage.getItem("token");
-
-//   try {
-//     const response = await axios.delete(
-//       `${process.env.REACT_APP_API_URL}/api/evaluation/icons/remove?iconsId=${iconId}&answerPdfId=${answerPdfId}
-//       `,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       }
-//     );
-//     return response.data; // return the full response to handle status outside
-//   } catch (error) {
-//     console.error(error);
-//     return error.response; // return full error response to handle status outside
-//   }
-// };
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/subjects/relations/getsubjectbyid/${subjectRelationId}
+      `,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response; // return full error response to handle status outside
+  }
+};
