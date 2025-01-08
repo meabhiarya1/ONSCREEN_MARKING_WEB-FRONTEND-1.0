@@ -18,7 +18,8 @@ const EvalQuestionModal = ({ show, onHide }) => {
   useEffect(() => {
     const fetchImgUrl = async () => {
       const response = await getSubjectIdImgUrl(
-        currentTaskDetails.subjectSchemaRelationId
+        currentTaskDetails.subjectSchemaRelationId,
+        currentQuestionDefinitionId
       );
       console.log(response);
     };
@@ -26,7 +27,7 @@ const EvalQuestionModal = ({ show, onHide }) => {
       fetchImgUrl();
     }
   }, [currentTaskDetails]);
-  console.log(currentQuestionDefinitionId);
+  // console.log(currentQuestionDefinitionId);
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
       <div className="scale-85 relative h-[95vh] w-[95vw] max-w-none transform bg-white p-8 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100">

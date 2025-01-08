@@ -200,13 +200,17 @@ export const deleteIconByImageId = async (iconId, answerPdfId) => {
 };
 // /api/evaluation/icons/removeall
 
-export const getSubjectIdImgUrl = async (subjectRelationId) => {
+export const getSubjectIdImgUrl = async (
+  subjectRelationId,
+  questionDefinitionId
+) => {
   const token = localStorage.getItem("token");
 
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/subjects/relations/getsubjectbyid/${subjectRelationId}
+      `${process.env.REACT_APP_API_URL} /api/subjects/relations/getallcoordinatesandschemarelationdetails?subjectRelationId=${subjectRelationId}&questionDefinitionId=${questionDefinitionId}
       `,
+
       {
         headers: {
           Authorization: `Bearer ${token}`,

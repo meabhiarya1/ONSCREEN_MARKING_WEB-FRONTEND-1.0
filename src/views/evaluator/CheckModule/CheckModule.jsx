@@ -199,19 +199,19 @@ const CheckModule = () => {
 
   return (
     <>
-      <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-[#33597a] to-[#33a3a3]  py-5 text-white">
+      <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-[#33597a] to-[#33a3a3] py-5 text-white">
         <div>
           <img src="/ios.png" alt="ios_default" />
         </div>
         <div className="flex w-[70%] items-center justify-between rounded-sm py-1 text-lg font-bold backdrop-blur-2xl">
           {/* Evaluator Section */}
-          <section className="flex-1 basis-1/3 space-y-1 px-4 ">
-            <div>
-              <span className="font-semibold text-gray-600">Evaluator ID</span>{" "}
-              : <span className="font-bold text-gray-200">46758390</span>
+          <section className="flex-1 basis-1/3 space-y-1 overflow-hidden px-4">
+            <div className="truncate">
+              <span className="font-semibold text-gray-600">Evaluator ID</span>:{" "}
+              <span className="font-bold text-gray-200">46758390</span>
             </div>
-            <div>
-              <span className="font-semibold text-gray-600">Subject</span> :{" "}
+            <div className="truncate">
+              <span className="font-semibold text-gray-600">Subject</span>:{" "}
               <span className="font-bold text-gray-200">
                 Engineering Mathematics - III
               </span>
@@ -219,19 +219,19 @@ const CheckModule = () => {
           </section>
 
           {/* Booklet Section */}
-          <section className="flex-1 basis-1/3 space-y-1 px-4 text-center">
-            <div>
+          <section className="flex-1 basis-1/3 space-y-1 overflow-hidden px-4 text-center">
+            <div className="truncate">
               <span className="font-semibold text-gray-600">Booklet Title</span>
-              :
+              :{" "}
               <span className="font-bold text-gray-200">
                 {answerSheetCount?.answerPdfName || "Loading..."}
               </span>
             </div>
-            <div>
+            <div className="truncate">
               <span className="font-semibold text-gray-600">
                 Current Booklet Index
               </span>
-              :
+              :{" "}
               <span className="font-bold text-gray-200">
                 {taskDetails?.currentFileIndex || "N/A"}
               </span>
@@ -239,18 +239,18 @@ const CheckModule = () => {
           </section>
 
           {/* Timing Section */}
-          <section className="flex-1 basis-1/3 space-y-1 px-4 text-end">
-            <div>
-              <span className="font-semibold text-gray-600">Login Time</span>:
+          <section className="flex-1 basis-1/3 space-y-1 overflow-hidden px-4 text-end">
+            <div className="truncate">
+              <span className="font-semibold text-gray-600">Login Time</span>:{" "}
               <span className="inline-block w-[100px] text-center font-mono">
                 {loginTime || "Loading..."}
               </span>
             </div>
-            <div>
+            <div className="truncate">
               <span className="font-semibold text-gray-600">
                 Evaluation Time
               </span>
-              :
+              :{" "}
               <span className="inline-block w-[30px] text-center font-mono">
                 {hours}
               </span>
@@ -266,6 +266,7 @@ const CheckModule = () => {
           </section>
         </div>
 
+        {/* Search and Profile Section */}
         <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[365px] xl:gap-2">
           <div className="flex h-full items-center rounded-full bg-lightPrimary text-navy-700 dark:bg-navy-900 dark:text-white xl:w-[225px]">
             <p className="pl-3 pr-2 text-xl">
@@ -307,7 +308,7 @@ const CheckModule = () => {
               />
             }
             children={
-              <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none ">
+              <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">
                 <div className="cursor-pointer p-4">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -315,7 +316,7 @@ const CheckModule = () => {
                     </p>{" "}
                   </div>
                 </div>
-                <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
+                <div className="h-px w-full bg-gray-200 dark:bg-white/20" />
 
                 <div className="flex flex-col p-4">
                   <a
