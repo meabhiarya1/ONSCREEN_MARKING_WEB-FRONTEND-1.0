@@ -27,6 +27,13 @@ const QuestionDefinition = (props) => {
   const currentBookletIndex = evaluatorState.currentBookletIndex;
   const currentQuestion = evaluatorState.currentQuestion;
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   if (allQuestions.length !== 0) {
+  //     setCurrentQuestionDefinitionId(allQuestions[currentQuestion]._id);
+  //   }
+  //   console.log(allQuestions[currentQuestion]._id);
+  // }, [allQuestions, currentQuestion]);
   useEffect(() => {
     const fetchQuestionDetails = async (answerPdfDetails) => {
       try {
@@ -142,9 +149,11 @@ const QuestionDefinition = (props) => {
 
     return (
       <tr
-        className={`h-16 border    dark:border-gray-700   ${background} `}
+        className={`h-16 border dark:border-gray-700 ${background} `}
         onClick={() => {
           setSelectedQuestion(index);
+          dispatch(setCurrentQuestionDefinitionId(allQuestions[index]._id));
+          dispatch(setCurrentQuestion(index + 1));
         }}
         key={index}
       >
@@ -206,8 +215,6 @@ const QuestionDefinition = (props) => {
             )}
           </div>
         </td>
-        {/* <td className="px-6 py-4">{item.minMarks}</td>
-        <td className="px-6 py-4">{item.maxMarks}</td> */}
       </tr>
     );
   });
