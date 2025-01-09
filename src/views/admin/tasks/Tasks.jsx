@@ -38,7 +38,6 @@ const Tasks = () => {
         console.error(error);
       }
     };
-    console.log("object");
     fetchTasks();
   }, []);
 
