@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -10,6 +10,8 @@ const AssignPage = () => {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showDropDownModal, setShowDropDownModal] = useState(false);
   const [currentSubject, setCurrentSubject] = useState([]);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0 });
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -31,6 +33,15 @@ const AssignPage = () => {
     };
     fetchedData();
   }, []);
+
+  const handleDropdownClick = (event, subject) => {
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    setDropdownPosition({
+      top: buttonRect.bottom + window.scrollY,
+    });
+    setCurrentSubject(subject);
+    setShowDropDownModal(!showDropDownModal);
+  };
 
   // console.log(currentSubject);
 
@@ -66,7 +77,7 @@ const AssignPage = () => {
           (subject) => (
             <tbody className="divide-y divide-gray-200" key={subject._id}>
               <tr>
-                <td className="whitespace-nowrap px-10 py-2 font-medium text-gray-900 dark:text-white">
+                <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   {subject?.relationName}
                 </td>
                 <td className="whitespace-nowrap px-14 py-2 text-gray-700 dark:text-white">
@@ -81,9 +92,10 @@ const AssignPage = () => {
                 <td className="relative whitespace-nowrap px-3 py-1.5 text-right">
                   {/* Drop Menu Buton*/}
                   <div
-                    onClick={() => {
+                    onClick={(event) => {
                       setCurrentSubject(subject);
                       setShowDropDownModal(!showDropDownModal);
+                      handleDropdownClick(event, subject);
                     }}
                   >
                     <div className="inline-flex cursor-pointer items-center overflow-hidden rounded-md border bg-white px-2 py-1 text-gray-700 dark:bg-navy-700 dark:text-white">
@@ -110,6 +122,10 @@ const AssignPage = () => {
                 {showDropDownModal && (
                   <div
                     className="absolute right-6 top-48 z-50 mt-2 w-36 rounded-md border border-gray-100 bg-white shadow-lg dark:bg-navy-700 dark:text-white"
+                    ref={dropdownRef}
+                    style={{
+                      top: dropdownPosition.top,
+                    }}
                     role="menu"
                   >
                     <div className="p-2">
@@ -146,7 +162,6 @@ const AssignPage = () => {
           // </div>
         )}
       </table>
-
 
       {showAssignModal && (
         <AssignModal
