@@ -120,7 +120,7 @@ const AssignModal = ({
 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
-      <div className="mx-6 w-full rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white md:w-2/3 lg:w-7/12 2xl:w-5/12">
+      <div className="mx-3 sm:mx-6 w-full rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white md:w-2/3 lg:w-7/12 2xl:w-5/12">
         <div className="flex justify-between px-7 py-5">
           <div>
             <h2 className="font-bold" style={{ fontSize: "32px" }}>
@@ -150,10 +150,10 @@ const AssignModal = ({
           </div>
         </div>
         <hr className="bg-gray-600" />
-        <div className="mt-2 min-w-[400px] space-y-2 px-5 pb-6 pt-3">
-          <div className="flex justify-evenly space-x-3">
-            <div className="flex">
-              <p className="pl-2 font-bold text-gray-700 dark:text-white">
+        <div className="mt-2 space-y-2 px-5 pb-6 pt-3">
+          <div className="flex">
+            <div className="flex sm:w-1/2 sm:ml-10 text-sm">
+              <p className="sm:pl-2 font-bold text-gray-700 dark:text-white">
                 Relation Name:{" "}
               </p>{" "}
               <p className="mx-2 text-gray-700 dark:text-white">
@@ -161,8 +161,8 @@ const AssignModal = ({
               </p>
             </div>
 
-            <div className="flex">
-              <p className="pl-2 font-bold text-gray-700 dark:text-white">
+            <div className="flex w-1/2 text-sm">
+              <p className="sm:pl-2 font-bold text-gray-700 dark:text-white">
                 {" "}
                 Answer Images:{" "}
               </p>{" "}
@@ -171,9 +171,9 @@ const AssignModal = ({
               </p>
             </div>
           </div>
-          <div className="flex justify-evenly space-x-3">
-            <div className="flex">
-              <p className="pl-2 font-bold text-gray-700 dark:text-white">
+          <div className="flex">
+            <div className="flex w-1/2 sm:ml-10 text-sm">
+              <p className="sm:pl-2 font-bold text-gray-700 dark:text-white">
                 {" "}
                 Question Images:{" "}
               </p>{" "}
@@ -182,8 +182,8 @@ const AssignModal = ({
               </p>
             </div>
 
-            <div className="flex">
-              <p className="pl-2 font-bold text-gray-700 dark:text-white">
+            <div className="flex w-1/2 text-sm">
+              <p className="sm:pl-2 font-bold text-gray-700 dark:text-white">
                 {" "}
                 Status:{" "}
               </p>{" "}
@@ -195,7 +195,7 @@ const AssignModal = ({
           <div className="relative">
             {/* Dropdown Of users */}
 
-            <div className="mt-5 flex items-center gap-7 px-1">
+            <div className="mt-5 flex items-center gap-5 3xl:gap-9 px-5">
               <div className="text-gray-700 dark:text-white">
                 <label htmlFor="">Select User:</label>
               </div>
@@ -270,7 +270,7 @@ const AssignModal = ({
 
             {/* Dropdown Of users */}
           </div>
-          <div className="flex items-center gap-7 px-2">
+          <div className="flex items-center gap-6 3xl:gap-10 px-5">
             <div className="text-gray-700 dark:text-white">
               <label htmlFor="taskName">Task Name:</label>
             </div>
@@ -288,7 +288,7 @@ const AssignModal = ({
             </div>
           </div>
         </div>{" "}
-        <div className="flex items-center gap-2 px-7">
+        <div className="flex items-center px-10 3xl:gap-5">
           <div className="text-gray-700 dark:text-white">
             <label htmlFor="Email">Upload File:</label>
           </div>
@@ -328,12 +328,12 @@ const AssignModal = ({
         </div>
         <div class="px-20 py-3 text-center">
           <button
-            class={`my-2 mb-3 w-full rounded-md px-16 py-1 text-lg font-bold text-white ${loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"}`}
+            class={`my-2 mb-3 w-full rounded-md py-1 text-lg font-bold text-white ${loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"}`}
             onClick={handleSubmitButton}
             disabled={loading}
           >
             {loading ? (
-              <div className={`flex items-center justify-center py-0.5 w-full`}>
+              <div className={`flex items-center justify-center w-full`}>
                 <MoonLoader color="white" loading={loading} size={20} /> <span className="ml-3">Submitting...</span>
               </div>
             ) : (
