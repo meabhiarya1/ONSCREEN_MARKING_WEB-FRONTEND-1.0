@@ -12,27 +12,8 @@ const EditAssingModal = ({
   const [taskName, setTaskName] = useState(currentTask?.taskName);
   const [loader, setLoader] = useState(false);
 
-  // const handleUpdate = () => {
-  //   const updatedTask = {
-  //     ...currentTask,
-  //     taskName: taskName,
-  //   };
-
-    // Update the task in the parent component state
-  //   updateTaskInParent(updatedTask);
-
-  //   // Close modal and reset state
-  //   setShowEditModal(false);
-  //   setShowTaskModal(false);
-  //   setCurrentTask({});
-  // };
-
   useEffect(() => {
     setTaskName(currentTask?.taskName);
-    // setSubjectCode(currentTask?.subjectCode);
-    // setClassName(currentTask?.className);
-    // setTotalFiles(currentTask?.totalFiles);
-    // setStatus(currentTask?.status);
   }, [currentTask]);
 
   const handleSubmitButton = async () => {
