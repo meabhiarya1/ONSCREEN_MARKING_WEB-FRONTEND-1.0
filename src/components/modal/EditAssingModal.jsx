@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const EditAssingModal = ({
   setShowEditModal,
@@ -8,19 +10,12 @@ const EditAssingModal = ({
   updateTaskInParent,
 }) => {
   const [taskName, setTaskName] = useState(currentTask?.taskName);
-  const [subjectCode, setSubjectCode] = useState(currentTask?.subjectCode);
-  const [className, setClassName] = useState(currentTask?.className);
-  const [totalFiles, setTotalFiles] = useState(currentTask?.totalFiles);
-  const [status, setStatus] = useState(currentTask?.status);
+  const [loader, setLoader] = useState(false);
 
   const handleUpdate = () => {
     const updatedTask = {
       ...currentTask,
-      taskName,
-      subjectCode,
-      className,
-      totalFiles,
-      status,
+      taskName: taskName,
     };
 
     // Update the task in the parent component state
@@ -34,87 +29,147 @@ const EditAssingModal = ({
 
   useEffect(() => {
     setTaskName(currentTask?.taskName);
-    setSubjectCode(currentTask?.subjectCode);
-    setClassName(currentTask?.className);
-    setTotalFiles(currentTask?.totalFiles);
-    setStatus(currentTask?.status);
+    // setSubjectCode(currentTask?.subjectCode);
+    // setClassName(currentTask?.className);
+    // setTotalFiles(currentTask?.totalFiles);
+    // setStatus(currentTask?.status);
   }, [currentTask]);
 
+  const handleSubmitButton = async () => {
+    const updatedTask = {
+      ...currentTask,
+      taskName: taskName,
+      userId: currentTask.userId._id,
+    };
+
+    setLoader(true);
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/tasks/update/task/${currentTask._id}`,
+        updatedTask,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      // console.log(response);
+      toast.success("Task updated successfully");
+      setShowEditModal(false);
+      setShowTaskModal(false);
+      setLoader(false);
+      setCurrentTask({});
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating task");
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
-        <h3 className="text-xl font-semibold">Edit Task</h3>
-        <div className="mt-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="w-full max-w-md scale-95 transform rounded-lg bg-white p-8 shadow-xl transition-all duration-300 ease-in-out hover:scale-100">
+        <h3 className="mb-6 text-center text-2xl font-semibold text-gray-900">
+          Edit Task
+        </h3>
+
+        <div className="space-y-6">
           <div>
-            <label htmlFor="taskName">Task Name</label>
+            <label
+              htmlFor="taskName"
+              className="text-lg font-medium text-gray-700"
+            >
+              Task Name
+            </label>
             <input
               type="text"
               id="taskName"
               value={taskName}
               onChange={(e) => setTaskName(e.target.value)}
-              className="mt-1 w-full rounded border px-4 py-2"
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="mt-4">
-            <label htmlFor="subjectCode">Subject Code</label>
+          <div>
+            <label
+              htmlFor="subjectCode"
+              className="text-lg font-medium text-gray-700"
+            >
+              Subject Code
+            </label>
             <input
               type="text"
               id="subjectCode"
-              value={subjectCode}
-              onChange={(e) => setSubjectCode(e.target.value)}
-              className="mt-1 w-full rounded border px-4 py-2"
+              value={currentTask?.subjectCode}
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled
             />
           </div>
 
-          <div className="mt-4">
-            <label htmlFor="className">Class Name</label>
+          <div>
+            <label
+              htmlFor="className"
+              className="text-lg font-medium text-gray-700"
+            >
+              Class Name
+            </label>
             <input
               type="text"
               id="className"
-              value={className}
-              onChange={(e) => setClassName(e.target.value)}
-              className="mt-1 w-full rounded border px-4 py-2"
+              value={currentTask?.className}
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled
             />
           </div>
 
-          <div className="mt-4">
-            <label htmlFor="totalFiles">Total Files</label>
+          <div>
+            <label
+              htmlFor="totalFiles"
+              className="text-lg font-medium text-gray-700"
+            >
+              Total Files
+            </label>
             <input
               type="number"
               id="totalFiles"
-              value={totalFiles}
-              onChange={(e) => setTotalFiles(e.target.value)}
-              className="mt-1 w-full rounded border px-4 py-2"
+              value={currentTask?.totalFiles}
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled
             />
           </div>
 
-          <div className="mt-4">
-            <label htmlFor="status">Status</label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="mt-1 w-full rounded border px-4 py-2"
+          <div>
+            <label
+              htmlFor="folderPath"
+              className="text-lg font-medium text-gray-700"
             >
-              <option value={false}>Pending</option>
-              <option value={true}>Completed</option>
-            </select>
+              Folderpath
+            </label>
+            <input
+              type="text"
+              id="folderPath"
+              value={currentTask?.folderPath}
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled
+            />
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end gap-4">
+        <div className="mt-8 flex justify-end gap-4">
           <button
             onClick={() => setShowEditModal(false)}
-            className="rounded bg-gray-500 px-4 py-2 text-white"
+            className="rounded-md bg-gray-500 px-6 py-2 font-medium text-white transition-all duration-200 hover:bg-gray-600"
           >
             Cancel
           </button>
           <button
-            onClick={handleUpdate}
-            className="rounded bg-blue-500 px-4 py-2 text-white"
+            onClick={handleSubmitButton}
+            className="rounded-md bg-blue-600 px-6 py-2 font-medium text-white transition-all duration-200 hover:bg-blue-700"
           >
-            Save
+            {loader ? (
+              <div class="h-6 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+            ) : (
+              "Update"
+            )}
           </button>
         </div>
       </div>
