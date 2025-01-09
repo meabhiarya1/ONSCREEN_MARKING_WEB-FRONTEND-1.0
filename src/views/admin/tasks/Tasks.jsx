@@ -18,6 +18,7 @@ const Tasks = () => {
   const [currentTask, setCurrentTask] = useState({});
   const [showReAssignModal, setShowReAssignModal] = useState(false);
   const [deleteAssignModal, setDeleteAssign] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ top: 0, right: 0 });
 
   // Function to handle task update after it's submitted from the child modal
   // Update the task in the parent state
@@ -166,7 +167,12 @@ const Tasks = () => {
                   <td className="relative">
                     <button
                       className="mx-2 mt-2 rounded-full text-gray-600 transition-all duration-200 ease-in-out hover:rotate-180 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:hover:text-gray-50"
-                      onClick={() => {
+                      onClick={(e) => {
+                        const buttonRect = e.target.getBoundingClientRect();
+                        setModalPosition({
+                          top: buttonRect.bottom + window.scrollY,
+                          right: 30,
+                        });
                         setShowTaskModal(!showTaskModal);
                         setCurrentTask(filteredTask);
                       }}
@@ -189,7 +195,16 @@ const Tasks = () => {
                     {/* Dropdown */}
                   </td>{" "}
                   {showTaskModal && (
-                    <div className="absolute right-20 top-64 z-50 mt-2 flex w-[200px] flex-col items-center justify-center gap-1 rounded-md bg-white px-4 py-5 shadow-lg dark:bg-navy-700">
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: modalPosition.top,
+                        right: modalPosition.right,
+                        zIndex: 50,
+                        width: "200px",
+                      }}
+                      className="flex flex-col items-center justify-center gap-1 rounded-md bg-white px-4 py-5 shadow-lg dark:bg-navy-700"
+                    >
                       <label
                         htmlFor="html"
                         className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-gray-600 peer-checked:bg-blue-50 peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-gray-700"
@@ -203,7 +218,7 @@ const Tasks = () => {
                       </label>
                       <label
                         htmlFor="css"
-                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-indigo-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-indigo-600"
+                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-indigo-600 hover:text-white peer-checked:bg-blue-50 peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-indigo-600"
                         onClick={() => {
                           setShowEditModal(true);
                           setShowTaskModal(false);
@@ -214,10 +229,9 @@ const Tasks = () => {
                       </label>
                       <label
                         htmlFor="javascript"
-                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-red-600  hover:text-white  peer-checked:bg-blue-50  peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-red-600"
+                        className="hover:bg-zinc-100 relative flex h-10 w-full cursor-pointer select-none items-center justify-between gap-1 rounded-lg bg-gray-100 px-3 font-medium hover:bg-red-600 hover:text-white peer-checked:bg-blue-50 peer-checked:text-blue-500 peer-checked:ring-1 peer-checked:ring-blue-300 dark:bg-navy-900 dark:hover:hover:bg-red-600"
                         onClick={() => {
                           setDeleteAssign(true);
-                          // setCurrentTask(filteredTask);
                         }}
                       >
                         <div>Delete</div>
