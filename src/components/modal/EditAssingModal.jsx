@@ -12,20 +12,20 @@ const EditAssingModal = ({
   const [taskName, setTaskName] = useState(currentTask?.taskName);
   const [loader, setLoader] = useState(false);
 
-  const handleUpdate = () => {
-    const updatedTask = {
-      ...currentTask,
-      taskName: taskName,
-    };
+  // const handleUpdate = () => {
+  //   const updatedTask = {
+  //     ...currentTask,
+  //     taskName: taskName,
+  //   };
 
     // Update the task in the parent component state
-    updateTaskInParent(updatedTask);
+  //   updateTaskInParent(updatedTask);
 
-    // Close modal and reset state
-    setShowEditModal(false);
-    setShowTaskModal(false);
-    setCurrentTask({});
-  };
+  //   // Close modal and reset state
+  //   setShowEditModal(false);
+  //   setShowTaskModal(false);
+  //   setCurrentTask({});
+  // };
 
   useEffect(() => {
     setTaskName(currentTask?.taskName);
@@ -41,7 +41,6 @@ const EditAssingModal = ({
       taskName: taskName,
       userId: currentTask.userId._id,
     };
-
     setLoader(true);
     try {
       const response = await axios.put(
@@ -54,6 +53,7 @@ const EditAssingModal = ({
         }
       );
       // console.log(response);
+      updateTaskInParent(updatedTask);
       toast.success("Task updated successfully");
       setShowEditModal(false);
       setShowTaskModal(false);
