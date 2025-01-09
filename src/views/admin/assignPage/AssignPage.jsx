@@ -71,7 +71,7 @@ const AssignPage = () => {
         {subjects.map((subject) => (
           <tbody className="divide-y divide-gray-200" key={subject._id}>
             <tr>
-              <td className="whitespace-nowrap px-10 py-2 font-medium text-gray-900 dark:text-white">
+              <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                 {subject?.relationName}
               </td>
               <td className="whitespace-nowrap px-14 py-2 text-gray-700 dark:text-white">
