@@ -19,6 +19,9 @@ const Tasks = () => {
   const [showReAssignModal, setShowReAssignModal] = useState(false);
   const [deleteAssignModal, setDeleteAssign] = useState(false);
 
+  // Function to handle task update after it's submitted from the child modal
+  // Update the task in the parent state
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -62,6 +65,14 @@ const Tasks = () => {
         : tasks.filter((task) => task.userId?.email === selectedUser.email)
     );
   }, [selectedUser, tasks, setFilteredTasks]);
+
+  const updateTaskInParent = (updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task._id === updatedTask._id ? updatedTask : task
+      )
+    );
+  };
 
   return (
     <div className=" h-[650px] rounded-lg bg-lightPrimary px-4 py-2 dark:bg-navy-900">
@@ -223,9 +234,9 @@ const Tasks = () => {
             <EditAssingModal
               setShowEditModal={setShowEditModal}
               currentTask={currentTask}
-              users={users}
               setShowTaskModal={setShowTaskModal}
               setCurrentTask={setCurrentTask}
+              updateTaskInParent={updateTaskInParent}
             />
           )}
 

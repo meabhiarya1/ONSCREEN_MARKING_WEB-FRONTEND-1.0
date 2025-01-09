@@ -32,7 +32,7 @@ const AssignPage = () => {
     fetchedData();
   }, []);
 
-  //console.log(subjects);
+  // console.log(currentSubject);
 
   return (
     <div>
