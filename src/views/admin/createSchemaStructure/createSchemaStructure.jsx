@@ -133,7 +133,7 @@ const CreateSchemaStructure = () => {
     };
 
     fetchData();
-  }, [id, token, schemaData, setSavedQuestionData]);
+  }, [id, token, schemaData, setSavedQuestionData, parentId]);
 
   const extractParentId = (key, arrayOfObjects) => {
     for (let obj of arrayOfObjects) {
@@ -429,6 +429,12 @@ const CreateSchemaStructure = () => {
   };
 
   const handleFinalSubmit = async () => {
+
+    if(questionToAllot!=0 || remainingMarks !=0){
+      toast.error("Please Allocate all questions & marks!!!")
+      return;
+    }
+
     const updatedSchemaData = {
       ...schemaData,
       status: true,
@@ -640,7 +646,7 @@ const CreateSchemaStructure = () => {
                   )
                 }
               >
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? "Saving..." : (currentQ[0]?.marksDifference ? "Update" : "Save")}
               </button>
             </div>
           </div>
