@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GiCrossMark } from "react-icons/gi";
 
 const ClassModal = ({
@@ -8,6 +8,20 @@ const ClassModal = ({
   formData,
   setFormData,
 }) => {
+
+  // Make state empty
+  useEffect(()=>{
+    if(isOpen){
+      setFormData({
+        className: "",
+        classCode: "",
+        duration: "",
+        session: "",
+        year: "",
+      })
+    }
+  },[isOpen])
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
