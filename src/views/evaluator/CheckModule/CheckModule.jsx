@@ -51,10 +51,11 @@ const CheckModule = () => {
           answerPdfDetails,
           answerPdfImages,
           extractedImagesFolder,
-          // questionDefinitions,
+          
           task,
         } = response;
         console.log(response);
+        console.log()
         // console.log(answerPdfDetails._id);
         dispatch(setCurrentAnswerPdfId(answerPdfDetails._id));
         dispatch(setCurrentTaskDetails(task));
@@ -76,7 +77,7 @@ const CheckModule = () => {
     const getEvaluatorTasks = async (taskId) => {
       try {
         const res = await getAnswerPdfById(taskId);
-
+console.log(res)
         dispatch(
           setCurrentAnswerPdfImageId(res[evaluatorState.currentIndex - 1]._id)
         );

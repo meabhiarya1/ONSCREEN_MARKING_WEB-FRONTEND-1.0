@@ -208,7 +208,7 @@ export const getSubjectIdImgUrl = async (
 
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL} /api/subjects/relations/getallcoordinatesandschemarelationdetails?subjectRelationId=${subjectRelationId}&questionDefinitionId=${questionDefinitionId}
+      `${process.env.REACT_APP_API_URL}/api/subjects/relations/getallcoordinatesandschemarelationdetails?subjectRelationId=${subjectRelationId}&questionDefinitionId=${questionDefinitionId}
       `,
 
       {

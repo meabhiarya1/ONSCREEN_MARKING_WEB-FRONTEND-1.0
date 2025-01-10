@@ -7,8 +7,10 @@ const EvalQuestionModal = ({ show, onHide }) => {
   const [currentAnswerImageIndex, setCurrentAnswerImageIndex] = useState(1);
   const [questionsPdfPath, setQuestionsPdfPath] = useState(undefined);
   const [answersPdfPath, setAnswersPdfPath] = useState(undefined);
-  const [countQuestions, setCountQuestions] = useState(0);
-  const [countAnswers, setCountAnswers] = useState(0);
+  const [questionImages, setQuestionImages] = useState([]);
+  const [answerImages, setAnswerImages] = useState([]);
+  const [currentQuestions, setCurrentQuestions] = useState(0);
+  const [currentAnswers, setCurrrentAnswers] = useState(0);
 
   const evaluatorState = useSelector((state) => state.evaluator);
 
@@ -22,12 +24,28 @@ const EvalQuestionModal = ({ show, onHide }) => {
         currentQuestionDefinitionId
       );
       console.log(response);
+      const { subjectSchemaRelation, coordinateDetails } = response;
+      if (subjectSchemaRelation && coordinateDetails) {
+        setQuestionsPdfPath(subjectSchemaRelation.questionPdfPath);
+        setAnswersPdfPath(subjectSchemaRelation.answerPdfPath);
+        setQuestionImages(coordinateDetails[0].questionImages);
+        setAnswerImages(coordinateDetails[0].answerImages);
+        // console.log(coordinateDetails[0].answerImages);
+      }
     };
+
     if (currentTaskDetails) {
       fetchImgUrl();
     }
   }, [currentTaskDetails]);
-  // console.log(currentQuestionDefinitionId);
+
+  const prevHandler = () => {
+    if (currentQuestions < questionImages.length) {
+      setCurrentQuestions(currentQuestions - 1);
+    }
+  };
+
+  const nextHandler = () => {};
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
       <div className="scale-85 relative h-[95vh] w-[95vw] max-w-none transform bg-white p-8 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100">
@@ -49,20 +67,29 @@ const EvalQuestionModal = ({ show, onHide }) => {
                 Questions Page
               </div>
             </div>
-            <img
-              src={`${process.env.REACT_APP_API_URL}/uploads/extractedAnswerPdfImages/1733822112065-CS603_1119_page-1/image_${currentQuestionImageIndex}.png`}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                cursor: "pointer",
-              }}
-            />
+            {questionsPdfPath && questionImages.length > 0 && (
+              <img
+                src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/${questionImages[currentQuestions]}`}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  cursor: "pointer",
+                }}
+                alt="question pdf"
+              />
+            )}
             <div className="mt-4 flex items-center  justify-between gap-10">
-              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
+              <button
+                onClick={prevHandler}
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
+              >
                 Previous
               </button>
 
-              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
+              <button
+                onClick={nextHandler}
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
+              >
                 Next
               </button>
             </div>
@@ -76,12 +103,13 @@ const EvalQuestionModal = ({ show, onHide }) => {
               </div>
             </div>
             <img
-              src={`${process.env.REACT_APP_API_URL}/uploads/extractedAnswerPdfImages/1733822112065-CS603_1119_page-1/image_${currentAnswerImageIndex}.png`}
+              src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedAnswerPdfImages/${answersPdfPath}/${answerImages[currentAnswers]}`}
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
                 cursor: "pointer",
               }}
+              alt="answer pdf"
             />
             <div className="mt-4 flex items-center justify-between gap-10">
               <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
