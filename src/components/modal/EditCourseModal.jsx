@@ -12,12 +12,13 @@ const EditCourseModal = ({
   courses,
   setCourses,
 }) => {
+  
   // Populate formData when the modal opens with the current course data
   useEffect(() => {
     if (currentSubject) {
       setFormData(currentSubject);
     }
-  }, [currentSubject, setFormData]);
+  }, [currentSubject, setFormData,isEditOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,6 +58,7 @@ const EditCourseModal = ({
     }
     setIsEditOpen(false);
   };
+
 
   return (
     <div>
