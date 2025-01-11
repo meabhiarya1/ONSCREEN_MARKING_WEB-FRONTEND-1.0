@@ -42,8 +42,9 @@ const Dashboard = () => {
       try {
         const response = await getAllEvaluatorTasks();
         if (response?.data) {
-          console.log(response.data)
-          setAllTasks(response.data);
+          if (Array.isArray(response?.data)) {
+            setAllTasks(response.data);
+          }
         }
       } catch (error) {
         console.log(error);

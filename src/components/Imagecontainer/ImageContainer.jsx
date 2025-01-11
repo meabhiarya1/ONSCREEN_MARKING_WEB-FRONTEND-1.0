@@ -83,8 +83,8 @@ const ImageContainer = (props) => {
     evaluatorState.rerender,
   ]);
   // Handle clicks outside of selected icon
-  // Handle double-click outside of the specific image container
 
+  // Handle double-click outside of the specific image container
   useEffect(() => {
     const handleOutsideDoubleClick = (event) => {
       if (selectedIcon !== null) {
@@ -139,8 +139,8 @@ const ImageContainer = (props) => {
       const imageHeight = imageElement ? imageElement.height : 0;
 
       // Scale the canvas size based on the scale factor
-      const scaledWidth = imageWidth * scale;
-      const scaledHeight = imageHeight * scale;
+      const scaledWidth = imageWidth;
+      const scaledHeight = imageHeight;
 
       setCanvasSize({ width: scaledWidth, height: scaledHeight });
 
@@ -148,7 +148,8 @@ const ImageContainer = (props) => {
       canvas.width = scaledWidth;
       canvas.height = scaledHeight;
     }
-  }, [scale]); // Run effect every time scale changes
+  }, [isDrawing]); // Run effect every time scale changes
+
   // Draw on the canvas
   useEffect(() => {
     if (startDrawing) {
@@ -188,9 +189,6 @@ const ImageContainer = (props) => {
     }
   }, [drawing, scale, startDrawing, currentStrokeWidth, selectedColor]);
 
-  const handleIconDoubleClick = (index) => {
-    setSelectedIcon(index); // Mark the icon as selected
-  };
   useEffect(() => {
     setScalePercent(Math.floor(scale * 100));
   }, [scale]);
@@ -205,6 +203,9 @@ const ImageContainer = (props) => {
     };
   }, []);
 
+  const handleIconDoubleClick = (index) => {
+    setSelectedIcon(index); // Mark the icon as selected
+  };
   // Update cursor position
   const handleBaseMouseMove = throttle((event) => {
     setMouseBasePos({ x: event.clientX, y: event.clientY });
@@ -462,22 +463,24 @@ const ImageContainer = (props) => {
 
   return (
     <>
-      <Tools
-        scalePercent={scalePercent}
-        handleZoomMenu={handleZoomMenu}
-        isZoomMenuOpen={isZoomMenuOpen}
-        ZoomModal={ZoomModal}
-        zoomIn={zoomIn}
-        zoomOut={zoomOut}
-        isDrawing={isDrawing}
-        setIsDrawing={setIsDrawing}
-        iconModal={iconModal}
-        setIconModal={setIconModal}
-        currentIcon={currentIcon}
-        IconModal={IconModal}
-        setSelectedColor={setSelectedColor}
-        setCurrentStrokeWidth={setCurrentStrokeWidth}
-      />
+      <div style={{ height: "8%" }}>
+        <Tools
+          scalePercent={scalePercent}
+          handleZoomMenu={handleZoomMenu}
+          isZoomMenuOpen={isZoomMenuOpen}
+          ZoomModal={ZoomModal}
+          zoomIn={zoomIn}
+          zoomOut={zoomOut}
+          isDrawing={isDrawing}
+          setIsDrawing={setIsDrawing}
+          iconModal={iconModal}
+          setIconModal={setIconModal}
+          currentIcon={currentIcon}
+          IconModal={IconModal}
+          setSelectedColor={setSelectedColor}
+          setCurrentStrokeWidth={setCurrentStrokeWidth}
+        />
+      </div>
 
       {/* Image Viewer Section */}
 
@@ -488,7 +491,7 @@ const ImageContainer = (props) => {
           overflow: "auto",
           position: "relative",
           width: "100%",
-          height: "80vh",
+          height: "92%",
           cursor: isDrawing ? "url('/toolImg/Handwriting.cur'), auto" : "",
         }}
         onClick={handleImageClick} // Handle image click for dropping the icon
@@ -503,6 +506,7 @@ const ImageContainer = (props) => {
         }}
       >
         <div
+          className="relative"
           style={{
             transform: `scale(${scale})`,
             transformOrigin: "top left",
@@ -516,6 +520,23 @@ const ImageContainer = (props) => {
           <img
             src={`${process.env.REACT_APP_API_URL}\\${baseImageUrl}\\image_${currentIndex}.png`}
             alt="Viewer"
+            className="block"
+          />
+          {/* Render the canvas for drawing */}
+          <canvas
+            // style={{ backgroundColor: "blue" }}
+            ref={canvasRef}
+            width={canvasSize.width}
+            height={canvasSize.height}
+            className={`absolute top-0 z-10 pointer-events-${
+              isDrawing ? "auto" : "none"
+            }`}
+            // style={{
+            //   position: "absolute",
+            //   top: 0,
+            //   left: 0,
+            //   pointerEvents: isDrawing ? "auto" : "none", // Only allow drawing in drawing mode
+            // }}
           />
           {/* Render all placed icons */}
           {icons.map((icon, index) => {
@@ -592,19 +613,6 @@ const ImageContainer = (props) => {
               </div>
             );
           })}
-
-          {/* Render the canvas for drawing */}
-          <canvas
-            ref={canvasRef}
-            width={canvasSize.width}
-            height={canvasSize.height}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              pointerEvents: isDrawing ? "auto" : "none", // Only allow drawing in drawing mode
-            }}
-          />
         </div>
         {/* Icon following the mouse while dragging */}
         {isDraggingIcon && currentIcon && (
