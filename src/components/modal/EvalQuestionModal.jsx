@@ -2,6 +2,7 @@ import { getSubjectIdImgUrl } from "components/Helper/Evaluator/EvalRoute";
 import React, { useEffect, useState } from "react";
 import { GiCrossMark } from "react-icons/gi";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 const EvalQuestionModal = ({ show, onHide }) => {
   const [currentQuestionImageIndex, setCurrentQuestionImageIndex] = useState(1);
   const [currentAnswerImageIndex, setCurrentAnswerImageIndex] = useState(1);
@@ -23,7 +24,6 @@ const EvalQuestionModal = ({ show, onHide }) => {
         currentTaskDetails.subjectSchemaRelationId,
         currentQuestionDefinitionId
       );
-      console.log(response);
       const { subjectSchemaRelation, coordinateDetails } = response;
       if (subjectSchemaRelation && coordinateDetails) {
         setQuestionsPdfPath(subjectSchemaRelation.questionPdfPath);
@@ -38,14 +38,43 @@ const EvalQuestionModal = ({ show, onHide }) => {
       fetchImgUrl();
     }
   }, [currentTaskDetails]);
-
-  const prevHandler = () => {
-    if (currentQuestions < questionImages.length) {
+  console.log(questionImages, currentQuestions);
+  const prevQuestionHandler = () => {
+    const toastId = "firstPageWarning";
+    if (currentQuestions > 0) {
       setCurrentQuestions(currentQuestions - 1);
+    } else {
+      toast.warn("You are already on the first page!", { toastId });
+    }
+  };
+  const nextQuestionHandler = () => {
+    const toastId = "lastPageWarning";
+    if (currentQuestions < questionImages.length - 1) {
+      setCurrentQuestions(currentQuestions + 1);
+    } else {
+      toast.warn("last page reached", { toastId });
     }
   };
 
-  const nextHandler = () => {};
+
+
+  const prevAnswerHandler = () => {
+    const toastId = "firstPageWarning";
+    if (currentAnswers > 0) {
+      setCurrrentAnswers(currentAnswers - 1);
+    } else {
+      toast.warn("You are already on the first page!", { toastId });
+    }
+  };
+  const nextAnswerHandler = () => {
+    const toastId = "lastPageWarning";
+    if (currentAnswers < answerImages.length - 1) {
+      setCurrrentAnswers(currentAnswers + 1);
+    } else {
+      toast.warn("last page reached", { toastId });
+    }
+  };
+ 
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
       <div className="scale-85 relative h-[95vh] w-[95vw] max-w-none transform bg-white p-8 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100">
@@ -61,33 +90,31 @@ const EvalQuestionModal = ({ show, onHide }) => {
         {/* Two Sections Side-by-Side */}
         <div className="grid h-full grid-cols-2 gap-4">
           {/* Left Section */}
-          <div className="relative flex flex-col items-center justify-between overflow-y-auto rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="text-lg font-bold text-gray-800 dark:text-white">
+          <div className="relative flex h-full flex-col items-center justify-between overflow-y-auto rounded-lg border border-gray-300 bg-gray-600 p-6 shadow-lg">
+            <div className=" sticky top-0 flex items-center justify-between ">
+              <div className=" text-lg font-bold text-gray-800 dark:text-white">
                 Questions Page
               </div>
             </div>
+            {/* <div className="flex h-[70vh] w-full items-center justify-center overflow-y-auto "> */}
             {questionsPdfPath && questionImages.length > 0 && (
               <img
                 src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/${questionImages[currentQuestions]}`}
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  cursor: "pointer",
-                }}
+                // className=" max-w-full max-h-full object-cover"
                 alt="question pdf"
               />
             )}
-            <div className="mt-4 flex items-center  justify-between gap-10">
+            {/* </div> */}
+            <div className="sticky bottom-0 mt-4 flex items-center justify-between gap-10">
               <button
-                onClick={prevHandler}
+                onClick={prevQuestionHandler}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
               >
                 Previous
               </button>
 
               <button
-                onClick={nextHandler}
+                onClick={nextQuestionHandler}
                 className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
               >
                 Next
@@ -96,8 +123,8 @@ const EvalQuestionModal = ({ show, onHide }) => {
           </div>
 
           {/* Right Section */}
-          <div className="relative flex flex-col items-center justify-between overflow-y-auto rounded-lg border border-gray-300 bg-white p-6 shadow-lg">
-            <div className="mb-4 flex items-center justify-between">
+          <div className="relative flex flex-col items-center justify-between overflow-y-auto rounded-lg border border-blue-300 bg-gray-600  p-6 shadow-lg">
+            <div className="sticky top-0  mb-4 flex items-center justify-between">
               <div className="text-lg font-bold text-gray-800 dark:text-white">
                 Answer Page
               </div>
@@ -111,12 +138,12 @@ const EvalQuestionModal = ({ show, onHide }) => {
               }}
               alt="answer pdf"
             />
-            <div className="mt-4 flex items-center justify-between gap-10">
-              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
+            <div className="sticky bottom-0 mt-4 flex items-center justify-between gap-10">
+              <button onClick={prevAnswerHandler} className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
                 Previous
               </button>
 
-              <button className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
+              <button onClick={nextAnswerHandler} className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
                 Next
               </button>
             </div>
