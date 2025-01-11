@@ -54,8 +54,47 @@ const CreateSchemaStructure = () => {
     fetchedData();
   }, [id, token]);
 
+  // console.log(schemaData);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/api/schemas/getall/questiondefinitions/${id}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       const data = response?.data?.data || []; // Simplified fallback
+  //       console.log(data);
+  //       setSavedQuestionData(data);
+
+  //       const totalMarksUsed = data.reduce(
+  //         (acc, question) => acc + (question?.maxMarks || 0),
+  //         0
+  //       );
+  //       setRemainingMarks((schemaData?.maxMarks || 0) - totalMarksUsed);
+
+  //       const remainingQuestions =
+  //         (schemaData?.totalQuestions || 0) - data.length;
+  //       setQuestionToAllot(remainingQuestions > 0 ? remainingQuestions : 0);
+
+  //       // toast.success("Question data fetched successfully");
+  //     } catch (error) {
+  //       console.error("Error fetching schema data:", error);
+  //       setSavedQuestionData([]); // Reset on error
+  //       // toast.error(error?.response?.data?.message || "Failed to fetch data");
+  //     }
+  //   };
+
+  //   if (id && token) fetchData(); // Prevent unnecessary calls if missing params
+  // }, [id, token]);
+
   useEffect(() => {
-    const fetchedData = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/schemas/getall/questiondefinitions/${id}`,
@@ -65,27 +104,36 @@ const CreateSchemaStructure = () => {
             },
           }
         );
-        const data = response?.data.data || []; // Fallback to an empty array if no data
+        // console.log(schemaData)
+        const data = response?.data?.data || [];
         setSavedQuestionData(data);
-        setRemainingMarks(
-          schemaData?.maxMarks -
-            data?.reduce((acc, question) => acc + question?.maxMarks, 0)
+
+        console.log(data);
+
+        const totalMarksUsed = data.reduce(
+          (acc, question) => acc + (question?.maxMarks || 0),
+          0
         );
-        setQuestionToAllot(
-          schemaData?.totalQuestions - data?.length === 0 ||
-            schemaData?.totalQuestions < data?.length
-            ? 0
-            : schemaData?.totalQuestions - data?.length
-        );
-        // toast.success("Question data fetched successfully");
+        console.log(totalMarksUsed);
+        setRemainingMarks((schemaData?.maxMarks || 0) - totalMarksUsed);
+
+        const remainingQuestions =
+          (schemaData?.totalQuestions || 0) - data.length;
+        setQuestionToAllot(remainingQuestions > 0 ? remainingQuestions : 0);
+
+        // console.log(totalMarksUsed, remainingQuestions)
       } catch (error) {
         console.error("Error fetching schema data:", error);
-        // toast.error(error.response.data.message);
-        setSavedQuestionData([]); // Reset to an empty array on error
+
+        // ✅ Ensure the state resets to an empty array on 404 or other errors
+        if (error.response?.status === 404) {
+          setSavedQuestionData([]);
+        }
       }
     };
-    fetchedData();
-  }, [id, token, schemaData, questionToAllot]);
+
+    fetchData();
+  }, [id, token, schemaData, setSavedQuestionData, parentId]);
 
   const extractParentId = (key, arrayOfObjects) => {
     for (let obj of arrayOfObjects) {
@@ -130,9 +178,6 @@ const CreateSchemaStructure = () => {
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
 
-  // const remainingMarks =
-  //   schemaData?.maxMarks -
-  //   savedQuestionData?.reduce((acc, question) => acc + question?.maxMarks, 0);
 
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
@@ -204,7 +249,13 @@ const CreateSchemaStructure = () => {
     }
 
     if (maxMarks > remainingMarks)
-      return toast.error("Marks cannot be greater than remaining marks");
+      return toast.error("Max Marks cannot be greater than remaining marks");
+
+    if (minMarks > remainingMarks || minMarks > maxMarks)
+      return toast.error(
+        "Min Marks cannot be greater than remaining marks or max marks"
+      );
+   
     if (maxMarks % marksDifference != 0 || maxMarks < marksDifference)
       return toast.error(
         "Marks Difference cannot be greater than Max marks or Marks Difference Always Multiple of Max marks"
@@ -377,7 +428,13 @@ const CreateSchemaStructure = () => {
     }
   };
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
+
+    if(questionToAllot!=0 || remainingMarks !=0){
+      toast.error("Please Allocate all questions & marks!!!")
+      return;
+    }
+
     const updatedSchemaData = {
       ...schemaData,
       status: true,
@@ -387,7 +444,7 @@ const CreateSchemaStructure = () => {
     if (remainingMarks) return toast.error("Remaining marks should be 0");
 
     try {
-      const response = axios.put(
+      const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/schemas/update/schema/${id}`,
         updatedSchemaData,
         {
@@ -396,9 +453,11 @@ const CreateSchemaStructure = () => {
           },
         }
       );
+      // console.log(response)
       toast.success("Schema data updated successfully");
     } catch (error) {
       toast.error(error.response.data.message);
+      // console.log(error)
     }
   };
 
@@ -410,16 +469,19 @@ const CreateSchemaStructure = () => {
 
     // console.log("folderId", folderId);
 
+    // console.log(remainingMarks);
     const handleMarkChange = (inputBoxName, inputValue) => {
       if (inputBoxName.includes("maxMarks")) {
         if (inputValue > remainingMarks) {
-          toast.error("Marks cannot be greater than remaining marks");
+          toast.error("Max Marks cannot be greater than remaining marks");
           setError(true);
           return;
         }
       } else if (inputBoxName.includes("marksDifference")) {
         if (inputValue > remainingMarks) {
-          toast.error("Marks cannot be greater than remaining marks");
+          toast.error(
+            "Marks Difference cannot be greater than remaining marks"
+          );
           setError(true);
           return;
         }
@@ -584,7 +646,7 @@ const CreateSchemaStructure = () => {
                   )
                 }
               >
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? "Saving..." : (currentQ[0]?.marksDifference ? "Update" : "Save")}
               </button>
             </div>
           </div>
@@ -647,13 +709,11 @@ const CreateSchemaStructure = () => {
     <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
       <div className="flex justify-between">
         <span className="cursor-pointer rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">
-          {console.log(questionToAllot, remainingMarks, schemaData)}
-          Questions To Allot:{" "}
-          {questionToAllot ? questionToAllot : schemaData?.totalQuestions}
+          {/* {console.log(questionToAllot, remainingMarks, schemaData)} */}
+          Questions To Allot: {questionToAllot ? questionToAllot : 0}
         </span>
         <span className="cursor-pointer rounded-lg bg-green-600 p-2 text-white hover:bg-green-700">
-          Marks To Allot:{" "}
-          {remainingMarks ? remainingMarks : schemaData?.maxMarks}
+          Marks To Allot: {remainingMarks ? remainingMarks : 0}
         </span>
         <span
           className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"

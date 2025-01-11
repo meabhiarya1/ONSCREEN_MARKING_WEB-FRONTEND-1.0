@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const getUserDetails = async (token) => {
   const id = localStorage.getItem("userId");
+
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/auth/${id}`,
@@ -13,7 +14,6 @@ export const getUserDetails = async (token) => {
     );
     return response; // return the full response to handle status outside
   } catch (error) {
-    console.error(error);
     return error.response; // return full error response to handle status outside
   }
 };

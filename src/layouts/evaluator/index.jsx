@@ -4,6 +4,7 @@ import Navbar from "components/navbar";
 import Sidebar from "components/sidebar";
 import Footer from "components/footer/Footer";
 import routes from "routes.js";
+import NotFoundEvaluator from "layouts/NotFound/Evaluator/NotFoundEvaluator";
 
 export default function Evaluator(props) {
   const { ...rest } = props;
@@ -16,7 +17,6 @@ export default function Evaluator(props) {
       window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
     );
   }, []);
-
 
   React.useEffect(() => {
     getActiveRoute(routes);
@@ -57,9 +57,8 @@ export default function Evaluator(props) {
       }
     });
   };
-// console.log(getRoutes(routes))
+  // console.log(getRoutes(routes))
   document.documentElement.dir = "ltr";
-
 
   return (
     <div className="flex h-full w-full">
@@ -83,6 +82,7 @@ export default function Evaluator(props) {
                   path="/"
                   element={<Navigate to="/evaluator/default" replace />}
                 />
+                <Route path="*" element={<NotFoundEvaluator />} />
               </Routes>
             </div>
             <div className="p-3">

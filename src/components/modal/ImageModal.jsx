@@ -253,7 +253,7 @@ const ImageModal = ({
             <img
               src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedQuestionPdfImages/${questionsPdfPath}/image_${currentImageIndex}.png`} // Use the current image URL
               alt={`Slide ${currentImageIndex}`}
-              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto cursor-not-allowed ${
+              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto cursor-pointer ${
                 checkboxStatus[currentImageIndex]
                   ? "border-2 border-green-700 shadow-lg hover:shadow-2xl"
                   : ""
@@ -377,7 +377,7 @@ const ImageModal = ({
             <img
               src={`${process.env.REACT_APP_API_URL}/uploadedPdfs/extractedAnswerPdfImages/${answersPdfPath}/image_${currentImageIndex}.png`}
               alt={`Slide ${currentImageIndex}`}
-              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto cursor-not-allowed ${
+              className={`mb-2 h-[350px] sm:h-[650px] xl:h-[670px] w-full rounded-lg object-contain overflow-auto cursor-pointer ${
                 checkboxStatus[currentImageIndex]
                   ? "border-2 border-green-700"
                   : ""

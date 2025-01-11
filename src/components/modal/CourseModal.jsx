@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GiCrossMark } from "react-icons/gi";
 
 const CourseModal = ({
@@ -9,6 +9,16 @@ const CourseModal = ({
   formData,
 }) => {
 
+  // Make state empty
+  useEffect(()=>{
+      if(isOpen){
+        setFormData({
+          name: "",
+          code: "",
+        });
+      }
+    },[isOpen])
+    
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,6 +27,7 @@ const CourseModal = ({
       [name]: value,
     });
   };
+
 
   return (
     <div>

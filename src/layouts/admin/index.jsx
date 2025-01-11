@@ -4,6 +4,7 @@ import Navbar from "components/navbar";
 import Sidebar from "components/sidebar";
 import Footer from "components/footer/Footer";
 import routes from "routes.js";
+import NotFound from "layouts/NotFound/Admin/NotFound";
 
 export default function Admin(props) {
   const { ...rest } = props;
@@ -91,6 +92,10 @@ export default function Admin(props) {
                 <Route
                   path="/"
                   element={<Navigate to="/admin/default" replace />}
+                />
+                <Route
+                  path="*"
+                  element={<NotFound />}
                 />
               </Routes>
             </div>
