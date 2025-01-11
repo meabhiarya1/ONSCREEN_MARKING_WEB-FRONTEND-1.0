@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +27,8 @@ export function SignIn() {
   const [verify, setVerify] = useState(false);
 
   const navigate = useNavigate();
+
+  const [otpdata, setOtpsdata] = useState(["", "", "", "", "", ""]);
 
   useEffect(() => {
     setUser({
@@ -86,14 +88,41 @@ export function SignIn() {
     }
   };
 
+  // Helper function to handle input changes
+  const handleChange = (value, index) => {
+    if (/^\d?$/.test(value)) {
+      const newOtp = [...otpdata];
+      newOtp[index] = value;
+      setOtpsdata(newOtp);
+      setUser({ ...user, otp: otpdata.join("") });
+    }
+  };
+
+  // Helper function to handle navigation between input fields
+  const handleKeyUp = (e, index) => {
+    if (e.key === "Backspace" && !otpdata[index] && index > 0) {
+      e.target.previousElementSibling?.focus();
+    } else if (e.key !== "Backspace" && index < 5) {
+      e.target.nextElementSibling?.focus();
+    }
+  };
+
   const verifyOTP = async () => {
     setVerify(true);
     const userId = localStorage.getItem("userId");
-    const otp = user.otp;
+
+    if (otpdata.some((digit) => digit === "")) {
+      toast.error("Please fill all OTP fields");
+      setVerify(false);
+      return;
+    }
+
+    const otpString = otpdata.join(""); // Combine individual OTP values into a string
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auth/verify`,
-        { userId, otp }
+        { userId, otp: otpString }
       );
       toast.success(response.data.message);
       if (localStorage.getItem("token")) localStorage.removeItem("token");
@@ -153,62 +182,6 @@ export function SignIn() {
         otp: "",
       });
     }
-  };
-
-  const [otps, setOtps] = useState(Array(6).fill("")); // Array with 6 empty strings
-  const inputRefs = useRef([]); // Array of refs for each input field
-
-  const handleKeyDown = (e) => {
-    if (
-      !/^[0-9]{1}$/.test(e.key) &&
-      e.key !== "Backspace" &&
-      e.key !== "Delete" &&
-      e.key !== "Tab" &&
-      !e.metaKey
-    ) {
-      e.preventDefault();
-    }
-
-    if (e.key === "Delete" || e.key === "Backspace") {
-      const index = inputRefs.current.indexOf(e.target);
-      if (index > 0) {
-        setOtps((prevOtp) => [
-          ...prevOtp.slice(0, index - 1),
-          "",
-          ...prevOtp.slice(index),
-        ]);
-        inputRefs.current[index - 1].focus();
-      }
-    }
-  };
-
-  const handleInput = (e) => {
-    const { target } = e;
-    const index = inputRefs.current.indexOf(target);
-    if (target.value) {
-      setOtps((prevOtp) => [
-        ...prevOtp.slice(0, index),
-        target.value,
-        ...prevOtp.slice(index + 1),
-      ]);
-      if (index < otp.length - 1) {
-        inputRefs.current[index + 1].focus();
-      }
-    }
-  };
-
-  const handleFocus = (e) => {
-    e.target.select();
-  };
-
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text");
-    if (!new RegExp(`^[0-9]{${otp.length}}$`).test(text)) {
-      return;
-    }
-    const digits = text.split("");
-    setOtps(digits);
   };
 
   return (
@@ -328,29 +301,20 @@ export function SignIn() {
                       }
                     }}
                   /> */}
-                  
-                <section className="dark:bg-dark bg-white py-2">
-                  <div className="container">
-                    <form id="otp-form" className="flex gap-1 sm:gap-2">
-                      {otps.map((digit, index) => (
-                        <input
-                          key={index}
-                          type="text"
-                          maxLength={1}
-                          value={digit}
-                          onChange={handleInput}
-                          onKeyDown={handleKeyDown}
-                          onFocus={handleFocus}
-                          onPaste={handlePaste}
-                          ref={(el) => (inputRefs.current[index] = el)}
-                          className="shadow-xs border-stroke text-gray-5 dark:border-dark-3 flex w-[44px] items-center justify-center rounded-lg border border-gray-500 bg-white p-1 text-center text-lg font-medium outline-none dark:bg-white/5 sm:text-2xl"
-                        />
-                      ))}
-                      {/* You can conditionally render a submit button here based on otp length */}
-                    </form>
-                  </div>
-                </section>
 
+                <div className="flex gap-2">
+                  {otpdata.map((digit, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength={1}
+                      className="bg-transparent focus:ring-sky-500 focus:border-sky-500 w-12 rounded-md border border-gray-500 px-2 py-2 text-center text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
+                      value={digit}
+                      onChange={(e) => handleChange(e.target.value, index)}
+                      onKeyUp={(e) => handleKeyUp(e, index)}
+                    />
+                  ))}
+                </div>
               </div>
 
               <div className="col-span-6 items-center gap-2 sm:justify-between">

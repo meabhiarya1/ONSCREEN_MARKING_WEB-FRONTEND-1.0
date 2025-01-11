@@ -47,8 +47,13 @@ const App = () => {
     fetchUser();
   }, [token, setUser]);
 
+
   useEffect(() => {
-    if (!token || user.message === "Unauthorized") {
+    if (
+      !token ||
+      user.message === "Unauthorized" ||
+      user.message === "User not found"
+    ) {
       // Redirect to sign-in only if not already on an auth route
       if (!location.pathname.startsWith("/auth")) {
         navigate("/auth/sign-in");
