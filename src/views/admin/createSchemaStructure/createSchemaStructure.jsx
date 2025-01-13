@@ -706,6 +706,7 @@ const CreateSchemaStructure = () => {
     );
   };
 
+  
   return (
     // <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
     <div
