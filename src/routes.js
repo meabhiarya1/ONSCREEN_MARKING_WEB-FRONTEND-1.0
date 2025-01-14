@@ -20,6 +20,7 @@ import Tasks from "views/admin/tasks/Tasks";
 import AssignPage from "views/admin/assignPage/AssignPage";
 import { BiTask } from "react-icons/bi";
 import CheckModule from "views/evaluator/CheckModule/CheckModule";
+import Booklets from "views/admin/booklets/Booklets";
 
 const routes = [
   {
@@ -136,6 +137,16 @@ const routes = [
     component: <AssignPage />,
     hidden: true,
   },
+
+  {
+    name: "Booklets",
+    layout: "/admin",
+    path: "/booklets",
+    icon: <MdHome className="h-6 w-6" />,
+    component: <Booklets />,
+    hidden: false,
+  },
+
   {
     name: "Evaluator Dashboard",
     layout: "/evaluator",
@@ -144,15 +155,6 @@ const routes = [
     component: <MainDashboard />,
     hidden: false,
   },
-
-  // {
-  //   name: "Evaluator Image Area",
-  //   layout: "/evaluator",
-  //   path: "task/:id",
-  //   icon: <MdHome className="h-6 w-6" />,
-  //   component: <CheckModule />,
-  //   hidden: true,
-  // },
 
   {
     name: "Assigned Tasks",

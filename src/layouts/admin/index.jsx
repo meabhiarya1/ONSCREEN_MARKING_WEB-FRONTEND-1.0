@@ -65,9 +65,6 @@ export default function Admin(props) {
     });
   };
 
-
-
-
   document.documentElement.dir = "ltr";
 
 

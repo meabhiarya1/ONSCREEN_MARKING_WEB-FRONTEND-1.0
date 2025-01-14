@@ -69,7 +69,6 @@ const QuestionDefinition = (props) => {
 
   const handleListClick = async (item, mark, index) => {
     const { _id, answerPdfId, allottedMarks, maxMarks } = item;
-    console.log(item);
 
     if (allottedMarks + mark > maxMarks) {
       alert("You have exceeded the maximum marks for this question");
@@ -253,26 +252,27 @@ const QuestionDefinition = (props) => {
       console.log(error);
     }
   };
+
   return (
-    <div className="h-[90vh]">
-      <div className="flex h-[7%]">
-        <buTton
+    <div className="h-[100%]">
+      <div className="flex  h-[7%] w-[100%]">
+        <button
           type="button"
-          className="mb-2  w-[100%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          className="mb-2  w-[50%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
           onClick={handlePrevBooklet}
         >
           {"<"} Prev Booklet
-        </buTton>
-        <buTton
+        </button>
+        <button
           type="button"
-          className="mb-2  w-[100%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          className="mb-2  w-[50%] bg-[#33597a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#26445e] focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
           onClick={handleNextBooklet}
         >
           Next Booklet {">"}
-        </buTton>
+        </button>
       </div>
 
-      <div className="relative h-[73%] overflow-hidden shadow-md sm:rounded-lg">
+      <div className="relative h-[80%] overflow-hidden shadow-md sm:rounded-lg">
         {/* Scrollable content */}
         <div className="h-[calc(100%-4rem)] overflow-y-auto">
           {" "}
@@ -316,7 +316,7 @@ const QuestionDefinition = (props) => {
         </div>
       </div>
 
-      <div className="my-2 mt-4">
+      <div className=" mt-2 h-[10%]">
         <button
           type="button"
           className="mb-2  w-[100%] border border-red-700 px-5 py-2.5 text-center text-sm font-medium text-red-700 hover:bg-red-800 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-red-500 dark:text-red-500 dark:hover:bg-red-600 dark:hover:text-white dark:focus:ring-red-900"

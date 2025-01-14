@@ -38,7 +38,7 @@ const Upload = () => {
 
   const downloadSampleCsv = () => {
     // Define the CSV headings
-    const csvHeadings = ["Name", "Mobile", "Email", "Password"];
+    const csvHeadings = ["name", "mobile", "email", "password"];
 
     // Convert the headings to CSV format (comma-separated and new line at the end)
     const csvContent = csvHeadings.join(",") + "\n";
@@ -87,13 +87,13 @@ const Upload = () => {
         role: selectedRole,
         permissions:
           selectedRole === "admin"
-            ? routes.map((route) => route.name)
+            ? routes.map((route) => route?.name)
             : routes
-              .filter(
-                (route) =>
-                  route.name === "Main Dashboard" || route.name === "Profile"
-              )
-              .map((route) => route.name),
+                .filter(
+                  (route) =>
+                    route?.name === "Main Dashboard" || route?.name === "Profile"
+                )
+                .map((route) => route?.name),
       }));
 
       // Check for duplicate emails
@@ -163,16 +163,20 @@ const Upload = () => {
   };
 
   return (
-    <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 2xl:grid-cols-3 py-4">
-      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:border-indigo-500 dark:bg-navy-700 dark:text-white">
+    <div className="mt-5 grid grid-cols-1 gap-5 py-4 sm:grid-cols-2 2xl:grid-cols-3">
+      <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 dark:text-white">
         <div>
-          <h3 className="text-md sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">Upload CSV File</h3>
-          <p className="text-sm sm:text-md text-gray-700 dark:text-white">User Creation</p>
+          <h3 className="text-md mb-2 font-semibold text-gray-900 dark:text-white sm:text-xl">
+            Upload CSV File
+          </h3>
+          <p className="sm:text-md text-sm text-gray-700 dark:text-white">
+            User Creation
+          </p>
         </div>
 
-        <div className="flex justify-between items-center sm:mt-2">
+        <div className="flex items-center justify-between sm:mt-2">
           <div
-            className="text-sm sm:text-md lg:text-lg group mt-4 inline-flex items-center gap-2 font-medium text-blue-600 hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 transition-all"
+            className="sm:text-md group mt-4 inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-all hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 lg:text-lg"
             onClick={downloadSampleCsv}
           >
             <span>Download Sample</span>
@@ -181,7 +185,7 @@ const Upload = () => {
 
           <div className="mt-4 inline-flex items-center gap-2">
             <label
-              className="text-sm sm:text-md lg:text-lg group inline-flex cursor-pointer items-center gap-1 font-medium text-blue-600 hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 transition-all"
+              className="sm:text-md group inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-blue-600 transition-all hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 lg:text-lg"
               onClick={() => disabled && toast.warning("Please select a role")}
             >
               Upload CSV
@@ -194,8 +198,8 @@ const Upload = () => {
               />
               <FaCloudUploadAlt className="m-1 text-2xl" />
             </label>
-            <span className="text-sm sm:text-md lg:text-lg max-w-xs overflow-hidden text-ellipsis">
-              {file.name}
+            <span className="sm:text-md max-w-xs overflow-hidden text-ellipsis text-sm lg:text-lg">
+              {file?.name}
             </span>
           </div>
         </div>
@@ -203,15 +207,18 @@ const Upload = () => {
         {loading && <div className="mt-4 text-blue-600">Uploading...</div>}
       </article>
 
-      <div className="flex flex-col dark:bg-navy-700 px-6 py-4 rounded-lg border border-gray-200 shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:border-indigo-500 bg-white">
-        <label htmlFor="userRole" className="text-sm sm:text-md lg:text-lg font-medium text-gray-700 dark:text-white">
+      <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
+        <label
+          htmlFor="userRole"
+          className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
+        >
           Select Role
         </label>
         <select
           id="userRole"
           value={selectedRole}
           onChange={handleChange}
-          className="text-sm sm:text-md lg:text-lg rounded-lg p-1 sm:p-3 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+          className="sm:text-md rounded-lg border border-gray-300 p-1 text-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 lg:text-lg"
         >
           <option value="null">Select Role</option>
           <option value="admin">Admin</option>
@@ -220,7 +227,7 @@ const Upload = () => {
         </select>
 
         <div
-          className="text-sm sm:text-md rounded lg:text-lg bg-indigo-600 p-2 sm:px-4 sm:py-2 mt-3 font-medium text-white hover:bg-indigo-700 transition duration-300 ease-in-out focus:outline-none focus:ring active:text-indigo-500 cursor-pointer text-center"
+          className="sm:text-md mt-3 cursor-pointer rounded bg-indigo-600 p-2 text-center text-sm font-medium text-white transition duration-300 ease-in-out hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500 sm:px-4 sm:py-2 lg:text-lg"
           onClick={handleSubmit}
         >
           Upload CSV
