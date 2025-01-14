@@ -96,7 +96,7 @@ export default function Admin(props) {
                 />
               </Routes>
             </div>
-            <div className="p-3">
+            <div className="p-3 h-28">
               <Footer />
             </div>
           </div>

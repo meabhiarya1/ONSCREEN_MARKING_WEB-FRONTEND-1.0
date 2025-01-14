@@ -23,6 +23,8 @@ const CreateUser = () => {
   const [visibility, setVisibility] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [selectedChips, setSelectedChips] = useState([]);
+  const [showSubjects, setShowSubjects] = useState(false);
+  const [showMaximumAllot, setShowMaximumAllot] = useState(false);
 
   useEffect(() => {
     if (userDetails.role) {
@@ -38,6 +40,14 @@ const CreateUser = () => {
           permissions: permissionsForRole,
         });
       }
+    }
+
+    if (userDetails.role === "evaluator") {
+      setShowSubjects(true);
+      setShowMaximumAllot(true)
+    } else {
+      setShowSubjects(false);
+      setShowMaximumAllot(false)
     }
   }, [userDetails.role]);
 
@@ -187,9 +197,9 @@ const CreateUser = () => {
     <section>
       <div className="h-full w-full">
         <main className="flex items-center justify-center dark:bg-navy-900">
-          <div className="mt-8 w-full max-w-xl lg:max-w-3xl">
+          <div className={`w-full max-w-xl lg:max-w-3xl ${showSubjects?"mt-0":"mt-8"}`}>
             <form
-              className="grid max-h-[80vh] grid-cols-6 gap-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-6 shadow-lg dark:bg-navy-700 3xl:mt-8"
+              className={`grid max-h-[78vh] grid-cols-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-5 shadow-lg dark:bg-navy-700 3xl:mt-8 ${showSubjects?"gap-4":"gap-6"}`}
               onSubmit={(e) => handleFormSubmit(e)}
             >
               <div className="col-span-6 sm:col-span-3">
@@ -242,7 +252,7 @@ const CreateUser = () => {
                   value={userDetails.mobile}
                 />
               </div>
-              <div className="col-span-6 flex gap-6">
+              <div className={`${showMaximumAllot?"col-span-6 sm:col-span-3":"col-span-6 sm:col-span-6"}`}>
                 <label
                   htmlFor="Email"
                   className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
@@ -265,7 +275,11 @@ const CreateUser = () => {
                   }
                   value={userDetails.email}
                 />
-                <label
+              </div>
+              {
+                  showMaximumAllot ? (
+                    <div className="col-span-6 sm:col-span-3">
+                    <label
                   htmlFor="Email"
                   className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                 >
@@ -278,6 +292,7 @@ const CreateUser = () => {
                   placeholder="Enter Max Allocation Booklets"
                   className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
                   //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                  // disabled={!showMaximumAllot}
 
                   onChange={(e) =>
                     setUserDetails({
@@ -287,7 +302,11 @@ const CreateUser = () => {
                   }
                   value={userDetails.maxAllocation}
                 />
-              </div>
+                    </div>
+                  ):(
+                    ""
+                  )
+                }
               <div className="col-span-6">
                 <label
                   htmlFor="Role"
@@ -313,32 +332,36 @@ const CreateUser = () => {
                 </select>
               </div>
 
-              <div className="col-span-6">
-                <span className="mb-2 block text-sm font-medium text-gray-700">
-                  Subjects:
-                </span>
-                <ul className="m-0 flex list-none flex-wrap justify-center rounded-lg bg-gray-100 p-2">
-                  {subjects.map((data) => {
-                    const isSelected = selectedChips.some(
-                      (chip) => chip?._id === data?._id
-                    );
-                    return (
-                      <li key={data?._id} className="m-2">
-                        <Chip
-                          label={data?.name}
-                          onClick={() => handleChipClick(data)}
-                          className={`cursor-pointer border border-gray-300 shadow-md transition-all 
+              {showSubjects ? (
+                <div className="col-span-6">
+                  <span className="mb-2 block text-sm font-medium text-gray-700">
+                    Subjects:
+                  </span>
+                  <ul className="m-0 flex list-none flex-wrap justify-center rounded-lg bg-gray-100 p-2 dark:bg-navy-900">
+                    {subjects.map((data) => {
+                      const isSelected = selectedChips.some(
+                        (chip) => chip?._id === data?._id
+                      );
+                      return (
+                        <li key={data?._id} className="m-2">
+                          <Chip
+                            label={data?.name}
+                            onClick={() => handleChipClick(data)}
+                            className={`dark:text-white dark:bg-navy-700 cursor-pointer border border-gray-300 shadow-md transition-all 
                                     ${
                                       isSelected
                                         ? "bg-green-700 text-white"
                                         : "bg-white hover:bg-gray-200"
                                     }`}
-                        />
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+                          />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : (
+                ""
+              )}
 
               <div className="col-span-6">
                 <label
