@@ -1,22 +1,58 @@
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { useDemoData } from "@mui/x-data-grid-generator";
 
 const Booklets = () => {
-  const VISIBLE_FIELDS = ["name", "rating", "country", "dateCreated", "isAdmin"];
-  const { data, loading } = useDemoData({
-    dataSet: "Employee",
-    visibleFields: VISIBLE_FIELDS,
-    rowLength: 100,
-  });
+  const columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "coursecode", headerName: "Course Code", width: 90 },
+    { field: "description", headerName: "Description", width: 150 },
+    { field: "allocated", headerName: "Allocated", width: 110 },
+    { field: "unallocated", headerName: "Unallocated", width: 150 },
+    { field: "evaluated", headerName: "Evaluated", width: 150 },
+    { field: "pending", headerName: "Pending", width: 120 },
+    { field: "allocat", headerName: "Allocat", width: 120 },
+  ];
+
+  const rows = [
+    {
+      id: 1,
+      coursecode: 1,
+      description: "John Doe",
+      allocated: 4.5,
+      unallocated: "USA",
+      evaluated: "2023-08-10",
+      pending: true,
+      allocat: true,
+    },
+    {
+      id: 2,
+      coursecode: 1,
+      description: "John Doe",
+      allocated: 4.5,
+      unallocated: "USA",
+      evaluated: "2023-08-10",
+      pending: true,
+      allocat: true,
+    },
+    {
+      id: 3,
+      coursecode: 1,
+      description: "John Doe",
+      allocated: 4.5,
+      unallocated: "USA",
+      evaluated: "2023-08-10",
+      pending: true,
+      allocat: true,
+    },
+  ];
 
   return (
     <div>
-      <div className="flex items-center justify-end my-4 px-1">
+      <div className="my-4 flex items-center justify-end px-1">
         <div className="relative w-full max-w-md">
           <input
             placeholder="Search..."
-            className="text-slate-900 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg px-4 py-3 w-full"
+            className="text-slate-900 border-slate-200 focus:ring-primary w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2"
             id="searchInput"
             type="text"
           />
@@ -42,11 +78,18 @@ const Booklets = () => {
         </div>
       </div>
 
-      <div style={{ height: 600, width: "100%" }}>
+      <div style={{ maxHeight: "600px", width: "100%" }}>
         <DataGrid
-          {...data}
-          loading={loading}
+          rows={rows}
+          columns={columns}
           slots={{ toolbar: GridToolbar }}
+          sx={{
+            "& .custom-header": {
+              backgroundColor: "#1976d2",
+              color: "white",
+              fontWeight: "bold",
+            },
+          }}
         />
       </div>
     </div>
