@@ -4,6 +4,8 @@ import routes from "routes.js";
 import { createUser } from "services/common";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { Chip } from "@mui/material";
+import axios from "axios";
 
 const CreateUser = () => {
   const [userDetails, setUserDetails] = useState({
@@ -14,14 +16,13 @@ const CreateUser = () => {
     role: "",
     permissions: [],
     password_confirmation: "",
+    subjects: [],
+    maxAllocation: "",
   });
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
-
-  const hardcodedPermissions = {
-    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
-    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
-  };
+  const [subjects, setSubjects] = useState([]);
+  const [selectedChips, setSelectedChips] = useState([]);
 
   useEffect(() => {
     if (userDetails.role) {
@@ -40,11 +41,82 @@ const CreateUser = () => {
     }
   }, [userDetails.role]);
 
-  console.log(routes) // only show major block
+  useEffect(() => {
+    const fetchedSubjects = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/subjects/getall/subject`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        // console.log(response);
+        setSubjects(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchedSubjects();
+  }, []);
+
+  useEffect(() => {
+    if (userDetails.role === "evaluator") {
+      setUserDetails({ ...userDetails, subjects: selectedChips });
+    } else {
+      setUserDetails({ ...userDetails, subjects: [] });
+    }
+  }, [selectedChips, userDetails.role, setUserDetails]);
+
+  const hardcodedPermissions = {
+    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+  };
+
+  const handleChipClick = (chip) => {
+    if (selectedChips.some((selected) => selected === chip._id)) {
+      // Remove from array if already selected
+      setSelectedChips(
+        selectedChips.filter((selected) => selected !== chip._id)
+      );
+    } else {
+      // Add to array if not selected
+      setSelectedChips([...selectedChips, chip?._id]);
+    }
+  };
+  // console.log(selectedChips);
+  // console.log(routes); // only show major block
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    if (userDetails.role === "evaluator" && !userDetails.maxAllocation) {
+      toast.error("Please enter max allocation");
+      setLoading(false);
+      return;
+    }
+
+    if (userDetails.role === "evaluator" && selectedChips.length === 0) {
+      toast.error("Please select at least one subject");
+      setLoading(false);
+      return;
+    }
+
+    // Check if required fields are filled
+    if (
+      !userDetails?.name ||
+      !userDetails?.email ||
+      !userDetails?.mobile ||
+      !userDetails?.role ||
+      !userDetails?.password ||
+      userDetails?.permissions?.length === 0
+    ) {
+      toast.error("All fields are required!");
+      setLoading(false);
+      return;
+    }
 
     // Check if password is empty or less than 8 characters
     if (!userDetails?.password?.trim()) {
@@ -62,20 +134,6 @@ const CreateUser = () => {
     // Check if password confirmation matches
     if (userDetails?.password !== userDetails?.password_confirmation) {
       toast.error("Passwords do not match.");
-      setLoading(false);
-      return;
-    }
-
-    // Check if required fields are filled
-    if (
-      !userDetails?.name ||
-      !userDetails?.email ||
-      !userDetails?.mobile ||
-      !userDetails?.role ||
-      !userDetails?.password ||
-      userDetails?.permissions?.length === 0
-    ) {
-      toast.error("All fields are required!");
       setLoading(false);
       return;
     }
@@ -116,10 +174,14 @@ const CreateUser = () => {
         role: "",
         permissions: [],
         password_confirmation: "",
+        subjects: [],
+        maxAllocation: "",
       });
       setLoading(false);
     }
   };
+
+  console.log(userDetails);
 
   return (
     <section>
@@ -127,8 +189,8 @@ const CreateUser = () => {
         <main className="flex items-center justify-center dark:bg-navy-900">
           <div className="mt-8 w-full max-w-xl lg:max-w-3xl">
             <form
-              className="grid max-h-[80vh] grid-cols-6 gap-6 3xl:mt-8 overflow-y-auto rounded-md border border-gray-700 bg-white p-6 shadow-lg dark:bg-navy-700"
-              onSubmit={handleFormSubmit}
+              className="grid max-h-[80vh] grid-cols-6 gap-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-6 shadow-lg dark:bg-navy-700 3xl:mt-8"
+              onSubmit={(e) => handleFormSubmit(e)}
             >
               <div className="col-span-6 sm:col-span-3">
                 <label
@@ -142,10 +204,8 @@ const CreateUser = () => {
                   id="FullName"
                   name="full_name"
                   placeholder="Enter the Name"
-
-                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-
-//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                  className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                  //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
                   onChange={(e) =>
                     setUserDetails({
@@ -156,7 +216,6 @@ const CreateUser = () => {
                   value={userDetails.name}
                 />
               </div>
-
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="mobile"
@@ -169,10 +228,8 @@ const CreateUser = () => {
                   id="mobile"
                   name="mobile"
                   placeholder="Enter Mobile Number"
-
-                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-
-//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                  className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                  //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
                   maxLength="10"
                   pattern="\d*"
@@ -185,8 +242,7 @@ const CreateUser = () => {
                   value={userDetails.mobile}
                 />
               </div>
-
-              <div className="col-span-6">
+              <div className="col-span-6 flex gap-6">
                 <label
                   htmlFor="Email"
                   className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
@@ -198,10 +254,8 @@ const CreateUser = () => {
                   id="Email"
                   name="email"
                   placeholder="Enter Email"
-
-                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-
-//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                  className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                  //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
                   onChange={(e) =>
                     setUserDetails({
@@ -211,8 +265,29 @@ const CreateUser = () => {
                   }
                   value={userDetails.email}
                 />
-              </div>
+                <label
+                  htmlFor="Email"
+                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
+                >
+                  Maximum Allot:
+                </label>
+                <input
+                  type="text"
+                  id="maxAllocation"
+                  name="maxAllocation"
+                  placeholder="Enter Max Allocation Booklets"
+                  className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                  //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
+                  onChange={(e) =>
+                    setUserDetails({
+                      ...userDetails,
+                      maxAllocation: e.target.value,
+                    })
+                  }
+                  value={userDetails.maxAllocation}
+                />
+              </div>
               <div className="col-span-6">
                 <label
                   htmlFor="Role"
@@ -223,10 +298,8 @@ const CreateUser = () => {
                 <select
                   id="role"
                   name="role"
-
-                  className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-
-//                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                  className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                  //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
                   onChange={(e) =>
                     setUserDetails({ ...userDetails, role: e.target.value })
@@ -238,6 +311,33 @@ const CreateUser = () => {
                   <option value="moderator">Moderator</option>
                   <option value="evaluator">Evaluator</option>
                 </select>
+              </div>
+
+              <div className="col-span-6">
+                <span className="mb-2 block text-sm font-medium text-gray-700">
+                  Subjects:
+                </span>
+                <ul className="m-0 flex list-none flex-wrap justify-center rounded-lg bg-gray-100 p-2">
+                  {subjects.map((data) => {
+                    const isSelected = selectedChips.some(
+                      (chip) => chip?._id === data?._id
+                    );
+                    return (
+                      <li key={data?._id} className="m-2">
+                        <Chip
+                          label={data?.name}
+                          onClick={() => handleChipClick(data)}
+                          className={`cursor-pointer border border-gray-300 shadow-md transition-all 
+                                    ${
+                                      isSelected
+                                        ? "bg-green-700 text-white"
+                                        : "bg-white hover:bg-gray-200"
+                                    }`}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
 
               <div className="col-span-6">
@@ -255,11 +355,9 @@ const CreateUser = () => {
                         id={route.name}
                         name="permissions"
                         value={route.name}
-
-//                         className="sm:h-5 sm:w-5 rounded border-2 border-gray-300 bg-gray-50 text-indigo-600 focus:ring-indigo-500"
+                        //                         className="sm:h-5 sm:w-5 rounded border-2 border-gray-300 bg-gray-50 text-indigo-600 focus:ring-indigo-500"
 
                         className="rounded border-2 border-gray-300 bg-gray-50 text-blue-600 focus:ring-blue-500 sm:h-5 sm:w-5"
-
                         checked={
                           userDetails?.role === "admin"
                             ? userDetails.permissions
@@ -296,7 +394,6 @@ const CreateUser = () => {
                   ))}
                 </div>
               </div>
-
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="Password"
@@ -310,10 +407,8 @@ const CreateUser = () => {
                     id="Password"
                     name="password"
                     placeholder="Enter Password"
-
-                    className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-
-//                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                    className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                    //                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
                     onChange={(e) =>
                       setUserDetails({
@@ -336,7 +431,6 @@ const CreateUser = () => {
                   )}
                 </div>
               </div>
-
               <div className="col-span-6 sm:col-span-3">
                 <label
                   htmlFor="PasswordConfirmation"
@@ -350,10 +444,8 @@ const CreateUser = () => {
                     id="PasswordConfirmation"
                     name="password_confirmation"
                     placeholder="Confirm Password"
-
-                    className="mt-1 w-full rounded-md p-1 sm:p-2 bg-gray-50 text-gray-700 border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-
-//                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                    className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                    //                     className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500 dark:bg-navy-900 dark:text-white sm:p-2"
 
                     onChange={(e) =>
                       setUserDetails({
@@ -376,7 +468,6 @@ const CreateUser = () => {
                   )}
                 </div>
               </div>
-
               <div className="col-span-6 flex items-center justify-center gap-2 sm:flex-row sm:gap-5">
                 <button
                   className={`rounded-md bg-indigo-600 px-2 py-1 text-lg text-white transition hover:bg-indigo-700 sm:px-2 sm:py-1 lg:px-4 lg:py-2 ${
