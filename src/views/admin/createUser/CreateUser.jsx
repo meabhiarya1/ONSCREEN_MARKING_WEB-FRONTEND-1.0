@@ -340,7 +340,7 @@ const CreateUser = () => {
 
               {showSubjects ? (
                 <div className="col-span-6">
-                  <span className="mb-2 block text-sm font-medium text-gray-700">
+                  <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
                     Subjects:
                   </span>
                   <ul className="m-0 flex list-none flex-wrap justify-center rounded-lg p-1 bg-gray-100 dark:bg-navy-900 h-14 overflow-auto">
