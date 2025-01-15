@@ -355,7 +355,7 @@ const CreateUser = () => {
                             label={data?.name}
                             onClick={() => handleChipClick(data)}
                             color={isSelected ? "success" : "default"} // Green for selected
-                            className={`cursor-pointer shadow-md transition-all dark:bg-navy-700 dark:text-white`}
+                            className={`cursor-pointer shadow-md transition-all dark:text-white ${isSelected ? "":"dark:bg-navy-700"}`}
                           />
                         </li>
                       );
