@@ -41,14 +41,6 @@ const CreateUser = () => {
         });
       }
     }
-
-    if (userDetails.role === "evaluator") {
-      setShowSubjects(true);
-      setShowMaximumAllot(true)
-    } else {
-      setShowSubjects(false);
-      setShowMaximumAllot(false)
-    }
   }, [userDetails.role]);
 
   useEffect(() => {
@@ -74,8 +66,12 @@ const CreateUser = () => {
   useEffect(() => {
     if (userDetails.role === "evaluator") {
       setUserDetails({ ...userDetails, subjects: selectedChips });
+      setShowSubjects(true);
+      setShowMaximumAllot(true);
     } else {
       setUserDetails({ ...userDetails, subjects: [] });
+      setShowSubjects(false);
+      setShowMaximumAllot(false);
     }
   }, [selectedChips, userDetails.role, setUserDetails]);
 
@@ -197,9 +193,15 @@ const CreateUser = () => {
     <section>
       <div className="h-full w-full">
         <main className="flex items-center justify-center dark:bg-navy-900">
-          <div className={`w-full max-w-xl lg:max-w-3xl ${showSubjects?"mt-0":"mt-8"}`}>
+          <div
+            className={`w-full max-w-xl lg:max-w-3xl ${
+              showSubjects ? "mt-2" : "mt-6"
+            }`}
+          >
             <form
-              className={`grid max-h-[78vh] grid-cols-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-5 shadow-lg dark:bg-navy-700 3xl:mt-8 ${showSubjects?"gap-4":"gap-6"}`}
+              className={`grid max-h-[80vh] grid-cols-6 overflow-y-auto rounded-md border px-6 pt-4 lg:pt-6 pb-3 border-gray-700 bg-white p-2 shadow-lg dark:bg-navy-700 3xl:mt-8 ${
+                showSubjects ? "gap-2" : "gap-6"
+              }`}
               onSubmit={(e) => handleFormSubmit(e)}
             >
               <div className="col-span-6 sm:col-span-3">
@@ -252,7 +254,13 @@ const CreateUser = () => {
                   value={userDetails.mobile}
                 />
               </div>
-              <div className={`${showMaximumAllot?"col-span-6 sm:col-span-3":"col-span-6 sm:col-span-6"}`}>
+              <div
+                className={`${
+                  showMaximumAllot
+                    ? "col-span-6 sm:col-span-3"
+                    : "col-span-6 sm:col-span-6"
+                }`}
+              >
                 <label
                   htmlFor="Email"
                   className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
@@ -276,37 +284,35 @@ const CreateUser = () => {
                   value={userDetails.email}
                 />
               </div>
-              {
-                  showMaximumAllot ? (
-                    <div className="col-span-6 sm:col-span-3">
-                    <label
-                  htmlFor="Email"
-                  className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
-                >
-                  Maximum Allot:
-                </label>
-                <input
-                  type="text"
-                  id="maxAllocation"
-                  name="maxAllocation"
-                  placeholder="Enter Max Allocation Booklets"
-                  className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
-                  //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
-                  // disabled={!showMaximumAllot}
+              {showMaximumAllot ? (
+                <div className="col-span-6 sm:col-span-3">
+                  <label
+                    htmlFor="Email"
+                    className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
+                  >
+                    Maximum Allot:
+                  </label>
+                  <input
+                    type="text"
+                    id="maxAllocation"
+                    name="maxAllocation"
+                    placeholder="Enter Max Allocation Booklets"
+                    className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
+                    //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
+                    // disabled={!showMaximumAllot}
 
-                  onChange={(e) =>
-                    setUserDetails({
-                      ...userDetails,
-                      maxAllocation: e.target.value,
-                    })
-                  }
-                  value={userDetails.maxAllocation}
-                />
-                    </div>
-                  ):(
-                    ""
-                  )
-                }
+                    onChange={(e) =>
+                      setUserDetails({
+                        ...userDetails,
+                        maxAllocation: e.target.value,
+                      })
+                    }
+                    value={userDetails.maxAllocation}
+                  />
+                </div>
+              ) : (
+                ""
+              )}
               <div className="col-span-6">
                 <label
                   htmlFor="Role"
@@ -337,22 +343,19 @@ const CreateUser = () => {
                   <span className="mb-2 block text-sm font-medium text-gray-700">
                     Subjects:
                   </span>
-                  <ul className="m-0 flex list-none flex-wrap justify-center rounded-lg bg-gray-100 p-2 dark:bg-navy-900">
+                  <ul className="m-0 flex list-none flex-wrap justify-center rounded-lg p-1 bg-gray-100 dark:bg-navy-900 h-14 overflow-auto">
                     {subjects.map((data) => {
-                      const isSelected = selectedChips.some(
-                        (chip) => chip?._id === data?._id
-                      );
+                      const isSelected = selectedChips.includes(data._id); // Check if the chip is selected
                       return (
-                        <li key={data?._id} className="m-2">
+                        <li
+                          key={data?._id}
+                          className="m-2 rounded-2xl border border-gray-200"
+                        >
                           <Chip
                             label={data?.name}
                             onClick={() => handleChipClick(data)}
-                            className={`dark:text-white dark:bg-navy-700 cursor-pointer border border-gray-300 shadow-md transition-all 
-                                    ${
-                                      isSelected
-                                        ? "bg-green-700 text-white"
-                                        : "bg-white hover:bg-gray-200"
-                                    }`}
+                            color={isSelected ? "success" : "default"} // Green for selected
+                            className={`cursor-pointer shadow-md transition-all dark:bg-navy-700 dark:text-white`}
                           />
                         </li>
                       );
