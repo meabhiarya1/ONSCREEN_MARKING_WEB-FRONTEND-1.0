@@ -4,8 +4,9 @@ import routes from "routes.js";
 import { createUser } from "services/common";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { Chip } from "@mui/material";
+import { Chip, Menu, MenuItem, Button } from "@mui/material";
 import axios from "axios";
+import ReactSelect from "react-select";
 
 const CreateUser = () => {
   const [userDetails, setUserDetails] = useState({
@@ -16,8 +17,8 @@ const CreateUser = () => {
     role: "",
     permissions: [],
     password_confirmation: "",
-    subjects: [],
-    maxAllocation: "",
+    subjectCode: [],
+    maxBooklets: "",
   });
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState(false);
@@ -25,6 +26,29 @@ const CreateUser = () => {
   const [selectedChips, setSelectedChips] = useState([]);
   const [showSubjects, setShowSubjects] = useState(false);
   const [showMaximumAllot, setShowMaximumAllot] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const darkModePreference = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    setIsDarkMode(darkModePreference);
+
+    // Optionally, listen for changes to the system theme preference
+    const darkModeListener = (e) => setIsDarkMode(e.matches);
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", darkModeListener);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", darkModeListener);
+    };
+  }, []);
 
   useEffect(() => {
     if (userDetails.role) {
@@ -65,11 +89,11 @@ const CreateUser = () => {
 
   useEffect(() => {
     if (userDetails.role === "evaluator") {
-      setUserDetails({ ...userDetails, subjects: selectedChips });
+      setUserDetails({ ...userDetails, subjectCode: selectedChips });
       setShowSubjects(true);
       setShowMaximumAllot(true);
     } else {
-      setUserDetails({ ...userDetails, subjects: [] });
+      setUserDetails({ ...userDetails, subjectCode: [] });
       setShowSubjects(false);
       setShowMaximumAllot(false);
     }
@@ -80,19 +104,58 @@ const CreateUser = () => {
     moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
   };
 
-  const handleChipClick = (chip) => {
-    if (selectedChips.some((selected) => selected === chip._id)) {
-      // Remove from array if already selected
-      setSelectedChips(
-        selectedChips.filter((selected) => selected !== chip._id)
-      );
-    } else {
-      // Add to array if not selected
-      setSelectedChips([...selectedChips, chip?._id]);
-    }
-  };
+  // const handleChipClick = (chip) => {
+  //   if (selectedChips.some((selected) => selected === chip._id)) {
+  //     // Remove from array if already selected
+  //     setSelectedChips(
+  //       selectedChips.filter((selected) => selected !== chip._id)
+  //     );
+  //   } else {
+  //     // Add to array if not selected
+  //     setSelectedChips([...selectedChips, chip?._id]);
+  //   }
+  // };
   // console.log(selectedChips);
   // console.log(routes); // only show major block
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase()); // Update search query on input change
+  };
+
+  const filteredSubjects = subjects.filter((subject) =>
+    subject.name.toLowerCase().includes(searchQuery)
+  );
+
+  const handleAddSubject = (chipId) => {
+    if (!selectedChips.includes(chipId)) {
+      setSelectedChips([...selectedChips, chipId]); // Add subject to selected chips
+    }
+    setSearchQuery(""); // Reset search query
+    setAnchorEl(null); // Close the menu
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget); // Open menu
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null); // Close menu
+  };
+  const subjectOptions = subjects.map((subject) => ({
+    value: subject._id,
+    label: `${subject.name} - ${subject.code}`,
+  }));
+
+  const handleChipClick = (chipId) => {
+    setSelectedChips(selectedChips.filter((id) => id !== chipId)); // Remove subject chip
+  };
+
+  const handleSubjectChange = (selectedOptions) => {
+    // Convert selected options back to the subject IDs
+    setSelectedChips(
+      selectedOptions ? selectedOptions.map((option) => option.value) : []
+    );
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -180,8 +243,8 @@ const CreateUser = () => {
         role: "",
         permissions: [],
         password_confirmation: "",
-        subjects: [],
-        maxAllocation: "",
+        subjectCode: [],
+        maxBooklets: "",
       });
       setLoading(false);
     }
@@ -199,7 +262,7 @@ const CreateUser = () => {
             }`}
           >
             <form
-              className={`grid max-h-[80vh] grid-cols-6 overflow-y-auto rounded-md border px-6 pt-4 lg:pt-6 pb-3 border-gray-700 bg-white p-2 shadow-lg dark:bg-navy-700 3xl:mt-8 ${
+              className={`grid max-h-[80vh] grid-cols-6 overflow-y-auto rounded-md border border-gray-700 bg-white p-2 px-6 pb-3 pt-4 shadow-lg dark:bg-navy-700 lg:pt-6 3xl:mt-8 ${
                 showSubjects ? "gap-2" : "gap-6"
               }`}
               onSubmit={(e) => handleFormSubmit(e)}
@@ -304,10 +367,10 @@ const CreateUser = () => {
                     onChange={(e) =>
                       setUserDetails({
                         ...userDetails,
-                        maxAllocation: e.target.value,
+                        maxBooklets: e.target.value,
                       })
                     }
-                    value={userDetails.maxAllocation}
+                    value={userDetails.maxBooklets}
                   />
                 </div>
               ) : (
@@ -338,7 +401,7 @@ const CreateUser = () => {
                 </select>
               </div>
 
-              {showSubjects ? (
+              {/* {showSubjects ? (
                 <div className="col-span-6">
                   <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
                     Subjects:
@@ -364,6 +427,78 @@ const CreateUser = () => {
                 </div>
               ) : (
                 ""
+              )} */}
+
+              {showSubjects && (
+                <div className="col-span-6">
+                  <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
+                    Subjects:
+                  </span>
+                  {/* <ul className="m-0 flex h-auto list-none flex-wrap justify-start overflow-auto rounded-lg bg-gray-100 p-1 dark:bg-navy-900"> */}
+                  {selectedChips.map((chipId) => {
+                    const subject = subjects.find((s) => s._id === chipId);
+                    // return (
+                    //   // <li key={chipId} className="m-2 rounded-2xl border border-gray-200">
+                    //     <Chip
+                    //       label={subject?.name}
+                    //       onDelete={() => handleChipClick(chipId)}
+                    //       color="success"
+                    //       className="cursor-pointer shadow-md transition-all dark:bg-navy-700 dark:text-white"
+                    //     />
+                    //   // </li>
+                    // );
+                  })}
+                  {/* <li className="m-2"> */}
+                  <div className="bg-white dark:bg-[#0b1437]">
+                  <ReactSelect
+                    isMulti
+                    options={subjectOptions}
+                    value={subjectOptions.filter((option) =>
+                      selectedChips.includes(option.value)
+                    )}
+                    onChange={handleSubjectChange}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    placeholder="+ Add"
+                    closeMenuOnSelect={false}
+                    noOptionsMessage={() => "No subjects found"}
+                    menuPosition="absolute"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        borderRadius: "8px",
+                        backgroundColor: "transparent",
+                        padding: "2px", // Padding around the input
+                      }),
+                      multiValue: (base) => ({
+                        ...base,
+                        backgroundColor: "#4caf50", // Chip background color
+                        borderRadius: "50px", // Rounded chip
+                        padding: "0px 5px", // Padding for chip
+                      }),
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        color: "white", // Text color inside chip
+                      }),
+                      multiValueRemove: (base) => ({
+                        ...base,
+                        color: "lightgreen", // "X" icon color
+                        borderRadius: "50%", // Make "X" button round
+                        ":hover": {
+                          backgroundColor: "#e57373", // Hover color for "X" button
+                          color: "white",
+                        },
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: "white",
+                      }),
+                    }}
+                  />
+                  </div>
+                  {/* </li> */}
+                  {/* </ul> */}
+                </div>
               )}
 
               <div className="col-span-6">
