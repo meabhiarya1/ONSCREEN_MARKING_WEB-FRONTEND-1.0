@@ -90,6 +90,8 @@ const Schema = () => {
     totalQuestions: data.totalQuestions,
     compulsoryQuestions: data.compulsoryQuestions,
     evaluationTime: data.evaluationTime,
+    numberOfPage: data.numberOfPage,
+    hiddenPage: data.hiddenPage,
   }));
 
   const columns = [
@@ -99,6 +101,9 @@ const Schema = () => {
     { field: "totalQuestions", headerName: "Primary Qs", flex: 1 },
     { field: "compulsoryQuestions", headerName: "Compulsory Qs", flex: 1 },
     { field: "evaluationTime", headerName: "Eval Time", flex: 1 },
+    { field: "numberOfPage", headerName: "No. of Pages Booklets", flex: 1 },
+    { field: "hiddenPage", headerName: "Hidden Page", flex: 1 },
+
     {
       field: "createStructure",
       headerName: "Create Structure",
@@ -171,7 +176,7 @@ const Schema = () => {
                 "& .custom-header": {
                   backgroundColor: "#1976d2",
                   color: "white",
-                  fontWeight: "bold",
+                  fontWeight: "extra-bold",
                 },
               }}
             />

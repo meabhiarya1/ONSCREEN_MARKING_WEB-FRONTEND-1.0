@@ -41,7 +41,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
     }
   };
 
-  console.log("formData", formData);
+  // console.log("formData", formData);
 
   const removeHiddenPageIndex = (index) => {
     setFormData((prev) => ({
@@ -58,7 +58,9 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
       !formData.minMarks ||
       !formData.totalQuestions ||
       !formData.compulsoryQuestions ||
-      !formData.evaluationTime
+      !formData.evaluationTime ||
+      !formData.numberOfPage ||
+      formData?.hiddenPage?.length === 0
     ) {
       toast.error("All fields are required.");
       return;
