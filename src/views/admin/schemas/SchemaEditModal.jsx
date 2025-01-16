@@ -102,7 +102,7 @@ const SchemaEditModal = ({
     }
 
     try {
-      handleUpdate(selectedSchema._id, formData);
+      handleUpdate(selectedSchema.id, formData);
       setEditShowModal(false);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -111,6 +111,7 @@ const SchemaEditModal = ({
   };
 
   if (!editShowModal) return null;
+
 
   return (
     <div
