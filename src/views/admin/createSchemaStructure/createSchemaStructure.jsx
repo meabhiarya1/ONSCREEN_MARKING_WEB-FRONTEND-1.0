@@ -108,7 +108,7 @@ const CreateSchemaStructure = () => {
         const data = response?.data?.data || [];
         setSavedQuestionData(data);
 
-        console.log(data);
+        // console.log(data);
 
         const totalMarksUsed = data.reduce(
           (acc, question) => acc + (question?.maxMarks || 0),

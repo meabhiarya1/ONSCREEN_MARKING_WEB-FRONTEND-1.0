@@ -5,6 +5,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ConfirmationModal from "components/modal/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { MdCreateNewFolder } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
+import { MdAutoDelete } from "react-icons/md";
 
 const Schema = () => {
   const [editShowModal, setEditShowModal] = useState(false);
@@ -81,6 +85,80 @@ const Schema = () => {
     }
   };
 
+  const rows = schemaData.map((data, index) => ({
+    id: data._id,
+    name: data.name,
+    maxMarks: data.maxMarks,
+    minMarks: data.minMarks,
+    totalQuestions: data.totalQuestions,
+    compulsoryQuestions: data.compulsoryQuestions,
+    evaluationTime: data.evaluationTime,
+    numberOfPage: data.numberOfPage,
+    hiddenPage: data.hiddenPage,
+  }));
+
+  const columns = [
+    { field: "name", headerName: "Schema", flex: 1 },
+    { field: "maxMarks", headerName: "Max Marks", flex: 1 },
+    { field: "minMarks", headerName: "Min Marks", flex: 1 },
+    { field: "totalQuestions", headerName: "Primary Qs", flex: 1 },
+    { field: "compulsoryQuestions", headerName: "Compulsory Qs", flex: 1 },
+    { field: "evaluationTime", headerName: "Eval Time", flex: 1 },
+    { field: "numberOfPage", headerName: "No. of Pages Booklets", flex: 1 },
+    { field: "hiddenPage", headerName: "Hidden Page", flex: 1 },
+
+    {
+      field: "createStructure",
+      headerName: "Create Structure",
+      renderCell: (params) => (
+        <div
+          className="flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-yellow-600 "
+          onClick={() => {
+            localStorage.removeItem("navigateFrom");
+            navigate(`/admin/schema/create/structure/${params.row.id}`);
+          }}
+          onMouseEnter={() => {
+            return console.log("object");
+          }}
+        >
+          <MdCreateNewFolder className="size-8  " />
+        </div>
+      ),
+    },
+    {
+      field: "edit",
+      headerName: "Edit",
+
+      renderCell: (params) => (
+        <div
+          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-indigo-400"
+          onClick={() => {
+            setEditShowModal(true);
+            setSelectedSchema(params.row);
+          }}
+        >
+          <FiEdit className="size-6" />
+        </div>
+      ),
+    },
+    {
+      field: "delete",
+      headerName: "Delete",
+
+      renderCell: (params) => (
+        <div
+          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-red-600"
+          onClick={() => {
+            setConfirmationModal(true);
+            setSchemaId(params.row.id);
+          }}
+        >
+          <MdAutoDelete className="size-6" />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="mt-8 grid grid-cols-1 gap-4 p-4 lg:grid-cols-3 lg:gap-8">
       <div className="h-32 rounded-lg lg:col-span-3">
@@ -93,107 +171,26 @@ const Schema = () => {
               Create Schema
             </div>
           </div>
-          <table className="min-w-full divide-y-2 divide-gray-200 rounded-md bg-white text-sm dark:divide-gray-700 dark:bg-navy-700">
-            <thead className="ltr:text-left rtl:text-right bg-gray-100 dark:bg-navy-800">
-              <tr>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  Schema
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  Max Marks
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  Min Marks
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  Primary Qs
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  Compulsory Qs
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  Eval Time
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900 dark:text-white">
-                  
-                </th>
-              </tr>
-            </thead>
 
-            {schemaData.map((data) => (
-              <tbody
-                className="divide-y divide-gray-200 text-center"
-                key={data._id}
-              >
-                <tr>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {data.name}
-                  </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {data.maxMarks}
-                  </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {data.minMarks}
-                  </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {data.totalQuestions}
-                  </td>
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {data.compulsoryQuestions}
-                  </td>
-
-                  <td className="text-md whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {data.evaluationTime}
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-2 ">
-                    <div
-                      className=" inline-block cursor-pointer rounded bg-indigo-600 px-3 py-2 
-                    text-xs font-medium text-white hover:bg-indigo-700 "
-                      onClick={() => {
-                        localStorage.removeItem("navigateFrom");
-                        navigate(`/admin/schema/create/structure/${data._id}`);
-                      }}
-                    >
-                      Create Structure
-                    </div>
-                  </td>
-
-                  {/* edit and delete */}
-                  <td className="whitespace-nowrap px-3 py-2  ">
-                    <div
-                      className=" inline-block cursor-pointer rounded bg-indigo-600 px-4 py-2 
-                    text-xs font-medium text-white hover:bg-indigo-700 "
-                      onClick={() => {
-                        setEditShowModal(!editShowModal);
-                        setSelectedSchema(data);
-                      }}
-                    >
-                      Edit
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-2 ">
-                    <div
-                      className="inline-block cursor-pointer rounded bg-red-600 px-4 py-2 
-                    text-xs font-medium text-white hover:bg-red-700   "
-                      onClick={() => {
-                        setConfirmationModal(true);
-                        setSchemaId(data._id);
-                      }}
-                    >
-                      Delete
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            ))}
-          </table>
+          <div style={{ maxHeight: "600px", width: "100%" }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              slots={{ toolbar: GridToolbar }}
+              sx={{
+                "& .MuiDataGrid-columnHeaders": {
+                  fontWeight: 900, // Extra bold (900 is the maximum for fontWeight)
+                  fontSize: "1rem", // Adjust header size if needed
+                },
+                "& .MuiDataGrid-cell": {
+                  fontSize: "0.80rem", // Smaller row text
+                },
+                "& .MuiDataGrid-row:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Optional hover effect
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
 

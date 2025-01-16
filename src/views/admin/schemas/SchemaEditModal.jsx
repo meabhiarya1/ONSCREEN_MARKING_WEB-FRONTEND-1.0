@@ -17,6 +17,9 @@ const SchemaEditModal = ({
     compulsoryQuestions: "",
     evaluationTime: "",
     isActive: true,
+    status: false,
+    numberOfPage: "",
+    hiddenPage: [],
   });
 
   useEffect(() => {
@@ -30,16 +33,39 @@ const SchemaEditModal = ({
         evaluationTime: selectedSchema.evaluationTime || "",
         isActive: selectedSchema.isActive || true,
         status: false,
+        numberOfPage: selectedSchema.numberOfPage || "",
+        hiddenPage: selectedSchema.hiddenPage || [],
       });
     }
   }, [selectedSchema]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === "numberOfPage" && value === "") {
+      setFormData((prevData) => ({
+        ...prevData,
+        hiddenPage: [],
+      }));
+    }
+    if (name === "hiddenPage") {
+      if (formData?.hiddenPage?.includes(value)) return;
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: [...prevData?.hiddenPage, value], // Preserves previous values and adds the new one
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const removeHiddenPageIndex = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      hiddenPage: prev.hiddenPage.filter((_, i) => i !== index),
+    }));
   };
 
   const validationCheck = async () => {
@@ -49,7 +75,9 @@ const SchemaEditModal = ({
       !formData.minMarks ||
       !formData.totalQuestions ||
       !formData.compulsoryQuestions ||
-      !formData.evaluationTime
+      !formData.evaluationTime ||
+      !formData.numberOfPage ||
+      formData?.hiddenPage?.length === 0
     ) {
       toast.error("All fields are required.");
       return;
@@ -102,13 +130,16 @@ const SchemaEditModal = ({
     }
 
     try {
-      handleUpdate(selectedSchema._id, formData);
+      handleUpdate(selectedSchema.id, formData);
       setEditShowModal(false);
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
     }
   };
+
+  // console.log("formData", formData);
+  // console.log(selectedSchema);
 
   if (!editShowModal) return null;
 
@@ -144,10 +175,9 @@ const SchemaEditModal = ({
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-72 rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:w-full sm:p-3"
+              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:p-3"
             />
           </div>
-
           {/* Input for Maximum Marks */}
           <div className="flex flex-col justify-between sm:flex-row">
             <div className="mb-2 sm:mb-0">
@@ -159,7 +189,7 @@ const SchemaEditModal = ({
                 name="maxMarks"
                 value={formData.maxMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -171,7 +201,7 @@ const SchemaEditModal = ({
                 name="minMarks"
                 value={formData.minMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
           </div>
@@ -186,9 +216,10 @@ const SchemaEditModal = ({
                 name="totalQuestions"
                 value={formData.totalQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
+            {/* Input for Compulsory Questions */}
             <div className="mb-2 sm:mb-0">
               <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg">
                 Compulsory Questions
@@ -198,13 +229,75 @@ const SchemaEditModal = ({
                 name="compulsoryQuestions"
                 value={formData.compulsoryQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
             </div>
           </div>
+          {/* Number of pages in Booklets and Hidden Pages */}
+          <div className="flex flex-col justify-between sm:flex-row">
+            {/* No. of pages input */}
+            <div className="mb-2 sm:mb-0">
+              <label
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+                htmlFor="numberOfPage"
+              >
+                No. of pages in Booklets:
+              </label>
+              <input
+                type="number"
+                id="numberOfPage"
+                name="numberOfPage"
+                value={formData?.numberOfPage}
+                onChange={handleInputChange}
+                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+              />
+            </div>
 
-          {/* Input for Compulsory Questions */}
-
+            {/* Hidden Pages Dropdown */}
+            <div className="mb-2 sm:mb-0">
+              <label
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg"
+                htmlFor="hiddenPage"
+              >
+                Hidden Pages:
+              </label>
+              <select
+                id="hiddenPage"
+                name="hiddenPage"
+                value={formData?.hiddenPage}
+                onChange={(e) => {
+                  handleInputChange(e);
+                  // console.log("Selected Value:", e.target.value); // Logs the selected value
+                }}
+                className="max-h-10 w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+              >
+                <option value="" className="px-2 text-sm text-gray-400">
+                  Select Hidden Pages
+                </option>
+                {Array.from({ length: formData?.numberOfPage }, (_, index) => (
+                  <option key={index + 1} value={index + 1}>
+                    {index + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>{" "}
+          {/* Page Index Contains */}
+          {formData?.hiddenPage?.length > 0 && (
+            <div className="flex flex-col justify-between sm:flex-row">
+              <div className="flex w-full flex-wrap gap-2 rounded-md border border-gray-300 px-4 py-3">
+                {formData?.hiddenPage?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex cursor-pointer items-center space-x-1 rounded-lg bg-green-800 px-4 py-2 text-sm text-white "
+                    onClick={() => removeHiddenPageIndex(index)}
+                  >
+                    <span className="">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {/* Input for Evaluation Time */}
           <div className="mb-2 sm:mb-0">
             <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-white sm:mb-2 sm:text-lg">
@@ -215,7 +308,7 @@ const SchemaEditModal = ({
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleInputChange}
-              className="w-full rounded-md px-2 py-1 shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white sm:p-3"
+              className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
             />
           </div>
         </div>
