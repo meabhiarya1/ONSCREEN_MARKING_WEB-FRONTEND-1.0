@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 import ConfirmationModal from "components/modal/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { MdCreateNewFolder } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
+import { MdAutoDelete } from "react-icons/md";
 
 const Schema = () => {
   const [editShowModal, setEditShowModal] = useState(false);
@@ -107,48 +110,50 @@ const Schema = () => {
     {
       field: "createStructure",
       headerName: "Create Structure",
-      flex: 1,
       renderCell: (params) => (
         <div
-          className="cursor-pointer rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+          className="flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-yellow-600 "
           onClick={() => {
             localStorage.removeItem("navigateFrom");
             navigate(`/admin/schema/create/structure/${params.row.id}`);
           }}
+          onMouseEnter={() => {
+            return console.log("object");
+          }}
         >
-          Create Structure
+          <MdCreateNewFolder className="size-8  " />
         </div>
       ),
     },
     {
       field: "edit",
       headerName: "Edit",
-      flex: 1,
+
       renderCell: (params) => (
         <div
-          className="cursor-pointer rounded bg-indigo-600 px-3 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-indigo-400"
           onClick={() => {
             setEditShowModal(true);
             setSelectedSchema(params.row);
           }}
         >
-          Edit
+          <FiEdit className="size-6" />
         </div>
       ),
     },
     {
       field: "delete",
       headerName: "Delete",
-      flex: 1,
+
       renderCell: (params) => (
         <div
-          className="cursor-pointer rounded bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700"
+          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-red-600"
           onClick={() => {
             setConfirmationModal(true);
             setSchemaId(params.row.id);
           }}
         >
-          Delete
+          <MdAutoDelete className="size-6" />
         </div>
       ),
     },
@@ -173,10 +178,15 @@ const Schema = () => {
               columns={columns}
               slots={{ toolbar: GridToolbar }}
               sx={{
-                "& .custom-header": {
-                  backgroundColor: "#1976d2",
-                  color: "white",
-                  fontWeight: "extra-bold",
+                "& .MuiDataGrid-columnHeaders": {
+                  fontWeight: 900, // Extra bold (900 is the maximum for fontWeight)
+                  fontSize: "1rem", // Adjust header size if needed
+                },
+                "& .MuiDataGrid-cell": {
+                  fontSize: "0.80rem", // Smaller row text
+                },
+                "& .MuiDataGrid-row:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Optional hover effect
                 },
               }}
             />
