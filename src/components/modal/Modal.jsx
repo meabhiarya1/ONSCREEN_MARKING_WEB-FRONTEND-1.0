@@ -19,6 +19,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
   const [allSubjects, setAllSubjects] = useState([]);
 
   // console.log(user);
+  
 
   useEffect(() => {
     if (user) {

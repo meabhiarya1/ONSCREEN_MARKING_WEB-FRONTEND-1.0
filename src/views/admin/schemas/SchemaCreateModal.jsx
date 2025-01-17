@@ -43,7 +43,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
     }
   };
 
-  console.log("formData", formData);
+  // console.log("formData", formData);
 
   const removeHiddenPageIndex = (index) => {
     setFormData((prev) => ({
@@ -138,7 +138,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
       });
       setCreateShowModal(false);
       toast.success("Schema created successfully!");
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);

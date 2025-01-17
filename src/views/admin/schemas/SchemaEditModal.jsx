@@ -64,7 +64,7 @@ const SchemaEditModal = ({
       }));
     }
   };
-  console.log(formData)
+  // console.log(formData)
 
   const removeHiddenPageIndex = (index) => {
     setFormData((prev) => ({
