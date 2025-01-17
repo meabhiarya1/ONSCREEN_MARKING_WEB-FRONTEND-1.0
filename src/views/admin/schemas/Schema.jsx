@@ -94,7 +94,7 @@ const Schema = () => {
     compulsoryQuestions: data.compulsoryQuestions,
     evaluationTime: data.evaluationTime,
     numberOfPage: data.numberOfPage,
-    hiddenPage: data.hiddenPage,
+    hiddenPage: data?.hiddenPage.map((item) => parseInt(item) + 1),
   }));
 
   const columns = [
@@ -116,9 +116,6 @@ const Schema = () => {
           onClick={() => {
             localStorage.removeItem("navigateFrom");
             navigate(`/admin/schema/create/structure/${params.row.id}`);
-          }}
-          onMouseEnter={() => {
-            return console.log("object");
           }}
         >
           <MdCreateNewFolder className="size-8  " />

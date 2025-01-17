@@ -31,7 +31,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
       if (formData?.hiddenPage?.includes(value)) return;
       setFormData((prevData) => ({
         ...prevData,
-        [name]: [...prevData?.hiddenPage, value], // Preserves previous values and adds the new one
+        [name]: [...prevData?.hiddenPage, parseInt(value) - 1], // Preserves previous values and adds the new one
       }));
     } else {
       setFormData((prevData) => ({
@@ -131,6 +131,8 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
         compulsoryQuestions: "",
         evaluationTime: "",
         isActive: true,
+        numberOfPage: "",
+        hiddenPage: [],
       });
       setCreateShowModal(false);
       toast.success("Schema created successfully!");
@@ -278,7 +280,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                     className="flex cursor-pointer items-center space-x-1 rounded-lg bg-green-800 px-4 py-2 text-sm text-white "
                     onClick={() => removeHiddenPageIndex(index)}
                   >
-                    <span className="">{item}</span>
+                    <span className="">{parseInt(item) + 1}</span>
                   </div>
                 ))}
               </div>

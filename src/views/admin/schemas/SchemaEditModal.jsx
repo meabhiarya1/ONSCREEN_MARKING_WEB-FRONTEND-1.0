@@ -39,6 +39,8 @@ const SchemaEditModal = ({
     }
   }, [selectedSchema]);
 
+  // console.log(selectedSchema)
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "numberOfPage" && value === "") {
@@ -51,7 +53,7 @@ const SchemaEditModal = ({
       if (formData?.hiddenPage?.includes(value)) return;
       setFormData((prevData) => ({
         ...prevData,
-        [name]: [...prevData?.hiddenPage, value], // Preserves previous values and adds the new one
+        [name]: [...prevData?.hiddenPage, parseInt(value) - 1], // Preserves previous values and adds the new one
       }));
     } else {
       setFormData((prevData) => ({
@@ -60,11 +62,12 @@ const SchemaEditModal = ({
       }));
     }
   };
+  // console.log(formData)
 
   const removeHiddenPageIndex = (index) => {
     setFormData((prev) => ({
       ...prev,
-      hiddenPage: prev.hiddenPage.filter((_, i) => i !== index),
+      hiddenPage: prev?.hiddenPage.filter((_, i) => i !== index),
     }));
   };
 
@@ -173,7 +176,7 @@ const SchemaEditModal = ({
             <input
               type="text"
               name="name"
-              value={formData.name}
+              value={formData?.name}
               onChange={handleInputChange}
               className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:p-3"
             />
@@ -187,7 +190,7 @@ const SchemaEditModal = ({
               <input
                 type="number"
                 name="maxMarks"
-                value={formData.maxMarks}
+                value={formData?.maxMarks}
                 onChange={handleInputChange}
                 className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
@@ -199,7 +202,7 @@ const SchemaEditModal = ({
               <input
                 type="number"
                 name="minMarks"
-                value={formData.minMarks}
+                value={formData?.minMarks}
                 onChange={handleInputChange}
                 className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
@@ -214,7 +217,7 @@ const SchemaEditModal = ({
               <input
                 type="number"
                 name="totalQuestions"
-                value={formData.totalQuestions}
+                value={formData?.totalQuestions}
                 onChange={handleInputChange}
                 className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
@@ -227,7 +230,7 @@ const SchemaEditModal = ({
               <input
                 type="number"
                 name="compulsoryQuestions"
-                value={formData.compulsoryQuestions}
+                value={formData?.compulsoryQuestions}
                 onChange={handleInputChange}
                 className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
               />
