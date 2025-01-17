@@ -5,6 +5,10 @@ import Modal from "../../../components/modal/Modal";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ConfirmationModal from "components/modal/ConfirmationModal";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { MdCreateNewFolder } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
+import { MdAutoDelete } from "react-icons/md";
 
 const Index = () => {
   const [users, setUsers] = useState([]);
@@ -28,6 +32,7 @@ const Index = () => {
     };
     fetchUsers();
   }, [isOpen, navigate]);
+
 
   const visibleFields = ["name", "email", "mobile", "role", "date"];
 
@@ -58,9 +63,64 @@ const Index = () => {
     }
   };
 
+  const rows = users?.map((user, index) => ({
+    id: user?._id,
+    name: user?.name,
+    email: user?.email,
+    mobile: user?.mobile,
+    role: user?.role,
+    date: new Date(user?.date).toLocaleDateString(), // Using toLocaleDateString()
+    permissions: user?.permissions,
+    subjectCode: user?.subjectCode || [],
+    maxBooklets: user?.maxBooklets || 0,
+  }));
+
+  // console.log(users);
+
+  const columns = [
+    { field: "name", headerName: "Name", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
+    { field: "mobile", headerName: "Mobile", flex: 1 },
+    { field: "role", headerName: "Role", flex: 1 },
+    { field: "date", headerName: "Date", flex: 1 },
+    { field: "permissions", headerName: "Permissions", flex: 1 },
+    { field: "subjectCode", headerName: "Subjects", flex: 1 },
+    { field: "maxBooklets", headerName: "Max Booklets", flex: 1 },
+    {
+      field: "edit",
+      headerName: "Edit",
+
+      renderCell: (params) => (
+        <div
+          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-indigo-400"
+          onClick={() => {
+            handleClick(params.row);
+          }}
+        >
+          <FiEdit className="size-6" />
+        </div>
+      ),
+    },
+    {
+      field: "delete",
+      headerName: "Remove",
+      renderCell: (params) => (
+        <div
+          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-red-600"
+          onClick={() => {
+            setConfirmationModal(true);
+            setUserId(params.row.id);
+          }}
+        >
+          <MdAutoDelete className="size-6" />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="mt-12 overflow-x-auto rounded-md">
-      <table className="min-w-full table-auto divide-y divide-gray-300 bg-white text-sm dark:bg-navy-700">
+      {/* <table className="min-w-full table-auto divide-y divide-gray-300 bg-white text-sm dark:bg-navy-700">
         <thead className="bg-gray-100 dark:bg-navy-800">
           <tr>
             {visibleFields?.map((key) => (
@@ -120,7 +180,27 @@ const Index = () => {
               </tr>
             ))}
         </tbody>
-      </table>
+      </table> */}
+
+      <div style={{ maxHeight: "600px", width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          slots={{ toolbar: GridToolbar }}
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              fontWeight: 900, // Extra bold (900 is the maximum for fontWeight)
+              fontSize: "1rem", // Adjust header size if needed
+            },
+            "& .MuiDataGrid-cell": {
+              fontSize: "0.80rem", // Smaller row text
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.1)", // Optional hover effect
+            },
+          }}
+        />
+      </div>
 
       {/* Render the modal when isOpen is true */}
       {isOpen && (

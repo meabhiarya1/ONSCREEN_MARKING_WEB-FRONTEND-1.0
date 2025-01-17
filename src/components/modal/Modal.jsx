@@ -8,22 +8,86 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    mobile: "",
     role: "",
     permissions: [],
+    subjectCode: [],
+    maxBooklets: "",
   });
+
+  const [subjectDetails, setSubjectDetails] = useState([]);
+  const [allSubjects, setAllSubjects] = useState([]);
+
+  // console.log(user);
 
   useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || "",
         email: user.email || "",
-        phone: user.mobile || "",
+        mobile: user.mobile || "",
         role: user.role || "",
         permissions: user.permissions || [],
+        subjectCode: user.subjectCode || [],
+        maxBooklets: user.maxBooklets || "",
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    const fetchAllSubjectDetails = async () => {
+      try {
+        const subjectDetailsArray = await Promise.all(
+          user?.subjectCode.map(async (code) => {
+            const response = await axios.get(
+              `${process.env.REACT_APP_API_URL}/api/subjects/getbyid/subject/${code}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+            return response.data;
+          })
+        );
+        setSubjectDetails(subjectDetailsArray); // Store all subject details
+      } catch (error) {
+        console.error("Error fetching subject details:", error);
+      }
+    };
+
+    if (user?.subjectCode?.length) {
+      fetchAllSubjectDetails();
+    }
+  }, [user?.subjectCode]);
+
+  useEffect(() => {
+    const fetchAllSubjects = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/subjects/getall/subject`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setAllSubjects(response.data);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
+    if (user?.subjectCode?.length) {
+      fetchAllSubjects();
+    } else {
+      setAllSubjects([]);
+      setSubjectDetails([]);
+    }
+  }, [subjectDetails]);
+
+  console.log(subjectDetails)
+  console.log(allSubjects)
+  // console.log(formData);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -43,7 +107,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
 
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/auth/update/${user._id}`,
+        `${process.env.REACT_APP_API_URL}/api/auth/update/${user.id}`,
         formData,
         {
           headers: {
@@ -67,15 +131,17 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
   };
 
   const handleCheckboxChange = (routeName) => {
-    if (formData.permissions.includes(routeName)) {
+    if (formData?.permissions?.includes(routeName)) {
       setFormData({
         ...formData,
-        permissions: formData.permissions.filter((perm) => perm !== routeName),
+        permissions: formData?.permissions?.filter(
+          (perm) => perm !== routeName
+        ),
       });
     } else {
       setFormData({
         ...formData,
-        permissions: [...formData.permissions, routeName],
+        permissions: [...formData?.permissions, routeName],
       });
     }
   };
@@ -84,21 +150,24 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
-          <div className="relative w-full max-w-lg scale-95 transform rounded-xl bg-white p-3 sm:p-5 shadow-2xl transition-all duration-300 sm:scale-100 dark:bg-navy-700">
+          <div className="bg-black absolute inset-0 bg-opacity-50 backdrop-blur-md"></div>
+          <div className="relative w-full max-w-lg scale-95 transform rounded-xl bg-white p-3 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100 sm:p-5">
             <button
-              className="absolute right-4 sm:top-4 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
+              className="absolute right-4 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none sm:top-4"
               onClick={toggleModal}
             >
               <GiCrossMark />
             </button>
 
             <section className="sm:px-4 sm:py-4">
-              <h2 className="mb-2 sm:mb-4 text-xl sm:text-3xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white sm:mb-4 sm:text-3xl">
                 Edit User Details
               </h2>
-              <div className="rounded-xl bg-gray-100 p-3 sm:p-6 shadow-inner dark:bg-navy-800">
-                <form className="space-y-1 sm:space-y-6" onSubmit={handleFormSubmit}>
+              <div className="rounded-xl bg-gray-100 p-3 shadow-inner dark:bg-navy-800 sm:p-6">
+                <form
+                  className="space-y-1 sm:space-y-6"
+                  onSubmit={handleFormSubmit}
+                >
                   <div>
                     <label
                       htmlFor="name"
@@ -111,16 +180,16 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                       placeholder="Enter name"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 gap-1 sm:gap-6 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-6">
                     <div>
                       <label
                         htmlFor="email"
-                        className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
+                        className="mt-2 block text-sm font-medium text-gray-700 dark:text-white"
                       >
                         Email
                       </label>
@@ -129,25 +198,26 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+                        className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                         placeholder="Enter email"
+                        disabled
                       />
                     </div>
 
                     <div>
                       <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
+                        htmlFor="mobile"
+                        className="mt-2 block text-sm font-medium text-gray-700 dark:text-white"
                       >
-                        Phone
+                        Mobile
                       </label>
                       <input
                         type="tel"
-                        id="phone"
-                        value={formData.phone}
+                        id="mobile"
+                        value={formData.mobile}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
-                        placeholder="Enter phone number"
+                        className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                        placeholder="Enter Mobile number"
                       />
                     </div>
                   </div>
@@ -155,7 +225,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                   <div>
                     <label
                       htmlFor="role"
-                      className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
+                      className="mt-2 block text-sm font-medium text-gray-700 dark:text-white"
                     >
                       Role
                     </label>
@@ -163,7 +233,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg p-2 sm:p-3 text-sm shadow-sm border border-gray-300 dark:border-gray-700 focus:border-none focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 dark:bg-navy-900 dark:text-white"
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                     >
                       <option value="">Select a role</option>
                       <option value="admin">Admin</option>
@@ -171,11 +241,47 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       <option value="moderator">Moderator</option>
                     </select>
                   </div>
+                  {/* {console.log(formData)} */}
+
+                  <div>
+                    <label
+                      htmlFor="subjectCode"
+                      className="block text-sm font-medium text-gray-700 dark:text-white"
+                    >
+                      Subjects 
+                    </label>
+                    <input
+                      type="text"
+                      id="subjectCode"
+                      value={formData.subjectCode[0]}
+                      onChange={handleInputChange}
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                      placeholder="Enter name"
+                      disabled
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="maxBooklets"
+                      className="block text-sm font-medium text-gray-700 dark:text-white"
+                    >
+                      Maximum Booklets
+                    </label>
+                    <input
+                      type="text"
+                      id="maxBooklets"
+                      value={formData.maxBooklets}
+                      onChange={handleInputChange}
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                      placeholder="Enter name"
+                    />
+                  </div>
 
                   <div>
                     <label
                       htmlFor="permissions"
-                      className="block text-sm font-medium text-gray-700 dark:text-white mt-2"
+                      className="mt-2 block text-sm font-medium text-gray-700 dark:text-white"
                     >
                       Permissions
                     </label>
@@ -185,16 +291,17 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                           key={index}
                           className="flex items-center space-x-2"
                         >
+                          {/* {console.log(formData)} */}
                           <input
                             type="checkbox"
                             id={`route-${index}`}
                             name="permissions"
                             value={route.name}
                             className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            checked={formData.permissions.includes(route.name)}
-                            onChange={() =>
-                              handleCheckboxChange(route.name)
-                            }
+                            checked={formData?.permissions?.includes(
+                              route.name
+                            )}
+                            onChange={() => handleCheckboxChange(route.name)}
                           />
                           <label
                             htmlFor={`route-${index}`}
@@ -210,7 +317,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                   <div className="mt-6">
                     <button
                       type="submit"
-                      className="w-full rounded-lg bg-indigo-600 py-1 sm:py-3 mt-2 font-medium text-white shadow-lg transition duration-300 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50"
+                      className="mt-2 w-full rounded-lg bg-indigo-600 py-1 font-medium text-white shadow-lg transition duration-300 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 sm:py-3"
                     >
                       UPDATE
                     </button>
