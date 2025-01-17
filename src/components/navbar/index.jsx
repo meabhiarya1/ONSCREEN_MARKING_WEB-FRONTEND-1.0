@@ -34,7 +34,7 @@ const Navbar = (props) => {
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
-      <FaBars onClick={onOpenSidenav} className="cursor-pointer text-2xl mx-2 xl:hidden" />
+      <FaBars onClick={onOpenSidenav} className="cursor-pointer text-2xl mx-2 xl:hidden dark:text-white" />
       <div className="ml-[6px] ">
         <p className="mr-4 shrink text-[33px] capitalize text-navy-700 dark:text-white">
           <Link

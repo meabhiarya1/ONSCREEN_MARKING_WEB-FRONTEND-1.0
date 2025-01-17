@@ -61,7 +61,7 @@ const Index = () => {
   return (
     <div className="mt-12 overflow-x-auto rounded-md">
       <table className="min-w-full table-auto divide-y divide-gray-300 bg-white text-sm dark:bg-navy-700">
-        <thead className="bg-gray-100 dark:bg-navy-700">
+        <thead className="bg-gray-100 dark:bg-navy-800">
           <tr>
             {visibleFields?.map((key) => (
               <th

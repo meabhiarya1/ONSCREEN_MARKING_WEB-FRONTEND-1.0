@@ -26,29 +26,6 @@ const CreateUser = () => {
   const [selectedChips, setSelectedChips] = useState([]);
   const [showSubjects, setShowSubjects] = useState(false);
   const [showMaximumAllot, setShowMaximumAllot] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    const darkModePreference = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    setIsDarkMode(darkModePreference);
-
-    // Optionally, listen for changes to the system theme preference
-    const darkModeListener = (e) => setIsDarkMode(e.matches);
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", darkModeListener);
-
-    // Cleanup listener on component unmount
-    return () => {
-      window
-        .matchMedia("(prefers-color-scheme: dark)")
-        .removeEventListener("change", darkModeListener);
-    };
-  }, []);
 
   useEffect(() => {
     if (userDetails.role) {
@@ -118,37 +95,10 @@ const CreateUser = () => {
   // console.log(selectedChips);
   // console.log(routes); // only show major block
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value.toLowerCase()); // Update search query on input change
-  };
-
-  const filteredSubjects = subjects.filter((subject) =>
-    subject.name.toLowerCase().includes(searchQuery)
-  );
-
-  const handleAddSubject = (chipId) => {
-    if (!selectedChips.includes(chipId)) {
-      setSelectedChips([...selectedChips, chipId]); // Add subject to selected chips
-    }
-    setSearchQuery(""); // Reset search query
-    setAnchorEl(null); // Close the menu
-  };
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget); // Open menu
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null); // Close menu
-  };
   const subjectOptions = subjects.map((subject) => ({
     value: subject._id,
     label: `${subject.name} - ${subject.code}`,
   }));
-
-  const handleChipClick = (chipId) => {
-    setSelectedChips(selectedChips.filter((id) => id !== chipId)); // Remove subject chip
-  };
 
   const handleSubjectChange = (selectedOptions) => {
     // Convert selected options back to the subject IDs
@@ -449,52 +399,52 @@ const CreateUser = () => {
                     // );
                   })}
                   {/* <li className="m-2"> */}
-                  <div className="bg-white dark:bg-[#0b1437]">
-                  <ReactSelect
-                    isMulti
-                    options={subjectOptions}
-                    value={subjectOptions.filter((option) =>
-                      selectedChips.includes(option.value)
-                    )}
-                    onChange={handleSubjectChange}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder="+ Add"
-                    closeMenuOnSelect={false}
-                    noOptionsMessage={() => "No subjects found"}
-                    menuPosition="absolute"
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        borderRadius: "8px",
-                        backgroundColor: "transparent",
-                        padding: "2px", // Padding around the input
-                      }),
-                      multiValue: (base) => ({
-                        ...base,
-                        backgroundColor: "#4caf50", // Chip background color
-                        borderRadius: "50px", // Rounded chip
-                        padding: "0px 5px", // Padding for chip
-                      }),
-                      multiValueLabel: (base) => ({
-                        ...base,
-                        color: "white", // Text color inside chip
-                      }),
-                      multiValueRemove: (base) => ({
-                        ...base,
-                        color: "lightgreen", // "X" icon color
-                        borderRadius: "50%", // Make "X" button round
-                        ":hover": {
-                          backgroundColor: "#e57373", // Hover color for "X" button
-                          color: "white",
-                        },
-                      }),
-                      menu: (base) => ({
-                        ...base,
-                        backgroundColor: "white",
-                      }),
-                    }}
-                  />
+                  <div className="bg-gray-50 dark:bg-[#0b1437]">
+                    <ReactSelect
+                      isMulti
+                      options={subjectOptions}
+                      value={subjectOptions.filter((option) =>
+                        selectedChips.includes(option.value)
+                      )}
+                      onChange={handleSubjectChange}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      placeholder="+ Add"
+                      closeMenuOnSelect={false}
+                      noOptionsMessage={() => "No subjects found"}
+                      menuPosition="absolute"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: "8px",
+                          backgroundColor: "transparent",
+                          padding: "2px", // Padding around the input
+                        }),
+                        multiValue: (base) => ({
+                          ...base,
+                          backgroundColor: "#4caf50", // Chip background color
+                          borderRadius: "50px", // Rounded chip
+                          padding: "0px 5px", // Padding for chip
+                        }),
+                        multiValueLabel: (base) => ({
+                          ...base,
+                          color: "white", // Text color inside chip
+                        }),
+                        multiValueRemove: (base) => ({
+                          ...base,
+                          color: "lightgreen", // "X" icon color
+                          borderRadius: "50%", // Make "X" button round
+                          ":hover": {
+                            backgroundColor: "#e57373", // Hover color for "X" button
+                            color: "white",
+                          },
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          backgroundColor: "white",
+                        }),
+                      }}
+                    />
                   </div>
                   {/* </li> */}
                   {/* </ul> */}

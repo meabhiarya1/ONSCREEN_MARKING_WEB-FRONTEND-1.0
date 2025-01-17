@@ -83,7 +83,7 @@ export default function Admin(props) {
               secondary={getActiveNavbar(routes)}
               {...rest}
             />
-            <div className="h-[calc(100vh-148px)] overflow-y-auto pt-5">
+            <div className="h-[calc(100vh-172px)] overflow-y-auto pt-5">
               <Routes>
                 {getRoutes(routes)}
                 <Route
@@ -96,7 +96,7 @@ export default function Admin(props) {
                 />
               </Routes>
             </div>
-            <div className="p-3 h-28">
+            <div className="p-3 h-27">
               <Footer />
             </div>
           </div>
