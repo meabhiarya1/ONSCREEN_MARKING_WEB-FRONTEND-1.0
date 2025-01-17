@@ -41,6 +41,7 @@ const routes = [
     component: <Classes />,
     hidden: false,
   },
+  
   {
     name: "Course Detail",
     layout: "/admin",

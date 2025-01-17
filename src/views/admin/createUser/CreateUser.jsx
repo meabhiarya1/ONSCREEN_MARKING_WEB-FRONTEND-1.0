@@ -111,7 +111,7 @@ const CreateUser = () => {
     e.preventDefault();
     setLoading(true);
 
-    if (userDetails.role === "evaluator" && !userDetails.maxAllocation) {
+    if (userDetails.role === "evaluator" && !userDetails.maxBooklets ) {
       toast.error("Please enter max allocation");
       setLoading(false);
       return;
@@ -303,13 +303,13 @@ const CreateUser = () => {
                     htmlFor="Email"
                     className="sm:text-md block text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Maximum Allot:
+                    Maximum Booklet:
                   </label>
                   <input
                     type="text"
-                    id="maxAllocation"
-                    name="maxAllocation"
-                    placeholder="Enter Max Allocation Booklets"
+                    id="maxBooklets"
+                    name="maxBooklets"
+                    placeholder="Enter Max Booklets"
                     className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-2"
                     //                   className="mt-1 w-full rounded-md border-gray-300 bg-gray-50 p-1 text-gray-700 focus:border-indigo-500 focus:ring focus:ring-indigo-500 dark:bg-navy-900 dark:text-white sm:p-2"
                     // disabled={!showMaximumAllot}
