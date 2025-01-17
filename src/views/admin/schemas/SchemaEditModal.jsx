@@ -34,7 +34,7 @@ const SchemaEditModal = ({
         isActive: selectedSchema.isActive || true,
         status: false,
         numberOfPage: selectedSchema.numberOfPage || "",
-        hiddenPage: selectedSchema.hiddenPage || [],
+        hiddenPage: selectedSchema.hiddenPage.map((item) => (parseInt(item)-1)) || [],
       });
     }
   }, [selectedSchema]);
@@ -50,7 +50,9 @@ const SchemaEditModal = ({
       }));
     }
     if (name === "hiddenPage") {
-      if (formData?.hiddenPage?.includes(value)) return;
+      if (formData?.hiddenPage?.includes(parseInt(value) - 1)) {
+        return;
+      }
       setFormData((prevData) => ({
         ...prevData,
         [name]: [...prevData?.hiddenPage, parseInt(value) - 1], // Preserves previous values and adds the new one
@@ -62,7 +64,7 @@ const SchemaEditModal = ({
       }));
     }
   };
-  // console.log(formData)
+  console.log(formData)
 
   const removeHiddenPageIndex = (index) => {
     setFormData((prev) => ({
@@ -295,7 +297,7 @@ const SchemaEditModal = ({
                     className="flex cursor-pointer items-center space-x-1 rounded-lg bg-green-800 px-4 py-2 text-sm text-white "
                     onClick={() => removeHiddenPageIndex(index)}
                   >
-                    <span className="">{item}</span>
+                    <span className="">{parseInt(item) + 1}</span>
                   </div>
                 ))}
               </div>

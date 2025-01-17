@@ -28,10 +28,12 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
       }));
     }
     if (name === "hiddenPage") {
-      if (formData?.hiddenPage?.includes(value)) return;
+      if (formData?.hiddenPage?.includes(parseInt(value) - 1)) {
+        return;
+      }
       setFormData((prevData) => ({
         ...prevData,
-        [name]: [...prevData?.hiddenPage, parseInt(value) - 1], // Preserves previous values and adds the new one
+        [name]: [...prevData.hiddenPage, parseInt(value) - 1], // Add new value if it doesn't exist
       }));
     } else {
       setFormData((prevData) => ({
@@ -41,7 +43,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
     }
   };
 
-  // console.log("formData", formData);
+  console.log("formData", formData);
 
   const removeHiddenPageIndex = (index) => {
     setFormData((prev) => ({

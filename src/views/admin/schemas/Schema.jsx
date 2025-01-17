@@ -94,7 +94,7 @@ const Schema = () => {
     compulsoryQuestions: data.compulsoryQuestions,
     evaluationTime: data.evaluationTime,
     numberOfPage: data.numberOfPage,
-    hiddenPage: data?.hiddenPage.map((item) => parseInt(item) + 1),
+    hiddenPage: data?.hiddenPage.map((item) => (parseInt(item)+1)),
   }));
 
   const columns = [
@@ -171,6 +171,7 @@ const Schema = () => {
 
           <div style={{ maxHeight: "600px", width: "100%" }}>
             <DataGrid
+            className="dark:bg-navy-900 dark:text-white"
               rows={rows}
               columns={columns}
               slots={{ toolbar: GridToolbar }}
