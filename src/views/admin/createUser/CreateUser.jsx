@@ -65,8 +65,8 @@ const CreateUser = () => {
   }, []);
 
   useEffect(() => {
-    if (userDetails.role === "evaluator") {
-      setUserDetails({ ...userDetails, subjectCode: selectedChips });
+    if (userDetails?.role === "evaluator") {
+      setUserDetails({ ...userDetails, subjectCode: selectedChips, permissions: hardcodedPermissions[userDetails?.role] });
       setShowSubjects(true);
       setShowMaximumAllot(true);
     } else {
@@ -97,7 +97,7 @@ const CreateUser = () => {
 
   const subjectOptions = subjects.map((subject) => ({
     value: subject._id,
-    label: `${subject.name} - ${subject.code}`,
+    label: `${subject.name} (${subject.code})`,
   }));
 
   const handleSubjectChange = (selectedOptions) => {

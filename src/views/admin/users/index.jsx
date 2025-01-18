@@ -63,6 +63,45 @@ const Index = () => {
     }
   };
 
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    const fetchSubjectNames = async () => {
+      try {
+        // Create an array of promises for fetching subjects for each user
+        const userSubjectMapping = await Promise.all(
+          users.map(async (user) => {
+            const subjectNames = await Promise.all(
+              user.subjectCode.map(async (subjectCode) => {
+                const response = await axios.get(
+                  `${process.env.REACT_APP_API_URL}/api/subjects/getbyid/subject/${subjectCode}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  }
+                );
+                // console.log(response)
+                return response.data.name; // Subject name for this code
+              })
+            );
+            return {
+              ...user,
+              subjectNames, // Add fetched subject names to the user object
+            };
+          })
+        );
+        // console.log(userSubjectMapping)
+        setUserData(userSubjectMapping);
+      } catch (error) {
+        console.error("Error fetching subject names:", error);
+      }
+    };
+
+    fetchSubjectNames();
+  }, [users]);
+
+
   const rows = users?.map((user, index) => ({
     id: user?._id,
     name: user?.name,
@@ -74,6 +113,23 @@ const Index = () => {
     subjectCode: user?.subjectCode || [],
     maxBooklets: user?.maxBooklets || 0,
   }));
+
+  // const rows = users?.map((user) => {
+  //   // Find the matching user in userData by ID
+  //   const matchedUser = userData.find((data) => data._id === user._id);
+  
+  //   return {
+  //     id: user?._id,
+  //     name: user?.name,
+  //     email: user?.email,
+  //     mobile: user?.mobile,
+  //     role: user?.role,
+  //     date: new Date(user?.date).toLocaleDateString(), // Format date
+  //     permissions: user?.permissions,
+  //     subjectCode: matchedUser?.subjectNames || [], // Use the subjectNames from userData
+  //     maxBooklets: user?.maxBooklets || 0,
+  //   };
+  // });
 
   // console.log(users);
 

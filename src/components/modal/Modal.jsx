@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { GiCrossMark } from "react-icons/gi";
 import routes from "routes";
+import ReactSelect from "react-select";
 
 const Modal = ({ user, isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
@@ -88,7 +89,16 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
 
   console.log(subjectDetails)
   console.log(allSubjects)
+  // console.log(user)
   // console.log(formData);
+
+  const handleSubjectChange = (selectedOptions) => {
+    const selectedCodes = selectedOptions.map((option) => option.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      subjectCode: selectedCodes,
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -146,6 +156,15 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
       });
     }
   };
+
+  const subjectOptions = allSubjects.map((subject) => ({
+    value: subject._id,
+    label: `${subject.name} (${subject.code})`,
+  }));
+
+  const selectedSubjects = subjectOptions.filter((option) =>
+    formData.subjectCode.includes(option.value)
+  );
 
   return (
     <div>
@@ -251,15 +270,45 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                     >
                       Subjects 
                     </label>
-                    <input
-                      type="text"
-                      id="subjectCode"
-                      value={formData.subjectCode[0]}
-                      onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
-                      placeholder="Enter name"
-                      disabled
+                    <div className="bg-white">
+                    <ReactSelect
+                      isMulti
+                      options={subjectOptions}
+                      value={selectedSubjects}
+                      onChange={handleSubjectChange}
+                      placeholder="+ Add"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      menuPosition="absolute"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: "8px",
+                          backgroundColor: "transparent",
+                          padding: "2px",
+                        }),
+                        multiValue: (base) => ({
+                          ...base,
+                          backgroundColor: "#4caf50",
+                          borderRadius: "50px",
+                          padding: "0px 5px",
+                        }),
+                        multiValueLabel: (base) => ({
+                          ...base,
+                          color: "white",
+                        }),
+                        multiValueRemove: (base) => ({
+                          ...base,
+                          color: "lightgreen",
+                          borderRadius: "50%",
+                          ":hover": {
+                            backgroundColor: "#e57373",
+                            color: "white",
+                          },
+                        }),
+                      }}
                     />
+                    </div>
                   </div>
 
                   <div>
