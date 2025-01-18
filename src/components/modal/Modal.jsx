@@ -87,8 +87,8 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     }
   }, [subjectDetails]);
 
-  console.log(subjectDetails)
-  console.log(allSubjects)
+  // console.log(subjectDetails)
+  // console.log(allSubjects)
   // console.log(user)
   // console.log(formData);
 

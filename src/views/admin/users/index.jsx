@@ -33,7 +33,6 @@ const Index = () => {
     fetchUsers();
   }, [isOpen, navigate]);
 
-
   const visibleFields = ["name", "email", "mobile", "role", "date"];
 
   const handleClick = (user) => {
@@ -101,35 +100,23 @@ const Index = () => {
     fetchSubjectNames();
   }, [users]);
 
+  const rows = users?.map((user) => {
+    // Find the matching user in userData by ID
+    const matchedUser = userData.find((data) => data._id === user._id);
 
-  const rows = users?.map((user, index) => ({
-    id: user?._id,
-    name: user?.name,
-    email: user?.email,
-    mobile: user?.mobile,
-    role: user?.role,
-    date: new Date(user?.date).toLocaleDateString(), // Using toLocaleDateString()
-    permissions: user?.permissions,
-    subjectCode: user?.subjectCode || [],
-    maxBooklets: user?.maxBooklets || 0,
-  }));
-
-  // const rows = users?.map((user) => {
-  //   // Find the matching user in userData by ID
-  //   const matchedUser = userData.find((data) => data._id === user._id);
-  
-  //   return {
-  //     id: user?._id,
-  //     name: user?.name,
-  //     email: user?.email,
-  //     mobile: user?.mobile,
-  //     role: user?.role,
-  //     date: new Date(user?.date).toLocaleDateString(), // Format date
-  //     permissions: user?.permissions,
-  //     subjectCode: matchedUser?.subjectNames || [], // Use the subjectNames from userData
-  //     maxBooklets: user?.maxBooklets || 0,
-  //   };
-  // });
+    return {
+      id: user?._id,
+      name: user?.name,
+      email: user?.email,
+      mobile: user?.mobile,
+      role: user?.role,
+      date: new Date(user?.date).toLocaleDateString(), // Format date
+      permissions: user?.permissions,
+      subjectCode: user?.subjectCode || [],
+      maxBooklets: user?.maxBooklets || 0,
+      subjectName: matchedUser?.subjectNames || [], // Use the subjectNames from userData
+    };
+  });
 
   // console.log(users);
 
@@ -140,7 +127,7 @@ const Index = () => {
     { field: "role", headerName: "Role", flex: 1 },
     { field: "date", headerName: "Date", flex: 1 },
     { field: "permissions", headerName: "Permissions", flex: 1 },
-    { field: "subjectCode", headerName: "Subjects", flex: 1 },
+    { field: "subjectName", headerName: "Subjects", flex: 1 },
     { field: "maxBooklets", headerName: "Max Booklets", flex: 1 },
     {
       field: "edit",
