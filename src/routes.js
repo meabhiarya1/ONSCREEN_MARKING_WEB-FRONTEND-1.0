@@ -22,6 +22,7 @@ import { BiTask } from "react-icons/bi";
 import CheckModule from "views/evaluator/CheckModule/CheckModule";
 import { CiMemoPad } from "react-icons/ci";
 import Booklets from "views/admin/booklets/Booklets";
+import ProcessingBooklets from "views/admin/booklets/ProcessingBooklets";
 
 const routes = [
   {
@@ -41,7 +42,7 @@ const routes = [
     component: <Classes />,
     hidden: false,
   },
-  
+
   {
     name: "Course Detail",
     layout: "/admin",
@@ -146,6 +147,14 @@ const routes = [
     path: "booklets",
     icon: <CiMemoPad className="h-6 w-6" />,
     component: <Booklets />,
+    hidden: false,
+  },
+  {
+    name: "Process Booklets",
+    layout: "/admin",
+    path: "process/booklets/:classId",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <ProcessingBooklets />,
     hidden: false,
   },
 

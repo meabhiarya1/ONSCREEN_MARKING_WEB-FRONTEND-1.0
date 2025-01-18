@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
+import { FcProcess } from "react-icons/fc";
 
 // Initialize socket connection
 const socket = io(process.env.REACT_APP_API_URL, {
@@ -11,9 +13,10 @@ const socket = io(process.env.REACT_APP_API_URL, {
 
 const Booklets = () => {
   const [rows, setRows] = useState([]);
+  const navigate = useNavigate();
 
   const columns = [
-    { field: "folderName", headerName: "Course Code", width: 90 },
+    { field: "folderName", headerName: "Course Code", width: 120 },
     { field: "description", headerName: "Description", width: 150 },
     { field: "allocated", headerName: "Allocated", width: 110 },
     { field: "unAllocated", headerName: "Unallocated", width: 150 },
@@ -21,15 +24,31 @@ const Booklets = () => {
     {
       field: "evaluation_pending",
       headerName: "Evaluation Pending",
-      width: 120,
+      width: 150,
     },
-    { field: "totalAllocations", headerName: "Total Allocations", width: 120 },
+    { field: "totalAllocations", headerName: "Total Allocations", width: 150 },
+    {
+      field: "processBooklets",
+      headerName: "Process Booklets",
+      width: 150,
+      renderCell: (params) => (
+        <div
+          className="flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-yellow-600 "
+          onClick={() => {
+            localStorage.removeItem("navigateFrom");
+            navigate(`/admin/process/booklets/${params.row.folderName}`);
+          }}
+        >
+          <FcProcess className="size-6 text-indigo-500 " />
+        </div>
+      ),
+    },
   ];
 
   useEffect(() => {
     const handleFolderList = (folderList) => {
       console.log("Initial folder list:", folderList);
-      setRows(folderList.map(folder => ({ ...folder, id: folder._id })));
+      setRows(folderList.map((folder) => ({ ...folder, id: folder._id })));
     };
 
     const handleFolderUpdate = (updatedFolder) => {
@@ -59,8 +78,8 @@ const Booklets = () => {
     };
 
     // Connect socket and fetch data immediately
-    socket.connect(); 
-    socket.emit("request-folder-list");  // Request data immediately after mounting
+    socket.connect();
+    socket.emit("request-folder-list"); // Request data immediately after mounting
 
     // Attach event listeners for real-time updates
     socket.on("folder-list", handleFolderList);
@@ -74,9 +93,9 @@ const Booklets = () => {
       socket.off("folder-update", handleFolderUpdate);
       socket.off("folder-add", handleFolderAdd);
       socket.off("folder-remove", handleFolderRemove);
-      socket.disconnect(); 
+      socket.disconnect();
     };
-}, []);
+  }, []);
 
   return (
     <div className="mt-12">
