@@ -419,6 +419,8 @@ const CreateUser = () => {
                           borderRadius: "8px",
                           backgroundColor: "transparent",
                           padding: "2px", // Padding around the input
+                          height: "45px",
+                          overflow:"auto"
                         }),
                         multiValue: (base) => ({
                           ...base,

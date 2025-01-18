@@ -225,8 +225,9 @@ const Index = () => {
         </tbody>
       </table> */}
 
-      <div style={{ maxHeight: "600px", width: "100%" }}>
+      <div style={{ maxHeight: "600px", width: "100%" }} className="dark:text-white dark:bg-navy-700">
         <DataGrid
+        className="dark:text-white  "
           rows={rows}
           columns={columns}
           slots={{ toolbar: GridToolbar }}
@@ -234,6 +235,7 @@ const Index = () => {
             "& .MuiDataGrid-columnHeaders": {
               fontWeight: 900, // Extra bold (900 is the maximum for fontWeight)
               fontSize: "1rem", // Adjust header size if needed
+              backgroundColor: "transparent",
             },
             "& .MuiDataGrid-cell": {
               fontSize: "0.80rem", // Smaller row text

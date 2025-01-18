@@ -169,24 +169,12 @@ const Schema = () => {
             </div>
           </div>
 
-          <div style={{ maxHeight: "600px", width: "100%" }}>
+          <div style={{ maxHeight: "600px", width: "100%" }} className="dark:bg-navy-700">
             <DataGrid
-            className="dark:bg-navy-900 dark:text-white"
+            className="dark:text-gray-600"
               rows={rows}
               columns={columns}
               slots={{ toolbar: GridToolbar }}
-              sx={{
-                "& .MuiDataGrid-columnHeaders": {
-                  fontWeight: 900, // Extra bold (900 is the maximum for fontWeight)
-                  fontSize: "1rem", // Adjust header size if needed
-                },
-                "& .MuiDataGrid-cell": {
-                  fontSize: "0.80rem", // Smaller row text
-                },
-                "& .MuiDataGrid-row:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Optional hover effect
-                },
-              }}
             />
           </div>
         </div>
