@@ -37,7 +37,7 @@ const App = () => {
       try {
         const response = await getUserDetails(token);
         // console.log(response);
-        setUser(response.data);
+        setUser(response?.data);
       } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.message);
