@@ -82,7 +82,7 @@ const Booklets = () => {
 
   useEffect(() => {
     const handleFolderList = (folderList) => {
-      console.log("Initial folder list:", folderList);
+      // console.log("Initial folder list:", folderList);
       setRows(folderList.map((folder) => ({ ...folder, id: folder._id })));
     };
 

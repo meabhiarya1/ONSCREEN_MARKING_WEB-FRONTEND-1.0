@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import Draggable from "react-draggable";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
-const ProcessingBookletsModal = ({ statusMessages }) => {
+const ProcessingBookletsModal = ({
+  statusMessages,
+  SetShowProcessingModal,
+}) => {
   const messagesEndRef = useRef(null); // Ref to track the end of the message container
 
   useEffect(() => {
@@ -31,6 +35,29 @@ const ProcessingBookletsModal = ({ statusMessages }) => {
     }
   }, [statusMessages]);
 
+  const handleCsvDownload = () => {
+    // Adding a header row to the CSV file
+    const header = "Processing Status";
+    
+    // Joining the header and status messages with newlines
+    const csvContent =
+      "data:text/csv;charset=utf-8," + [header, ...statusMessages].join("\n");
+    
+    // Encoding the CSV content for the download link
+    const encodedUri = encodeURI(csvContent);
+    
+    // Creating a link element and triggering the download
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "processing_status.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Closing the processing modal
+    // SetShowProcessingModal(false);
+  };
+  
   return (
     <Draggable bounds="parent">
       <div
@@ -48,6 +75,10 @@ const ProcessingBookletsModal = ({ statusMessages }) => {
           cursor: "move",
         }}
       >
+        <IoMdCloseCircleOutline
+          onClick={() => SetShowProcessingModal(false)}
+          className="absolute right-2 top-2 size-6 cursor-pointer"
+        />
         <div className=" relative flex w-[650px] flex-col items-center justify-center rounded-2xl border  p-4 shadow-lg">
           <div className=" ">
             {/* Loading Status */}
@@ -83,6 +114,30 @@ const ProcessingBookletsModal = ({ statusMessages }) => {
                 <div ref={messagesEndRef}></div>
               </div>
             </div>
+            <button
+              class="text-black group relative mt-4 h-12 w-56 rounded-2xl bg-white text-center text-xl font-semibold "
+              type="button"
+              onClick={handleCsvDownload}
+            >
+              <div class="absolute left-1 top-[4px] z-10 flex h-10 w-1/4 items-center justify-center rounded-xl bg-green-400 duration-500 group-hover:w-[184px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 1024 1024"
+                  height="25px"
+                  width="25px"
+                >
+                  <path
+                    d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                    fill="#000000"
+                  ></path>
+                  <path
+                    d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                    fill="#000000"
+                  ></path>
+                </svg>
+              </div>
+              <p class="translate-x-2 ">Export CSV</p>
+            </button>
           </div>
         </div>
       </div>
