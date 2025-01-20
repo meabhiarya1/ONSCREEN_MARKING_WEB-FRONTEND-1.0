@@ -18,6 +18,7 @@ const Index = () => {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [userId, setUserId] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const loggedInUserId = localStorage.getItem("userId");
 
   useEffect(() => {
     // Check if the `dark` mode is applied to the `html` element
@@ -183,15 +184,17 @@ const Index = () => {
       field: "delete",
       headerName: "Remove",
       renderCell: (params) => (
-        <div
-          className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-red-600"
-          onClick={() => {
-            setConfirmationModal(true);
-            setUserId(params.row.id);
-          }}
-        >
-          <MdAutoDelete className="size-6" />
-        </div>
+        params.row.id !== loggedInUserId && (
+          <div
+            className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-red-600"
+            onClick={() => {
+              setConfirmationModal(true);
+              setUserId(params.row.id);
+            }}
+          >
+            <MdAutoDelete className="size-6" />
+          </div>
+        )
       ),
     },
   ];
