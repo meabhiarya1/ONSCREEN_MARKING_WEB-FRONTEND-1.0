@@ -9,6 +9,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MdCreateNewFolder } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { MdAutoDelete } from "react-icons/md";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const Schema = () => {
   const [editShowModal, setEditShowModal] = useState(false);
@@ -19,6 +20,40 @@ const Schema = () => {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check if the `dark` mode is applied to the `html` element
+    const htmlElement = document.body; // `html` element
+    const checkDarkMode = () => {
+      const isDark = htmlElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // Optionally, observe for changes if the theme might toggle dynamically
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(htmlElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark", // Use 'light' for light mode
+      background: {
+        default: "#111c44", // Background for dark mode
+      },
+      text: {
+        primary: "#ffffff", // White text for dark mode
+      },
+    },
+  });
 
   useEffect(() => {
     if (!token) {
@@ -94,7 +129,7 @@ const Schema = () => {
     compulsoryQuestions: data.compulsoryQuestions,
     evaluationTime: data.evaluationTime,
     numberOfPage: data.numberOfPage,
-    hiddenPage: data?.hiddenPage.map((item) => (parseInt(item)+1)),
+    hiddenPage: data?.hiddenPage.map((item) => parseInt(item) + 1),
   }));
 
   const columns = [
@@ -169,14 +204,73 @@ const Schema = () => {
             </div>
           </div>
 
-          <div style={{ maxHeight: "600px", width: "100%" }} className="dark:bg-navy-700">
-            <DataGrid
-            className="dark:text-gray-600"
-              rows={rows}
-              columns={columns}
-              slots={{ toolbar: GridToolbar }}
-            />
-          </div>
+          {isDarkMode ? (
+            <ThemeProvider theme={darkTheme}>
+              <DataGrid
+                className="dark:bg-navy-700"
+                rows={rows}
+                columns={columns}
+                slots={{ toolbar: GridToolbar }}
+                sx={{
+                  "& .MuiDataGrid-columnHeaders": {
+                    fontWeight: 900,
+                    fontSize: "1rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Header background for dark mode
+                    color: "#ffffff", // Force header text to white
+                  },
+                  "& .MuiDataGrid-cell": {
+                    fontSize: "0.80rem",
+                    color: "#ffffff", // Force cell text to white
+                  },
+                  "& .MuiDataGrid-row:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Hover effect for dark mode
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#ffffff", // Pagination text color
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    backgroundColor: "#111c44", // Footer background for dark mode
+                    color: "#ffffff", // Footer text color
+                  },
+                  "& .MuiDataGrid-toolbarContainer button": {
+                    color: "#ffffff", // Toolbar button color
+                  },
+                  "& .MuiDataGrid-toolbarContainer svg": {
+                    fill: "#ffffff", // Toolbar icon color
+                  },
+                }}
+              />
+            </ThemeProvider>
+          ) : (
+            <div
+              style={{ maxHeight: "600px", width: "100%" }}
+              className="dark:bg-navy-700"
+            >
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                slots={{ toolbar: GridToolbar }}
+                sx={{
+                  "& .MuiDataGrid-columnHeaders": {
+                    fontWeight: 900,
+                    fontSize: "1rem",
+                    backgroundColor: "#ffffff",
+                    borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#000000", // Text color for pagination controls
+                  },
+                  "& .MuiDataGrid-cell": {
+                    fontSize: "0.80rem", // Smaller row text
+                    color: "#000000", // Cell text color in dark mode
+                  },
+                  "& .MuiDataGrid-row:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional hover effect in dark mode
+                  },
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
 

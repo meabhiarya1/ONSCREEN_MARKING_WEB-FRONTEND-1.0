@@ -3,6 +3,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { FcProcess } from "react-icons/fc";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 // Initialize socket connection
 const socket = io(process.env.REACT_APP_API_URL, {
@@ -14,6 +15,40 @@ const socket = io(process.env.REACT_APP_API_URL, {
 const Booklets = () => {
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check if the `dark` mode is applied to the `html` element
+    const htmlElement = document.body; // `html` element
+    const checkDarkMode = () => {
+      const isDark = htmlElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // Optionally, observe for changes if the theme might toggle dynamically
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(htmlElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark", // Use 'light' for light mode
+      background: {
+        default: "#111c44", // Background for dark mode
+      },
+      text: {
+        primary: "#ffffff", // White text for dark mode
+      },
+    },
+  });
 
   const columns = [
     { field: "folderName", headerName: "Course Code", width: 120 },
@@ -99,20 +134,73 @@ const Booklets = () => {
 
   return (
     <div className="mt-12">
-      <div style={{ maxHeight: "600px", width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          slots={{ toolbar: GridToolbar }}
-          sx={{
-            "& .custom-header": {
-              backgroundColor: "#1976d2",
-              color: "white",
-              fontWeight: "bold",
-            },
-          }}
-        />
-      </div>
+      {isDarkMode ? (
+        <ThemeProvider theme={darkTheme}>
+          <DataGrid
+            className="dark:bg-navy-700"
+            rows={rows}
+            columns={columns}
+            slots={{ toolbar: GridToolbar }}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                fontWeight: 900,
+                fontSize: "1rem",
+                backgroundColor: "rgba(255, 255, 255, 0.1)", // Header background for dark mode
+                color: "#ffffff", // Force header text to white
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: "0.80rem",
+                color: "#ffffff", // Force cell text to white
+              },
+              "& .MuiDataGrid-row:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)", // Hover effect for dark mode
+              },
+              "& .MuiTablePagination-root": {
+                color: "#ffffff", // Pagination text color
+              },
+              "& .MuiDataGrid-footerContainer": {
+                backgroundColor: "#111c44", // Footer background for dark mode
+                color: "#ffffff", // Footer text color
+              },
+              "& .MuiDataGrid-toolbarContainer button": {
+                color: "#ffffff", // Toolbar button color
+              },
+              "& .MuiDataGrid-toolbarContainer svg": {
+                fill: "#ffffff", // Toolbar icon color
+              },
+            }}
+          />
+        </ThemeProvider>
+      ) : (
+        <div
+          style={{ maxHeight: "600px", width: "100%" }}
+          className="dark:bg-navy-700"
+        >
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            slots={{ toolbar: GridToolbar }}
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                fontWeight: 900,
+                fontSize: "1rem",
+                backgroundColor: "#ffffff",
+                borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
+              },
+              "& .MuiTablePagination-root": {
+                color: "#000000", // Text color for pagination controls
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: "0.80rem", // Smaller row text
+                color: "#000000", // Cell text color in dark mode
+              },
+              "& .MuiDataGrid-row:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional hover effect in dark mode
+              },
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
