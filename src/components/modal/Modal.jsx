@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { GiCrossMark } from "react-icons/gi";
 import routes from "routes";
+import ReactSelect from "react-select";
 
 const Modal = ({ user, isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
@@ -86,9 +87,18 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     }
   }, [subjectDetails]);
 
-  console.log(subjectDetails)
-  console.log(allSubjects)
+  // console.log(subjectDetails)
+  // console.log(allSubjects)
+  // console.log(user)
   // console.log(formData);
+
+  const handleSubjectChange = (selectedOptions) => {
+    const selectedCodes = selectedOptions.map((option) => option.value);
+    setFormData((prevData) => ({
+      ...prevData,
+      subjectCode: selectedCodes,
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -147,12 +157,21 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     }
   };
 
+  const subjectOptions = allSubjects.map((subject) => ({
+    value: subject._id,
+    label: `${subject.name} (${subject.code})`,
+  }));
+
+  const selectedSubjects = subjectOptions.filter((option) =>
+    formData.subjectCode.includes(option.value)
+  );
+
   return (
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-black absolute inset-0 bg-opacity-50 backdrop-blur-md"></div>
-          <div className="relative w-full max-w-lg scale-95 transform rounded-xl bg-white p-3 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100 sm:p-5">
+          <div className="relative w-full max-w-lg scale-95 transform rounded-xl bg-white p-1 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100 sm:p-2">
             <button
               className="absolute right-4 p-2 text-2xl text-gray-700 hover:text-red-700 focus:outline-none sm:top-4"
               onClick={toggleModal}
@@ -160,13 +179,13 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
               <GiCrossMark />
             </button>
 
-            <section className="sm:px-4 sm:py-4">
-              <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white sm:mb-4 sm:text-3xl">
+            <section className="sm:px-4 sm:py-2">
+              <h2 className="my-2 text-xl font-semibold text-gray-900 dark:text-white sm:mb-4 sm:text-3xl ml-1">
                 Edit User Details
               </h2>
-              <div className="rounded-xl bg-gray-100 p-3 shadow-inner dark:bg-navy-800 sm:p-6">
+              <div className="rounded-xl bg-gray-100 p-3 shadow-inner dark:bg-navy-800 sm:p-4">
                 <form
-                  className="space-y-1 sm:space-y-6"
+                  className="space-y-0 sm:space-y-6"
                   onSubmit={handleFormSubmit}
                 >
                   <div>
@@ -181,7 +200,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-1 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                       placeholder="Enter name"
                     />
                   </div>
@@ -199,7 +218,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                        className="mt-1 w-full rounded-lg border border-gray-300 p-1 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                         placeholder="Enter email"
                         disabled
                       />
@@ -217,7 +236,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                         id="mobile"
                         value={formData.mobile}
                         onChange={handleInputChange}
-                        className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                        className="mt-1 w-full rounded-lg border border-gray-300 p-1 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                         placeholder="Enter Mobile number"
                       />
                     </div>
@@ -234,7 +253,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-1 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                     >
                       <option value="">Select a role</option>
                       <option value="admin">Admin</option>
@@ -251,15 +270,47 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                     >
                       Subjects 
                     </label>
-                    <input
-                      type="text"
-                      id="subjectCode"
-                      value={formData.subjectCode[0]}
-                      onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
-                      placeholder="Enter name"
-                      disabled
+                    <div className="bg-white dark:bg-navy-900">
+                    <ReactSelect
+                      isMulti
+                      options={subjectOptions}
+                      value={selectedSubjects}
+                      onChange={handleSubjectChange}
+                      placeholder="+ Add"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      menuPosition="absolute"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: "8px",
+                          backgroundColor: "transparent",
+                          padding: "2px",
+                          height: "45px",
+                          overflow:"auto"
+                        }),
+                        multiValue: (base) => ({
+                          ...base,
+                          backgroundColor: "#4caf50",
+                          borderRadius: "50px",
+                          padding: "0px 5px",
+                        }),
+                        multiValueLabel: (base) => ({
+                          ...base,
+                          color: "white",
+                        }),
+                        multiValueRemove: (base) => ({
+                          ...base,
+                          color: "lightgreen",
+                          borderRadius: "50%",
+                          ":hover": {
+                            backgroundColor: "#e57373",
+                            color: "white",
+                          },
+                        }),
+                      }}
                     />
+                    </div>
                   </div>
 
                   <div>
@@ -274,7 +325,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       id="maxBooklets"
                       value={formData.maxBooklets}
                       onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-1 text-sm shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
                       placeholder="Enter name"
                     />
                   </div>
