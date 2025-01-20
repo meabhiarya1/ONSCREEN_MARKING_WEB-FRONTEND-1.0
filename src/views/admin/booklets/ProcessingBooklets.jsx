@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ProcessingBookletsModal from "components/modal/ProcessingBookletsModal";
+import { FcProcess } from "react-icons/fc"; // Assuming FcProcess is used for process button
+import { DataGrid, GridToolbar } from "@mui/x-data-grid"; // Import DataGrid and GridToolbar
 
 const ProcessingBooklets = () => {
   const [statusMessages, setStatusMessages] = useState([]);
   const [pdfProcessingDetails, setPdfProcessingDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false); // New state for loading
   const { classId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let socket = null;
@@ -63,7 +66,6 @@ const ProcessingBooklets = () => {
 
       socket.on("error", (errorMessage) => {
         setStatusMessages((prev) => [...prev, `Error: ${errorMessage}`]);
-        // console.log(e)
         setIsLoading(false);
       });
 
@@ -76,26 +78,41 @@ const ProcessingBooklets = () => {
     }
   };
 
+  // Table columns configuration
+  const columns = [
+    { field: "pdfName", headerName: "PDF Name", width: 250 },
+    { field: "status", headerName: "Status", width: 150 },
+    { field: "pages", headerName: "pages", width: 110 },
+  ];
+
+  const rows = Object.entries(pdfProcessingDetails).map(
+    ([pdfName, { status, pages }]) => ({
+      id: pdfName,
+      pdfName: pdfName,
+      status: status,
+      pages: pages,
+    })
+  );
+
+
   return (
-    <div className="position-relative w-full h-full">
+    <div className="position-relative h-full w-full ">
       <div className="container mx-auto px-4 py-6">
-        {/* PDF Processing Details     */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold">PDF Processing Details</h2>
-          <ul>
-            {Object.entries(pdfProcessingDetails).map(
-              ([pdfName, { status, pages, images }]) => (
-                <li key={pdfName} className="mb-4">
-                  <div className="font-semibold">{pdfName}</div>
-                  <div>Status: {status}</div>
-                  <div>Pages: {pages}</div>
-                  {status === "Processed" && (
-                    <div>{images} images extracted</div>
-                  )}
-                </li>
-              )
-            )}
-          </ul>
+        {/* Processed Files Details */}
+        <div className="mt-4">
+          {/* <h2 className="text-xl font-semibold mb-2">Processed Files</h2> */}
+          {/* DataGrid */}
+          <div style={{ height: "400px", width: "100%" }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              components={{
+                Toolbar: GridToolbar, // Optional: add toolbar
+              }}
+            />
+          </div>
         </div>
       </div>
       <ProcessingBookletsModal statusMessages={statusMessages} />

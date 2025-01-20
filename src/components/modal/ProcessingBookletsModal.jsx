@@ -45,7 +45,7 @@ const ProcessingBookletsModal = ({ statusMessages }) => {
           padding: "20px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
-          cursor: "pointer",
+          cursor: "move",
         }}
       >
         <div className=" relative flex w-[650px] flex-col items-center justify-center rounded-2xl border  p-4 shadow-lg">
