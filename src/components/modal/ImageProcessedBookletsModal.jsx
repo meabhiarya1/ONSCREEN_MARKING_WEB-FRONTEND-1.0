@@ -1,110 +1,206 @@
 import React, { useEffect, useState } from "react";
 import Draggable from "react-draggable";
-import axios from "axios"; // Import Axios
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { Document, Page } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css"; // Optional for annotations
+import * as pdfjsLib from "pdfjs-dist";
+import "../../assets/css/pdfViewer.css";
 
 const ImageProcessedBookletsModal = ({
-  pdfName,
   classId,
+  pdfName,
   SetShowProcessingImageModal,
-  setPdfName,
 }) => {
-  const [subjectCode, setSubjectCode] = useState("");
-  const [bookletName, setBookletName] = useState("");
-  const [pdfUrl, setPdfUrl] = useState("");
-  const [numPages, setNumPages] = useState(null);
-  const [error, setError] = useState("");
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [pdfData, setPdfData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const [totalPages, setTotalPages] = useState(0); // Track the total number of pages
 
-  const handleFetchPDF = async () => {
-    if (!subjectCode || !bookletName) {
-      setError("Subject code and booklet name are required.");
+  useEffect(() => {
+    if (!classId || !pdfName) {
+      setErrorMessage("Class ID and PDF Name are required.");
       return;
     }
 
-    try {
-      // Constructing the URL to the backend service
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/bookletprocessing/booklet?subjectCode=${subjectCode}&bookletName=${bookletName}`,
-        {
-          responseType: "blob", // Ensures that the response is a PDF blob
-        }
-      );
+    const fetchPDF = async () => {
+      try {
+        const url = `${process.env.REACT_APP_API_URL}/api/bookletprocessing/booklet?subjectCode=${classId}&bookletName=${pdfName}`;
+        const response = await fetch(url);
 
-      // Create a URL for the PDF blob
-      const pdfBlob = URL.createObjectURL(response.data);
-      setPdfUrl(pdfBlob); // Set the URL of the PDF for the viewer
-      setError(""); // Clear any previous errors
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch the PDF. Please try again.");
+        if (response?.status === 400 || response?.status === 404) {
+          const data = await response.json();
+          setErrorMessage(data?.message || "Something went wrong.");
+          return;
+        }
+
+        setPdfUrl(url);
+        setErrorMessage(null); // Reset error message on successful fetch
+      } catch (error) {
+        console.error("Error fetching PDF:", error);
+        setErrorMessage("Failed to fetch PDF. Please try again.");
+      }
+    };
+
+    fetchPDF();
+  }, [classId, pdfName]);
+
+  useEffect(() => {
+    if (pdfUrl) {
+      const loadPDF = async () => {
+        try {
+          const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+          setPdfData(pdf);
+          setTotalPages(pdf.numPages); // Set the total number of pages
+        } catch (error) {
+          console.error("Error loading PDF:", error);
+          setErrorMessage("Failed to load PDF.");
+        }
+      };
+      loadPDF();
+    }
+  }, [pdfUrl]);
+
+  const renderPDF = (pageNum) => {
+    if (pageNum < 1 || pageNum > totalPages) {
+      console.error("Invalid page number:", pageNum);
+      return; // Exit early if the page number is invalid
+    }
+
+    if (pdfData) {
+      const canvasContainer = document.getElementById("canvasContainer");
+      canvasContainer.innerHTML = ""; // Clear the previous canvas before rendering the new one
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      // Render the specified page
+      pdfData.getPage(pageNum).then((page) => {
+        const viewport = page.getViewport({ scale: 1 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        page.render({
+          canvasContext: context,
+          viewport: viewport,
+        });
+
+        canvasContainer.appendChild(canvas); // Add the new canvas to the container
+      });
     }
   };
 
   useEffect(() => {
-    if (pdfName) {
-      setPdfName(pdfName.replace(" Pages", ""));
+    if (pdfData && currentPage) {
+      renderPDF(currentPage); // Render the current page
     }
-  }, [pdfName]);
+  }, [pdfData, currentPage]);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
   };
 
   return (
-    <Draggable bounds="parent">
+    <Draggable>
       <div
         style={{
           position: "absolute",
           top: "20%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          zIndex: 1000,
-          width: "700px",
+          zIndex: 50,
           backgroundColor: "white",
+          width: "40%",
           padding: "20px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           cursor: "move",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
+        {" "}
+        {/* Close button positioned at the top-right */}
         <IoMdCloseCircleOutline
+          className="z-50 size-6 cursor-pointer"
+          style={{
+            position: "absolute",
+            top: "10px", // Adjust the distance from the top
+            right: "15px", // Adjust the distance from the right
+          }}
           onClick={() => SetShowProcessingImageModal(false)}
-          className="absolute right-2 top-2 size-6 cursor-pointer"
         />
-        <div className="relative flex w-[650px] flex-col items-center justify-center rounded-2xl border p-4 shadow-lg">
-          <h2 className="mb-4 text-lg font-semibold">
-            Processed Images for {pdfName}
-          </h2>
-          <div>
-            <div>
-              <input
-                type="text"
-                placeholder="Enter Subject Code"
-                value={subjectCode}
-                onChange={(e) => setSubjectCode(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Enter Booklet Name"
-                value={bookletName}
-                onChange={(e) => setBookletName(e.target.value)}
-              />
-              <button onClick={handleFetchPDF}>View PDF</button>
+        <div style={{ position: "relative" }}>
+          {/* Display error message */}
+          {errorMessage && <div>{errorMessage}</div>}
+          <div className="flex justify-evenly">
+            {pdfUrl && (
+              <p className="my-2 text-sm text-gray-700">
+                Page {currentPage} of {totalPages}
+              </p>
+            )}
+
+            {pdfUrl && (
+              <p className="my-2 text-sm text-gray-700">
+                {" "}
+                <span className="text-dark mr-1 text-sm font-bold">
+                  PDF Name :
+                </span>{" "}
+                {pdfName}
+              </p>
+            )}
+          </div>
+
+          {/* Display loading message */}
+          {!pdfUrl && <div>Loading...</div>}
+
+          {/* Display the PDF if available */}
+          {pdfUrl && (
+            <div id="canvasContainer">
+              {/* Each page will be rendered in a new canvas */}
             </div>
+          )}
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
-
-            {/* {pdfUrl && (
-              <div>
-                <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
-                  {Array.from(new Array(numPages), (_, index) => (
-                    <Page key={index} pageNumber={index + 1} />
-                  ))}
-                </Document>
+          {/* Navigation buttons for next/previous pages */}
+          <div
+            style={{
+              marginTop: "15px",
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              gap: "10px",
+            }}
+          >
+            <button
+              class="button"
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                <span>Previous</span>
               </div>
-            )} */}
+            </button>
+
+            <button
+              class="button"
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                <span>Next</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>
