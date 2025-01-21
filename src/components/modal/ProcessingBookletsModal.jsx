@@ -68,22 +68,23 @@ const ProcessingBookletsModal = ({
           transform: "translate(-50%, -50%)",
           zIndex: 0,
           width: "700px",
-          backgroundColor: "white",
+          // backgroundColor: "white",
           padding: "20px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           cursor: "move",
         }}
+        className="dark:bg-navy-900 bg-white"
       >
         <IoMdCloseCircleOutline
           onClick={() => SetShowProcessingModal(false)}
-          className="absolute right-2 top-2 size-6 cursor-pointer"
+          className="absolute right-2 top-2 size-6 cursor-pointer dark:text-white"
         />
-        <div className=" relative flex w-[650px] flex-col items-center justify-center rounded-2xl border  p-4 shadow-lg">
+        <div className=" relative flex w-[650px] flex-col items-center justify-center rounded-2xl border  p-4 shadow-lg dark:bg-navy-700">
           <div className=" ">
             {/* Loading Status */}
             <div className="mt-6">
-              <h2 className="mb-3 flex justify-center rounded-lg bg-gray-700 px-2 py-2 text-center text-xl font-semibold text-white ">
+              <h2 className="mb-3 flex justify-center rounded-lg bg-gray-700 px-2 py-2 text-center text-xl font-semibold text-white dark:bg-navy-900">
                 Processing Status
               </h2>
               <div
@@ -140,7 +141,7 @@ const ProcessingBookletsModal = ({
               </div>
             </div>
             <button
-              class="text-black group relative mt-4 h-12 w-56 rounded-2xl bg-white text-center text-xl font-semibold "
+              class="text-black group relative mt-4 h-12 w-56 rounded-2xl bg-white text-center text-xl font-semibold dark:bg-navy-900 dark:text-white"
               type="button"
               onClick={handleCsvDownload}
             >
@@ -161,7 +162,7 @@ const ProcessingBookletsModal = ({
                   ></path>
                 </svg>
               </div>
-              <p class="translate-x-2 ">Export CSV</p>
+              <p class="translate-x-2">Export CSV</p>
             </button>
           </div>
         </div>
