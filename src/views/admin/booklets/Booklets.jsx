@@ -4,6 +4,8 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { FcProcess } from "react-icons/fc";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { MdTask } from "react-icons/md";
+import AssignBookletodal from "../../../components/modal/AssignBookletModal";
 
 // Initialize socket connection
 const socket = io(process.env.REACT_APP_API_URL, {
@@ -16,6 +18,8 @@ const Booklets = () => {
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showAssignBookletModal, setShowAssignBookletModal] = useState(false);
+  const [currentBookletDetails, setCurrentBookletDetails] = useState("");
 
   useEffect(() => {
     // Check if the `dark` mode is applied to the `html` element
@@ -74,7 +78,23 @@ const Booklets = () => {
             navigate(`/admin/process/booklets/${params.row.folderName}`);
           }}
         >
-          <FcProcess className="size-6 text-indigo-500 " />
+          <FcProcess className="size-7 text-indigo-500 " />
+        </div>
+      ),
+    },
+    {
+      field: "assignTask",
+      headerName: "Assign Task",
+      width: 150,
+      renderCell: (params) => (
+        <div
+          className="flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-yellow-600  "
+          onClick={() => {
+            setShowAssignBookletModal(true);
+            setCurrentBookletDetails(params.row);
+          }}
+        >
+          <MdTask className="size-7 text-yellow-600 " />
         </div>
       ),
     },
@@ -98,7 +118,7 @@ const Booklets = () => {
     };
 
     const handleFolderAdd = (newFolder) => {
-      console.log("New folder added:", newFolder);
+      // console.log("New folder added:", newFolder);
       setRows((prevFolders) => [
         ...prevFolders,
         { ...newFolder, id: newFolder._id },
@@ -199,6 +219,12 @@ const Booklets = () => {
               },
             }}
           />
+          {showAssignBookletModal && (
+            <AssignBookletodal
+              setShowAssignBookletModal={setShowAssignBookletModal}
+              currentBookletDetails={currentBookletDetails}
+            />
+          )}
         </div>
       )}
     </div>
