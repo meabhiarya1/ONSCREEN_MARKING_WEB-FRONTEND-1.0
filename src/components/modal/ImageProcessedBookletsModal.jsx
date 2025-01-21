@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import Draggable from "react-draggable";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
-const ImageProcessedBookletsModal = ({ classId, pdfName }) => {
+const ImageProcessedBookletsModal = ({ classId, pdfName, SetShowProcessingImageModal }) => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -17,9 +19,9 @@ const ImageProcessedBookletsModal = ({ classId, pdfName }) => {
 
         const response = await fetch(url);
 
-        if (response.status === 400 || response.status === 404) {
+        if (response?.status === 400 || response?.status === 404) {
           const data = await response.json();
-          setErrorMessage(data.message || "Something went wrong.");
+          setErrorMessage(data?.message || "Something went wrong.");
           return;
         }
 
@@ -36,24 +38,40 @@ const ImageProcessedBookletsModal = ({ classId, pdfName }) => {
   }, [classId, pdfName]);
 
   return (
-    <div>
-      <h1>View Booklet PDF</h1>
-
-      {/* Display error message */}
-      {errorMessage && <div>{errorMessage}</div>}
-
-      {/* Display the PDF if available */}
-      {pdfUrl && (
+    <Draggable>
+      <div
+        style={{
+          position: "absolute",
+          top: "20%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 50,
+          backgroundColor: "white",
+          width: "40%",
+          padding: "20px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          borderRadius: "8px",
+          cursor: "move",
+        }}
+      >
         <div>
-          <iframe
-            src={pdfUrl}
-            width="100%"
-            height="600px"
-            title="PDF Viewer"
-          ></iframe>
+          {/* Display error message */}
+          {errorMessage && <div>{errorMessage}</div>}
+          <IoMdCloseCircleOutline className=" z-10 size-6 cursor-pointer my-1" onClick={() => SetShowProcessingImageModal(false)} />
+          {/* Display the PDF if available */}
+          {pdfUrl && (
+            <div className=" ">
+              <iframe
+                src={pdfUrl}
+                width="100%"
+                height="800px"
+                title="PDF Viewer"
+              ></iframe>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </Draggable>
   );
 };
 
