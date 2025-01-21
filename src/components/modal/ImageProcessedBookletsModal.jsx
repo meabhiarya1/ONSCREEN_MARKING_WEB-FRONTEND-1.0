@@ -36,15 +36,15 @@ const ImageProcessedBookletsModal = ({ classId, pdfName }) => {
   }, [classId, pdfName]);
 
   return (
-    <div className="pdf-viewer-container">
+    <div>
       <h1>View Booklet PDF</h1>
 
       {/* Display error message */}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div>{errorMessage}</div>}
 
       {/* Display the PDF if available */}
       {pdfUrl && (
-        <div className="pdf-container">
+        <div>
           <iframe
             src={pdfUrl}
             width="100%"
