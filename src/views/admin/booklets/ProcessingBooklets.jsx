@@ -6,6 +6,7 @@ import ProcessingBookletsModal from "components/modal/ProcessingBookletsModal";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid"; // Import DataGrid and GridToolbar
 import { FaRegFilePdf } from "react-icons/fa";
 import ImageProcessedBookletsModal from "components/modal/ImageProcessedBookletsModal";
+import { toast } from "react-toastify";
 
 const ProcessingBooklets = () => {
   const [statusMessages, setStatusMessages] = useState([]);
@@ -86,6 +87,9 @@ const ProcessingBooklets = () => {
   };
 
   const handlePdfImages = (pdfName) => {
+    if (!pdfName) return toast.error("No pdf name found");
+    if (!classId) return toast.error("No class id found");
+
     setPdfName(pdfName);
     SetShowProcessingImageModal(true);
     SetShowProcessingModal(false);

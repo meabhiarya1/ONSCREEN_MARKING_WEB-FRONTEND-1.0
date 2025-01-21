@@ -60,6 +60,11 @@ const ImageProcessedBookletsModal = ({
   }, [pdfUrl]);
 
   const renderPDF = (pageNum) => {
+    if (pageNum < 1 || pageNum > totalPages) {
+      console.error("Invalid page number:", pageNum);
+      return; // Exit early if the page number is invalid
+    }
+
     if (pdfData) {
       const canvasContainer = document.getElementById("canvasContainer");
       canvasContainer.innerHTML = ""; // Clear the previous canvas before rendering the new one
