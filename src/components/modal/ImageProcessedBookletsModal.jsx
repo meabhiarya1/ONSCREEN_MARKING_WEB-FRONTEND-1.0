@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Draggable from "react-draggable";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import "../../assets/css/pdfViewer.css";
 
-const ImageProcessedBookletsModal = ({ classId, pdfName, SetShowProcessingImageModal }) => {
+const ImageProcessedBookletsModal = ({
+  classId,
+  pdfName,
+  SetShowProcessingImageModal,
+}) => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -57,7 +62,10 @@ const ImageProcessedBookletsModal = ({ classId, pdfName, SetShowProcessingImageM
         <div>
           {/* Display error message */}
           {errorMessage && <div>{errorMessage}</div>}
-          <IoMdCloseCircleOutline className=" z-10 size-6 cursor-pointer my-1" onClick={() => SetShowProcessingImageModal(false)} />
+          <IoMdCloseCircleOutline
+            className=" z-10 my-1 size-6 cursor-pointer"
+            onClick={() => SetShowProcessingImageModal(false)}
+          />
           {/* Display the PDF if available */}
           {pdfUrl && (
             <div className=" ">
@@ -66,7 +74,10 @@ const ImageProcessedBookletsModal = ({ classId, pdfName, SetShowProcessingImageM
                 width="100%"
                 height="800px"
                 title="PDF Viewer"
-              ></iframe>
+                className="pdf-viewer"
+              >
+                {" "}
+              </iframe>
             </div>
           )}
         </div>

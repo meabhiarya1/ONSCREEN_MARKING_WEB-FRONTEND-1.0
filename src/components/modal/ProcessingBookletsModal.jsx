@@ -59,7 +59,7 @@ const ProcessingBookletsModal = ({
   };
 
   return (
-    <Draggable bounds="parent">
+    <Draggable  >
       <div
         style={{
           position: "absolute",
