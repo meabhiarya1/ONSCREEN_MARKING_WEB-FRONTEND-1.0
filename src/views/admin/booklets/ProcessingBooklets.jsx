@@ -95,7 +95,7 @@ const ProcessingBooklets = () => {
   const columns = [
     { field: "pdfName", headerName: "PDF Name", width: 250 },
     { field: "status", headerName: "Status", width: 150 },
-    { field: "pages", headerName: "pages", width: 110 },
+    { field: "pages", headerName: "Pages", width: 110 },
     {
       field: "showpdf",
       headerName: "Show PDF Images",

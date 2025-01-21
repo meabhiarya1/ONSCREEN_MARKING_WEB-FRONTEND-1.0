@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Draggable from "react-draggable";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import * as pdfjsLib from "pdfjs-dist";
 import "../../assets/css/pdfViewer.css";
 
 const ImageProcessedBookletsModal = ({
@@ -10,6 +11,9 @@ const ImageProcessedBookletsModal = ({
 }) => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [pdfData, setPdfData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const [totalPages, setTotalPages] = useState(0); // Track the total number of pages
 
   useEffect(() => {
     if (!classId || !pdfName) {
@@ -19,9 +23,7 @@ const ImageProcessedBookletsModal = ({
 
     const fetchPDF = async () => {
       try {
-        // Construct the URL to fetch the PDF
         const url = `${process.env.REACT_APP_API_URL}/api/bookletprocessing/booklet?subjectCode=${classId}&bookletName=${pdfName}`;
-
         const response = await fetch(url);
 
         if (response?.status === 400 || response?.status === 404) {
@@ -30,7 +32,6 @@ const ImageProcessedBookletsModal = ({
           return;
         }
 
-        // Set the PDF URL if the response is successful
         setPdfUrl(url);
         setErrorMessage(null); // Reset error message on successful fetch
       } catch (error) {
@@ -41,6 +42,64 @@ const ImageProcessedBookletsModal = ({
 
     fetchPDF();
   }, [classId, pdfName]);
+
+  useEffect(() => {
+    if (pdfUrl) {
+      const loadPDF = async () => {
+        try {
+          const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+          setPdfData(pdf);
+          setTotalPages(pdf.numPages); // Set the total number of pages
+        } catch (error) {
+          console.error("Error loading PDF:", error);
+          setErrorMessage("Failed to load PDF.");
+        }
+      };
+      loadPDF();
+    }
+  }, [pdfUrl]);
+
+  const renderPDF = (pageNum) => {
+    if (pdfData) {
+      const canvasContainer = document.getElementById("canvasContainer");
+      canvasContainer.innerHTML = ""; // Clear the previous canvas before rendering the new one
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      // Render the specified page
+      pdfData.getPage(pageNum).then((page) => {
+        const viewport = page.getViewport({ scale: 1 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        page.render({
+          canvasContext: context,
+          viewport: viewport,
+        });
+
+        canvasContainer.appendChild(canvas); // Add the new canvas to the container
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (pdfData && currentPage) {
+      renderPDF(currentPage); // Render the current page
+    }
+  }, [pdfData, currentPage]);
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
 
   return (
     <Draggable>
@@ -57,29 +116,57 @@ const ImageProcessedBookletsModal = ({
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           cursor: "move",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <div>
+        {" "}
+        {/* Close button positioned at the top-right */}
+        <IoMdCloseCircleOutline
+          className="z-50 size-6 cursor-pointer"
+          style={{
+            position: "absolute",
+            top: "10px", // Adjust the distance from the top
+            right: "15px", // Adjust the distance from the right
+          }}
+          onClick={() => SetShowProcessingImageModal(false)}
+        />
+        <div style={{ position: "relative" }}>
           {/* Display error message */}
           {errorMessage && <div>{errorMessage}</div>}
-          <IoMdCloseCircleOutline
-            className=" z-10 my-1 size-6 cursor-pointer"
-            onClick={() => SetShowProcessingImageModal(false)}
-          />
+
           {/* Display the PDF if available */}
           {pdfUrl && (
-            <div className=" ">
-              <iframe
-                src={pdfUrl}
-                width="100%"
-                height="800px"
-                title="PDF Viewer"
-                className="pdf-viewer"
-              >
-                {" "}
-              </iframe>
+            <div id="canvasContainer">
+              {/* Each page will be rendered in a new canvas */}
             </div>
           )}
+
+          {/* Navigation buttons for next/previous pages */}
+          <div
+            style={{
+              marginTop: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <button
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+              style={{ padding: "5px 10px", cursor: "pointer" }}
+            >
+              Previous
+            </button>
+            <button
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+              style={{ padding: "5px 10px", cursor: "pointer" }}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </Draggable>
