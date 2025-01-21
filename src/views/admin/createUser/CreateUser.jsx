@@ -4,7 +4,6 @@ import routes from "routes.js";
 import { createUser } from "services/common";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { Chip, Menu, MenuItem, Button } from "@mui/material";
 import axios from "axios";
 import ReactSelect from "react-select";
 
@@ -27,6 +26,11 @@ const CreateUser = () => {
   const [showSubjects, setShowSubjects] = useState(false);
   const [showMaximumAllot, setShowMaximumAllot] = useState(false);
 
+  const hardcodedPermissions = {
+    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
+  };
+
   useEffect(() => {
     if (userDetails.role) {
       if (userDetails.role === "admin") {
@@ -34,15 +38,26 @@ const CreateUser = () => {
           ...userDetails,
           permissions: routes.map((route) => route.name),
         });
-      } else {
-        const permissionsForRole = hardcodedPermissions[userDetails.role] || [];
+        setShowSubjects(false);
+        setShowMaximumAllot(false);
+      } else if (userDetails?.role === "evaluator") {
         setUserDetails({
           ...userDetails,
-          permissions: permissionsForRole,
+          subjectCode: selectedChips,
+          permissions: hardcodedPermissions[userDetails?.role] || [],
         });
+        setShowSubjects(true);
+        setShowMaximumAllot(true);
+      } else {
+        setUserDetails({
+          ...userDetails,
+          permissions: hardcodedPermissions[userDetails?.role] || [],
+        });
+        setShowSubjects(false);
+        setShowMaximumAllot(false);
       }
     }
-  }, [userDetails.role]);
+  }, [userDetails.role, selectedChips, setUserDetails]);
 
   useEffect(() => {
     const fetchedSubjects = async () => {
@@ -63,23 +78,6 @@ const CreateUser = () => {
     };
     fetchedSubjects();
   }, []);
-
-  useEffect(() => {
-    if (userDetails?.role === "evaluator") {
-      setUserDetails({ ...userDetails, subjectCode: selectedChips, permissions: hardcodedPermissions[userDetails?.role] });
-      setShowSubjects(true);
-      setShowMaximumAllot(true);
-    } else {
-      setUserDetails({ ...userDetails, subjectCode: [] });
-      setShowSubjects(false);
-      setShowMaximumAllot(false);
-    }
-  }, [selectedChips, userDetails.role, setUserDetails]);
-
-  const hardcodedPermissions = {
-    evaluator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
-    moderator: ["Evaluator Dashboard", "Assigned Tasks", "Profile"],
-  };
 
   // const handleChipClick = (chip) => {
   //   if (selectedChips.some((selected) => selected === chip._id)) {
@@ -111,7 +109,7 @@ const CreateUser = () => {
     e.preventDefault();
     setLoading(true);
 
-    if (userDetails.role === "evaluator" && !userDetails.maxBooklets ) {
+    if (userDetails.role === "evaluator" && !userDetails.maxBooklets) {
       toast.error("Please enter max allocation");
       setLoading(false);
       return;
@@ -385,19 +383,19 @@ const CreateUser = () => {
                     Subjects:
                   </span>
                   {/* <ul className="m-0 flex h-auto list-none flex-wrap justify-start overflow-auto rounded-lg bg-gray-100 p-1 dark:bg-navy-900"> */}
-                  {selectedChips.map((chipId) => {
+                  {/* {selectedChips.map((chipId) => {
                     const subject = subjects.find((s) => s._id === chipId);
-                    // return (
-                    //   // <li key={chipId} className="m-2 rounded-2xl border border-gray-200">
-                    //     <Chip
-                    //       label={subject?.name}
-                    //       onDelete={() => handleChipClick(chipId)}
-                    //       color="success"
-                    //       className="cursor-pointer shadow-md transition-all dark:bg-navy-700 dark:text-white"
-                    //     />
-                    //   // </li>
-                    // );
-                  })}
+                    return (
+                      // <li key={chipId} className="m-2 rounded-2xl border border-gray-200">
+                        <Chip
+                          label={subject?.name}
+                          onDelete={() => handleChipClick(chipId)}
+                          color="success"
+                          className="cursor-pointer shadow-md transition-all dark:bg-navy-700 dark:text-white"
+                        />
+                      // </li>
+                    );
+                  })} */}
                   {/* <li className="m-2"> */}
                   <div className="bg-gray-50 dark:bg-[#0b1437]">
                     <ReactSelect
@@ -420,7 +418,7 @@ const CreateUser = () => {
                           backgroundColor: "transparent",
                           padding: "2px", // Padding around the input
                           height: "45px",
-                          overflow:"auto"
+                          overflow: "auto",
                         }),
                         multiValue: (base) => ({
                           ...base,
