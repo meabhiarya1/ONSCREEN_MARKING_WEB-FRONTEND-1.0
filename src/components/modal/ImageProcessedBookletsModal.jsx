@@ -135,6 +135,26 @@ const ImageProcessedBookletsModal = ({
         <div style={{ position: "relative" }}>
           {/* Display error message */}
           {errorMessage && <div>{errorMessage}</div>}
+          <div className="flex justify-evenly">
+            {pdfUrl && (
+              <p className="my-2 text-sm text-gray-700">
+                Page {currentPage} of {totalPages}
+              </p>
+            )}
+
+            {pdfUrl && (
+              <p className="my-2 text-sm text-gray-700">
+                {" "}
+                <span className="text-dark mr-1 text-sm font-bold">
+                  PDF Name :
+                </span>{" "}
+                {pdfName}
+              </p>
+            )}
+          </div>
+
+          {/* Display loading message */}
+          {!pdfUrl && <div>Loading...</div>}
 
           {/* Display the PDF if available */}
           {pdfUrl && (
@@ -146,25 +166,35 @@ const ImageProcessedBookletsModal = ({
           {/* Navigation buttons for next/previous pages */}
           <div
             style={{
-              marginTop: "10px",
+              marginTop: "15px",
               display: "flex",
               justifyContent: "space-between",
               width: "100%",
+              gap: "10px",
             }}
           >
             <button
+              class="button"
               onClick={goToPreviousPage}
               disabled={currentPage === 1}
-              style={{ padding: "5px 10px", cursor: "pointer" }}
             >
-              Previous
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                <span>Previous</span>
+              </div>
             </button>
+
             <button
+              class="button"
               onClick={goToNextPage}
               disabled={currentPage === totalPages}
-              style={{ padding: "5px 10px", cursor: "pointer" }}
             >
-              Next
+              <span class="shadow"></span>
+              <span class="edge"></span>
+              <div class="front">
+                <span>Next</span>
+              </div>
             </button>
           </div>
         </div>
