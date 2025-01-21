@@ -50,6 +50,7 @@ const ImageProcessedBookletsModal = ({
           const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
           setPdfData(pdf);
           setTotalPages(pdf.numPages); // Set the total number of pages
+          setCurrentPage(1)
         } catch (error) {
           console.error("Error loading PDF:", error);
           setErrorMessage("Failed to load PDF.");
@@ -111,13 +112,13 @@ const ImageProcessedBookletsModal = ({
       <div
         style={{
           position: "absolute",
-          top: "20%",
-          left: "50%",
+          top: "2%",
+          left: "52%",
           transform: "translate(-50%, -50%)",
           zIndex: 50,
-          backgroundColor: "white",
+          // backgroundColor: "white",
           width: "40%",
-          padding: "20px",
+          padding: "10px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           cursor: "move",
@@ -125,11 +126,12 @@ const ImageProcessedBookletsModal = ({
           flexDirection: "column",
           alignItems: "center",
         }}
+        className="dark:bg-navy-700 bg-white"
       >
         {" "}
         {/* Close button positioned at the top-right */}
         <IoMdCloseCircleOutline
-          className="z-50 size-6 cursor-pointer"
+          className="z-50 size-6 cursor-pointer dark:text-white"
           style={{
             position: "absolute",
             top: "10px", // Adjust the distance from the top
@@ -140,15 +142,15 @@ const ImageProcessedBookletsModal = ({
         <div style={{ position: "relative" }}>
           {/* Display error message */}
           {errorMessage && <div>{errorMessage}</div>}
-          <div className="flex justify-evenly">
+          <div className="flex justify-evenly text-gray-700 dark:text-white">
             {pdfUrl && (
-              <p className="my-2 text-sm text-gray-700">
+              <p className="my-2 text-sm">
                 Page {currentPage} of {totalPages}
               </p>
             )}
 
             {pdfUrl && (
-              <p className="my-2 text-sm text-gray-700">
+              <p className="my-2 text-sm text-gray-700 dark:text-white">
                 {" "}
                 <span className="text-dark mr-1 text-sm font-bold">
                   PDF Name :
