@@ -14,7 +14,7 @@ export const getUserDetails = async (token) => {
     );
     return response; // return the full response to handle status outside
   } catch (error) {
-    return error.response; // return full error response to handle status outside
+    return error?.response; // return full error response to handle status outside
   }
 };
 
@@ -65,10 +65,10 @@ export const getAllClasses = async () => {
       }
     );
     // console.log(response);
-    return response.data; // return the full response to handle status outside
+    return response?.data; // return the full response to handle status outside
   } catch (error) {
     console.error(error);
-    return error.response; // return full error response to handle status outside
+    return error?.response; // return full error response to handle status outside
   }
 };
 
@@ -83,9 +83,9 @@ export const getAllCourses = async () => {
         },
       }
     );
-    return response.data; // return the full response to handle status outside
+    return response?.data; // return the full response to handle status outside
   } catch (error) {
     console.error(error);
-    return error.response; // return full error response to handle status outside
+    return error?.response; // return full error response to handle status outside
   }
 };
