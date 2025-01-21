@@ -29,7 +29,6 @@ const ProcessingBooklets = () => {
     handleStartProcessing();
   }, [classId]);
 
-
   const handleStartProcessing = async () => {
     setIsLoading(true); // Set loading state to true
     try {
@@ -39,42 +38,44 @@ const ProcessingBooklets = () => {
           subjectCode: classId,
         }
       );
+
+      // Add the initial response message to statusMessages
       setStatusMessages((prev) => [...prev, response?.data?.message]);
+
+      // Initialize the socket connection
       const socket = io(
         `${process.env.REACT_APP_API_URL}/processing-${classId}`
       );
+
+      // Handle status messages from the server
       socket.on("status", (message) => {
-        setStatusMessages((prev) => [...prev, message]);
+        if (typeof message === "string") {
+          // If the message is a string, add it to statusMessages
+          setStatusMessages((prev) => [...prev, message]);
+        } else if (typeof message === "object" && message.status) {
+          // If the message is an object, format and add it to statusMessages
+          const { status, pdfFile, totalPages } = message;
+          const formattedMessage = `${status}: ${pdfFile} with ${totalPages} pages`;
+          setStatusMessages((prev) => [...prev, formattedMessage]);
 
-        // Handle messages indicating processed/rejected PDFs
-        if (message.startsWith("Processed") || message.startsWith("Rejected")) {
-          const [status, pdfFileName, totalPages] = message.split(":");
+          // Update pdfProcessingDetails for tracking
           setPdfProcessingDetails((prev) => ({
             ...prev,
-            [pdfFileName?.trim()]: {
-              status: status?.trim(),
-              pages: totalPages?.trim(),
+            [pdfFile?.trim()]: {
+              status: status,
+              pages: totalPages,
             },
-          }));
-        }
-
-        // Handle messages indicating extracted images
-        if (message.startsWith("Extracted")) {
-          const [_, imageCount, pdfName] = message.match(
-            /Extracted (\d+) images from: (.*)/
-          );
-          setPdfProcessingDetails((prev) => ({
-            ...prev,
-            [pdfName]: { ...prev[pdfName], images: parseInt(imageCount) },
           }));
         }
       });
 
+      // Handle error messages from the server
       socket.on("error", (errorMessage) => {
         setStatusMessages((prev) => [...prev, `Error: ${errorMessage}`]);
         setIsLoading(false);
       });
 
+      // Handle socket disconnection
       socket.on("disconnect", () => {
         setIsLoading(false);
       });

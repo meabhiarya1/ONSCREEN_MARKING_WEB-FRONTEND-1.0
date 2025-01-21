@@ -38,14 +38,14 @@ const ProcessingBookletsModal = ({
   const handleCsvDownload = () => {
     // Adding a header row to the CSV file
     const header = "Processing Status";
-    
+
     // Joining the header and status messages with newlines
     const csvContent =
       "data:text/csv;charset=utf-8," + [header, ...statusMessages].join("\n");
-    
+
     // Encoding the CSV content for the download link
     const encodedUri = encodeURI(csvContent);
-    
+
     // Creating a link element and triggering the download
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -53,11 +53,11 @@ const ProcessingBookletsModal = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     // Closing the processing modal
     // SetShowProcessingModal(false);
   };
-  
+
   return (
     <Draggable bounds="parent">
       <div
@@ -94,21 +94,46 @@ const ProcessingBookletsModal = ({
                   scrollbarColor: "rgba(0, 0, 0, 0.2) transparent",
                 }}
               >
-                {statusMessages?.map((msg, idx) =>
-                  msg.includes("rejected") ? (
-                    <p key={idx} className="text-red-600">
-                      {msg}
-                    </p>
-                  ) : msg.includes("completed") ? (
-                    <p key={idx} className="text-green-600">
-                      {msg}
-                    </p>
-                  ) : (
-                    <p key={idx} className="text-yellow-600">
-                      {msg}
-                    </p>
-                  )
-                )}
+                {statusMessages?.map((msg, idx) => {
+                  if (typeof msg === "string") {
+                    // Handle plain text messages
+                    if (msg.toLowerCase().includes("rejected")) {
+                      return (
+                        <p key={idx} className="text-red-600">
+                          {msg}
+                        </p>
+                      );
+                    } else if (msg.toLowerCase().includes("completed")) {
+                      return (
+                        <p key={idx} className="text-green-600">
+                          {msg}
+                        </p>
+                      );
+                    } else {
+                      return (
+                        <p key={idx} className="text-yellow-600">
+                          {msg}
+                        </p>
+                      );
+                    }
+                  } else if (typeof msg === "object" && msg.status) {
+                    // Handle formatted object messages
+                    const { status, pdfFile, totalPages } = msg;
+                    const statusClass =
+                      status.toLowerCase() === "rejected"
+                        ? "text-red-600"
+                        : status.toLowerCase() === "completed"
+                        ? "text-green-600"
+                        : "text-yellow-600";
+
+                    return (
+                      <p key={idx} className={statusClass}>
+                        {`${status}: ${pdfFile} with ${totalPages} pages`}
+                      </p>
+                    );
+                  }
+                  return null; // Fallback for unexpected message types
+                })}
 
                 {/* Dummy element to ensure scrolling to the bottom */}
                 <div ref={messagesEndRef}></div>

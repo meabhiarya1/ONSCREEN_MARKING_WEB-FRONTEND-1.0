@@ -1,114 +1,59 @@
 import React, { useEffect, useState } from "react";
-import Draggable from "react-draggable";
-import axios from "axios"; // Import Axios
-import { IoMdCloseCircleOutline } from "react-icons/io";
-import { Document, Page } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css"; // Optional for annotations
 
-const ImageProcessedBookletsModal = ({
-  pdfName,
-  classId,
-  SetShowProcessingImageModal,
-  setPdfName,
-}) => {
-  const [subjectCode, setSubjectCode] = useState("");
-  const [bookletName, setBookletName] = useState("");
-  const [pdfUrl, setPdfUrl] = useState("");
-  const [numPages, setNumPages] = useState(null);
-  const [error, setError] = useState("");
+const ImageProcessedBookletsModal = ({ classId, pdfName }) => {
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleFetchPDF = async () => {
-    if (!subjectCode || !bookletName) {
-      setError("Subject code and booklet name are required.");
+  useEffect(() => {
+    if (!classId || !pdfName) {
+      setErrorMessage("Class ID and PDF Name are required.");
       return;
     }
 
-    try {
-      // Constructing the URL to the backend service
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/bookletprocessing/booklet?subjectCode=${subjectCode}&bookletName=${bookletName}`,
-        {
-          responseType: "blob", // Ensures that the response is a PDF blob
+    const fetchPDF = async () => {
+      try {
+        // Construct the URL to fetch the PDF
+        const url = `${process.env.REACT_APP_API_URL}/api/bookletprocessing/booklet?subjectCode=${classId}&bookletName=${pdfName}`;
+
+        const response = await fetch(url);
+
+        if (response.status === 400 || response.status === 404) {
+          const data = await response.json();
+          setErrorMessage(data.message || "Something went wrong.");
+          return;
         }
-      );
 
-      // Create a URL for the PDF blob
-      const pdfBlob = URL.createObjectURL(response.data);
-      setPdfUrl(pdfBlob); // Set the URL of the PDF for the viewer
-      setError(""); // Clear any previous errors
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch the PDF. Please try again.");
-    }
-  };
+        // Set the PDF URL if the response is successful
+        setPdfUrl(url);
+        setErrorMessage(null); // Reset error message on successful fetch
+      } catch (error) {
+        console.error("Error fetching PDF:", error);
+        setErrorMessage("Failed to fetch PDF. Please try again.");
+      }
+    };
 
-  useEffect(() => {
-    if (pdfName) {
-      setPdfName(pdfName.replace(" Pages", ""));
-    }
-  }, [pdfName]);
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
+    fetchPDF();
+  }, [classId, pdfName]);
 
   return (
-    <Draggable bounds="parent">
-      <div
-        style={{
-          position: "absolute",
-          top: "20%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 1000,
-          width: "700px",
-          backgroundColor: "white",
-          padding: "20px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          borderRadius: "8px",
-          cursor: "move",
-        }}
-      >
-        <IoMdCloseCircleOutline
-          onClick={() => SetShowProcessingImageModal(false)}
-          className="absolute right-2 top-2 size-6 cursor-pointer"
-        />
-        <div className="relative flex w-[650px] flex-col items-center justify-center rounded-2xl border p-4 shadow-lg">
-          <h2 className="mb-4 text-lg font-semibold">
-            Processed Images for {pdfName}
-          </h2>
-          <div>
-            <div>
-              <input
-                type="text"
-                placeholder="Enter Subject Code"
-                value={subjectCode}
-                onChange={(e) => setSubjectCode(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Enter Booklet Name"
-                value={bookletName}
-                onChange={(e) => setBookletName(e.target.value)}
-              />
-              <button onClick={handleFetchPDF}>View PDF</button>
-            </div>
+    <div className="pdf-viewer-container">
+      <h1>View Booklet PDF</h1>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* Display error message */}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-            {/* {pdfUrl && (
-              <div>
-                <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
-                  {Array.from(new Array(numPages), (_, index) => (
-                    <Page key={index} pageNumber={index + 1} />
-                  ))}
-                </Document>
-              </div>
-            )} */}
-          </div>
+      {/* Display the PDF if available */}
+      {pdfUrl && (
+        <div className="pdf-container">
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="600px"
+            title="PDF Viewer"
+          ></iframe>
         </div>
-      </div>
-    </Draggable>
+      )}
+    </div>
   );
 };
 
