@@ -119,9 +119,9 @@ const Tasks = () => {
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Subject Code
                 </th>
-                {/* <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                  Class Name
-                </th> */}
+                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+                  Name
+                </th>
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Total Files
                 </th>
@@ -145,6 +145,9 @@ const Tasks = () => {
                   </td> */}
                   <td className="whitespace-nowrap px-4 py-2  font-medium text-gray-700 dark:text-white">
                     {filteredTask?.subjectCode}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2  font-medium text-gray-700 dark:text-white">
+                    {filteredTask?.userId?.name}
                   </td>
                   {/* <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {filteredTask?.className}
