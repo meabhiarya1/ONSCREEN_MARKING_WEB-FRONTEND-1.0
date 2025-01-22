@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { MdTask } from "react-icons/md";
 import AssignBookletModal from "../../../components/modal/AssignBookletModal";
 import axios from "axios";
+import { getAllUsers } from "services/common";
 
 // Initialize socket connection
 const socket = io(process.env.REACT_APP_API_URL, {
@@ -22,6 +23,7 @@ const Booklets = () => {
   const [showAssignBookletModal, setShowAssignBookletModal] = useState(false);
   const [currentBookletDetails, setCurrentBookletDetails] = useState("");
   const [assignTask, setAssignTask] = useState("");
+  const [allUsers, setAllUsers] = useState("");
 
   useEffect(() => {
     // Check if the `dark` mode is applied to the `html` element
@@ -63,6 +65,73 @@ const Booklets = () => {
     }
   }, [currentBookletDetails]);
 
+  useEffect(() => {
+    const handleFolderList = (folderList) => {
+      // console.log("Initial folder list:", folderList);
+      setRows(folderList.map((folder) => ({ ...folder, id: folder._id })));
+    };
+
+    const handleFolderUpdate = (updatedFolder) => {
+      // console.log("Folder updated:", updatedFolder);
+      setRows((prevFolders) =>
+        prevFolders.map((folder) =>
+          folder._id === updatedFolder._id
+            ? { ...updatedFolder, id: updatedFolder._id }
+            : folder
+        )
+      );
+    };
+
+    const handleFolderAdd = (newFolder) => {
+      // console.log("New folder added:", newFolder);
+      setRows((prevFolders) => [
+        ...prevFolders,
+        { ...newFolder, id: newFolder._id },
+      ]);
+    };
+
+    const handleFolderRemove = ({ folderName }) => {
+      console.log("Folder removed:", folderName);
+      setRows((prevFolders) =>
+        prevFolders?.filter((folder) => folder?.folderName !== folderName)
+      );
+    };
+
+    // Connect socket and fetch data immediately
+    socket.connect();
+    socket.emit("request-folder-list"); // Request data immediately after mounting
+
+    // Attach event listeners for real-time updates
+    socket.on("folder-list", handleFolderList);
+    socket.on("folder-update", handleFolderUpdate);
+    socket.on("folder-add", handleFolderAdd);
+    socket.on("folder-remove", handleFolderRemove);
+
+    return () => {
+      // Disconnect the socket and cleanup listeners
+      socket.off("folder-list", handleFolderList);
+      socket.off("folder-update", handleFolderUpdate);
+      socket.off("folder-add", handleFolderAdd);
+      socket.off("folder-remove", handleFolderRemove);
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await getAllUsers();
+        setAllUsers(response || []);
+      } catch (error) {
+        console.error("Error fetching tasks:", error); // Handle errors
+      }
+    };
+    fetchAllUsers();
+  }, []);
+
+  console.log(allUsers)
+
+  console.log(assignTask)
 
   const darkTheme = createTheme({
     palette: {
@@ -122,58 +191,6 @@ const Booklets = () => {
       ),
     },
   ];
-
-  useEffect(() => {
-    const handleFolderList = (folderList) => {
-      // console.log("Initial folder list:", folderList);
-      setRows(folderList.map((folder) => ({ ...folder, id: folder._id })));
-    };
-
-    const handleFolderUpdate = (updatedFolder) => {
-      // console.log("Folder updated:", updatedFolder);
-      setRows((prevFolders) =>
-        prevFolders.map((folder) =>
-          folder._id === updatedFolder._id
-            ? { ...updatedFolder, id: updatedFolder._id }
-            : folder
-        )
-      );
-    };
-
-    const handleFolderAdd = (newFolder) => {
-      // console.log("New folder added:", newFolder);
-      setRows((prevFolders) => [
-        ...prevFolders,
-        { ...newFolder, id: newFolder._id },
-      ]);
-    };
-
-    const handleFolderRemove = ({ folderName }) => {
-      console.log("Folder removed:", folderName);
-      setRows((prevFolders) =>
-        prevFolders?.filter((folder) => folder?.folderName !== folderName)
-      );
-    };
-
-    // Connect socket and fetch data immediately
-    socket.connect();
-    socket.emit("request-folder-list"); // Request data immediately after mounting
-
-    // Attach event listeners for real-time updates
-    socket.on("folder-list", handleFolderList);
-    socket.on("folder-update", handleFolderUpdate);
-    socket.on("folder-add", handleFolderAdd);
-    socket.on("folder-remove", handleFolderRemove);
-
-    return () => {
-      // Disconnect the socket and cleanup listeners
-      socket.off("folder-list", handleFolderList);
-      socket.off("folder-update", handleFolderUpdate);
-      socket.off("folder-add", handleFolderAdd);
-      socket.off("folder-remove", handleFolderRemove);
-      socket.disconnect();
-    };
-  }, []);
 
   return (
     <div className="mt-12">
