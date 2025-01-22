@@ -129,9 +129,9 @@ const Booklets = () => {
     fetchAllUsers();
   }, []);
 
-  console.log(allUsers)
+  // console.log(allUsers)
 
-  console.log(assignTask)
+  // console.log(assignTask)
 
   const darkTheme = createTheme({
     palette: {
@@ -266,6 +266,7 @@ const Booklets = () => {
             <AssignBookletModal
               setShowAssignBookletModal={setShowAssignBookletModal}
               currentBookletDetails={currentBookletDetails}
+              allUsers={allUsers}
             />
           )}
         </div>

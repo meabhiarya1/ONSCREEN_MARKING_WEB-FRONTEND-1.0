@@ -7,10 +7,13 @@ import { toast } from "react-toastify";
 const AssignBookletModal = ({
   setShowAssignBookletModal,
   currentBookletDetails,
+  allUsers,
 }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
+  const [user, setUser] = useState([]);
+  const [assignTask, setAssignTask] = useState("");
 
   useEffect(() => {
     try {
@@ -23,6 +26,39 @@ const AssignBookletModal = ({
       console.log(error);
     }
   }, []);
+
+  // console.log(user)
+
+  // console.log(allUsers)
+  useEffect(() => {
+    const fetchTasksBySubjectCode = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/tasks/subjectcode?subjectcode=${currentBookletDetails?.folderName}`
+        );
+        // console.log(response.data); // Handle the response data
+        setAssignTask(response?.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error); // Handle errors
+      }
+    };
+
+    // Usage
+    if (currentBookletDetails) {
+      fetchTasksBySubjectCode();
+    }
+  }, []);
+
+  // useEffect(()=>{
+  //   allUsers.filter((user)=>{
+  //     if(user._id==assignTask[0].userId){
+  //       setUser(user)
+  //       return user;
+  //     }
+  //   })
+  // },[])
+
+  console.log(assignTask)
 
   const handleSubmitButton = async () => {
     try {
@@ -85,8 +121,32 @@ const AssignBookletModal = ({
           </div>
           <hr className="bg-gray-600" />
           {/* Assign task details */}
-          <div className=" ">
+          <div className="">
             {" "}
+            <div class="relative overflow-x-auto">
+              <table class="w-full text-left text-sm text-gray-700 dark:text-gray-400 rtl:text-right">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Booklets
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                    {/* <td class="px-6 py-4">{user.name}</td> */}
+                    {/* <td class="px-6 py-4">{assignTask[0].totalBooklets}</td>
+                    <td class="px-6 py-4">{assignTask[0].status}</td> */}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div className="relative">
               <div className="mt-5 flex items-center gap-4 px-4 text-gray-700 3xl:gap-9">
                 <label className="font-bold  "> Subject Code:</label>{" "}
@@ -147,8 +207,6 @@ const AssignBookletModal = ({
               )}
             </button>
           </div>
-
-          
         </div>
       </div>
     </div>

@@ -174,11 +174,11 @@ const ProcessingBookletsModal = ({
       default={{
         x: 700,
         y: 100,
-        width: 700,
+        width: 650,
         height: 400,
       }}
       minWidth={400}
-      minHeight={300}
+      minHeight={350}
       bounds="window"
       style={{
         // backgroundColor: "white",
