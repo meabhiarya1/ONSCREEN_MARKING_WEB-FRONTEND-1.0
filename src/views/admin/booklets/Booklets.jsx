@@ -48,23 +48,21 @@ const Booklets = () => {
     const fetchTasksBySubjectCode = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/tasks/subjectcode`,
-          {
-            params: { subjectcode: currentBookletDetails?.folderName },
-          }
+          `${process.env.REACT_APP_API_URL}/api/tasks/subjectcode?subjectcode=${currentBookletDetails?.folderName}`
         );
         // console.log(response.data); // Handle the response data
-        setAssignTask(response.data);
+        setAssignTask(response?.data);
       } catch (error) {
         console.error("Error fetching tasks:", error); // Handle errors
       }
     };
 
     // Usage
-    fetchTasksBySubjectCode();
-  }, []);
+    if (currentBookletDetails) {
+      fetchTasksBySubjectCode();
+    }
+  }, [currentBookletDetails]);
 
-  console.log(assignTask)
 
   const darkTheme = createTheme({
     palette: {
@@ -116,7 +114,7 @@ const Booklets = () => {
           className="flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-yellow-600  "
           onClick={() => {
             setShowAssignBookletModal(true);
-            setCurrentBookletDetails(params.row);
+            setCurrentBookletDetails(params?.row);
           }}
         >
           <MdTask className="size-7 text-yellow-600 " />
@@ -153,7 +151,7 @@ const Booklets = () => {
     const handleFolderRemove = ({ folderName }) => {
       console.log("Folder removed:", folderName);
       setRows((prevFolders) =>
-        prevFolders.filter((folder) => folder.folderName !== folderName)
+        prevFolders?.filter((folder) => folder?.folderName !== folderName)
       );
     };
 
