@@ -108,7 +108,7 @@ const CreateSchemaStructure = () => {
         const data = response?.data?.data || [];
         setSavedQuestionData(data);
 
-        console.log(data);
+        // console.log(data);
 
         const totalMarksUsed = data.reduce(
           (acc, question) => acc + (question?.maxMarks || 0),
@@ -177,7 +177,6 @@ const CreateSchemaStructure = () => {
 
     setFolders((prevFolders) => updateFolders(prevFolders));
   };
-
 
   const handleSubQuestionsChange = async (folder, _, level) => {
     const folderId = folder.id;
@@ -255,7 +254,7 @@ const CreateSchemaStructure = () => {
       return toast.error(
         "Min Marks cannot be greater than remaining marks or max marks"
       );
-   
+
     if (maxMarks % marksDifference != 0 || maxMarks < marksDifference)
       return toast.error(
         "Marks Difference cannot be greater than Max marks or Marks Difference Always Multiple of Max marks"
@@ -429,9 +428,8 @@ const CreateSchemaStructure = () => {
   };
 
   const handleFinalSubmit = async () => {
-
-    if(questionToAllot!=0 || remainingMarks !=0){
-      toast.error("Please Allocate all questions & marks!!!")
+    if (questionToAllot != 0 || remainingMarks != 0) {
+      toast.error("Please Allocate all questions & marks!!!");
       return;
     }
 
@@ -646,7 +644,11 @@ const CreateSchemaStructure = () => {
                   )
                 }
               >
-                {isSaving ? "Saving..." : (currentQ[0]?.marksDifference ? "Update" : "Save")}
+                {isSaving
+                  ? "Saving..."
+                  : currentQ[0]?.marksDifference
+                  ? "Update"
+                  : "Save"}
               </button>
             </div>
           </div>
@@ -704,9 +706,13 @@ const CreateSchemaStructure = () => {
     );
   };
 
+  
   return (
     // <div className="custom-scrollbar min-h-screen overflow-hidden bg-gray-100 p-6">
-    <div className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700">
+    <div
+      className="max-h-[75vh] min-w-[1000px] space-y-4 overflow-x-auto overflow-y-scroll rounded-lg 
+    border border-gray-300 p-4 dark:border-gray-700 dark:bg-navy-700"
+    >
       <div className="flex justify-between">
         <span className="cursor-pointer rounded-lg bg-blue-600 p-2 text-white hover:bg-blue-700">
           {/* {console.log(questionToAllot, remainingMarks, schemaData)} */}

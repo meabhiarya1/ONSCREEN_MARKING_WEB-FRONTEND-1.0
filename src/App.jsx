@@ -37,7 +37,7 @@ const App = () => {
       try {
         const response = await getUserDetails(token);
         // console.log(response);
-        setUser(response.data);
+        setUser(response?.data);
       } catch (error) {
         console.log(error);
         toast.error(error?.response?.data?.message);
@@ -51,8 +51,8 @@ const App = () => {
   useEffect(() => {
     if (
       !token ||
-      user.message === "Unauthorized" ||
-      user.message === "User not found"
+      user?.message === "Unauthorized" ||
+      user?.message === "User not found"
     ) {
       // Redirect to sign-in only if not already on an auth route
       if (!location.pathname.startsWith("/auth")) {

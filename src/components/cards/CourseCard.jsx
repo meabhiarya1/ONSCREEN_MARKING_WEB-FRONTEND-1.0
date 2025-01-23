@@ -108,7 +108,7 @@ const CourseCard = ({
               Delete
             </button>
 
-            <button
+            {/* <button
               className="inline-block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 hover:bg-green-100 hover:text-green-600 focus:relative focus:outline-none focus:ring-green-300 dark:border-green-500 dark:text-gray-400 dark:hover:bg-green-800 dark:hover:text-green-100 dark:focus:ring-green-700"
               onClick={() => {
                 setSubjectId(subject?._id);
@@ -116,7 +116,7 @@ const CourseCard = ({
               }}
             >
               Assign Page
-            </button>
+            </button> */}
           </span>
         </div>
       </div>

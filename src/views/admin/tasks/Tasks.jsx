@@ -113,14 +113,14 @@ const Tasks = () => {
           <table className="min-w-full divide-y-2 divide-gray-200 rounded-md bg-white text-sm dark:divide-gray-700 dark:bg-navy-700 dark:text-white">
             <thead className="bg-gray-100 dark:bg-navy-800 ltr:text-left rtl:text-right">
               <tr>
-                <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+                {/* <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Task Name
-                </th>
+                </th> */}
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Subject Code
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
-                  Class Name
+                  Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                   Total Files
@@ -140,17 +140,20 @@ const Tasks = () => {
                 key={filteredTask?._id}
               >
                 <tr className="odd:bg-white dark:bg-navy-700">
-                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
+                  {/* <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-white">
                     {filteredTask?.taskName}
-                  </td>
+                  </td> */}
                   <td className="whitespace-nowrap px-4 py-2  font-medium text-gray-700 dark:text-white">
                     {filteredTask?.subjectCode}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {filteredTask?.className}
+                  <td className="whitespace-nowrap px-4 py-2  font-medium text-gray-700 dark:text-white">
+                    {filteredTask?.userId?.name}
                   </td>
+                  {/* <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
+                    {filteredTask?.className}
+                  </td> */}
                   <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
-                    {filteredTask?.totalFiles}
+                    {filteredTask?.totalBooklets}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700 dark:text-white">
                     {filteredTask?.userId?.email}

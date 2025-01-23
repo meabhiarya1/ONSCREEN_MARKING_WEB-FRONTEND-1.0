@@ -20,6 +20,10 @@ import Tasks from "views/admin/tasks/Tasks";
 import AssignPage from "views/admin/assignPage/AssignPage";
 import { BiTask } from "react-icons/bi";
 import CheckModule from "views/evaluator/CheckModule/CheckModule";
+import { CiMemoPad } from "react-icons/ci";
+import Booklets from "views/admin/booklets/Booklets";
+import ProcessingBooklets from "views/admin/booklets/ProcessingBooklets";
+import ResultGeneration from "views/admin/resultGenertion/ResultGeneration";
 
 const routes = [
   {
@@ -39,6 +43,7 @@ const routes = [
     component: <Classes />,
     hidden: false,
   },
+
   {
     name: "Course Detail",
     layout: "/admin",
@@ -136,6 +141,24 @@ const routes = [
     component: <AssignPage />,
     hidden: true,
   },
+
+  {
+    name: "Booklets",
+    layout: "/admin",
+    path: "booklets",
+    icon: <CiMemoPad className="h-6 w-6" />,
+    component: <Booklets />,
+    hidden: false,
+  },
+  {
+    name: "Process Booklets",
+    layout: "/admin",
+    path: "process/booklets/:classId",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <ProcessingBooklets />,
+    hidden: true,
+  },
+
   {
     name: "Evaluator Dashboard",
     layout: "/evaluator",
@@ -145,21 +168,21 @@ const routes = [
     hidden: false,
   },
 
-  // {
-  //   name: "Evaluator Image Area",
-  //   layout: "/evaluator",
-  //   path: "task/:id",
-  //   icon: <MdHome className="h-6 w-6" />,
-  //   component: <CheckModule />,
-  //   hidden: true,
-  // },
-
   {
     name: "Assigned Tasks",
     layout: "/evaluator",
     path: "assignedtasks",
     icon: <BiTask className="h-6 w-6" />,
     component: <EvaluatorTasks />,
+    hidden: false,
+  },
+
+  {
+    name: "Generate Result",
+    layout: "/admin",
+    path: "resultgeneration",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <ResultGeneration />,
     hidden: false,
   },
 ];

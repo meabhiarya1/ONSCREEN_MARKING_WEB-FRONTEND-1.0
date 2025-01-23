@@ -73,10 +73,10 @@ export function SignIn() {
         `${process.env.REACT_APP_API_URL}/api/auth/signin`,
         updatedUser
       );
-      toast.success(response.data.message);
-      localStorage.setItem("userId", response.data.userId);
+      toast.success(response?.data?.message);
+      localStorage.setItem("userId", response?.data?.userId);
     } catch (error) {
-      toast.error(error?.response.data.message);
+      toast.error(error?.response?.data?.message);
       setUser({
         email: "",
         password: "",
@@ -100,10 +100,10 @@ export function SignIn() {
 
   // Helper function to handle navigation between input fields
   const handleKeyUp = (e, index) => {
-    if (e.key === "Backspace" && !otpdata[index] && index > 0) {
-      e.target.previousElementSibling?.focus();
-    } else if (e.key !== "Backspace" && index < 5) {
-      e.target.nextElementSibling?.focus();
+    if (e?.key === "Backspace" && !otpdata[index] && index > 0) {
+      e?.target.previousElementSibling?.focus();
+    } else if (e?.key !== "Backspace" && index < 5) {
+      e?.target.nextElementSibling?.focus();
     }
   };
 
@@ -111,29 +111,29 @@ export function SignIn() {
     setVerify(true);
     const userId = localStorage.getItem("userId");
 
-    if (otpdata.some((digit) => digit === "")) {
+    if (otpdata?.some((digit) => digit === "")) {
       toast.error("Please fill all OTP fields");
       setVerify(false);
       return;
     }
 
-    const otpString = otpdata.join(""); // Combine individual OTP values into a string
+    const otpString = otpdata?.join(""); // Combine individual OTP values into a string
 
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auth/verify`,
         { userId, otp: otpString }
       );
-      toast.success(response.data.message);
+      toast.success(response?.data?.message);
       if (localStorage.getItem("token")) localStorage.removeItem("token");
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response?.data?.token);
       if (!forgotPassword) {
         navigate("/admin");
       } else {
         setOpen(!open);
       }
     } catch (error) {
-      toast.error(error?.response.data.message);
+      toast.error(error?.response?.data?.message);
     } finally {
       setVerify(false);
     }
@@ -163,11 +163,11 @@ export function SignIn() {
         `${process.env.REACT_APP_API_URL}/api/auth/forgotpassword`,
         { userId, newPassword }
       );
-      toast.success(response.data.message);
+      toast.success(response?.data?.message);
       if (localStorage.getItem("token")) localStorage.removeItem("token");
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response?.data?.token);
     } catch (error) {
-      toast.error(error?.response.data.message);
+      toast.error(error?.response?.data?.message);
       console.log(error);
     } finally {
       setLoading(false);
@@ -233,9 +233,9 @@ export function SignIn() {
                     placeholder="Enter your email"
                     required
                     onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
+                      setUser({ ...user, email: e?.target?.value })
                     }
-                    value={user.email}
+                    value={user?.email}
                   />
                   <button
                     className={`hover:bg-transparent inline-block h-10 w-32 rounded-md border border-indigo-600 bg-indigo-600 text-sm font-medium text-white transition hover:bg-indigo-700 hover:text-white ${
@@ -303,7 +303,7 @@ export function SignIn() {
                   /> */}
 
                 <div className="flex gap-2">
-                  {otpdata.map((digit, index) => (
+                  {otpdata?.map((digit, index) => (
                     <input
                       key={index}
                       type="text"
