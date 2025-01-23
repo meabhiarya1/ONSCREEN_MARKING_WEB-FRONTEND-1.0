@@ -4,8 +4,6 @@ import { GiCrossMark } from "react-icons/gi";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 const EvalQuestionModal = ({ show, onHide }) => {
-  const [currentQuestionImageIndex, setCurrentQuestionImageIndex] = useState(1);
-  const [currentAnswerImageIndex, setCurrentAnswerImageIndex] = useState(1);
   const [questionsPdfPath, setQuestionsPdfPath] = useState(undefined);
   const [answersPdfPath, setAnswersPdfPath] = useState(undefined);
   const [questionImages, setQuestionImages] = useState([]);
@@ -19,9 +17,10 @@ const EvalQuestionModal = ({ show, onHide }) => {
   const currentQuestionDefinitionId =
     evaluatorState.currentQuestionDefinitionId;
   useEffect(() => {
+  
     const fetchImgUrl = async () => {
       const response = await getSubjectIdImgUrl(
-        currentTaskDetails.subjectSchemaRelationId,
+        currentTaskDetails.subjectCode,
         currentQuestionDefinitionId
       );
       const { subjectSchemaRelation, coordinateDetails } = response;
@@ -30,7 +29,6 @@ const EvalQuestionModal = ({ show, onHide }) => {
         setAnswersPdfPath(subjectSchemaRelation.answerPdfPath);
         setQuestionImages(coordinateDetails[0].questionImages);
         setAnswerImages(coordinateDetails[0].answerImages);
-        // console.log(coordinateDetails[0].answerImages);
       }
     };
 
@@ -56,8 +54,6 @@ const EvalQuestionModal = ({ show, onHide }) => {
     }
   };
 
-
-
   const prevAnswerHandler = () => {
     const toastId = "firstPageWarning";
     if (currentAnswers > 0) {
@@ -74,7 +70,7 @@ const EvalQuestionModal = ({ show, onHide }) => {
       toast.warn("last page reached", { toastId });
     }
   };
- 
+
   return (
     <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
       <div className="scale-85 relative h-[95vh] w-[95vw] max-w-none transform bg-white p-8 shadow-2xl transition-all duration-300 dark:bg-navy-700 sm:scale-100">
@@ -139,11 +135,17 @@ const EvalQuestionModal = ({ show, onHide }) => {
               alt="answer pdf"
             />
             <div className="sticky bottom-0 mt-4 flex items-center justify-between gap-10">
-              <button onClick={prevAnswerHandler} className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
+              <button
+                onClick={prevAnswerHandler}
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
+              >
                 Previous
               </button>
 
-              <button onClick={nextAnswerHandler} className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800">
+              <button
+                onClick={nextAnswerHandler}
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-800"
+              >
                 Next
               </button>
             </div>
