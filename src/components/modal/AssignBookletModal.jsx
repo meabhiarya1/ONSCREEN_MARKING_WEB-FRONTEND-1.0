@@ -56,6 +56,7 @@ const AssignBookletModal = ({
             totalBooklets: assignTask[i].totalBooklets,
             status: assignTask[i].status,
           });
+          break;
         }
       }
     }
@@ -129,7 +130,7 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="">
             {" "}
-            <div class="relative overflow-x-auto dark:bg-navy-700 max-h-44">
+            <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
               <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
                   <tr>
@@ -147,13 +148,9 @@ const AssignBookletModal = ({
                 <tbody>
                   {usersData.map((user) => {
                     return (
-                      <tr class="border-b bg-white dark:text-white dark:bg-navy-700">
-                        <td class="px-6 py-4">
-                          {user.name}
-                        </td>
-                        <td class="px-6 py-4">
-                          {user.totalBooklets}
-                        </td>
+                      <tr class="border-b bg-white dark:bg-navy-700 dark:text-white">
+                        <td class="px-6 py-4">{user.name}</td>
+                        <td class="px-6 py-4">{user.totalBooklets}</td>
                         <td class="px-6 py-4">{user.status}</td>
                       </tr>
                     );
