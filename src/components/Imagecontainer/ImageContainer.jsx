@@ -20,12 +20,25 @@ import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
 import { createIcon } from "components/Helper/Evaluator/EvalRoute";
 import { getIconsByImageId } from "components/Helper/Evaluator/EvalRoute";
 import { deleteIconByImageId } from "components/Helper/Evaluator/EvalRoute";
-const IconsData = [
-  { imgUrl: "/blank.jpg" },
-  { imgUrl: "/close.png" },
-  { imgUrl: "/check.png" },
-];
+import Tesseract from "tesseract.js";
+const IconsData = [{ imgUrl: "/blank.jpg" }];
+const preprocessImage = (canvas) => {
+  const context = canvas.getContext("2d");
 
+  // Convert the image to grayscale (preprocessing step)
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+    data[i] = avg; // Red
+    data[i + 1] = avg; // Green
+    data[i + 2] = avg; // Blue
+  }
+
+  context.putImageData(imageData, 0, 0);
+  return canvas.toDataURL("image/png");
+};
 const ImageContainer = (props) => {
   const [scale, setScale] = useState(1); // Initial zoom level
   const [icons, setIcons] = useState([]); // State for placed icons
@@ -65,6 +78,23 @@ const ImageContainer = (props) => {
   const dispatch = useDispatch();
   // const icons = evaluatorState.icons;
 
+  // useEffect(()=>{
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+
+  //   // Clear the canvas
+  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  //   // Load the saved state for the current index
+  //   if (canvasStates[canvasStates.length-1]) {
+  //     const img = new Image();
+  //     img.src = canvasStates[currentIndex];
+  //     img.onload = () => {
+  //       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  //     };
+  //   }
+  // },[isDrawing])
+  // console.log(canvasStates)
   useEffect(() => {
     const fetchAllIcons = async () => {
       const icons = await getIconsByImageId(
@@ -149,7 +179,6 @@ const ImageContainer = (props) => {
       canvas.height = scaledHeight;
     }
   }, [isDrawing]); // Run effect every time scale changes
-
   // Draw on the canvas
   useEffect(() => {
     if (startDrawing) {
@@ -220,10 +249,15 @@ const ImageContainer = (props) => {
         container.removeEventListener("mousemove", handleBaseMouseMove); // Cleanup
     }
   }, []);
+
   // Save the canvas state as a base64 string
   const saveCanvasState = () => {
     const canvas = canvasRef.current;
-    const dataURL = canvas.toDataURL();
+
+    // Get the canvas image as PNG data URL
+    const dataURL = canvas.toDataURL("image/png");
+
+    // Optionally, store the canvas state
     setCanvasStates((prevStates) => ({
       ...prevStates,
       [currentImage]: dataURL, // Save the canvas state for the current image
@@ -362,49 +396,81 @@ const ImageContainer = (props) => {
       const containerRect = containerRef.current.getBoundingClientRect();
       const scrollOffsetX = containerRef.current.scrollLeft;
       const scrollOffsetY = containerRef.current.scrollTop;
-      // const updatedIcons = [...icons];
-      // updatedIcons[index].timestamp = new Date().toLocaleString();
       const currentTimeStamp = new Date().toLocaleString();
 
-      const iconBody = {
-        answerPdfImageId: currentAnswerImageId,
-        questionDefinitionId: currentMarkDetails.questionDefinitionId,
-        iconUrl: currentIcon,
-        question: currentQuestionNo,
-        timeStamps: currentTimeStamp,
+      if (currentIcon !== "/blank.jpg") {
+        const iconBody = {
+          answerPdfImageId: currentAnswerImageId,
+          questionDefinitionId: currentQuestionDefinitionId,
+          iconUrl: currentIcon,
+          question: currentQuestionNo,
+          timeStamps: currentTimeStamp,
 
-        x: (e.clientX - containerRect.left + scrollOffsetX) / scale,
-        y: (e.clientY - containerRect.top + scrollOffsetY) / scale,
-        width: 120,
-        height: 50,
-        mark: currentMarkDetails.allottedMarks,
-      };
-      const totalMarksBody = {
-        ...currentMarkDetails,
-        allottedMarks: currentMarkDetails.totalAllocatedMarks,
-      };
-      const response = await postMarkById(totalMarksBody);
+          x: (e.clientX - containerRect.left + scrollOffsetX) / scale,
+          y: (e.clientY - containerRect.top + scrollOffsetY) / scale,
+          width: 120,
+          height: 50,
+          mark: currentMarkDetails.allottedMarks,
+        };
+        const totalMarksBody = {
+          ...currentMarkDetails,
+          allottedMarks: currentMarkDetails.totalAllocatedMarks,
+        };
+        const response = await postMarkById(totalMarksBody);
 
-      const res = await createIcon(iconBody);
+        const res = await createIcon(iconBody);
 
-      setIcons([
-        ...icons,
-        { ...res },
-        // {
-        //   _id: res._id,
-        //   question: currentQuestionNo,
-        //   mark: currentMarkDetails.allottedMarks,
-        //   answerPdfImageId: currentMarkDetails.answerPdfId,
-        //   questionDefinitionId: currentMarkDetails.questionDefinitionId,
-        //   timeStamps: currentTimeStamp,
-        //   iconUrl: currentIcon,
-        //   x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
-        //   y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
-        //   width: 120, // Default width
-        //   height: 50,
-        // },
-      ]);
+        setIcons([
+          ...icons,
+          { ...res },
+          // {
+          //   _id: res._id,
+          //   question: currentQuestionNo,
+          //   mark: currentMarkDetails.allottedMarks,
+          //   answerPdfImageId: currentMarkDetails.answerPdfId,
+          //   questionDefinitionId: currentMarkDetails.questionDefinitionId,
+          //   timeStamps: currentTimeStamp,
+          //   iconUrl: currentIcon,
+          //   x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
+          //   y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
+          //   width: 120, // Default width
+          //   height: 50,
+          // },
+        ]);
+      } else {
+        const iconBody = {
+          answerPdfImageId: currentAnswerImageId,
+          questionDefinitionId: currentMarkDetails.questionDefinitionId,
+          iconUrl: currentIcon,
+          question: currentQuestionNo,
+          timeStamps: currentTimeStamp,
 
+          x: (e.clientX - containerRect.left + scrollOffsetX) / scale,
+          y: (e.clientY - containerRect.top + scrollOffsetY) / scale,
+          width: 120,
+          height: 50,
+        };
+
+        const res = await createIcon(iconBody);
+
+        setIcons([
+          ...icons,
+          { ...res },
+          // {
+          //   _id: res._id,
+          //   question: currentQuestionNo,
+          //   mark: currentMarkDetails.allottedMarks,
+          //   answerPdfImageId: currentMarkDetails.answerPdfId,
+          //   questionDefinitionId: currentMarkDetails.questionDefinitionId,
+          //   timeStamps: currentTimeStamp,
+          //   iconUrl: currentIcon,
+          //   x: (e.clientX - containerRect.left + scrollOffsetX) / scale, // Adjust for scaling
+          //   y: (e.clientY - containerRect.top + scrollOffsetY) / scale, // Adjust for scaling
+          //   width: 120, // Default width
+          //   height: 50,
+          // },
+        ]);
+      }
       // setCurrentIcon(null);
       dispatch(setCurrentIcon(null));
       dispatch(setRerender());
@@ -481,7 +547,6 @@ const ImageContainer = (props) => {
           setCurrentStrokeWidth={setCurrentStrokeWidth}
         />
       </div>
-
       {/* Image Viewer Section */}
 
       <div
@@ -544,7 +609,7 @@ const ImageContainer = (props) => {
             const checkClass = isCheck
               ? "text-green-600 ring-2 ring-green-600"
               : "text-red-600 ring-2 ring-red-600";
-
+            const blankClass = icon.iconUrl === "/blank.jpg" ? "none" : "";
             return (
               <div
                 key={index}
@@ -586,7 +651,10 @@ const ImageContainer = (props) => {
                 />
 
                 {/* Allotted Marks and Question */}
-                <div className=" mt-2 gap-1  text-center text-sm font-semibold text-gray-700">
+                <div
+                  className=" mt-2 gap-1  text-center text-sm font-semibold text-gray-700"
+                  style={{ display: blankClass }}
+                >
                   <span className="mr-1">{`Q${icon.question}`}</span>→
                   <span
                     className={`ml-1 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-gray-50 p-1 ${checkClass}`}

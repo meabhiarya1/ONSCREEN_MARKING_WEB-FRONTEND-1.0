@@ -17,6 +17,7 @@ import {
   setCurrentTaskDetails,
   setCurrentAnswerPdfImageId,
   setCurrentAnswerPdfId,
+  setCurrentBookletId,
 } from "store/evaluatorSlice";
 import { getAllEvaluatorTasks } from "components/Helper/Evaluator/EvalRoute";
 import { getTaskById } from "components/Helper/Evaluator/EvalRoute";
@@ -51,17 +52,18 @@ const CheckModule = () => {
           answerPdfDetails,
           answerPdfImages,
           extractedImagesFolder,
-          
+          extractedBookletPath,
+
           task,
         } = response;
         console.log(response);
-        console.log()
+        console.log(extractedBookletPath);
         // console.log(answerPdfDetails._id);
         dispatch(setCurrentAnswerPdfId(answerPdfDetails._id));
         dispatch(setCurrentTaskDetails(task));
         dispatch(setCurrentBookletIndex(task.currentFileIndex));
-
-        dispatch(setBaseImageUrl(extractedImagesFolder));
+        dispatch(setCurrentBookletId(answerPdfDetails._id));
+        dispatch(setBaseImageUrl(extractedBookletPath));
 
         setAnswerSheetCount(answerPdfDetails);
       } catch (error) {
@@ -77,7 +79,7 @@ const CheckModule = () => {
     const getEvaluatorTasks = async (taskId) => {
       try {
         const res = await getAnswerPdfById(taskId);
-console.log(res)
+        console.log(res);
         dispatch(
           setCurrentAnswerPdfImageId(res[evaluatorState.currentIndex - 1]._id)
         );

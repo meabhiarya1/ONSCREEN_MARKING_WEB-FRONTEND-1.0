@@ -17,9 +17,10 @@ const EvalQuestionModal = ({ show, onHide }) => {
   const currentQuestionDefinitionId =
     evaluatorState.currentQuestionDefinitionId;
   useEffect(() => {
+  
     const fetchImgUrl = async () => {
       const response = await getSubjectIdImgUrl(
-        currentTaskDetails.subjectSchemaRelationId,
+        currentTaskDetails.subjectCode,
         currentQuestionDefinitionId
       );
       const { subjectSchemaRelation, coordinateDetails } = response;

@@ -20,15 +20,15 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 const columns = [
-  { id: "taskName", label: "Task Name" },
-  { id: "className", label: "Class Name" },
+  { id: "slno", label: "Sl No" },
+
   { id: "subjectCode", label: "Subject Code" },
-  { id: "totalFiles", label: "Total Booklets" },
+  { id: "totalBooklets", label: "Total Booklets" },
   {
     id: "status",
     label: "Status",
 
-    format: (value) => (value ? "Active" : "Inactive"),
+    format: (value) => (value !== "active" ? "Not Started" : "Started"),
   },
 
   { id: "action", label: "Action" },
@@ -59,10 +59,17 @@ const Dashboard = () => {
     navigate(`/evaluator/task/${rowData._id}`);
   };
   console.log(allTasks);
-  const AssignedTasks = allTasks.map((row) => (
+  const AssignedTasks = allTasks.map((row, index) => (
     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
       {columns.map((column) => {
-        const value = row[column.id];
+        let value;
+
+        // Handle the Sl No column
+        if (column.id === "slno") {
+          value = index + 1;
+        } else {
+          value = row[column.id];
+        }
         if (column.id === "action") {
           return (
             <TableCell key={column.id} align={column.align}>
