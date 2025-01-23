@@ -19,7 +19,8 @@ const Index = () => {
   const [userId, setUserId] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const loggedInUserId = localStorage.getItem("userId");
-
+  const [userData, setUserData] = useState([]);
+  
   useEffect(() => {
     // Check if the `dark` mode is applied to the `html` element
     const htmlElement = document.body; // `html` element
@@ -97,8 +98,6 @@ const Index = () => {
       setUserId("");
     }
   };
-
-  const [userData, setUserData] = useState([]);
 
   useEffect(() => {
     const fetchSubjectNames = async () => {
@@ -183,7 +182,7 @@ const Index = () => {
     {
       field: "delete",
       headerName: "Remove",
-      renderCell: (params) => (
+      renderCell: (params) =>
         params.row.id !== loggedInUserId && (
           <div
             className="mt-1 flex cursor-pointer justify-center rounded px-3 py-2 text-center font-medium text-red-600"
@@ -194,8 +193,7 @@ const Index = () => {
           >
             <MdAutoDelete className="size-6" />
           </div>
-        )
-      ),
+        ),
     },
   ];
 
