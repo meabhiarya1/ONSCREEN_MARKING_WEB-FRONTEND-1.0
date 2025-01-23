@@ -14,6 +14,8 @@ const Index = () => {
   const [isEditOpen, setEditIsOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [classId, setClassId] = useState("");
+  const [loading, setLoading] = useState(false);
+  
 
   const [formData, setFormData] = useState({
     className: "",
@@ -57,6 +59,7 @@ const Index = () => {
     }
 
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/classes/create/class`,
@@ -82,6 +85,7 @@ const Index = () => {
         session: "",
         year: "",
       });
+      setLoading(false);
     }
   };
 
@@ -123,6 +127,7 @@ const Index = () => {
         handleSubmit={handleSubmit}
         formData={formData}
         setFormData={setFormData}
+        loading={loading}
       />
 
       <EditClassModal

@@ -18,6 +18,7 @@ const Index = () => {
     name: "",
     code: "",
   });
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
@@ -49,6 +50,7 @@ const Index = () => {
     };
 
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/subjects/create/subject`,
@@ -73,6 +75,8 @@ const Index = () => {
       setIsOpen(false); // Close modal on success
     } catch (error) {
       toast.error(error.response?.data?.message || "Error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,6 +117,7 @@ const Index = () => {
         handleSubmit={handleSubmit}
         setFormData={setFormData}
         formData={formData}
+        loading={loading}
       />
 
       <EditCourseModal

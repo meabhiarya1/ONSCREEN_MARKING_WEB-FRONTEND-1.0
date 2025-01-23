@@ -581,8 +581,8 @@ const CreateUser = () => {
               </div>
               <div className="col-span-6 flex items-center justify-center gap-2 sm:flex-row sm:gap-5">
                 <button
-                  className={`rounded-md bg-indigo-600 px-2 py-1 text-lg text-white transition hover:bg-indigo-700 sm:px-2 sm:py-1 lg:px-4 lg:py-2 ${
-                    loading ? "cursor-not-allowed" : ""
+                  className={`rounded-md px-2 py-1 text-lg text-white transition sm:px-2 sm:py-1 lg:px-4 lg:py-2 ${
+                    loading ? "cursor-not-allowed bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
                   disabled={loading}
                 >
