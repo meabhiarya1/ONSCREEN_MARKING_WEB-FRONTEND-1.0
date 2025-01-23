@@ -262,13 +262,14 @@ const Booklets = () => {
               },
             }}
           />
-          {showAssignBookletModal && (
-            <AssignBookletModal
-              setShowAssignBookletModal={setShowAssignBookletModal}
-              currentBookletDetails={currentBookletDetails}
-            />
-          )}
         </div>
+      )}
+      {showAssignBookletModal && (
+        <AssignBookletModal
+          setShowAssignBookletModal={setShowAssignBookletModal}
+          currentBookletDetails={currentBookletDetails}
+          allUsers={allUsers}
+        />
       )}
     </div>
   );
