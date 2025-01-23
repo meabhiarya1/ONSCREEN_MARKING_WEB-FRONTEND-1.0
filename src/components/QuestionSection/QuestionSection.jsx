@@ -16,16 +16,21 @@ import {
 import { changeCurrentIndexById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
 import { generateNumbers } from "services/Evaluator/generateNumber";
+import { submitBookletById } from "components/Helper/Evaluator/EvalRoute";
+import { toast } from "react-toastify";
 const QuestionDefinition = (props) => {
   const [selectedQuestion, setSelectedQuestion] = useState(0);
   const [allQuestions, setAllQuestions] = useState([]);
   const [rotationStates, setRotationStates] = useState({});
   const [marked, setMarked] = useState(false);
   const [totalMarks, setTotalMarks] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const evaluatorState = useSelector((state) => state.evaluator);
   const taskDetails = evaluatorState.currentTaskDetails;
   const currentBookletIndex = evaluatorState.currentBookletIndex;
   const currentQuestion = evaluatorState.currentQuestion;
+  const currentAnswerPdfImageId = evaluatorState.currentAnswerPdfImageId;
+  const currentBookletId = evaluatorState.currentBookletId;
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -220,12 +225,14 @@ const QuestionDefinition = (props) => {
 
   const handleNextBooklet = async () => {
     try {
-      if (currentBookletIndex < taskDetails.totalFiles) {
+      console.log(taskDetails);
+      if (currentBookletIndex < taskDetails.totalBooklets) {
         const taskId = taskDetails._id;
         const response = await changeCurrentIndexById(
           taskId,
           taskDetails.currentFileIndex + 1
         );
+        console.log(response);
         dispatch(setCurrentBookletIndex(response));
         // console.log(response);
       }
@@ -252,7 +259,20 @@ const QuestionDefinition = (props) => {
       console.log(error);
     }
   };
-
+  const submitHandler = async () => {
+    try {
+      setIsLoading(true);
+      const res = await submitBookletById(currentBookletId);
+      console.log(res);
+      if (res.status !== 200) {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.error("Some went wrong!!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="h-[100%]">
       <div className="flex  h-[7%] w-[100%]">
@@ -326,6 +346,7 @@ const QuestionDefinition = (props) => {
         <button
           type="button"
           className=" w-[100%]  border border-green-700 bg-green-700 px-5 py-2.5 text-center text-sm font-medium text-green-700 text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:border-green-500 dark:text-red-500 dark:hover:bg-red-600 dark:hover:text-white dark:focus:ring-red-900"
+          onClick={submitHandler}
         >
           SUBMIT BOOKLET
         </button>

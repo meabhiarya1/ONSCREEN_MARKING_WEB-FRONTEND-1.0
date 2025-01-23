@@ -23,6 +23,7 @@ import CheckModule from "views/evaluator/CheckModule/CheckModule";
 import { CiMemoPad } from "react-icons/ci";
 import Booklets from "views/admin/booklets/Booklets";
 import ProcessingBooklets from "views/admin/booklets/ProcessingBooklets";
+import ResultGeneration from "views/admin/resultGenertion/ResultGeneration";
 
 const routes = [
   {
@@ -155,7 +156,7 @@ const routes = [
     path: "process/booklets/:classId",
     icon: <BiTask className="h-6 w-6" />,
     component: <ProcessingBooklets />,
-    hidden: false,
+    hidden: true,
   },
 
   {
@@ -173,6 +174,15 @@ const routes = [
     path: "assignedtasks",
     icon: <BiTask className="h-6 w-6" />,
     component: <EvaluatorTasks />,
+    hidden: false,
+  },
+
+  {
+    name: "Generate Result",
+    layout: "/admin",
+    path: "resultgeneration",
+    icon: <BiTask className="h-6 w-6" />,
+    component: <ResultGeneration />,
     hidden: false,
   },
 ];
