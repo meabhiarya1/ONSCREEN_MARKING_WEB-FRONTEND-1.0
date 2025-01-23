@@ -268,6 +268,7 @@ const Booklets = () => {
         <AssignBookletModal
           setShowAssignBookletModal={setShowAssignBookletModal}
           currentBookletDetails={currentBookletDetails}
+          allUsers={allUsers}
         />
       )}
     </div>
