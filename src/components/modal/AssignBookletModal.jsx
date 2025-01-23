@@ -114,9 +114,9 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="">
             {" "}
-            <div class="relative overflow-x-auto">
-              <table class="w-full text-left text-sm text-gray-700 dark:text-gray-400 rtl:text-right">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+            <div class="relative overflow-x-auto dark:bg-navy-700">
+              <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-gray-400">
                   <tr>
                     <th scope="col" class="px-6 py-3">
                       Name
@@ -130,7 +130,7 @@ const AssignBookletModal = ({
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <tr class="border-b bg-white dark:border-gray-700 dark:bg-navy-700">
                     <td class="px-6 py-4">{users[0]?.name}</td>
                     <td class="px-6 py-4">{assignTask[0]?.totalBooklets}</td>
                     <td class="px-6 py-4">{assignTask[0]?.status}</td>
@@ -139,8 +139,8 @@ const AssignBookletModal = ({
               </table>
             </div>
             <div className="relative">
-              <div className="mt-5 flex items-center gap-4 px-4 text-gray-700 3xl:gap-9">
-                <label className="font-bold  "> Subject Code:</label>{" "}
+              <div className="mt-5 flex items-center gap-4 px-4 text-gray-700 3xl:gap-9 dark:text-white">
+                <label className="font-bold dark:text-white"> Subject Code:</label>{" "}
                 {currentBookletDetails.folderName}
               </div>
             </div>
