@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 const AssignBookletModal = ({
   setShowAssignBookletModal,
   currentBookletDetails,
-  allUsers,
 }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState("");
@@ -49,16 +48,8 @@ const AssignBookletModal = ({
     }
   }, []);
 
-  // useEffect(()=>{
-  //   allUsers.filter((user)=>{
-  //     if(user._id==assignTask[0].userId){
-  //       setUser(user)
-  //       return user;
-  //     }
-  //   })
-  // },[])
-
-  console.log(assignTask)
+  // console.log(assignTask)
+  // console.log(users)
 
   const handleSubmitButton = async () => {
     try {
@@ -140,9 +131,9 @@ const AssignBookletModal = ({
                 </thead>
                 <tbody>
                   <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                    {/* <td class="px-6 py-4">{user.name}</td> */}
-                    {/* <td class="px-6 py-4">{assignTask[0].totalBooklets}</td>
-                    <td class="px-6 py-4">{assignTask[0].status}</td> */}
+                    <td class="px-6 py-4">{users[0]?.name}</td>
+                    <td class="px-6 py-4">{assignTask[0]?.totalBooklets}</td>
+                    <td class="px-6 py-4">{assignTask[0]?.status}</td>
                   </tr>
                 </tbody>
               </table>

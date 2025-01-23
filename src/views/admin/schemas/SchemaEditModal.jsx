@@ -8,6 +8,7 @@ const SchemaEditModal = ({
   setEditShowModal,
   selectedSchema,
   handleUpdate,
+  loading,
 }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -34,7 +35,8 @@ const SchemaEditModal = ({
         isActive: selectedSchema.isActive || true,
         status: false,
         numberOfPage: selectedSchema.numberOfPage || "",
-        hiddenPage: selectedSchema.hiddenPage.map((item) => (parseInt(item)-1)) || [],
+        hiddenPage:
+          selectedSchema.hiddenPage.map((item) => parseInt(item) - 1) || [],
       });
     }
   }, [selectedSchema]);
@@ -136,7 +138,6 @@ const SchemaEditModal = ({
 
     try {
       handleUpdate(selectedSchema.id, formData);
-      setEditShowModal(false);
     } catch (error) {
       toast.error(error.response.data.message);
       console.log(error);
@@ -320,14 +321,45 @@ const SchemaEditModal = ({
 
         {/* Update button */}
         <div className="mt-6 flex justify-end">
-          <button
+          {loading ? (
+            <div
+              className={`flex justify-center items-center rounded-md px-3 py-1.5 text-white transition-colors sm:px-6 sm:py-3 ${
+                loading ? "bg-indigo-400" : "bg-indigo-600"
+              }`}
+            >
+              <svg
+                className="mr-2 h-5 w-5 animate-spin text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Updating Schema...
+            </div>
+          ) : (
+            <button
             onClick={() => {
               validationCheck();
             }}
+            disabled={loading}
             className="rounded-md bg-indigo-600 px-3 py-1.5 text-white transition-colors hover:bg-indigo-700 sm:px-6 sm:py-3"
           >
             Update Schema
           </button>
+          )}
         </div>
       </div>
     </div>

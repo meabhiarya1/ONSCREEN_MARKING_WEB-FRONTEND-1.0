@@ -7,6 +7,7 @@ const CourseModal = ({
   handleSubmit,
   setFormData,
   formData,
+  loading,
 }) => {
 
   // Make state empty
@@ -51,7 +52,7 @@ const CourseModal = ({
             <form className="space-y-6 p-4" onSubmit={handleSubmit}>
               <label
                 htmlFor="name"
-                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
+                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-blue-500"
               >
 
                 {/* <span className="text-xs font-medium text-gray-700">
@@ -73,7 +74,7 @@ const CourseModal = ({
 
               <label
                 htmlFor="code"
-                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
+                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-blue-500"
               >
                 <span className="text-sm font-medium text-gray-800 dark:text-white">Course Code</span>
                 <input
@@ -88,12 +89,43 @@ const CourseModal = ({
               </label>
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                Submit
-              </button>
+              {loading ? (
+                <div
+                  className={`flex h-full w-full items-center justify-center p-2 text-white ${
+                    loading ? "bg-indigo-400" : "bg-indigo-600"
+                  }`}
+                >
+                  <svg
+                    className="mr-2 h-5 w-5 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Submitting...
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full rounded bg-indigo-600 p-2 text-white hover:bg-indigo-700 font-semibold"
+                  disabled={loading}
+                >
+                  Submit
+                </button>
+              )}
             </form>
           </div>
         </div>

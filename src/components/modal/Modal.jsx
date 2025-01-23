@@ -18,9 +18,9 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
 
   const [subjectDetails, setSubjectDetails] = useState([]);
   const [allSubjects, setAllSubjects] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // console.log(user);
-  
 
   useEffect(() => {
     if (user) {
@@ -117,6 +117,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     const token = localStorage.getItem("token");
 
     try {
+      setLoading(true);
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/auth/update/${user.id}`,
         formData,
@@ -138,6 +139,8 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to update user.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -180,7 +183,7 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
             </button>
 
             <section className="sm:px-4 sm:py-2">
-              <h2 className="my-2 text-xl font-semibold text-gray-900 dark:text-white sm:mb-4 sm:text-3xl ml-1">
+              <h2 className="my-2 ml-1 text-xl font-semibold text-gray-900 dark:text-white sm:mb-4 sm:text-3xl">
                 Edit User Details
               </h2>
               <div className="rounded-xl bg-gray-100 p-3 shadow-inner dark:bg-navy-800 sm:p-4">
@@ -268,48 +271,48 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                       htmlFor="subjectCode"
                       className="block text-sm font-medium text-gray-700 dark:text-white"
                     >
-                      Subjects 
+                      Subjects
                     </label>
                     <div className="bg-white dark:bg-navy-900">
-                    <ReactSelect
-                      isMulti
-                      options={subjectOptions}
-                      value={selectedSubjects}
-                      onChange={handleSubjectChange}
-                      placeholder="+ Add"
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      menuPosition="absolute"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          borderRadius: "8px",
-                          backgroundColor: "transparent",
-                          padding: "2px",
-                          height: "45px",
-                          overflow:"auto"
-                        }),
-                        multiValue: (base) => ({
-                          ...base,
-                          backgroundColor: "#4caf50",
-                          borderRadius: "50px",
-                          padding: "0px 5px",
-                        }),
-                        multiValueLabel: (base) => ({
-                          ...base,
-                          color: "white",
-                        }),
-                        multiValueRemove: (base) => ({
-                          ...base,
-                          color: "lightgreen",
-                          borderRadius: "50%",
-                          ":hover": {
-                            backgroundColor: "#e57373",
+                      <ReactSelect
+                        isMulti
+                        options={subjectOptions}
+                        value={selectedSubjects}
+                        onChange={handleSubjectChange}
+                        placeholder="+ Add"
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        menuPosition="absolute"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            borderRadius: "8px",
+                            backgroundColor: "transparent",
+                            padding: "2px",
+                            height: "45px",
+                            overflow: "auto",
+                          }),
+                          multiValue: (base) => ({
+                            ...base,
+                            backgroundColor: "#4caf50",
+                            borderRadius: "50px",
+                            padding: "0px 5px",
+                          }),
+                          multiValueLabel: (base) => ({
+                            ...base,
                             color: "white",
-                          },
-                        }),
-                      }}
-                    />
+                          }),
+                          multiValueRemove: (base) => ({
+                            ...base,
+                            color: "lightgreen",
+                            borderRadius: "50%",
+                            ":hover": {
+                              backgroundColor: "#e57373",
+                              color: "white",
+                            },
+                          }),
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -367,12 +370,43 @@ const Modal = ({ user, isOpen, setIsOpen }) => {
                   </div>
 
                   <div className="mt-6">
-                    <button
-                      type="submit"
-                      className="mt-2 w-full rounded-lg bg-indigo-600 py-1 font-medium text-white shadow-lg transition duration-300 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 sm:py-3"
-                    >
-                      UPDATE
-                    </button>
+                    {loading ? (
+                      <div
+                        className={`mt-2 flex h-full w-full items-center justify-center rounded-lg p-2 py-1 font-medium text-white  shadow-lg transition duration-300 focus:ring-4 sm:py-3 ${
+                          loading ? "bg-indigo-400" : "bg-indigo-600"
+                        }`}
+                      >
+                        <svg
+                          className="mr-2 h-5 w-5 animate-spin text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
+                        </svg>
+                        Updating...
+                      </div>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="mt-2 w-full rounded-lg bg-indigo-600 p-2 py-1 font-medium text-white shadow-lg transition duration-300 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 sm:py-3"
+                        disabled={loading}
+                      >
+                        Update
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>

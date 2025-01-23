@@ -256,17 +256,41 @@ const SelectSchemaModal = ({ setShowModal, showModal, currentSubId }) => {
           {/* Submit Upload Button */}
           <button
             onClick={handleFileUpload}
-            className="w-full rounded-lg bg-indigo-600 px-5 py-3 text-base font-semibold text-white shadow-md transition hover:bg-indigo-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full rounded-lg bg-indigo-600 text-base font-semibold text-white shadow-md transition hover:bg-indigo-800 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
             disabled={loading}
           >
             {loading ? (
-              <div className="flex items-center justify-center">
-                <MoonLoader color="#3498db" loading={loading} size={20} />
-              </div>
+              <div
+              className={`flex h-full w-full items-center justify-center px-5 py-3 text-white ${
+                loading ? "bg-indigo-400" : "bg-indigo-600"
+              }`}
+            >
+              <svg
+                className="mr-2 h-5 w-5 animate-spin text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Uploading...
+            </div>
             ) : images?.length ? (
               "Uploaded"
             ) : (
-              "Upload"
+              <div className="px-5 py-3">Upload</div>
             )}
           </button>
 
