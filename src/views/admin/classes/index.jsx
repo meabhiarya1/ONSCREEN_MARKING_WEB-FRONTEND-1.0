@@ -97,7 +97,7 @@ const Index = () => {
         }
       );
       toast.success(response.data.message);
-      setClasses(classes.filter((class_) => class_._id !== classId));
+      setClasses(classes?.filter((class_) => class_?._id !== classId));
     } catch (error) {
       console.log(error);
     } finally {
@@ -136,10 +136,10 @@ const Index = () => {
       />
 
       <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {classes.length > 0 ? (
-          classes.map((class_, index) => (
+        {classes?.length > 0 ? (
+          classes?.map((class_, index) => (
             <CardClasses
-              key={class_._id}
+              key={class_?._id}
               setClassId={setClassId}
               setConfirmationModal={setConfirmationModal}
               class_={class_}
