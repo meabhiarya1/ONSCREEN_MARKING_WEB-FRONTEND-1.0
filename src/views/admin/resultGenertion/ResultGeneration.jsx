@@ -17,6 +17,7 @@ import {
 
 import "../resultGenertion/ResultGeneration.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import ReactSelect from "react-select";
 
 const ResultGeneration = () => {
   const [selectedCourseCode, setSelectedCourseCode] = useState(null); // Default value
@@ -107,16 +108,17 @@ const ResultGeneration = () => {
             },
           }
         );
+        console.log(response);
         setPreviousResults(response?.data?.results);
       } catch (error) {
         console.error(error);
         toast.error(error.response.data.message);
       }
     };
-    // if (selectedCourseCode !== null) {
-    //   previousResults();
-    // }
-    previousResults();
+    if (selectedCourseCode && newResult.length === 0) {
+      previousResults();
+    }
+    // previousResults();
   }, [selectedCourseCode, token]);
 
   const CustomToolbar = () => (
@@ -130,12 +132,12 @@ const ResultGeneration = () => {
     </GridToolbarContainer>
   );
 
-  const handleChange = (event) => {
-    const course_Code = event.target.value;
-    setSelectedCourseCode(course_Code); // Update state with selected value
-    // Enable button only if a valid role is selected
-    setDisabled(course_Code === "null");
-  };
+  // const handleChange = (event) => {
+  //   const course_Code = event.target.value;
+  //   setSelectedCourseCode(course_Code); // Update state with selected value
+  //   // Enable button only if a valid role is selected
+  //   setDisabled(course_Code === "null");
+  // };
 
   const handleDownloadPreviousResult = async (fileName) => {
     const token = localStorage.getItem("token");
@@ -359,6 +361,56 @@ const ResultGeneration = () => {
     { field: "AI_EVALUATION", headerName: " AI_EVALUATION", flex: 1 },
   ];
 
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderColor: "#d1d5db", // Tailwind's gray-300
+      backgroundColor: `${isDarkMode ? "#0b1437" : "#ffffff"}`, // Tailwind's gray-50 for light mode
+      color: `${isDarkMode ? "#ffffff" : "#000000"}`, // White for dark mode, black for light mode
+      borderRadius: "0.5rem", // Tailwind's rounded-lg
+      padding: "0.25rem", // Adjust padding for a better look
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#6366f1", // Tailwind's indigo-500
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      borderRadius: "0.5rem",
+      zIndex: 9999,
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused
+        ? "#6366f1"
+        : `${isDarkMode ? "#ffffff" : "#ffffff"}`, // Indigo-500 on hover, background color otherwise
+      color: state.isFocused
+        ? "#ffffff" // White text when focused
+        : `${isDarkMode ? "#000000" : "#000000"}`, // Match input text color
+      padding: "0.5rem",
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: `${isDarkMode ? "#ffffff" : "#000000"}`, // Text color for input field
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: `${isDarkMode ? "#ffffff" : "#000000"}`, // Text color for the selected value
+    }),
+  };
+
+  const options = courseCode.map((course) => ({
+    value: course.code,
+    label: `${course.code} - ${course.name}`,
+  }));
+
+  const handleChange = (selectedOption) => {
+    const course_Code = selectedOption ? selectedOption.value : "null";
+    setSelectedCourseCode(course_Code); // Update state with selected value
+    // Enable button only if a valid role is selected
+    setDisabled(course_Code === "null");
+  };
+
   return (
     <>
       <div className="">
@@ -377,14 +429,14 @@ const ResultGeneration = () => {
 
                 <div className="mt-2 flex items-center justify-between gap-1">
                   <div
-                    className="sm:text-md group mt-4 inline-flex items-center gap-2 rounded-lg py-1.5 px-2 text-sm font-medium transition-all lg:text-lg bg-indigo-500 hover:bg-indigo-600 text-white"
+                    className="sm:text-md group mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-2 py-1.5 text-sm font-medium text-white transition-all hover:bg-indigo-600 lg:text-lg"
                     onClick={downloadSampleCsv}
                   >
                     <span>Download Sample</span>
                     <FaArrowAltCircleDown className="m-1 text-lg" />
                   </div>
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white py-1 px-2">
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-2 py-1 text-white hover:bg-indigo-600">
                     <label
                       className="sm:text-md group inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-all lg:text-lg"
                       htmlFor="uploadCSV"
@@ -405,18 +457,14 @@ const ResultGeneration = () => {
                       />
                       <FaCloudUploadAlt className="m-1 text-2xl" />
                     </label>
-                    <span className="sm:text-md max-w-xs overflow-hidden text-ellipsis text-sm lg:text-lg text-gray-300">
+                    <span className="sm:text-md max-w-xs overflow-hidden text-ellipsis text-sm text-gray-300 lg:text-lg">
                       {file?.name}
                     </span>
                   </div>
                 </div>
-
-                {loading && (
-                  <div className="mt-4 text-blue-600">Uploading...</div>
-                )}
               </article>
 
-              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
+              {/* <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
                 <label
                   htmlFor="SelectCourseCode"
                   className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
@@ -430,7 +478,7 @@ const ResultGeneration = () => {
                   className="sm:text-md rounded-lg border border-gray-300 p-1 text-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 lg:text-lg"
                 >
                   <option value="null">Select Course Code</option>
-                  {/* show all course code */}
+                  {/* show all course code }
 
                   {courseCode?.map((course) => (
                     <option value={course?.code}>
@@ -444,6 +492,37 @@ const ResultGeneration = () => {
                   onClick={handleSubmit}
                 >
                   {loading ? "Genrating..." : "Generate Result"}
+                </div>
+              </div> */}
+
+              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
+                <label
+                  htmlFor="selectCourseCode"
+                  className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
+                >
+                  Select Course Code
+                </label>
+
+                <ReactSelect
+                  id="selectCourseCode"
+                  value={
+                    options.find(
+                      (option) => option.value === selectedCourseCode
+                    ) || null
+                  }
+                  onChange={handleChange}
+                  options={options}
+                  isClearable
+                  placeholder="Search or select a course..."
+                  styles={customStyles}
+                  className="sm:text-md mt-2 text-sm lg:text-lg"
+                />
+
+                <div
+                  className="sm:text-md mt-3 cursor-pointer rounded bg-indigo-600 p-2 text-center text-sm font-medium text-white transition duration-300 ease-in-out hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500 sm:px-4 sm:py-2 lg:text-lg"
+                  onClick={handleSubmit}
+                >
+                  {loading ? "Generating..." : "Generate Result"}
                 </div>
               </div>
 
@@ -592,27 +671,27 @@ const ResultGeneration = () => {
         )}
 
         {newResult?.length > 0 && (
-          <div className="flex flex-col mt-12">
+          <div className="mt-12 flex flex-col">
             {" "}
             <div className="flex justify-end">
-            <button
-              class="button"
-              type="submit"
-              className="flex justify-center items-center bg-indigo-500 hover:bg-indigo-600 rounded-md p-2 w-40 text-white text-lg gap-2 mr-5"
-              onClick={() => setNewResult([])}
-            >
-              <svg
-                viewBox="0 0 576 512"
-                class="svg"
-                xmlns="http://www.w3.org/2000/svg"
+              <button
+                class="button"
+                type="submit"
+                className="mr-5 flex w-40 items-center justify-center gap-2 rounded-md bg-indigo-500 p-2 text-lg text-white hover:bg-indigo-600"
+                onClick={() => setNewResult([])}
               >
-                <path
-                  d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"
-                  fill="#74C0FC"
-                ></path>
-              </svg>
-              Generate New
-            </button>
+                <svg
+                  viewBox="0 0 576 512"
+                  class="svg"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"
+                    fill="#74C0FC"
+                  ></path>
+                </svg>
+                Generate New
+              </button>
             </div>
             <div
               style={{ maxHeight: "600px", width: "100%", marginTop: "20px" }}
