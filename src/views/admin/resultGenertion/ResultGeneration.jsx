@@ -213,7 +213,7 @@ const ResultGeneration = () => {
     // Create a FormData object
     const formData = new FormData();
     formData.append("csvFilePath", file); // The field name must match the backend
-    formData.append("subjectCode", selectedCourseCode);
+    formData.append("subjectcode", selectedCourseCode);
 
     try {
       const response = await axios.post(
@@ -236,11 +236,31 @@ const ResultGeneration = () => {
     }
   };
 
+  const downloadFile = (data) => {
+    console.log(data);
+    if (data?.data?.length > 0) {
+      // Convert data to CSV
+      const csvContent = convertToCSV(data?.data);
+
+      // Generate the file name
+      const downloadFileName = `results_${selectedCourseCode}.csv`;
+
+      // Trigger download
+      const blob = new Blob([csvContent], {
+        type: "text/csv;charset=utf-8;",
+      });
+      saveAs(blob, downloadFileName);
+    } else {
+      toast.error("No data available to download");
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const response = await sendData(file);
       if (response?.data?.message) {
         toast.success(response.data.message);
+        downloadFile(response?.data);
       } else {
         toast.warning("Unexpected response format");
       }
@@ -251,6 +271,11 @@ const ResultGeneration = () => {
       } else {
         toast.error("An error occurred. Please try again.");
       }
+    } finally {
+      setLoading(false); // End loading indicator
+      setFile({ name: "No file chosen" }); // Reset file selection
+      setSelectedCourseCode("Select Course Code");
+      setCsvJsonData([]);
     }
   };
 
