@@ -9,6 +9,13 @@ import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { MdAutoDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
+import {
+  GridToolbarContainer,
+  GridToolbarFilterButton,
+  GridToolbarColumnsButton,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 
 const ResultGeneration = () => {
   const [selectedCourseCode, setSelectedCourseCode] = useState(null); // Default value
@@ -48,6 +55,17 @@ const ResultGeneration = () => {
     };
     fetchCourseCode();
   }, [token]);
+
+  const CustomToolbar = () => (
+    <GridToolbarContainer>
+      {/* Include only the buttons you want */}
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      {/* <GridToolbarExport /> */}
+      {/* Omit the export button */}
+    </GridToolbarContainer>
+  );
 
   const handleChange = (event) => {
     const course_Code = event.target.value;
@@ -102,7 +120,7 @@ const ResultGeneration = () => {
       const jsonData = await parseCSV(selectedFile);
 
       const CourseCodeNotMatched = jsonData?.filter(
-        (item) => item.COURSE_CODE !== selectedCourseCode
+        (item) => item?.COURSE_CODE !== selectedCourseCode
       );
 
       if (CourseCodeNotMatched?.length > 0) {
@@ -169,7 +187,7 @@ const ResultGeneration = () => {
   });
 
   const columns = [
-    { field: "SN", headerName: " SN.", flex: 1 },
+    { field: "SN", headerName: "SN", flex: 1 },
     { field: "BARCODE", headerName: "BARCODE", flex: 1 },
     { field: "COURSE_CODE", headerName: "COURSE_CODE", flex: 1 },
     { field: "ROLL_NO", headerName: "ROLL_NO", flex: 1 },
@@ -265,7 +283,7 @@ const ResultGeneration = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          slots={{ toolbar: GridToolbar }}
+          slots={{ toolbar: CustomToolbar }} // Use your custom toolbar
           sx={{
             "& .MuiDataGrid-columnHeaders": {
               fontWeight: 900,
@@ -274,14 +292,14 @@ const ResultGeneration = () => {
               borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
             },
             "& .MuiTablePagination-root": {
-              color: "#000000", // Text color for pagination controls
+              color: "#000000",
             },
             "& .MuiDataGrid-cell": {
-              fontSize: "0.80rem", // Smaller row text
-              color: "#000000", // Cell text color in dark mode
+              fontSize: "0.80rem",
+              color: "#000000",
             },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional hover effect in dark mode
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
             },
           }}
           style={{ maxHeight: "500px" }}
