@@ -409,8 +409,8 @@ const ImageContainer = (props) => {
 
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale,
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale,
-          width: 120,
-          height: 50,
+          width: 150,
+          height: 80,
           mark: currentMarkDetails.allottedMarks,
         };
         const totalMarksBody = {
@@ -448,8 +448,8 @@ const ImageContainer = (props) => {
 
           x: (e.clientX - containerRect.left + scrollOffsetX) / scale,
           y: (e.clientY - containerRect.top + scrollOffsetY) / scale,
-          width: 120,
-          height: 50,
+          width: 150,
+          height: 80,
         };
 
         const res = await createIcon(iconBody);
@@ -541,7 +541,7 @@ const ImageContainer = (props) => {
       const originalStyle = container.style.cssText;
 
       // Expand the container to its full scrollable height and width
-      container.style.overflow = "visible";
+      // container.style.overflow = "visible";
       container.style.height = `${container.scrollHeight}px`;
       container.style.width = `${container.scrollWidth}px`;
 
@@ -575,11 +575,16 @@ const ImageContainer = (props) => {
       // Convert the canvas to a Blob (binary data)
       const dataUrl = canvas.toDataURL("image/png");
       
-
+  //  // Trigger the download
+  //  const link = document.createElement("a");
+  //  link.href = dataUrl;
+  //  link.download = "scaled_image_with_icons.png";
+  //  link.click();
+  //  return
       const response = await fetch(dataUrl);
       const blob = await response.blob();
       const obj = props.ImageObj;
-      console.log(obj);
+    
       if (blob && obj) {
         const formData = new FormData();
         formData.append("image", blob, "captured_image.png");
