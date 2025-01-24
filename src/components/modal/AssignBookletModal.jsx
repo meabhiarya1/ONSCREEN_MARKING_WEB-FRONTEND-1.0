@@ -192,44 +192,50 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="mb-4">
             {" "}
-            <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
-              <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">
-                      Subject Code
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      Name
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      Total Booklets
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      Status
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersData.map((user) => {
-                    return (
-                      <tr class="bg-white dark:bg-navy-700 dark:text-white">
-                        <td class="px-6 py-4">
-                          {currentBookletDetails.folderName}
-                        </td>
-                        <td class="px-6 py-4">{user.name}</td>
-                        <td class="px-6 py-4">{user.totalBooklets}</td>
-                        <td class="px-6 py-4">{user.status}</td>
-                        <td class="px-6 py-4"><button className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600">Download</button></td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            {usersData.length > 0 && (
+              <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
+                <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
+                  <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
+                    <tr>
+                      <th scope="col" class="px-6 py-3">
+                        Subject Code
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Name
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Total Booklets
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Status
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {usersData.map((user) => {
+                      return (
+                        <tr class="bg-white dark:bg-navy-700 dark:text-white">
+                          <td class="px-6 py-4">
+                            {currentBookletDetails.folderName}
+                          </td>
+                          <td class="px-6 py-4">{user.name}</td>
+                          <td class="px-6 py-4">{user.totalBooklets}</td>
+                          <td class="px-6 py-4">{user.status}</td>
+                          <td class="px-6 py-4">
+                            <button className="rounded-md bg-green-500 p-2 text-white hover:bg-green-600">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>{" "}
         </div>
       </div>
