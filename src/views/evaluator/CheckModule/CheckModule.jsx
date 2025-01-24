@@ -27,13 +27,17 @@ import { updateAnswerPdfById } from "components/Helper/Evaluator/EvalRoute";
 import { getQuestionSchemaById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
 import EvalQuestionModal from "components/modal/EvalQuestionModal";
+import { submitImageById } from "components/Helper/Evaluator/EvalRoute";
 const CheckModule = () => {
   const [loading, setLoading] = useState(false);
   const [answerSheetCount, setAnswerSheetCount] = useState(null);
   const [answerImageDetails, setAnswerImageDetails] = useState([]);
+  const [answerPdfDetails, setanswerPdfDetails] = useState(null);
+  const [imageObj, setImageObj] = useState(null);
   const evaluatorState = useSelector((state) => state.evaluator);
   const taskDetails = evaluatorState?.currentTaskDetails;
   const currentBookletIndex = evaluatorState.currentBookletIndex;
+  const currentAnswerPdfId = evaluatorState.currentAnswerPdfId;
   const svgFiles = [
     "/pageicons/red.svg",
     "/pageicons/green.svg",
@@ -59,6 +63,7 @@ const CheckModule = () => {
         console.log(response);
         console.log(extractedBookletPath);
         // console.log(answerPdfDetails._id);
+        setanswerPdfDetails(answerPdfDetails);
         dispatch(setCurrentAnswerPdfId(answerPdfDetails._id));
         dispatch(setCurrentTaskDetails(task));
         dispatch(setCurrentBookletIndex(task.currentFileIndex));
@@ -130,9 +135,60 @@ const CheckModule = () => {
       if (item.status === "notVisited") {
         const response = await updateAnswerPdfById(item._id, "visited");
       }
-
+      const obj = {
+        image: "captured_image.png",
+        imageName: item.name,
+        bookletName: answerPdfDetails.answerPdfName,
+        subjectCode: currentTaskDetails.subjectCode,
+      };
+      setImageObj(obj)
+      // console.log(obj);
       dispatch(setCurrentAnswerPdfImageId(item._id));
       dispatch(setIndex({ index: index + 1 }));
+
+      // Define a callback to handle the captured Blob
+      // const onImageCaptured = async (blob) => {
+      //   if (blob) {
+      //     const formData = new FormData();
+      //     formData.append("image", blob, "captured_image.png");
+      //     formData.append("imageName", item.name);
+      //     formData.append("bookletName", answerPdfDetails.answerPdfName);
+      //     formData.append("subjectCode", currentTaskDetails.subjectCode);
+
+      //     await submitImageById(formData);
+
+      //     const obj = {
+      //       image: "captured_image.png",
+      //       imageName: item.name,
+      //       bookletName: answerPdfDetails.answerPdfName,
+      //       subjectCode: currentTaskDetails.subjectCode,
+      //     };
+      //     console.log(obj);
+      //   } else {
+      //     console.error("Failed to capture the image");
+      //   }
+      // };
+      setTimeout(() => {
+        // const obj = {
+        //   image: "captured_image.png",
+        //   imageName: item.name,
+        //   bookletName: answerPdfDetails.answerPdfName,
+        //   subjectCode: currentTaskDetails.subjectCode,
+        // };
+
+        // Trigger the custom event
+        const btn = document.getElementById("download-png");
+        // const event = new CustomEvent("download-image", { detail: obj });
+        // btn.dispatchEvent(event); // Dispatch the event
+        btn.click(); // Trigger the button click
+        // submitImageById(formData)
+        // const obj = {
+        //   image :
+        //   imageName: item.name,
+        //   bookletName: answerPdfDetails.answerPdfName,
+        //   subjectCode: currentTaskDetails.subjectCode,
+        // };
+      }, 500);
     } catch (error) {
       console.log(error);
     }
@@ -384,7 +440,7 @@ const CheckModule = () => {
           id="imgcontainer"
           className="h-full flex-grow  sm:w-[60%] md:w-[65%] lg:w-[72%]"
         >
-          <ImageContainer />
+          <ImageContainer ImageObj = {imageObj} />
         </div>
 
         <div className=" h-full sm:w-[30%] md:w-[25%] lg:block lg:w-[20%]">

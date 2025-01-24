@@ -241,6 +241,29 @@ export const submitBookletById = async ( answerPdfId) => {
     return response.data; // return the full response to handle status outside
   } catch (error) {
     console.error(error);
-    return error.response; // return full error response to handle status outside
+    return error.response.data; // return full error response to handle status outside
+  }
+};
+
+
+
+export const submitImageById = async (formData) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/evaluation/answerimages/api/saveimages`,
+      formData, // Include formData in the request body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Ensure the correct content type
+        },
+      }
+    );
+    return response.data; // return the full response to handle status outside
+  } catch (error) {
+    console.error(error);
+    return error.response?.data || { error: "An error occurred" }; // Handle cases where error.response is undefined
   }
 };
