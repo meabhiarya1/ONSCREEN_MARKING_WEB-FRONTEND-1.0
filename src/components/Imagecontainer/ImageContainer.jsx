@@ -20,7 +20,8 @@ import { postMarkById } from "components/Helper/Evaluator/EvalRoute";
 import { createIcon } from "components/Helper/Evaluator/EvalRoute";
 import { getIconsByImageId } from "components/Helper/Evaluator/EvalRoute";
 import { deleteIconByImageId } from "components/Helper/Evaluator/EvalRoute";
-import Tesseract from "tesseract.js";
+import html2canvas from "html2canvas";
+import { submitImageById } from "components/Helper/Evaluator/EvalRoute";
 const IconsData = [{ imgUrl: "/blank.jpg" }];
 const preprocessImage = (canvas) => {
   const context = canvas.getContext("2d");
@@ -477,7 +478,7 @@ const ImageContainer = (props) => {
       setIsDraggingIcon(false);
     }
   };
-
+  console.log(icons);
   // Start dragging an existing icon
   const handleIconDragStart = (index, e) => {
     setDraggedIconIndex(index);
@@ -527,6 +528,77 @@ const ImageContainer = (props) => {
     setIsZoomMenuOpen(!isZoomMenuOpen);
   };
 
+  const handleDownload = async () => {
+    
+
+    if (!containerRef.current) return null;
+
+    try {
+      const imgElement = containerRef.current.querySelector("img");
+      const rect = imgElement.getBoundingClientRect();
+      // Temporarily adjust styles for capturing full content
+      const container = containerRef.current;
+      const originalStyle = container.style.cssText;
+
+      // Expand the container to its full scrollable height and width
+      container.style.overflow = "visible";
+      container.style.height = `${container.scrollHeight}px`;
+      container.style.width = `${container.scrollWidth}px`;
+
+      // Capture the entire container with html2canvas
+      const canvas = await html2canvas(container, {
+        useCORS: true, // For cross-origin images
+        scale: 2, // Increase resolution for better quality
+        x: rect.left - containerRef.current.getBoundingClientRect().left, // X offset relative to container
+        y: rect.top - containerRef.current.getBoundingClientRect().top, // Y offset relative to container
+        width: rect.width, // Width of the image
+        height: rect.height, // Height of the image
+      });
+
+      // Revert the container's style after capture
+      container.style.cssText = originalStyle;
+
+      // // Get the dimensions of the image
+      // const imgElement = containerRef.current.querySelector("img");
+      // const rect = imgElement.getBoundingClientRect();
+
+      // // Capture the div using html2canvas
+      // const canvas = await html2canvas(containerRef.current, {
+      //   useCORS: true, // For cross-origin images
+      //   scale: 2, // Increase resolution
+      //   // x: rect.left - containerRef.current.getBoundingClientRect().left, // X offset relative to container
+      //   // y: rect.top - containerRef.current.getBoundingClientRect().top, // Y offset relative to container
+      //   // width: rect.width, // Width of the image
+      //   // height: rect.height, // Height of the image
+      // });
+
+      // Convert the canvas to a Blob (binary data)
+      const dataUrl = canvas.toDataURL("image/png");
+      
+
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const obj = props.ImageObj;
+      console.log(obj);
+      if (blob && obj) {
+        const formData = new FormData();
+        formData.append("image", blob, "captured_image.png");
+        formData.append("imageName", obj.imageName
+        );
+        formData.append("bookletName", obj.bookletName);
+        formData.append("subjectcode", obj.subjectCode);
+
+        await submitImageById(formData);
+      } else {
+        console.error("Failed to capture the image");
+      }
+    } catch (error) {
+      console.error("Failed to capture and download cropped image:", error);
+      return null;
+    }
+  };
+  
+
   return (
     <>
       <div style={{ height: "8%" }}>
@@ -548,7 +620,13 @@ const ImageContainer = (props) => {
         />
       </div>
       {/* Image Viewer Section */}
-
+      <button
+        onClick={handleDownload}
+        id="download-png"
+        style={{ display: "none" }}
+      >
+        Download Image
+      </button>
       <div
         ref={containerRef}
         style={{
@@ -581,11 +659,13 @@ const ImageContainer = (props) => {
             justifyContent: "center",
             width: "100%",
           }}
+          id="image-container"
         >
           <img
             src={`${process.env.REACT_APP_API_URL}\\${baseImageUrl}\\image_${currentIndex}.png`}
             alt="Viewer"
             className="block"
+            crossOrigin="anonymous"
           />
           {/* Render the canvas for drawing */}
           <canvas
@@ -596,6 +676,7 @@ const ImageContainer = (props) => {
             className={`absolute top-0 z-10 pointer-events-${
               isDrawing ? "auto" : "none"
             }`}
+
             // style={{
             //   position: "absolute",
             //   top: 0,
@@ -614,7 +695,7 @@ const ImageContainer = (props) => {
               <div
                 key={index}
                 ref={(el) => (iconRefs.current[index] = el)}
-                className={`absolute z-10 rounded-lg  p-2 transition-transform duration-200 
+                className={`absolute z-10 rounded-lg  p-2 transition-transform duration-200  transparent
       ${selectedIcon === index ? "border-2 border-blue-500" : ""}
     `}
                 style={{
@@ -624,6 +705,7 @@ const ImageContainer = (props) => {
                   width: `${icon.width}px`,
                   height: `${icon.height}px`,
                   transformOrigin: "top left",
+                  
                 }}
                 onMouseDown={(e) => {
                   handleIconDragStart(index, e);
@@ -652,12 +734,13 @@ const ImageContainer = (props) => {
 
                 {/* Allotted Marks and Question */}
                 <div
-                  className=" mt-2 gap-1  text-center text-sm font-semibold text-gray-700"
+                  className=" mt-2 gap-1  text-center text-xl font-semibold text-gray-700"
                   style={{ display: blankClass }}
                 >
                   <span className="mr-1">{`Q${icon.question}`}</span>→
                   <span
-                    className={`ml-1 inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-gray-50 p-1 ${checkClass}`}
+                    className={`ml-1 inline-flex min-w-[1.5rem] items-center justify-center font-extrabold rounded-full bg-gray-50 p-1 ${checkClass}`}
+                  
                   >
                     {`${icon?.mark}`}
                   </span>
@@ -665,7 +748,7 @@ const ImageContainer = (props) => {
                 </div>
 
                 {/* Timestamp */}
-                <div className="mt-1 text-center text-xs italic text-gray-500">
+                <div className="mt-1 text-center text-md font-extrabold  italic text-gray-700 opacity-75">
                   {icon.timeStamps || "No Timestamp"}
                 </div>
 

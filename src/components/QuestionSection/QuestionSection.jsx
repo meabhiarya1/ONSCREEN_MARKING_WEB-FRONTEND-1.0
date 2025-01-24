@@ -263,12 +263,15 @@ const QuestionDefinition = (props) => {
     try {
       setIsLoading(true);
       const res = await submitBookletById(currentBookletId);
-      console.log(res);
-      if (res.status !== 200) {
-        toast.error(res.data.message);
+
+      if (res.success) {
+        toast.success(res.message);
+      } else {
+        toast.warning(res.message);
       }
     } catch (error) {
-      toast.error("Some went wrong!!");
+      console.log(error);
+      toast.error(error);
     } finally {
       setIsLoading(false);
     }
