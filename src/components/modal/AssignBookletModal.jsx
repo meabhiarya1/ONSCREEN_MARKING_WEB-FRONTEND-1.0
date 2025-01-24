@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import MoonLoader from "react-spinners/MoonLoader";
 import { getAllUsers } from "../../services/common";
-import axios from "axios";
+import axios, { all } from "axios";
 import { toast } from "react-toastify";
 
 const AssignBookletModal = ({
   setShowAssignBookletModal,
   currentBookletDetails,
+  allUsers,
 }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
+  const [usersData, setusersData] = useState([]);
+  const [assignTask, setAssignTask] = useState("");
 
   useEffect(() => {
     try {
@@ -23,6 +26,46 @@ const AssignBookletModal = ({
       console.log(error);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchTasksBySubjectCode = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/tasks/subjectcode?subjectcode=${currentBookletDetails?.folderName}`
+        );
+        // console.log(response.data); // Handle the response data
+        setAssignTask(response?.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error); // Handle errors
+      }
+    };
+
+    // Usage
+    if (currentBookletDetails) {
+      fetchTasksBySubjectCode();
+    }
+  }, []);
+
+  useEffect(() => {
+    let data = [];
+    for (let i = 0; i < assignTask?.length; i++) {
+      for (let j = 0; j < allUsers?.length; j++) {
+        if (assignTask[i]?.userId == allUsers[j]?._id) {
+          data.push({
+            name: allUsers[j]?.name,
+            totalBooklets: assignTask[i].totalBooklets,
+            status: assignTask[i].status,
+          });
+          break;
+        }
+      }
+    }
+    setusersData(data);
+  }, [assignTask]);
+
+  // console.log(assignTask)
+  // console.log(allUsers)
+  // console.log(users);
 
   const handleSubmitButton = async () => {
     try {
@@ -41,12 +84,12 @@ const AssignBookletModal = ({
       );
       setShowAssignBookletModal(false);
       // Optionally handle the response if needed
-      console.log("Task created successfully:", response.data);
+      console.log("Task created successfully:", response?.data);
       toast.success("Task created successfully!");
     } catch (error) {
       console.log(error);
       // Display a proper error message if the server responds with an error
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(error?.response?.data?.message || "An error occurred");
     }
   };
 
@@ -85,11 +128,42 @@ const AssignBookletModal = ({
           </div>
           <hr className="bg-gray-600" />
           {/* Assign task details */}
-          <div className=" ">
+          <div className="">
             {" "}
+            <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
+              <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Booklets
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usersData.map((user) => {
+                    return (
+                      <tr class="border-b bg-white dark:bg-navy-700 dark:text-white">
+                        <td class="px-6 py-4">{user.name}</td>
+                        <td class="px-6 py-4">{user.totalBooklets}</td>
+                        <td class="px-6 py-4">{user.status}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
             <div className="relative">
-              <div className="mt-5 flex items-center gap-4 px-4 text-gray-700 3xl:gap-9">
-                <label className="font-bold  "> Subject Code:</label>{" "}
+              <div className="mt-5 flex items-center gap-4 px-4 text-gray-700 dark:text-white 3xl:gap-9">
+                <label className="font-bold dark:text-white">
+                  {" "}
+                  Subject Code:
+                </label>{" "}
                 {currentBookletDetails.folderName}
               </div>
             </div>
@@ -147,8 +221,6 @@ const AssignBookletModal = ({
               )}
             </button>
           </div>
-
-          
         </div>
       </div>
     </div>

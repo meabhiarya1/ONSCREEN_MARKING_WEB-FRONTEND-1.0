@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { GiCrossMark } from "react-icons/gi";
 import { toast } from "react-toastify";
@@ -12,6 +12,8 @@ const EditCourseModal = ({
   courses,
   setCourses,
 }) => {
+
+  const [loading, setLoading] = useState(false);
   
   // Populate formData when the modal opens with the current course data
   useEffect(() => {
@@ -31,6 +33,7 @@ const EditCourseModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/subjects/update/subject/${currentSubject._id}`,
@@ -55,6 +58,8 @@ const EditCourseModal = ({
       setIsEditOpen(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
     setIsEditOpen(false);
   };
@@ -113,12 +118,43 @@ const EditCourseModal = ({
               />
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Submit
-              </button>
+              {loading ? (
+                <div
+                  className={`flex h-full w-full items-center justify-center p-2 text-white ${
+                    loading ? "bg-indigo-400" : "bg-indigo-600"
+                  }`}
+                >
+                  <svg
+                    className="mr-2 h-5 w-5 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Submitting...
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full rounded bg-indigo-600 p-2 text-white hover:bg-indigo-700 font-semibold"
+                  disabled={loading}
+                >
+                  Submit
+                </button>
+              )}
             </form>
           </div>
         </div>

@@ -21,6 +21,7 @@ const Schema = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Check if the `dark` mode is applied to the `html` element
@@ -99,6 +100,7 @@ const Schema = () => {
 
   const handleUpdate = async (id, updatedData) => {
     try {
+      setLoading(true)
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/schemas/update/schema/${id}`,
         updatedData,
@@ -116,7 +118,8 @@ const Schema = () => {
       console.log(error);
       toast.error(error.response.data.message);
     } finally {
-      // setEditShowModal(false); // Close the modal after updating
+      setLoading(false)
+      setEditShowModal(false); // Close the modal after updating
     }
   };
 
@@ -281,6 +284,7 @@ const Schema = () => {
         handleUpdate={handleUpdate}
         schemaData={schemaData}
         setSchemaData={setSchemaData}
+        loading={loading}
       />
 
       <SchemaCreateModal
