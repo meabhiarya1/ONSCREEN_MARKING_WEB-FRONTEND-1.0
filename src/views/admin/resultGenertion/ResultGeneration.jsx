@@ -16,6 +16,7 @@ import {
 } from "@mui/x-data-grid";
 
 import "../resultGenertion/ResultGeneration.css";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const ResultGeneration = () => {
   const [selectedCourseCode, setSelectedCourseCode] = useState(null); // Default value
@@ -29,6 +30,40 @@ const ResultGeneration = () => {
   const [newResult, setNewResult] = useState([]);
   const csvLinkRef = useRef(null);
   const token = localStorage.getItem("token");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check if the `dark` mode is applied to the `html` element
+    const htmlElement = document.body; // `html` element
+    const checkDarkMode = () => {
+      const isDark = htmlElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // Optionally, observe for changes if the theme might toggle dynamically
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(htmlElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark", // Use 'light' for light mode
+      background: {
+        default: "#111c44", // Background for dark mode
+      },
+      text: {
+        primary: "#ffffff", // White text for dark mode
+      },
+    },
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -310,7 +345,7 @@ const ResultGeneration = () => {
       ROLL_NO: data?.ROLL_NO,
       MARKS: data?.MARKS,
       EVALUATEDBY: data?.EVALUATEDBY,
-      AI_EVALUATION: "N/A"
+      AI_EVALUATION: "N/A",
     };
   });
 
@@ -329,7 +364,7 @@ const ResultGeneration = () => {
       <div className="">
         {newResult?.length === 0 && (
           <>
-            <div className=" mt-5 grid grid-cols-1 gap-5 py-4 sm:grid-cols-2 2xl:grid-cols-3">
+            <div className=" mt-12 grid grid-cols-1 gap-5 pb-4 sm:grid-cols-2 2xl:grid-cols-3">
               <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 dark:text-white">
                 <div>
                   <h3 className="text-md mb-2 font-semibold text-gray-900 dark:text-white sm:text-xl">
@@ -340,18 +375,18 @@ const ResultGeneration = () => {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between sm:mt-2">
+                <div className="mt-2 flex items-center justify-between gap-1">
                   <div
-                    className="sm:text-md group mt-4 inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-all hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 lg:text-lg"
+                    className="sm:text-md group mt-4 inline-flex items-center gap-2 rounded-lg py-1.5 px-2 text-sm font-medium transition-all lg:text-lg bg-indigo-500 hover:bg-indigo-600 text-white"
                     onClick={downloadSampleCsv}
                   >
                     <span>Download Sample</span>
                     <FaArrowAltCircleDown className="m-1 text-lg" />
                   </div>
 
-                  <div className="mt-4 inline-flex items-center gap-2">
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white py-1 px-2">
                     <label
-                      className="sm:text-md group inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-blue-600 transition-all hover:text-blue-700 dark:text-navy-200 dark:hover:text-navy-300 lg:text-lg"
+                      className="sm:text-md group inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-all lg:text-lg"
                       htmlFor="uploadCSV"
                       onClick={(e) => {
                         if (disabled) {
@@ -370,7 +405,7 @@ const ResultGeneration = () => {
                       />
                       <FaCloudUploadAlt className="m-1 text-2xl" />
                     </label>
-                    <span className="sm:text-md max-w-xs overflow-hidden text-ellipsis text-sm lg:text-lg">
+                    <span className="sm:text-md max-w-xs overflow-hidden text-ellipsis text-sm lg:text-lg text-gray-300">
                       {file?.name}
                     </span>
                   </div>
@@ -425,12 +460,12 @@ const ResultGeneration = () => {
                     {previousResults.map((result, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-2 shadow-md dark:bg-navy-700"
+                        className="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-2 shadow-md dark:bg-navy-900"
                       >
                         <p className="text-lg font-medium text-gray-800 dark:text-white">
                           {result?.filename}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                        <p className="text-sm text-gray-600 dark:text-white">
                           {new Date(result?.time).toLocaleString("en-US", {
                             weekday: "long",
                             year: "numeric",
@@ -446,7 +481,7 @@ const ResultGeneration = () => {
                             handleDownloadPreviousResult(result?.filename)
                           }
                         >
-                          <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white hover:translate-y-1 hover:text-blue-600 hover:duration-300">
+                          <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white hover:translate-y-1 hover:text-blue-600 hover:duration-300 dark:bg-navy-700 dark:text-white">
                             <svg
                               class="h-6 w-6"
                               stroke="currentColor"
@@ -481,41 +516,89 @@ const ResultGeneration = () => {
             </div>
 
             <div style={{ width: "100%" }} className="dark:bg-navy-700">
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                slots={{ toolbar: CustomToolbar }} // Use your custom toolbar
-                sx={{
-                  "& .MuiDataGrid-columnHeaders": {
-                    fontWeight: 900,
-                    fontSize: "1rem",
-                    backgroundColor: "#ffffff",
-                    borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-                  },
-                  "& .MuiTablePagination-root": {
-                    color: "#000000",
-                  },
-                  "& .MuiDataGrid-cell": {
-                    fontSize: "0.80rem",
-                    color: "#000000",
-                  },
-                  "& .MuiDataGrid-row:hover": {
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  },
-                }}
-                style={{ maxHeight: "500px" }}
-                pageSize={5}
-              />
+              {isDarkMode ? (
+                <ThemeProvider theme={darkTheme}>
+                  <DataGrid
+                    className="dark:bg-navy-700"
+                    rows={rows}
+                    columns={columns}
+                    slots={{ toolbar: CustomToolbar }} // Use your custom toolbar
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        fontWeight: 900,
+                        fontSize: "1rem",
+                        backgroundColor: "rgba(255, 255, 255, 0.1)", // Header background for dark mode
+                        color: "#ffffff", // Force header text to white
+                      },
+                      "& .MuiDataGrid-cell": {
+                        fontSize: "0.80rem",
+                        color: "#ffffff", // Force cell text to white
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)", // Hover effect for dark mode
+                      },
+                      "& .MuiTablePagination-root": {
+                        color: "#ffffff", // Pagination text color
+                      },
+                      "& .MuiDataGrid-footerContainer": {
+                        backgroundColor: "#111c44", // Footer background for dark mode
+                        color: "#ffffff", // Footer text color
+                      },
+                      "& .MuiDataGrid-toolbarContainer button": {
+                        color: "#ffffff", // Toolbar button color
+                      },
+                      "& .MuiDataGrid-toolbarContainer svg": {
+                        fill: "#ffffff", // Toolbar icon color
+                      },
+                    }}
+                    style={{ maxHeight: "450px" }}
+                    pageSize={5}
+                  />
+                </ThemeProvider>
+              ) : (
+                <div
+                  style={{ maxHeight: "600px", width: "100%" }}
+                  className="dark:bg-navy-700"
+                >
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    slots={{ toolbar: CustomToolbar }} // Use your custom toolbar
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        fontWeight: 900,
+                        fontSize: "1rem",
+                        backgroundColor: "#ffffff",
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
+                      },
+                      "& .MuiTablePagination-root": {
+                        color: "#000000", // Text color for pagination controls
+                      },
+                      "& .MuiDataGrid-cell": {
+                        fontSize: "0.80rem", // Smaller row text
+                        color: "#000000", // Cell text color in dark mode
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional hover effect in dark mode
+                      },
+                    }}
+                    style={{ maxHeight: "450px" }}
+                    pageSize={5}
+                  />
+                </div>
+              )}
             </div>
           </>
         )}
 
         {newResult?.length > 0 && (
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-12">
             {" "}
+            <div className="flex justify-end">
             <button
               class="button"
               type="submit"
+              className="flex justify-center items-center bg-indigo-500 hover:bg-indigo-600 rounded-md p-2 w-40 text-white text-lg gap-2 mr-5"
               onClick={() => setNewResult([])}
             >
               <svg
@@ -530,33 +613,82 @@ const ResultGeneration = () => {
               </svg>
               Generate New
             </button>
+            </div>
             <div
-              style={{ maxHeight: "600px", width: "100%", marginTop: "40px" }}
+              style={{ maxHeight: "600px", width: "100%", marginTop: "20px" }}
               className="dark:bg-navy-700"
             >
-              <DataGrid
-                rows={newResultrows}
-                columns={newResultcolumns}
-                slots={{ toolbar: GridToolbar }}
-                sx={{
-                  "& .MuiDataGrid-columnHeaders": {
-                    fontWeight: 900,
-                    fontSize: "1rem",
-                    backgroundColor: "#ffffff",
-                    borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-                  },
-                  "& .MuiTablePagination-root": {
-                    color: "#000000", // Text color for pagination controls
-                  },
-                  "& .MuiDataGrid-cell": {
-                    fontSize: "0.80rem", // Smaller row text
-                    color: "#000000", // Cell text color in dark mode
-                  },
-                  "& .MuiDataGrid-row:hover": {
-                    backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional hover effect in dark mode
-                  },
-                }}
-              />
+              {isDarkMode ? (
+                <ThemeProvider theme={darkTheme}>
+                  <DataGrid
+                    className="dark:bg-navy-700"
+                    rows={newResultrows}
+                    columns={newResultcolumns}
+                    slots={{ toolbar: GridToolbar }}
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        fontWeight: 900,
+                        fontSize: "1rem",
+                        backgroundColor: "rgba(255, 255, 255, 0.1)", // Header background for dark mode
+                        color: "#ffffff", // Force header text to white
+                      },
+                      "& .MuiDataGrid-cell": {
+                        fontSize: "0.80rem",
+                        color: "#ffffff", // Force cell text to white
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)", // Hover effect for dark mode
+                      },
+                      "& .MuiTablePagination-root": {
+                        color: "#ffffff", // Pagination text color
+                      },
+                      "& .MuiDataGrid-footerContainer": {
+                        backgroundColor: "#111c44", // Footer background for dark mode
+                        color: "#ffffff", // Footer text color
+                      },
+                      "& .MuiDataGrid-toolbarContainer button": {
+                        color: "#ffffff", // Toolbar button color
+                      },
+                      "& .MuiDataGrid-toolbarContainer svg": {
+                        fill: "#ffffff", // Toolbar icon color
+                      },
+                    }}
+                    style={{ maxHeight: "500px" }}
+                    pageSize={5}
+                  />
+                </ThemeProvider>
+              ) : (
+                <div
+                  style={{ maxHeight: "600px", width: "100%" }}
+                  className="dark:bg-navy-700"
+                >
+                  <DataGrid
+                    rows={newResultrows}
+                    columns={newResultcolumns}
+                    slots={{ toolbar: GridToolbar }}
+                    sx={{
+                      "& .MuiDataGrid-columnHeaders": {
+                        fontWeight: 900,
+                        fontSize: "1rem",
+                        backgroundColor: "#ffffff",
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
+                      },
+                      "& .MuiTablePagination-root": {
+                        color: "#000000", // Text color for pagination controls
+                      },
+                      "& .MuiDataGrid-cell": {
+                        fontSize: "0.80rem", // Smaller row text
+                        color: "#000000", // Cell text color in dark mode
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional hover effect in dark mode
+                      },
+                    }}
+                    style={{ maxHeight: "500px" }}
+                    pageSize={5}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
