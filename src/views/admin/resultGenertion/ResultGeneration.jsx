@@ -55,6 +55,8 @@ const ResultGeneration = () => {
         toast.error(error.response.data.message);
       }
     };
+    if (selectedCourseCode !== null) {
+    }
     fetchCourseCode();
   }, [token]);
 
@@ -76,6 +78,9 @@ const ResultGeneration = () => {
         toast.error(error.response.data.message);
       }
     };
+    // if (selectedCourseCode !== null) {
+    //   previousResults();
+    // }
     previousResults();
   }, [selectedCourseCode, token]);
 
@@ -240,7 +245,7 @@ const ResultGeneration = () => {
     if (data?.data?.length > 0) {
       // Convert data to CSV
       const csvContent = convertToCSV(data?.data);
-      console.log(csvContent)
+      console.log(csvContent);
       setNewResult(data?.data);
       // Generate the file name
       const downloadFileName = `results_${selectedCourseCode}.csv`;
@@ -305,6 +310,7 @@ const ResultGeneration = () => {
       ROLL_NO: data?.ROLL_NO,
       MARKS: data?.MARKS,
       EVALUATEDBY: data?.EVALUATEDBY,
+      AI_EVALUATION: "N/A"
     };
   });
 
@@ -315,6 +321,7 @@ const ResultGeneration = () => {
     { field: "ROLL_NO", headerName: "ROLL_NO", flex: 1 },
     { field: "MARKS", headerName: "MARKS", flex: 1 },
     { field: "EVALUATEDBY", headerName: "EVALUATEDBY", flex: 1 },
+    { field: "AI_EVALUATION", headerName: " AI_EVALUATION", flex: 1 },
   ];
 
   return (
