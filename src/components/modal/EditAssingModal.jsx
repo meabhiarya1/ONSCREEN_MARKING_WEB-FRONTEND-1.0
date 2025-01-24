@@ -22,8 +22,8 @@ const EditAssingModal = ({
       taskName: taskName,
       userId: currentTask.userId._id,
     };
-    setLoader(true);
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/tasks/update/task/${currentTask._id}`,
         updatedTask,
@@ -38,11 +38,12 @@ const EditAssingModal = ({
       toast.success("Task updated successfully");
       setShowEditModal(false);
       setShowTaskModal(false);
-      setLoader(false);
       setCurrentTask({});
     } catch (error) {
       console.error(error);
       toast.error("Error updating task");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -145,12 +146,40 @@ const EditAssingModal = ({
           </button>
           <button
             onClick={handleSubmitButton}
-            className="rounded-md bg-indigo-600 px-6 py-2 font-medium text-white transition-all duration-200 hover:bg-indigo-700"
+            className="rounded-md bg-indigo-600 font-medium text-white transition-all duration-200 hover:bg-indigo-700"
+            disabled={loader}
           >
             {loader ? (
-              <div class="h-6 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+              // <div class="h-6 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+              <div
+              className={`flex justify-center items-center rounded-md px-6 py-2 ${
+                loader ? "bg-indigo-400" : "bg-indigo-600"
+              }`}
+            >
+              <svg
+                className="mr-2 h-5 w-5 animate-spin text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Updating...
+            </div>
             ) : (
-              "Update"
+              <div className="px-6 py-2">Update</div>
             )}
           </button>
         </div>
