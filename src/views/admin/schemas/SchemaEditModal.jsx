@@ -166,7 +166,7 @@ const SchemaEditModal = ({
         >
           <GiCrossMark />
         </button>
-        <h2 className="mb-6 text-center text-xl font-semibold text-indigo-600 dark:text-white sm:text-3xl">
+        <h2 className="mb-2 sm:mb-6 text-center text-xl font-semibold text-indigo-600 dark:text-white sm:text-3xl">
           Edit Schema
         </h2>
 
@@ -181,7 +181,7 @@ const SchemaEditModal = ({
               name="name"
               value={formData?.name}
               onChange={handleInputChange}
-              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:p-3"
+              className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:p-3 text-sm sm:text-md"
             />
           </div>
           {/* Input for Maximum Marks */}
@@ -195,7 +195,7 @@ const SchemaEditModal = ({
                 name="maxMarks"
                 value={formData?.maxMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 text-sm sm:text-md"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -207,7 +207,7 @@ const SchemaEditModal = ({
                 name="minMarks"
                 value={formData?.minMarks}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 text-sm sm:text-md"
               />
             </div>
           </div>
@@ -222,7 +222,7 @@ const SchemaEditModal = ({
                 name="totalQuestions"
                 value={formData?.totalQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 text-sm sm:text-md"
               />
             </div>
             {/* Input for Compulsory Questions */}
@@ -235,7 +235,7 @@ const SchemaEditModal = ({
                 name="compulsoryQuestions"
                 value={formData?.compulsoryQuestions}
                 onChange={handleInputChange}
-                className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+                className="w-full rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 text-sm sm:text-md"
               />
             </div>
           </div>
@@ -255,7 +255,7 @@ const SchemaEditModal = ({
                 name="numberOfPage"
                 value={formData?.numberOfPage}
                 onChange={handleInputChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               />
             </div>
 
@@ -275,7 +275,7 @@ const SchemaEditModal = ({
                   handleInputChange(e);
                   // console.log("Selected Value:", e.target.value); // Logs the selected value
                 }}
-                className="max-h-10 w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="max-h-10 w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               >
                 <option value="" className="px-2 text-sm text-gray-400">
                   Select Hidden Pages
@@ -291,7 +291,7 @@ const SchemaEditModal = ({
           {/* Page Index Contains */}
           {formData?.hiddenPage?.length > 0 && (
             <div className="flex flex-col justify-between sm:flex-row">
-              <div className="flex w-full flex-wrap gap-2 rounded-md border border-gray-300 px-4 py-3">
+              <div className="flex w-full flex-wrap gap-2 rounded-md border border-gray-300 px-4 py-1 sm:py-3">
                 {formData?.hiddenPage?.map((item, index) => (
                   <div
                     key={index}
@@ -314,13 +314,13 @@ const SchemaEditModal = ({
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleInputChange}
-              className="w-full rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3"
+              className="w-full rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:p-3 text-sm sm:text-md"
             />
           </div>
         </div>
 
         {/* Update button */}
-        <div className="mt-6 flex justify-end">
+        <div className="sm:mt-6 flex justify-end">
           {loading ? (
             <div
               className={`flex justify-center items-center rounded-md px-3 py-1.5 text-white transition-colors sm:px-6 sm:py-3 ${
