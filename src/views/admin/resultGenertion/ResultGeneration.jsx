@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { getAllUsers } from "services/common";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { saveAs } from "file-saver";
 import { MdAutoDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import {
@@ -25,6 +26,7 @@ const ResultGeneration = () => {
   const [loading, setLoading] = useState(false); // Loading state for the file upload
   const [csvJsonData, setCsvJsonData] = useState([]);
   const [courseCode, setCourseCode] = useState([]);
+  const [previousResults, setPreviousResults] = useState([]);
   const csvLinkRef = useRef(null);
   const token = localStorage.getItem("token");
 
@@ -56,6 +58,27 @@ const ResultGeneration = () => {
     fetchCourseCode();
   }, [token]);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const previousResults = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/resultgeneration/getpreviousresult?subjectcode=${selectedCourseCode}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setPreviousResults(response?.data?.results);
+      } catch (error) {
+        console.error(error);
+        toast.error(error.response.data.message);
+      }
+    };
+    previousResults();
+  }, [selectedCourseCode, token]);
+
   const CustomToolbar = () => (
     <GridToolbarContainer>
       {/* Include only the buttons you want */}
@@ -72,6 +95,55 @@ const ResultGeneration = () => {
     setSelectedCourseCode(course_Code); // Update state with selected value
     // Enable button only if a valid role is selected
     setDisabled(course_Code === "null");
+  };
+
+  const handleDownloadPreviousResult = async (fileName) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/resultgeneration/downloadresult?subjectcode=${selectedCourseCode}&filename=${fileName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response?.data?.result?.length > 0) {
+        const csvData = response.data.result;
+        // console.log(csvData)
+        // Convert data to CSV
+        const csvContent = convertToCSV(csvData);
+
+        // Generate the file name
+        const downloadFileName = `${fileName}_${selectedCourseCode}.csv`;
+
+        // Trigger download
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        saveAs(blob, downloadFileName);
+      } else {
+        toast.error("No data available to download");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Error downloading result");
+    }
+  };
+  // Utility function to convert JSON data to CSV
+  const convertToCSV = (data) => {
+    const headers = Object.keys(data[0]).join(","); // Extract headers
+    const rows = data
+      .map((row) =>
+        Object.values(row)
+          .map((value) => `"${value}"`) // Add quotes to handle commas in data
+          .join(",")
+      )
+      .join("\n");
+
+    return `${headers}\n${rows}`;
   };
 
   const downloadSampleCsv = () => {
@@ -134,33 +206,39 @@ const ResultGeneration = () => {
     }
   };
 
-  const sendData = async (data) => {
+  const sendData = async (file) => {
     setLoading(true); // Start loading indicator
     const token = localStorage.getItem("token");
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append("csvFilePath", file); // The field name must match the backend
+    formData.append("subjectCode", selectedCourseCode);
+
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/auth/createuserbycsv`,
-        data,
+        `${process.env.REACT_APP_API_URL}/api/resultgeneration/generate`,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data", // Set correct content type
           },
         }
       );
-      return response;
+      return response; // Return the successful response
     } catch (error) {
-      console.error(error);
-      return error;
+      console.error("Error uploading file:", error);
+      return error.response || error; // Return the error
     } finally {
       setLoading(false); // End loading indicator
-      // setSelectedRole(null);
-      setFile({ name: "No file chosen" });
+      setFile({ name: "No file chosen" }); // Reset file selection
     }
   };
 
   const handleSubmit = async () => {
     try {
-      const response = await sendData(csvJsonData);
+      const response = await sendData(file);
       if (response?.data?.message) {
         toast.success(response.data.message);
       } else {
@@ -272,8 +350,69 @@ const ResultGeneration = () => {
             className="sm:text-md mt-3 cursor-pointer rounded bg-indigo-600 p-2 text-center text-sm font-medium text-white transition duration-300 ease-in-out hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500 sm:px-4 sm:py-2 lg:text-lg"
             onClick={handleSubmit}
           >
-            Generate Result
+            {loading ? "Genrating..." : "Generate Result"}
           </div>
+        </div>
+
+        <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
+          <label
+            htmlFor="previousResultsrelatedtoCourseCode"
+            className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
+          >
+            Previous Results
+          </label>
+
+          {previousResults?.length > 0 ? (
+            <div className="mt-1 space-y-2">
+              {previousResults.map((result, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-2 shadow-md dark:bg-navy-700"
+                >
+                  <p className="text-lg font-medium text-gray-800 dark:text-white">
+                    {result?.filename}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {new Date(result?.time).toLocaleString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                  <div
+                    class="group relative"
+                    onClick={() =>
+                      handleDownloadPreviousResult(result?.filename)
+                    }
+                  >
+                    <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white hover:translate-y-1 hover:text-blue-600 hover:duration-300">
+                      <svg
+                        class="h-6 w-6"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 dark:text-gray-300">
+              No results found
+            </p>
+          )}
         </div>
 
         <a ref={csvLinkRef} style={{ display: "none" }} download="sample.csv" />
