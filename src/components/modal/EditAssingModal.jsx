@@ -22,8 +22,8 @@ const EditAssingModal = ({
       taskName: taskName,
       userId: currentTask.userId._id,
     };
-    setLoader(true);
     try {
+      setLoader(true);
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/api/tasks/update/task/${currentTask._id}`,
         updatedTask,
@@ -38,18 +38,20 @@ const EditAssingModal = ({
       toast.success("Task updated successfully");
       setShowEditModal(false);
       setShowTaskModal(false);
-      setLoader(false);
       setCurrentTask({});
     } catch (error) {
       console.error(error);
       toast.error("Error updating task");
+    } finally {
+      setLoader(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="w-full max-w-md scale-95 transform rounded-lg bg-white p-8 shadow-xl transition-all duration-300 ease-in-out hover:scale-100">
-        <h3 className="mb-6 text-center text-2xl font-semibold text-gray-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-md">
+      <div className="w-full max-w-md scale-95 transform rounded-lg bg-white p-4 m-2 sm:p-8 shadow-xl dark:bg-navy-700">
+        {/* transition-all duration-300 ease-in-out hover:scale-100 */}
+        <h3 className="mb-6 text-center text-2xl font-semibold text-indigo-800 dark:text-white">
           Edit Task
         </h3>
 
@@ -57,7 +59,7 @@ const EditAssingModal = ({
           <div>
             <label
               htmlFor="taskName"
-              className="text-lg font-medium text-gray-700"
+              className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
             >
               Task Name
             </label>
@@ -66,14 +68,14 @@ const EditAssingModal = ({
               id="taskName"
               value={taskName}
               onChange={(e) => setTaskName(e.target.value)}
-              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
             />
           </div>
 
           <div>
             <label
               htmlFor="subjectCode"
-              className="text-lg font-medium text-gray-700"
+              className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
             >
               Subject Code
             </label>
@@ -81,7 +83,7 @@ const EditAssingModal = ({
               type="text"
               id="subjectCode"
               value={currentTask?.subjectCode}
-              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
           </div>
@@ -89,7 +91,7 @@ const EditAssingModal = ({
           <div>
             <label
               htmlFor="className"
-              className="text-lg font-medium text-gray-700"
+              className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
             >
               Class Name
             </label>
@@ -97,7 +99,7 @@ const EditAssingModal = ({
               type="text"
               id="className"
               value={currentTask?.className}
-              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
           </div>
@@ -105,7 +107,7 @@ const EditAssingModal = ({
           <div>
             <label
               htmlFor="totalFiles"
-              className="text-lg font-medium text-gray-700"
+              className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
             >
               Total Files
             </label>
@@ -113,7 +115,7 @@ const EditAssingModal = ({
               type="number"
               id="totalFiles"
               value={currentTask?.totalFiles}
-              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
           </div>
@@ -121,7 +123,7 @@ const EditAssingModal = ({
           <div>
             <label
               htmlFor="folderPath"
-              className="text-lg font-medium text-gray-700"
+              className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
             >
               Folderpath
             </label>
@@ -129,7 +131,7 @@ const EditAssingModal = ({
               type="text"
               id="folderPath"
               value={currentTask?.folderPath}
-              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
           </div>
@@ -138,18 +140,46 @@ const EditAssingModal = ({
         <div className="mt-8 flex justify-end gap-4">
           <button
             onClick={() => setShowEditModal(false)}
-            className="rounded-md bg-gray-500 px-6 py-2 font-medium text-white transition-all duration-200 hover:bg-gray-600"
+            className="rounded-md bg-red-500 px-6 py-2 font-medium text-white transition-all duration-200 hover:bg-red-600"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmitButton}
-            className="rounded-md bg-blue-600 px-6 py-2 font-medium text-white transition-all duration-200 hover:bg-blue-700"
+            className="rounded-md bg-indigo-600 font-medium text-white transition-all duration-200 hover:bg-indigo-700"
+            disabled={loader}
           >
             {loader ? (
-              <div class="h-6 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+              // <div class="h-6 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+              <div
+              className={`flex justify-center items-center rounded-md px-6 py-2 ${
+                loader ? "bg-indigo-400" : "bg-indigo-600"
+              }`}
+            >
+              <svg
+                className="mr-2 h-5 w-5 animate-spin text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Updating...
+            </div>
             ) : (
-              "Update"
+              <div className="px-6 py-2">Update</div>
             )}
           </button>
         </div>

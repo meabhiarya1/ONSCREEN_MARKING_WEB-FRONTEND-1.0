@@ -69,6 +69,7 @@ const AssignBookletModal = ({
 
   const handleSubmitButton = async () => {
     try {
+      setLoading(true);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/tasks/create/task`, // API endpoint
         {
@@ -90,14 +91,16 @@ const AssignBookletModal = ({
       console.log(error);
       // Display a proper error message if the server responds with an error
       toast.error(error?.response?.data?.message || "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
       {" "}
-      <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
-        <div className="mx-3 w-full rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white sm:mx-6 md:w-2/3 lg:w-7/12 2xl:w-5/12">
+      <div className="bg-black fixed inset-0 z-50 m-2 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
+        <div className="mx-3 w-full rounded-xl bg-white shadow-lg drop-shadow-md dark:bg-navy-700 dark:text-white sm:mx-6 md:w-2/3 lg:w-7/12 2xl:w-6/12">
           <div className="flex justify-between px-7 py-5">
             <div>
               <h2 className="font-bold" style={{ fontSize: "32px" }}>
@@ -127,100 +130,113 @@ const AssignBookletModal = ({
             </div>
           </div>
           <hr className="bg-gray-600" />
-          {/* Assign task details */}
-          <div className="">
-            {" "}
-            <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
-              <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
-                  <tr>
-                    <th scope="col" class="px-6 py-3">
-                      Name
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      Booklets
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersData.map((user) => {
-                    return (
-                      <tr class="border-b bg-white dark:bg-navy-700 dark:text-white">
-                        <td class="px-6 py-4">{user.name}</td>
-                        <td class="px-6 py-4">{user.totalBooklets}</td>
-                        <td class="px-6 py-4">{user.status}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <div className="relative">
-              <div className="mt-5 flex items-center gap-4 px-4 text-gray-700 dark:text-white 3xl:gap-9">
-                <label className="font-bold dark:text-white">
-                  {" "}
-                  Subject Code:
-                </label>{" "}
-                {currentBookletDetails.folderName}
-              </div>
-            </div>
-          </div>{" "}
           {/* select user dropdown */}
-          <div className="mt-2 space-y-2 px-3 pb-6 pt-3">
+          <div className="space-y-2 px-3 pb-5">
             {" "}
             <div className="relative">
               {/* Dropdown Of users */}
-              <div className="mt-5 flex items-center gap-4 px-1 3xl:gap-9">
-                <div className="inline-block text-gray-700 dark:text-white">
-                  <label htmlFor="" className="font-bold  ">
-                    Select User:
-                  </label>
+              <div className="mt-5 flex items-center justify-between gap-2">
+                <div className="flex w-full items-center gap-2 px-1 3xl:gap-2">
+                  <div className="inline-block min-w-24 text-gray-700 dark:text-white">
+                    <label htmlFor="" className="font-bold">
+                      Select User:
+                    </label>
+                  </div>
+                  <div className="w-full ">
+                    <select
+                      name=""
+                      id=""
+                      className="bg-transparent h-10 w-full overflow-auto rounded-lg border border-gray-300 px-2 text-sm text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
+                      onChange={(e) => {
+                        setSelectedUser(e.target.value);
+                      }}
+                    >
+                      <option value="">Select User to Assign</option>
+                      {users &&
+                        users?.map((user) => (
+                          <option key={user._id} value={user._id}>
+                            {user.email}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
-                <div className="w-4/5 ">
-                  <select
-                    name=""
-                    id=""
-                    className="bg-transparent h-10 w-full overflow-auto rounded-lg border border-gray-300 px-2 text-sm text-gray-700 focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white"
-                    onChange={(e) => {
-                      setSelectedUser(e.target.value);
-                    }}
+                {/* submit */}
+                <div>
+                  <button
+                    class={`my-2 mb-3 w-full rounded-md px-2 py-1 text-lg font-bold text-white sm:px-6 ${
+                      loading
+                        ? "bg-indigo-400"
+                        : "bg-indigo-600 hover:bg-indigo-700"
+                    }`}
+                    onClick={handleSubmitButton}
+                    disabled={loading}
                   >
-                    <option value="">Select User to Assign</option>
-                    {users &&
-                      users?.map((user) => (
-                        <option key={user._id} value={user._id}>
-                          {user.email}
-                        </option>
-                      ))}
-                  </select>
+                    {loading ? (
+                      <div
+                        className={`flex w-full items-center justify-center`}
+                      >
+                        <MoonLoader color="white" loading={loading} size={20} />{" "}
+                        <span className="ml-3">Submitting...</span>
+                      </div>
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
                 </div>
               </div>
 
               {/* Dropdown Of users */}
             </div>
           </div>{" "}
-          {/* submit */}
-          <div class="px-20 py-3 text-center">
-            <button
-              class={`my-2 mb-3 w-full rounded-md py-1 text-lg font-bold text-white ${
-                loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
-              }`}
-              onClick={handleSubmitButton}
-              disabled={loading}
-            >
-              {loading ? (
-                <div className={`flex w-full items-center justify-center`}>
-                  <MoonLoader color="white" loading={loading} size={20} />{" "}
-                  <span className="ml-3">Submitting...</span>
-                </div>
-              ) : (
-                "Submit"
-              )}
-            </button>
-          </div>
+          {/* Assign task details */}
+          <div className="mb-4">
+            {" "}
+            {usersData.length > 0 && (
+              <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
+                <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
+                  <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
+                    <tr>
+                      <th scope="col" class="px-6 py-3">
+                        Subject Code
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Name
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Total Booklets
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Status
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {usersData.map((user) => {
+                      return (
+                        <tr class="bg-white dark:bg-navy-700 dark:text-white">
+                          <td class="px-6 py-4">
+                            {currentBookletDetails.folderName}
+                          </td>
+                          <td class="px-6 py-4">{user.name}</td>
+                          <td class="px-6 py-4">{user.totalBooklets}</td>
+                          <td class="px-6 py-4">{user.status}</td>
+                          <td class="px-6 py-4">
+                            <button className="rounded-md bg-green-500 p-2 text-white hover:bg-green-600">
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>{" "}
         </div>
       </div>
     </div>
