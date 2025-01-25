@@ -427,7 +427,7 @@ const ResultGeneration = () => {
                   </p>
                 </div>
 
-                <div className="mt-2 flex items-center justify-between gap-1">
+                <div className="mt-2 flex items-center justify-evenly gap-1">
                   <div
                     className="sm:text-md group mt-4 inline-flex items-center rounded-lg bg-indigo-500 px-2 py-1.5 text-sm font-medium text-white transition-all hover:bg-indigo-600 lg:text-lg"
                     onClick={downloadSampleCsv}
@@ -436,9 +436,9 @@ const ResultGeneration = () => {
                     <FaArrowAltCircleDown className="m-1 text-lg" />
                   </div>
 
-                  <div className="mt-4 inline-flex items-center rounded-lg bg-indigo-500 px-2 py-1 text-white hover:bg-indigo-600">
+                  <div className="mt-4 inline-flex items-center rounded-lg bg-indigo-500 px-2 py-1.5 text-white hover:bg-indigo-600">
                     <label
-                      className="sm:text-md group inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-all lg:text-lg"
+                      className="sm:text-md group inline-flex cursor-pointer items-center text-sm font-medium text-white transition-all lg:text-lg"
                       htmlFor="uploadCSV"
                       onClick={(e) => {
                         if (disabled) {
@@ -455,9 +455,9 @@ const ResultGeneration = () => {
                         accept=".csv"
                         onChange={uploadHandle}
                       />
-                      <FaCloudUploadAlt className="m-1 text-2xl" />
+                      <FaCloudUploadAlt className="m-1 text-lg" />
                     </label>
-                    <span className="sm:text-md max-w-xs overflow-hidden text-ellipsis text-sm text-gray-300 lg:text-lg">
+                    <span className="sm:text-md max-w-xs sm:text-md lg:text-lg w-10 sm:w-18 text-sm text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap">
                       {file?.name}
                     </span>
                   </div>
