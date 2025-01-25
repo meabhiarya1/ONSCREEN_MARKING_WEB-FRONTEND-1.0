@@ -678,7 +678,10 @@ const ResultGeneration = () => {
                 class="button"
                 type="submit"
                 className="mr-5 flex w-40 items-center justify-center gap-2 rounded-md bg-indigo-500 p-2 text-lg text-white hover:bg-indigo-600"
-                onClick={() => setNewResult([])}
+                onClick={() => {
+                  setNewResult([]);
+                  setPreviousResults([]);
+                }}
               >
                 <svg
                   viewBox="0 0 576 512"
