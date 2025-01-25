@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 const CreateSchemaStructure = () => {
@@ -21,6 +21,7 @@ const CreateSchemaStructure = () => {
   const [error, setError] = useState(false);
   const [remainingMarks, setRemainingMarks] = useState("");
   const [questionToAllot, setQuestionToAllot] = useState("");
+    const navigate = useNavigate();
   // const [allottedQuestionRemaining, setAllottedQuestionRemaining] = useState(0);
 
   useEffect(() => {
@@ -453,6 +454,7 @@ const CreateSchemaStructure = () => {
       );
       // console.log(response)
       toast.success("Schema data updated successfully");
+      navigate(`/admin/schema`);
     } catch (error) {
       toast.error(error.response.data.message);
       // console.log(error)

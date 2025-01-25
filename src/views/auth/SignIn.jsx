@@ -52,8 +52,8 @@ export function SignIn() {
       dispatch(login(response.data));
       navigate("/admin");
     } catch (error) {
-      toast.error("Login failed. Please try again.");
-      console.log(error);
+      toast.error(error?.response?.data?.message);
+      // console.log(error);
       setUser({
         email: user.email,
         password: user.password,

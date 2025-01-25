@@ -169,6 +169,9 @@ const CreateUser = () => {
         const { status, data } = response;
         if (status === 201) {
           toast.success(data?.message || "User created successfully!");
+          setSubjects([]);
+          setShowSubjects(false);
+          setShowMaximumAllot(false);
         } else {
           toast.error(data?.message || "An error occurred. Please try again.");
         }
@@ -582,7 +585,9 @@ const CreateUser = () => {
               <div className="col-span-6 flex items-center justify-center gap-2 sm:flex-row sm:gap-5">
                 <button
                   className={`rounded-md px-2 py-1 text-lg text-white transition sm:px-2 sm:py-1 lg:px-4 lg:py-2 ${
-                    loading ? "cursor-not-allowed bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
+                    loading
+                      ? "cursor-not-allowed bg-indigo-400"
+                      : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
                   disabled={loading}
                 >

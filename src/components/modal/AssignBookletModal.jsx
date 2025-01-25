@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import MoonLoader from "react-spinners/MoonLoader";
 import { getAllUsers } from "../../services/common";
 import axios, { all } from "axios";
 import { toast } from "react-toastify";
@@ -9,6 +8,7 @@ const AssignBookletModal = ({
   currentBookletDetails,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [downloadLoader, setDownloadLoader] = useState(false);
   const [users, setUsers] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
   const [assignTask, setAssignTask] = useState("");
@@ -76,6 +76,7 @@ const AssignBookletModal = ({
 
   const downloadBooklet = async (task) => {
     try {
+      setDownloadLoader(true);
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/resultgeneration/getcompletedbooklets/${task._id}`,
         {
@@ -95,6 +96,8 @@ const AssignBookletModal = ({
       document.body.removeChild(link);
     } catch (error) {
       console.error("Error downloading booklet:", error); // Handle errors
+    } finally {
+      setDownloadLoader(false);
     }
   };
 
@@ -176,11 +179,32 @@ const AssignBookletModal = ({
                   >
                     {loading ? (
                       <div
-                        className={`flex w-full items-center justify-center`}
+                      className={`flex h-full w-full items-center justify-center ${
+                        loading ? "bg-indigo-400" : "bg-indigo-600"
+                      }`}
+                    >
+                      <svg
+                        className="mr-2 h-5 w-5 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
                       >
-                        <MoonLoader color="white" loading={loading} size={20} />{" "}
-                        <span className="ml-3">Submitting...</span>
-                      </div>
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Submitting...
+                    </div>
                     ) : (
                       "Submit"
                     )}
@@ -237,10 +261,41 @@ const AssignBookletModal = ({
                           <td class="px-6 py-4">{task?.status}</td>
                           <td class="px-6 py-4">
                             <button
-                              className="rounded-md bg-green-500 p-2 text-white hover:bg-green-600"
+                              className="rounded-md bg-green-500  text-white hover:bg-green-600"
                               onClick={() => downloadBooklet(task)}
+                              disabled={downloadLoader}
                             >
-                              Download
+                              {downloadLoader ? (
+                                <div
+                                className={`flex h-full w-full items-center justify-center p-2 rounded-md ${
+                                  downloadLoader ? "bg-green-400" : "bg-green-600"
+                                }`}
+                              >
+                                <svg
+                                  className="mr-2 h-5 w-5 animate-spin text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  />
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                  />
+                                </svg>
+                                Downloading...
+                              </div>
+                              ) : (
+                                <div className="p-2" >Download</div>
+                              )}
                             </button>
                           </td>
                         </tr>
