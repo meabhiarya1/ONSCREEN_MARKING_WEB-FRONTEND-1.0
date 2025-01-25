@@ -7,12 +7,10 @@ import { toast } from "react-toastify";
 const AssignBookletModal = ({
   setShowAssignBookletModal,
   currentBookletDetails,
-  allUsers,
 }) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
-  const [usersData, setusersData] = useState([]);
   const [assignTask, setAssignTask] = useState("");
 
   useEffect(() => {
@@ -46,26 +44,6 @@ const AssignBookletModal = ({
     }
   }, []);
 
-  useEffect(() => {
-    let data = [];
-    for (let i = 0; i < assignTask?.length; i++) {
-      for (let j = 0; j < allUsers?.length; j++) {
-        if (assignTask[i]?.userId == allUsers[j]?._id) {
-          data.push({
-            name: allUsers[j]?.name,
-            totalBooklets: assignTask[i]?.totalBooklets,
-            status: assignTask[i]?.status,
-          });
-          break;
-        }
-      }
-    }
-    setusersData(data);
-  }, [assignTask]);
-
-  // console.log(assignTask)
-  // console.log(allUsers)
-  // console.log(users);
 
   const handleSubmitButton = async () => {
     try {
@@ -93,6 +71,30 @@ const AssignBookletModal = ({
       toast.error(error?.response?.data?.message || "An error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const downloadBooklet = async (task) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/resultgeneration/getcompletedbooklets/${task._id}`,
+        {
+          responseType: "blob",
+        }
+      );
+      if (response?.data?.size === 0) {
+        toast.error("No data available to download");
+        return;
+      }
+      const url = window.URL.createObjectURL(new Blob([response?.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${task?.subjectCode}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading booklet:", error); // Handle errors
     }
   };
 
@@ -192,7 +194,8 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="mb-4">
             {" "}
-            {usersData?.length > 0 && (
+
+            {assignTask.length > 0 && (
               <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
                 <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
                   <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
@@ -202,6 +205,9 @@ const AssignBookletModal = ({
                       </th>
                       <th scope="col" class="px-6 py-3">
                         Name
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Email
                       </th>
                       <th scope="col" class="px-6 py-3">
                         Total Booklets
@@ -215,17 +221,26 @@ const AssignBookletModal = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {usersData?.map((user) => {
+
+                    {assignTask?.map((task) => {
+
                       return (
                         <tr class="bg-white dark:bg-navy-700 dark:text-white">
                           <td class="px-6 py-4">
                             {currentBookletDetails?.folderName}
                           </td>
-                          <td class="px-6 py-4">{user?.name}</td>
-                          <td class="px-6 py-4">{user?.totalBooklets}</td>
-                          <td class="px-6 py-4">{user?.status}</td>
+
                           <td class="px-6 py-4">
-                            <button className="rounded-md bg-green-500 p-2 text-white hover:bg-green-600">
+                            {task?.userId?.name?.toUpperCase()}
+                          </td>
+                          <td class="px-6 py-4">{task?.userId?.email}</td>
+                          <td class="px-6 py-4">{task?.totalBooklets}</td>
+                          <td class="px-6 py-4">{task?.status}</td>
+                          <td class="px-6 py-4">
+                            <button
+                              className="rounded-md bg-green-500 p-2 text-white hover:bg-green-600"
+                              onClick={() => downloadBooklet(task)}
+                            >
                               Download
                             </button>
                           </td>
