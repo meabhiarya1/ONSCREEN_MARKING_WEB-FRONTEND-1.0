@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./LineLoader.css";
 const LineLoader = () => {
   return (
     <ul class="wave-menu">
