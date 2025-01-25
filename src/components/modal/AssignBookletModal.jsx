@@ -19,7 +19,7 @@ const AssignBookletModal = ({
     try {
       const fetchUsers = async () => {
         const users = await getAllUsers();
-        setUsers(users.filter((user) => user.role !== "admin"));
+        setUsers(users?.filter((user) => user.role !== "admin"));
       };
       fetchUsers();
     } catch (error) {
@@ -53,8 +53,8 @@ const AssignBookletModal = ({
         if (assignTask[i]?.userId == allUsers[j]?._id) {
           data.push({
             name: allUsers[j]?.name,
-            totalBooklets: assignTask[i].totalBooklets,
-            status: assignTask[i].status,
+            totalBooklets: assignTask[i]?.totalBooklets,
+            status: assignTask[i]?.status,
           });
           break;
         }
@@ -154,8 +154,8 @@ const AssignBookletModal = ({
                       <option value="">Select User to Assign</option>
                       {users &&
                         users?.map((user) => (
-                          <option key={user._id} value={user._id}>
-                            {user.email}
+                          <option key={user?._id} value={user?._id}>
+                            {user?.email}
                           </option>
                         ))}
                     </select>
@@ -192,7 +192,7 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="mb-4">
             {" "}
-            {usersData.length > 0 && (
+            {usersData?.length > 0 && (
               <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
                 <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
                   <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
@@ -215,15 +215,15 @@ const AssignBookletModal = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {usersData.map((user) => {
+                    {usersData?.map((user) => {
                       return (
                         <tr class="bg-white dark:bg-navy-700 dark:text-white">
                           <td class="px-6 py-4">
-                            {currentBookletDetails.folderName}
+                            {currentBookletDetails?.folderName}
                           </td>
-                          <td class="px-6 py-4">{user.name}</td>
-                          <td class="px-6 py-4">{user.totalBooklets}</td>
-                          <td class="px-6 py-4">{user.status}</td>
+                          <td class="px-6 py-4">{user?.name}</td>
+                          <td class="px-6 py-4">{user?.totalBooklets}</td>
+                          <td class="px-6 py-4">{user?.status}</td>
                           <td class="px-6 py-4">
                             <button className="rounded-md bg-green-500 p-2 text-white hover:bg-green-600">
                               Download

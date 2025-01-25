@@ -301,7 +301,7 @@ const ResultGeneration = () => {
     try {
       const response = await sendData(file);
       if (response?.data?.message) {
-        toast.success(response.data.message);
+        toast.success(response.data?.message);
         downloadFile(response?.data);
       } else {
         toast.warning("Unexpected response format");
@@ -399,13 +399,13 @@ const ResultGeneration = () => {
     }),
   };
 
-  const options = courseCode.map((course) => ({
-    value: course.code,
-    label: `${course.code} - ${course.name}`,
+  const options = courseCode?.map((course) => ({
+    value: course?.code,
+    label: `${course?.code} - ${course?.name}`,
   }));
 
   const handleChange = (selectedOption) => {
-    const course_Code = selectedOption ? selectedOption.value : "null";
+    const course_Code = selectedOption ? selectedOption?.value : "null";
     setSelectedCourseCode(course_Code); // Update state with selected value
     // Enable button only if a valid role is selected
     setDisabled(course_Code === "null");
@@ -506,8 +506,8 @@ const ResultGeneration = () => {
                 <ReactSelect
                   id="selectCourseCode"
                   value={
-                    options.find(
-                      (option) => option.value === selectedCourseCode
+                    options?.find(
+                      (option) => option?.value === selectedCourseCode
                     ) || null
                   }
                   onChange={handleChange}
@@ -536,7 +536,7 @@ const ResultGeneration = () => {
 
                 {previousResults?.length > 0 ? (
                   <div className="mt-1 space-y-2">
-                    {previousResults.map((result, index) => (
+                    {previousResults?.map((result, index) => (
                       <div
                         key={index}
                         className="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-2 shadow-md dark:bg-navy-900"
