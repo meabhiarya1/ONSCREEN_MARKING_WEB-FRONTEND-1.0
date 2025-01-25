@@ -52,7 +52,7 @@ export function SignIn() {
       dispatch(login(response.data));
       navigate("/admin");
     } catch (error) {
-      toast.error("Invalid Username or Password!");
+      toast.error(error?.response?.data?.message);
       // console.log(error);
       setUser({
         email: user.email,
