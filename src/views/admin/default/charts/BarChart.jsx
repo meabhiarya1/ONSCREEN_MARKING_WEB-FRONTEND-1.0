@@ -33,7 +33,10 @@ const BarChart = () => {
 
     // Add event listener for theme changes
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     return () => {
       observer.disconnect();
@@ -45,14 +48,14 @@ const BarChart = () => {
     labels: ["January", "February", "March", "April", "May", "June"], // X-axis labels
     datasets: [
       {
-        label: "Dataset 1",
+        label: "Gaurav",
         data: [30, 45, 60, 70, 80, 90],
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
       {
-        label: "Dataset 2",
+        label: "Abhishek",
         data: [50, 65, 40, 75, 95, 100],
         backgroundColor: "rgba(153, 102, 255, 0.6)",
         borderColor: "rgba(153, 102, 255, 1)",
@@ -66,39 +69,39 @@ const BarChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'bottom',
+        position: "bottom",
         labels: {
           font: {
             size: 14,
           },
-          color: isDarkMode ? 'white' : 'black',
+          color: isDarkMode ? "white" : "black",
         },
       },
       title: {
         display: true,
-        text: 'Bar Chart with Tailwind Dark/Light Mode',
+        text: "User Based Prformance",
         font: {
           size: 18,
         },
-        color: isDarkMode ? 'white' : 'black',
+        color: isDarkMode ? "white" : "black",
       },
     },
     scales: {
       x: {
         ticks: {
-          color: isDarkMode ? 'white' : 'black',
+          color: isDarkMode ? "white" : "black",
         },
         grid: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
+          color: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)",
         },
       },
       y: {
         beginAtZero: true,
         ticks: {
-          color: isDarkMode ? 'white' : 'black',
+          color: isDarkMode ? "white" : "black",
         },
         grid: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
+          color: isDarkMode ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)",
         },
       },
     },

@@ -34,7 +34,7 @@ const CourseModal = ({
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
-          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-2xl transition-all duration-300 sm:scale-100 dark:bg-navy-700">
+          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white pt-8 sm:p-8 shadow-2xl transition-all duration-300 sm:scale-100 dark:bg-navy-700">
             <button
               className="absolute right-4 top-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none"
               onClick={() => {
@@ -49,10 +49,10 @@ const CourseModal = ({
             </button>
 
             {/* Modal Content */}
-            <form className="space-y-6 p-4" onSubmit={handleSubmit}>
+            <form className="space-y-6 py-6 px-4 sm:p-4" onSubmit={handleSubmit}>
               <label
                 htmlFor="name"
-                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-blue-500"
+                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500"
               >
 
                 {/* <span className="text-xs font-medium text-gray-700">
@@ -74,7 +74,7 @@ const CourseModal = ({
 
               <label
                 htmlFor="code"
-                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-blue-500"
+                className="block overflow-hidden rounded-md border border-gray-300 px-4 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500"
               >
                 <span className="text-sm font-medium text-gray-800 dark:text-white">Course Code</span>
                 <input

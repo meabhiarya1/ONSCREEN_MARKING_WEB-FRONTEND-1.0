@@ -281,7 +281,7 @@ export function SignIn() {
               <div className="col-span-6">
                 <label
                   htmlFor="otp"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   OTP
                 </label>
@@ -302,13 +302,13 @@ export function SignIn() {
                     }}
                   /> */}
 
-                <div className="flex gap-2">
+                <div className="flex gap-1 sm:gap-2">
                   {otpdata?.map((digit, index) => (
                     <input
                       key={index}
                       type="text"
                       maxLength={1}
-                      className="bg-transparent focus:ring-sky-500 focus:border-sky-500 w-12 rounded-md border border-gray-500 px-2 py-2 text-center text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
+                      className="bg-transparent focus:ring-sky-500 focus:border-sky-500 w-10 sm:w-12 rounded-md border border-gray-500 px-2 py-2 text-center text-sm transition duration-300 placeholder:text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2"
                       value={digit}
                       onChange={(e) => handleChange(e.target.value, index)}
                       onKeyUp={(e) => handleKeyUp(e, index)}

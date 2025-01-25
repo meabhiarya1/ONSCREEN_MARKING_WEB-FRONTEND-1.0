@@ -1,13 +1,16 @@
-import { IoBagHandle } from "react-icons/io5";
 import BarChart from "./charts/BarChart";
 import DoughnutChart from "./charts/DoughnutChart";
 import Boxes from "./boxes/Boxes";
 import { useEffect, useState } from "react";
+import { FaUsers } from "react-icons/fa6";
+import { MdOutlineScanner } from "react-icons/md";
+import { FaTasks } from "react-icons/fa";
+import { RiAiGenerate } from "react-icons/ri";
 
 const Dashboard = () => {
   const [expandedChart, setExpandedChart] = useState(null);
 
-  useEffect(()=>{});
+  useEffect(() => {});
 
   const openChart = (chartType) => {
     setExpandedChart(chartType);
@@ -22,27 +25,27 @@ const Dashboard = () => {
       {/* Boxes Area */}
       <div className="boxes flex flex-col items-center justify-start gap-5 sm:gap-5 md:flex-row md:gap-3 lg:gap-7">
         <Boxes
-          icon={<IoBagHandle fontSize={36} />}
-          title={"Total Sales"}
+          icon={<FaUsers fontSize={36} />}
+          title={"Users"}
+          amount={4}
+          percentage={100}
+        />
+        <Boxes
+          icon={<MdOutlineScanner fontSize={36} />}
+          title={"Scanned Data"}
           amount={478540}
           percentage={45}
         />
         <Boxes
-          icon={<IoBagHandle fontSize={36} />}
-          title={"Total Sales"}
-          amount={478540}
+          icon={<FaTasks fontSize={36} />}
+          title={"Tasks"}
+          amount={47}
           percentage={45}
         />
         <Boxes
-          icon={<IoBagHandle fontSize={36} />}
-          title={"Total Sales"}
-          amount={478540}
-          percentage={45}
-        />
-        <Boxes
-          icon={<IoBagHandle fontSize={36} />}
-          title={"Total Sales"}
-          amount={478540}
+          icon={<RiAiGenerate fontSize={36} />}
+          title={"Result Generated"}
+          amount={8540}
           percentage={45}
         />
       </div>

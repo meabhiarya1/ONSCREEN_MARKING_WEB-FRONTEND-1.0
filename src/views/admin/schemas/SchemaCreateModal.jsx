@@ -189,7 +189,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+              className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
             />
           </div>
           {/* Total Questions */}
@@ -207,7 +207,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="totalQuestions"
                 value={formData.totalQuestions}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -223,7 +223,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="maxMarks"
                 value={formData.maxMarks}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               />
             </div>
           </div>
@@ -243,7 +243,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="numberOfPage"
                 value={formData.numberOfPage}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               />
             </div>
 
@@ -263,7 +263,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                   handleChange(e);
                   // console.log("Selected Value:", e.target.value); // Logs the selected value
                 }}
-                className="max-h-10 w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="max-h-10 w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               >
                 <option value="" className="px-2 text-sm text-gray-400">
                   Select Hidden Pages
@@ -279,7 +279,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
           {/* Page Index Contains */}
           {formData?.hiddenPage?.length > 0 && (
             <div className="flex flex-col justify-between sm:flex-row">
-              <div className="flex w-full flex-wrap gap-2 rounded-md border border-gray-300 px-4 py-3">
+              <div className="flex w-full flex-wrap gap-2 rounded-md border border-gray-300 px-4 py-1 sm:py-3">
                 {formData?.hiddenPage?.map((item, index) => (
                   <div
                     key={index}
@@ -307,7 +307,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="minMarks"
                 value={formData.minMarks}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               />
             </div>
             <div className="mb-2 sm:mb-0">
@@ -323,7 +323,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
                 name="compulsoryQuestions"
                 value={formData.compulsoryQuestions}
                 onChange={handleChange}
-                className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+                className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
               />
             </div>
           </div>
@@ -340,7 +340,7 @@ const SchemaCreateModal = ({ setCreateShowModal, createShowModal }) => {
               name="evaluationTime"
               value={formData.evaluationTime}
               onChange={handleChange}
-              className="w-72 rounded-md border border-gray-300 px-2 py-1 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2"
+              className="w-72 rounded-md border border-gray-300 px-2 py-0.5 shadow-sm focus:border-none focus:border-indigo-500 focus:outline-none focus:ring focus:ring-indigo-500 dark:border-gray-700 dark:bg-navy-900 dark:text-white sm:w-full sm:px-4 sm:py-2 text-sm sm:text-md"
             />
           </div>
           {/* Submit Button */}

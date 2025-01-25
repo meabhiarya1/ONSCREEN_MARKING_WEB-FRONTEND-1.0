@@ -69,7 +69,7 @@ const EditCourseModal = ({
     <div>
       {isEditOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg p-8 bg-white rounded-lg shadow-xl transform transition-all duration-500 scale-95 sm:scale-100 dark:bg-navy-700">
+          <div className="relative w-full max-w-lg pt-8 sm:p-8 bg-white rounded-lg shadow-xl transform transition-all duration-500 scale-95 sm:scale-100 dark:bg-navy-700">
             <button
               className="absolute top-4 right-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none transition-colors duration-300"
               onClick={() => {
@@ -84,10 +84,10 @@ const EditCourseModal = ({
             </button>
 
             {/* Modal Content */}
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-4 py-6 px-4 sm:p-4" onSubmit={handleSubmit}>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-white"
               >
                 Course Name
               </label>
@@ -103,7 +103,7 @@ const EditCourseModal = ({
 
               <label
                 htmlFor="code"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-white"
               >
                 Subject / Course Code
               </label>

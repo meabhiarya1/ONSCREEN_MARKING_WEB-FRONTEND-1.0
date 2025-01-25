@@ -27,4 +27,33 @@
   .svg {
     height: 10px;
   }
+
+  .button1 {
+    cursor: pointer;
+    padding: 10px;
+    /* background-color: rgb(43, 43, 43); */
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 15px;
+    border-style: double;
+    border-color: rgba(74, 61, 255, 0.753);
+    color: rgba(126, 185, 236, 0.968);
+    background-image: linear-gradient(to right, rgb(14, 15, 58), rgb(49, 3, 118));
+    /* border-color: rgb(67, 67, 67); */
+    transition: 300ms;
+    display: flex; 
+    justify-content: flex-end;
+  }
+  .button1:hover {
+    border-color: rgb(100, 43, 215);
+    border-top-right-radius: 5%;
+    border-bottom-left-radius: 5%;
+  
+    box-shadow: 0px 5px 10px 1px rgb(0, 0, 0);
+    font-size: 15px;
+    transition: 400px;
+  }
+  .svg {
+    height: 10px;
+  }
   

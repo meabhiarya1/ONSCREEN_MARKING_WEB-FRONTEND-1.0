@@ -35,7 +35,7 @@ const ClassModal = ({
     <div>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md transition-opacity duration-300">
-          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white p-8 shadow-lg transition-all duration-300 sm:scale-100 dark:bg-navy-700 dark:border dark:border-gray-400">
+          <div className="relative w-full max-w-lg scale-95 transform rounded-lg bg-white pt-8 sm:p-8 shadow-lg transition-all duration-300 sm:scale-100 dark:bg-navy-700 dark:border dark:border-gray-400">
             <button
               className="absolute right-2 top-2 p-4 text-2xl text-gray-700 hover:text-red-700 focus:outline-none "
               onClick={() => {
@@ -51,10 +51,10 @@ const ClassModal = ({
             >
               <GiCrossMark />
             </button>
-            <form className="space-y-4 p-6" onSubmit={handleSubmit}>
+            <form className="space-y-4 py-6 px-4 sm:p-4" onSubmit={handleSubmit}>
               <label
                 htmlFor="class"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600"
               >
                 <span className="text-xs font-medium text-gray-700 dark:text-white">
                   Class
@@ -72,7 +72,7 @@ const ClassModal = ({
 
               <label
                 htmlFor="classCode"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600"
               >
                 <span className="text-xs font-medium text-gray-700 dark:text-white">
                   Class Code
@@ -91,7 +91,7 @@ const ClassModal = ({
               <div className="flex justify-between gap-4">
                 <label
                   htmlFor="duration"
-                  className="block  overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                  className="block  overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600"
                 >
                   <span className="text-xs font-medium text-gray-700 dark:text-white">
                     Duration
@@ -108,7 +108,7 @@ const ClassModal = ({
                 </label>
                 <label
                   htmlFor="session"
-                  className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                  className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600"
                 >
                   <span className="text-xs font-medium text-gray-700 dark:text-white">
                     Session
@@ -127,7 +127,7 @@ const ClassModal = ({
 
               <label
                 htmlFor="year"
-                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600"
+                className="block overflow-hidden rounded-md border border-gray-200 px-3 py-2 shadow-sm focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600"
               >
                 <span className="text-xs font-medium text-gray-700 dark:text-white">
                   Year

@@ -100,12 +100,12 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const fetchSubjectNames = async () => {
+    const fetchsubjectCode = async () => {
       try {
         // Create an array of promises for fetching subjects for each user
         const userSubjectMapping = await Promise.all(
           users.map(async (user) => {
-            const subjectNames = await Promise.all(
+            const subjectCode = await Promise.all(
               user.subjectCode.map(async (subjectCode) => {
                 const response = await axios.get(
                   `${process.env.REACT_APP_API_URL}/api/subjects/getbyid/subject/${subjectCode}`,
@@ -116,12 +116,12 @@ const Index = () => {
                   }
                 );
                 // console.log(response)
-                return response.data.name; // Subject name for this code
+                return response.data.code; // Subject name for this code
               })
             );
             return {
               ...user,
-              subjectNames, // Add fetched subject names to the user object
+              subjectCode, // Add fetched subject names to the user object
             };
           })
         );
@@ -132,12 +132,13 @@ const Index = () => {
       }
     };
 
-    fetchSubjectNames();
+    fetchsubjectCode();
   }, [users]);
 
   const rows = users?.map((user) => {
     // Find the matching user in userData by ID
     const matchedUser = userData.find((data) => data._id === user._id);
+    // console.log(matchedUser)
 
     return {
       id: user?._id,
@@ -149,7 +150,7 @@ const Index = () => {
       permissions: user?.permissions,
       subjectCode: user?.subjectCode || [],
       maxBooklets: user?.maxBooklets || 0,
-      subjectName: matchedUser?.subjectNames || [], // Use the subjectNames from userData
+      subjectName: matchedUser?.subjectCode || [], // Use the subjectCode from userData
     };
   });
 
