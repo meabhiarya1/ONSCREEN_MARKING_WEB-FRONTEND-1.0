@@ -17,7 +17,7 @@ const AssignBookletModal = ({
     try {
       const fetchUsers = async () => {
         const users = await getAllUsers();
-        setUsers(users.filter((user) => user.role !== "admin"));
+        setUsers(users?.filter((user) => user.role !== "admin"));
       };
       fetchUsers();
     } catch (error) {
@@ -43,6 +43,7 @@ const AssignBookletModal = ({
       fetchTasksBySubjectCode();
     }
   }, []);
+
 
   const handleSubmitButton = async () => {
     try {
@@ -155,8 +156,8 @@ const AssignBookletModal = ({
                       <option value="">Select User to Assign</option>
                       {users &&
                         users?.map((user) => (
-                          <option key={user._id} value={user._id}>
-                            {user.email}
+                          <option key={user?._id} value={user?._id}>
+                            {user?.email}
                           </option>
                         ))}
                     </select>
@@ -193,6 +194,7 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="mb-4">
             {" "}
+
             {assignTask.length > 0 && (
               <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
                 <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
@@ -219,12 +221,15 @@ const AssignBookletModal = ({
                     </tr>
                   </thead>
                   <tbody>
+
                     {assignTask?.map((task) => {
+
                       return (
                         <tr class="bg-white dark:bg-navy-700 dark:text-white">
                           <td class="px-6 py-4">
-                            {currentBookletDetails.folderName}
+                            {currentBookletDetails?.folderName}
                           </td>
+
                           <td class="px-6 py-4">
                             {task?.userId?.name?.toUpperCase()}
                           </td>
