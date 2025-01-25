@@ -193,7 +193,7 @@ const AssignBookletModal = ({
           {/* Assign task details */}
           <div className="mb-4">
             {" "}
-            {assignTask.length > 0 && (
+            {assignTask?.length > 0 && (
               <div class="relative max-h-44 overflow-x-auto dark:bg-navy-700">
                 <table class="w-full text-left text-sm text-gray-700 dark:bg-navy-700 rtl:text-right">
                   <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-navy-800 dark:text-white">
