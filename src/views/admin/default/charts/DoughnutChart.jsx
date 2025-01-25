@@ -38,7 +38,7 @@ const DoughnutChart = () => {
 
   // Doughnut chart data
   const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple"], // Labels for the chart
+    labels: ["UPSC", "BPSC", "MK University", "Vedmata", "UK College"], // Labels for the chart
     datasets: [
       {
         label: "Votes", // Label for the dataset
@@ -78,7 +78,7 @@ const DoughnutChart = () => {
       },
       title: {
         display: true,
-        text: 'Doughnut Chart with Tailwind Dark/Light Mode',
+        text: 'Task Status',
         font: {
           size: 18,
         },

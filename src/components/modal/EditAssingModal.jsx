@@ -12,6 +12,7 @@ const EditAssingModal = ({
   const [taskName, setTaskName] = useState(currentTask?.taskName);
   const [loader, setLoader] = useState(false);
 
+
   useEffect(() => {
     setTaskName(currentTask?.taskName);
   }, [currentTask]);
@@ -56,7 +57,7 @@ const EditAssingModal = ({
         </h3>
 
         <div className="space-y-6">
-          <div>
+          {/* <div>
             <label
               htmlFor="taskName"
               className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
@@ -70,7 +71,7 @@ const EditAssingModal = ({
               onChange={(e) => setTaskName(e.target.value)}
               className="mt-2 w-full rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
             />
-          </div>
+          </div> */}
 
           <div>
             <label
@@ -88,7 +89,7 @@ const EditAssingModal = ({
             />
           </div>
 
-          <div>
+          {/* <div>
             <label
               htmlFor="className"
               className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
@@ -102,7 +103,7 @@ const EditAssingModal = ({
               className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
-          </div>
+          </div> */}
 
           <div>
             <label
@@ -114,13 +115,13 @@ const EditAssingModal = ({
             <input
               type="number"
               id="totalFiles"
-              value={currentTask?.totalFiles}
+              value={currentTask?.totalBooklets}
               className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
           </div>
 
-          <div>
+          {/* <div>
             <label
               htmlFor="folderPath"
               className="text-sm sm:text-lg font-medium text-gray-700 dark:text-white"
@@ -134,7 +135,7 @@ const EditAssingModal = ({
               className="mt-2 w-full rounded-md border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-navy-900 dark:text-white text-sm sm:text-lg"
               disabled
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-8 flex justify-end gap-4">
