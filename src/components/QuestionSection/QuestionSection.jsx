@@ -12,6 +12,8 @@ import {
   setCurrentMarkDetails,
   setCurrentTaskDetails,
   setCurrentQuestionDefinitionId,
+  setIsLoadingTrue,
+  setIsLoadingFalse
 } from "store/evaluatorSlice";
 import { changeCurrentIndexById } from "components/Helper/Evaluator/EvalRoute";
 import { setCurrentBookletIndex } from "store/evaluatorSlice";
@@ -24,7 +26,6 @@ const QuestionDefinition = (props) => {
   const [rotationStates, setRotationStates] = useState({});
   const [marked, setMarked] = useState(false);
   const [totalMarks, setTotalMarks] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const evaluatorState = useSelector((state) => state.evaluator);
   const taskDetails = evaluatorState.currentTaskDetails;
   const currentBookletIndex = evaluatorState.currentBookletIndex;
@@ -100,7 +101,7 @@ const QuestionDefinition = (props) => {
       });
       // console.log(response);
     } catch (error) {}
-    console.log(item, mark);
+   
   };
   const QuestionData = allQuestions.map((item, index) => {
     const isRotated = rotationStates[index] === 45;
@@ -222,11 +223,13 @@ const QuestionDefinition = (props) => {
       </tr>
     );
   });
-
+console.log(evaluatorState.isLoading)
   const handleNextBooklet = async () => {
+    
     try {
-      console.log(taskDetails);
+   
       if (currentBookletIndex < taskDetails.totalBooklets) {
+        setIsLoadingTrue()
         const taskId = taskDetails._id;
         const response = await changeCurrentIndexById(
           taskId,
@@ -240,11 +243,15 @@ const QuestionDefinition = (props) => {
       //
     } catch (error) {
       console.log(error);
+    }finally{
+      setIsLoadingFalse()
     }
   };
+  console.log(evaluatorState.isLoading)
   const handlePrevBooklet = async () => {
     try {
       if (currentBookletIndex > 1) {
+        setIsLoadingTrue()
         const taskId = taskDetails._id;
         const response = await changeCurrentIndexById(
           taskId,
@@ -257,11 +264,13 @@ const QuestionDefinition = (props) => {
       //
     } catch (error) {
       console.log(error);
+    }finally{
+      setIsLoadingFalse()
     }
   };
   const submitHandler = async () => {
     try {
-      setIsLoading(true);
+      // setIsloading(true);
       const res = await submitBookletById(currentBookletId);
 
       if (res.success) {
@@ -273,7 +282,7 @@ const QuestionDefinition = (props) => {
       console.log(error);
       toast.error(error);
     } finally {
-      setIsLoading(false);
+      // setIsloading(false);
     }
   };
   return (
