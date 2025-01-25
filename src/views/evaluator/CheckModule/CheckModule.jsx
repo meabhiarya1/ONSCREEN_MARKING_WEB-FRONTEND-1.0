@@ -39,9 +39,9 @@ const CheckModule = () => {
   const currentBookletIndex = evaluatorState.currentBookletIndex;
   const currentAnswerPdfId = evaluatorState.currentAnswerPdfId;
   const svgFiles = [
-    "/pageicons/red.svg",
-    "/pageicons/green.svg",
-    "/pageicons/yellow.svg",
+    "/pageicons/red.png",
+    "/pageicons/green.png",
+    "/pageicons/yellow.png",
   ];
   const icons = evaluatorState.icons;
   const rerenderer = evaluatorState.rerender;
@@ -256,9 +256,11 @@ const CheckModule = () => {
     ? loginTime.split(":")
     : ["--", "--", "--"];
 
+
+
   return (
     <>
-      <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-[#33597a] to-[#33a3a3] py-5 text-white">
+      <div className="flex h-[10vh] w-[100vw] items-center justify-around bg-gradient-to-r from-blue-800 to-blue-300 py-5 text-white">
         <div>
           <img src="/ios.png" alt="ios_default" />
         </div>
@@ -417,7 +419,7 @@ const CheckModule = () => {
                   marginLeft: "4px",
                 }}
               >
-                {answerSheetCount?.totalImages}
+                {Imgicons.length}
               </span>
             </h2>
             <div className="h-[82%] ">
