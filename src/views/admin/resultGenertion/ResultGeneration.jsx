@@ -411,13 +411,15 @@ const ResultGeneration = () => {
     setDisabled(course_Code === "null");
   };
 
+  console.log(previousResults);
+
   return (
     <>
       <div className="">
         {newResult?.length === 0 && (
           <>
             <div className=" mt-12 grid grid-cols-1 gap-5 pb-4 sm:grid-cols-2 2xl:grid-cols-3">
-              <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 dark:text-white">
+              <article className="cursor-pointer rounded-lg border border-gray-200 bg-white p-6 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 dark:text-white h-48">
                 <div>
                   <h3 className="text-md mb-2 font-semibold text-gray-900 dark:text-white sm:text-xl">
                     Upload CSV File
@@ -427,7 +429,7 @@ const ResultGeneration = () => {
                   </p>
                 </div>
 
-                <div className="mt-2 flex items-center justify-evenly gap-1">
+                <div className="mt-4 flex items-center justify-evenly gap-1">
                   <div
                     className="sm:text-md group mt-4 inline-flex items-center rounded-lg bg-indigo-500 px-2 py-1.5 text-sm font-medium text-white transition-all hover:bg-indigo-600 lg:text-lg"
                     onClick={downloadSampleCsv}
@@ -457,7 +459,7 @@ const ResultGeneration = () => {
                       />
                       <FaCloudUploadAlt className="m-1 text-lg" />
                     </label>
-                    <span className="sm:text-md max-w-xs sm:text-md lg:text-lg w-10 sm:w-18 text-sm text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap">
+                    <span className="sm:text-md sm:text-md sm:w-18 w-10 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-300 lg:text-lg">
                       {file?.name}
                     </span>
                   </div>
@@ -495,7 +497,7 @@ const ResultGeneration = () => {
                 </div>
               </div> */}
 
-              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
+              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 h-48">
                 <label
                   htmlFor="selectCourseCode"
                   className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
@@ -526,7 +528,7 @@ const ResultGeneration = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700">
+              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 h-48">
                 <label
                   htmlFor="previousResultsrelatedtoCourseCode"
                   className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
@@ -535,51 +537,53 @@ const ResultGeneration = () => {
                 </label>
 
                 {previousResults?.length > 0 ? (
-                  <div className="mt-1 space-y-2">
-                    {previousResults?.map((result, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-2 shadow-md dark:bg-navy-900"
-                      >
-                        <p className="text-lg font-medium text-gray-800 dark:text-white">
-                          {result?.filename}
-                        </p>
-                        <p className="text-sm text-gray-600 dark:text-white">
-                          {new Date(result?.time).toLocaleString("en-US", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
-                        <div
-                          class="group relative"
-                          onClick={() =>
-                            handleDownloadPreviousResult(result?.filename)
-                          }
-                        >
-                          <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white hover:translate-y-1 hover:text-blue-600 hover:duration-300 dark:bg-navy-700 dark:text-white">
-                            <svg
-                              class="h-6 w-6"
-                              stroke="currentColor"
-                              stroke-width="1.5"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                    <div className="overflow-auto">
+                      <div className="mt-1 space-y-2">
+                        {previousResults?.map((result, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between rounded-lg bg-gray-100 px-4 py-2 shadow-md dark:bg-navy-900"
+                          >
+                            <p className="text-lg font-medium text-gray-800 dark:text-white">
+                              {result?.filename}
+                            </p>
+                            <p className="text-sm text-gray-600 dark:text-white">
+                              {new Date(result?.time).toLocaleString("en-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+                            <div
+                              class="group relative"
+                              onClick={() =>
+                                handleDownloadPreviousResult(result?.filename)
+                              }
                             >
-                              <path
-                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-                                stroke-linejoin="round"
-                                stroke-linecap="round"
-                              ></path>
-                            </svg>
-                          </button>
-                        </div>
+                              <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-white hover:translate-y-1 hover:text-blue-600 hover:duration-300 dark:bg-navy-700 dark:text-white">
+                                <svg
+                                  class="h-6 w-6"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                                    stroke-linejoin="round"
+                                    stroke-linecap="round"
+                                  ></path>
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
                 ) : (
                   <p className="text-center text-gray-500 dark:text-gray-300">
                     No results found
@@ -674,8 +678,8 @@ const ResultGeneration = () => {
           <div className="mt-12 flex flex-col">
             {" "}
             <div className="flex justify-end gap-5">
-            <button
-                className="button flex justify-center items-center"
+              <button
+                className="button flex items-center justify-center"
                 type="submit"
               >
                 <svg
@@ -693,7 +697,7 @@ const ResultGeneration = () => {
               <button
                 class="button"
                 type="submit"
-                className="mr-5 flex w-40 items-center justify-center gap-2 rounded-md bg-indigo-500 p-2 text-lg text-white hover:bg-indigo-600 button1"
+                className="button1 mr-5 flex w-40 items-center justify-center gap-2 rounded-md bg-indigo-500 p-2 text-lg text-white hover:bg-indigo-600"
                 onClick={() => {
                   setNewResult([]);
                   setPreviousResults([]);
