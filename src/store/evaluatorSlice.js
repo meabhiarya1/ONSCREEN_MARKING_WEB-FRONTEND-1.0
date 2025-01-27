@@ -95,8 +95,11 @@ const evaluatorSlice = createSlice({
     setIcons: (state, action) => {
       state.icons = action.payload;
     },
-    setIsloading: (state, action) => {
-      state.isLoading = action.payload;
+    setIsLoadingTrue: (state) => {
+      state.isLoading =true;
+    },
+    setIsLoadingFalse: (state) => {
+      state.isLoading =false;
     },
     setImageObj: (state, action) => {
       state.imageObj = action.payload;
@@ -122,7 +125,8 @@ export const {
   setCurrentQuestionDefinitionId,
   setCurrentAnswerPdfId,
   setIcons,
-  setIsloading,
+  setIsLoadingTrue,
+  setIsLoadingFalse,
   setCurrentBookletId,
   setImageObj
 } = evaluatorSlice.actions;
