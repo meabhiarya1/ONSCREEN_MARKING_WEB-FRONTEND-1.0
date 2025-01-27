@@ -96,7 +96,7 @@ const Navbar = (props) => {
               </div>
               <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
 
-              <div className="flex flex-col rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+              <div className="flex flex-col rounded-lg bg-white p-6 shadow-md dark:bg-navy-800">
                 <button
                   className="mb-4 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                   onClick={() => navigate("/admin/profile")}

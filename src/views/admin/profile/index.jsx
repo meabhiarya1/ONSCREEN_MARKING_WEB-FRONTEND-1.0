@@ -29,8 +29,8 @@ const ProfileOverview = () => {
   
 
   return (
-    <div className="mt-12 flex h-[60vh] w-full items-center justify-center bg-gray-50">
-      <div className="relative block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-8 sm:p-10 lg:p-12">
+    <div className="mt-12 flex h-[60vh] w-full items-center justify-center bg-gray-50 dark:bg-navy-900">
+      <div className="relative block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-8 sm:p-10 lg:p-12 dark:bg-navy-700 dark:text-white">
         <span className="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600"></span>
         <div className="flex flex-col items-center sm:flex-row sm:gap-8 sm:items-start">
           {/* Profile Picture */}
@@ -39,17 +39,17 @@ const ProfileOverview = () => {
           </div>
           {/* User Details */}
           <div className="mt-6 sm:mt-0 text-center sm:text-left">
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
               {userData?.name || "N/A"}
             </h2>
-            <p className="text-lg text-gray-600 mt-2">Role: {userData?.role || "N/A"}</p>
+            <p className="text-lg text-gray-600 mt-2 dark:text-white">Role: {userData?.role || "N/A"}</p>
 
-            <div className="mt-4 space-y-2 text-base text-gray-700">
+            <div className="mt-4 space-y-2 text-base text-gray-700 dark:text-white">
               <p>
-                <span className="font-semibold text-gray-900">Email:</span> {userData?.email || "N/A"}
+                <span className="font-semibold text-gray-900 dark:text-white">Email:</span> {userData?.email || "N/A"}
               </p>
               <p>
-                <span className="font-semibold text-gray-900">Mobile:</span> {userData?.mobile || "N/A"}
+                <span className="font-semibold text-gray-900 dark:text-white">Mobile:</span> {userData?.mobile || "N/A"}
               </p>
             </div>
 
