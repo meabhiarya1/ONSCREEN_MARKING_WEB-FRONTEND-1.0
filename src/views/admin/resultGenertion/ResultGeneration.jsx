@@ -301,7 +301,7 @@ const ResultGeneration = () => {
     try {
       const response = await sendData(file);
       if (response?.data?.message) {
-        toast.error(response.data?.message);
+        toast.success(response.data?.message);
         downloadFile(response?.data);
       } else {
         toast.warning("Unexpected response format");
