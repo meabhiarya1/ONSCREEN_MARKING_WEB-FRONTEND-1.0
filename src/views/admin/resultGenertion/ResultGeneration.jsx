@@ -33,7 +33,7 @@ const ResultGeneration = () => {
   const token = localStorage.getItem("token");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const hasManyResults = previousResults?.length > 0;
+  const hasManyResults = previousResults?.length > 2;
   const [height, setHeight] = useState(48);
 
   useEffect(() => {
