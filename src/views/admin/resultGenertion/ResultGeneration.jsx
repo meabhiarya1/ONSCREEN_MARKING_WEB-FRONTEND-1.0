@@ -32,6 +32,9 @@ const ResultGeneration = () => {
   const csvLinkRef = useRef(null);
   const token = localStorage.getItem("token");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const hasManyResults = previousResults?.length > 0;
+  const [height, setHeight] = useState(48);
 
   useEffect(() => {
     // Check if the `dark` mode is applied to the `html` element
@@ -528,7 +531,7 @@ const ResultGeneration = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 h-48">
+              <div className={`flex flex-col rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-lg transition duration-300 ease-in-out hover:border-indigo-500 hover:shadow-xl dark:bg-navy-700 h-${height}`}>
                 <label
                   htmlFor="previousResultsrelatedtoCourseCode"
                   className="sm:text-md text-sm font-medium text-gray-700 dark:text-white lg:text-lg"
@@ -588,6 +591,29 @@ const ResultGeneration = () => {
                   <p className="text-center text-gray-500 dark:text-gray-300">
                     No results found
                   </p>
+                )}
+                {hasManyResults && (
+                  <div className="rounded-lg text-gray-800 dark:text-white mt-1">
+                    {expanded ? (
+                      <button
+                        onClick={() => {
+                          setExpanded(!expanded);
+                          setHeight(48);
+                        }}
+                      >
+                        See Less
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setExpanded(!expanded);
+                          setHeight(72);
+                        }}
+                      >
+                        See All
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
 
