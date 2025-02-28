@@ -7,7 +7,8 @@ const Boxes = ({ icon, title, amount, percentage, event }) => {
           <div className="content">
             <div className="md:text-base">{title}</div>
             <div>
-              {amount} <span className="mx-2 text-green-500">+{percentage}%</span>
+              {amount}
+               {/* <span className="mx-2 text-green-500">+{percentage}%</span> */}
             </div>
           </div>
         </div>

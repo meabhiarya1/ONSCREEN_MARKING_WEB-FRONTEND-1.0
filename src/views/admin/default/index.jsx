@@ -29,6 +29,13 @@ const Dashboard = () => {
     ScannedData: { labels: ["Scanned Data"], data: [150] }
   };
 
+  const labels = Object.keys(dataSets);
+
+  // Generate dataset dynamically by summing up the `data` array for each category
+  const processedData = labels.map((category) =>
+    dataSets[category].data.reduce((acc, val) => acc + val, 0)
+  );
+
   const handleBoxClick = (title) => {
     setSelectedChartData(dataSets[title]);
   };
@@ -48,29 +55,29 @@ const Dashboard = () => {
         <Boxes
           icon={<FaUsers fontSize={36} />}
           title={"Users"}
-          amount={4}
-          percentage={100}
+          amount={processedData[0]}
+          // percentage={100}
           event={() => handleBoxClick("Users")}
         />
         <Boxes
           icon={<MdOutlineScanner fontSize={36} />}
           title={"Scanned Data"}
-          amount={478540}
-          percentage={45}
+          amount={processedData[1]}
+          // percentage={45}
           event={() => handleBoxClick("ScannedData")}
         />
         <Boxes
           icon={<FaTasks fontSize={36} />}
           title={"Tasks"}
-          amount={47}
-          percentage={45}
+          amount={processedData[2]}
+          // percentage={45}
           event={() => handleBoxClick("Tasks")}
         />
         <Boxes
           icon={<RiAiGenerate fontSize={36} />}
           title={"Result Generated"}
-          amount={8540}
-          percentage={45}
+          amount={processedData[3]}
+          // percentage={45}
           event={() => handleBoxClick("ResultGenerated")}
         />
       </div>
@@ -81,29 +88,29 @@ const Dashboard = () => {
             <Boxes
               icon={<BsClipboard2DataFill fontSize={36} />}
               title={"Schemas"}
-              amount={4}
-              percentage={100}
+              amount={processedData[4]}
+              // percentage={100}
               event={() => handleBoxClick("Schemas")}
             />
             <Boxes
               icon={<SiGoogleclassroom fontSize={36} />}
               title={"Classes"}
-              amount={478540}
-              percentage={45}
+              amount={processedData[5]}
+              // percentage={45}
               event={() => handleBoxClick("Classes")}
             />
             <Boxes
               icon={<IoBookSharp fontSize={36} />}
               title={"Courses"}
-              amount={47}
-              percentage={45}
+              amount={processedData[6]}
+              // percentage={45}
               event={() => handleBoxClick("Courses")}
             />
             <Boxes
               icon={<MdLibraryBooks fontSize={36} />}
               title={"Booklets"}
-              amount={8540}
-              percentage={45}
+              amount={processedData[7]}
+              // percentage={45}
               event={() => handleBoxClick("Booklets")}
             />
           </div>
