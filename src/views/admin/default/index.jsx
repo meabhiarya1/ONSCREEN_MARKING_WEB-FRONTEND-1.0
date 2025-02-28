@@ -18,15 +18,21 @@ const Dashboard = () => {
 
   const dataSets = {
     Users: { labels: ["Admin", "Evaluator", "Moderator"], data: [10, 15, 20] },
-    "Scanned Data": { labels: ["Sheet1", "Sheet2", "Sheet3"], data: [300, 450, 600] },
-    Tasks: { labels: ["Pending", "Completed", "In Progress"], data: [20, 50, 10] },
+    "Scanned Data": {
+      labels: ["Sheet1", "Sheet2", "Sheet3"],
+      data: [300, 450, 600],
+    },
+    Tasks: {
+      labels: ["Pending", "Completed", "In Progress"],
+      data: [20, 50, 10],
+    },
     "Result Generated": { labels: ["Pass", "Fail"], data: [80, 20] },
     Schemas: { labels: ["Schema A", "Schema B", "Schema C"], data: [5, 8, 12] },
     Classes: { labels: ["Class 1", "Class 2", "Class 3"], data: [25, 30, 40] },
-    Courses: { labels: ["Math", "Science", "English"], data:  [12, 20, 15] },
+    Courses: { labels: ["Math", "Science", "English"], data: [12, 20, 15] },
     Booklets: { labels: ["Booklet A", "Booklet B"], data: [100, 150] },
     ResultGenerated: { labels: ["Results Generated"], data: [100] },
-    ScannedData: { labels: ["Scanned Data"], data: [150] }
+    ScannedData: { labels: ["Scanned Data"], data: [150] },
   };
 
   const labels = Object.keys(dataSets);
@@ -117,13 +123,18 @@ const Dashboard = () => {
         </>
       )}
 
-      <div
-        className="mt-5 cursor-pointer text-right hover:text-indigo-600"
-        onClick={() => {
-          setShowData(!showData);
-        }}
-      >
-        {showData ? "Show Less..." : "Show More Analytics..."}
+      <div className="mt-5 flex cursor-pointer justify-between">
+        <div className="hover:text-indigo-600">
+          Click on any above data to see detailed insights...
+        </div>
+        <div
+          className="hover:text-indigo-600"
+          onClick={() => {
+            setShowData(!showData);
+          }}
+        >
+          {showData ? "Show Less..." : "Show More Analytics..."}
+        </div>
       </div>
 
       <div className="my-8 text-4xl font-semibold">Data Analytics</div>
@@ -161,7 +172,9 @@ const Dashboard = () => {
             className="w-11/12 max-w-4xl rounded-lg bg-white p-6 dark:bg-navy-800"
             onClick={(e) => e.stopPropagation()}
           >
-            {expandedChart === "bar" && <BarChart realData={selectedChartData} />}
+            {expandedChart === "bar" && (
+              <BarChart realData={selectedChartData} />
+            )}
             {expandedChart === "doughnut" && (
               <div className="flex items-center justify-center sm:mx-auto md:mx-auto md:w-1/2 lg:mx-auto lg:w-1/2">
                 <DoughnutChart realData={selectedChartData} />

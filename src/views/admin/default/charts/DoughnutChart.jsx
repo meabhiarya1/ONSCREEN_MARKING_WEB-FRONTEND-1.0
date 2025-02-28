@@ -38,10 +38,10 @@ const DoughnutChart = ({realData}) => {
 
   // Doughnut chart data
   const data = {
-    labels: realData?.labels || ["UPSC", "BPSC", "MK University"], // Labels for the chart
+    labels: realData?.labels || ["Admin", "Evaluator", "Moderator"], // Labels for the chart
     datasets: [
       {
-        data: realData?.data || [12, 19, 3], // Values for the chart
+        data: realData?.data || [10, 15, 20], // Values for the chart
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)", // Red
           "rgba(54, 162, 235, 0.6)", // Blue
