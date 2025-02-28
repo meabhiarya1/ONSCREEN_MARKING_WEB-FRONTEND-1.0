@@ -16,7 +16,7 @@ ChartJS.register(
   Legend
 );
 
-const DoughnutChart = () => {
+const DoughnutChart = ({realData}) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -38,11 +38,10 @@ const DoughnutChart = () => {
 
   // Doughnut chart data
   const data = {
-    labels: ["UPSC", "BPSC", "MK University", "Vedmata", "UK College"], // Labels for the chart
+    labels: realData?.labels || ["UPSC", "BPSC", "MK University"], // Labels for the chart
     datasets: [
       {
-        label: "Votes", // Label for the dataset
-        data: [12, 19, 3, 5, 2], // Values for the chart
+        data: realData?.data || [12, 19, 3], // Values for the chart
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)", // Red
           "rgba(54, 162, 235, 0.6)", // Blue
