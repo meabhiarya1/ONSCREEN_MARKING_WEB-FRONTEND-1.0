@@ -129,7 +129,7 @@ const Dashboard = () => {
           className="bar w-full cursor-pointer rounded-xl border-blue-300 bg-white p-4 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:border hover:shadow-xl dark:bg-navy-700 dark:shadow-gray-800 md:w-full lg:w-7/12"
         >
           <div className="flex h-72 items-center justify-center sm:h-80 md:h-96">
-            <BarChart />
+            <BarChart realData={selectedChartData} />
           </div>
         </div>
 
@@ -154,10 +154,10 @@ const Dashboard = () => {
             className="w-11/12 max-w-4xl rounded-lg bg-white p-6 dark:bg-navy-800"
             onClick={(e) => e.stopPropagation()}
           >
-            {expandedChart === "bar" && <BarChart />}
+            {expandedChart === "bar" && <BarChart realData={selectedChartData} />}
             {expandedChart === "doughnut" && (
               <div className="flex items-center justify-center sm:mx-auto md:mx-auto md:w-1/2 lg:mx-auto lg:w-1/2">
-                <DoughnutChart />
+                <DoughnutChart realData={selectedChartData} />
               </div>
             )}
           </div>
