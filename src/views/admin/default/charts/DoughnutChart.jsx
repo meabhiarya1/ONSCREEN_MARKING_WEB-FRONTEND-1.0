@@ -77,7 +77,7 @@ const DoughnutChart = ({realData}) => {
       },
       title: {
         display: true,
-        text: 'Task Status',
+        text: 'Category-Wise Distribution',
         font: {
           size: 18,
         },

@@ -93,7 +93,7 @@ const BarChart = ({ realData }) => {
       },
       title: {
         display: true,
-        text: "User Based Prformance",
+        text: "Overall Statistics",
         font: {
           size: 18,
         },
