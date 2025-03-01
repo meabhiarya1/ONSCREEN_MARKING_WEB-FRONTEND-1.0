@@ -124,11 +124,11 @@ const Dashboard = () => {
       )}
 
       <div className="mt-5 flex cursor-pointer justify-between">
-        <div className="hover:text-indigo-600">
+        <div className="text-indigo-600 font-semibold">
           Click on any above data to see detailed insights...
         </div>
         <div
-          className="hover:text-indigo-600"
+          className="bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition-all"
           onClick={() => {
             setShowData(!showData);
           }}
