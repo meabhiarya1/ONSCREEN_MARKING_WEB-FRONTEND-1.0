@@ -52,7 +52,7 @@ export function SignIn() {
       dispatch(login(response.data));
       navigate("/admin");
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error?.message);
       // console.log(error);
       setUser({
         email: user.email,

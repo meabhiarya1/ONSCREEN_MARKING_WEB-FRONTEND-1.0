@@ -20,7 +20,28 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = () => {
+const BarChart = ({ realData }) => {
+  const dataSets = {
+    Users: { labels: ["Admin", "Evaluator", "Moderator"], data: [10, 15, 20] },
+    Tasks: {
+      labels: ["Pending", "Completed", "In Progress"],
+      data: [20, 50, 10],
+    },
+    Schemas: { labels: ["Schema A", "Schema B", "Schema C"], data: [5, 8, 12] },
+    Classes: { labels: ["Class 1", "Class 2", "Class 3"], data: [25, 30, 40] },
+    Courses: { labels: ["Math", "Science", "English"], data: [12, 20, 15] },
+    Booklets: { labels: ["Booklet A", "Booklet B"], data: [100, 150] },
+    // ResultGenerated: { labels: ["Results Generated"], data: [100] },
+    // ScannedData: { labels: ["Scanned Data"], data: [150] },
+  };
+
+  const labels = Object.keys(dataSets);
+
+  // Generate dataset dynamically by summing up the `data` array for each category
+  const processedData = labels.map((category) =>
+    dataSets[category].data.reduce((acc, val) => acc + val, 0)
+  );
+
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -45,20 +66,13 @@ const BarChart = () => {
 
   // Bar chart data
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June"], // X-axis labels
+    labels, // X-axis labels dynamically generated
     datasets: [
       {
-        label: "Gaurav",
-        data: [30, 45, 60, 70, 80, 90],
+        label: "Total Count",
+        data: processedData, // Summed data for each category
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-      {
-        label: "Abhishek",
-        data: [50, 65, 40, 75, 95, 100],
-        backgroundColor: "rgba(153, 102, 255, 0.6)",
-        borderColor: "rgba(153, 102, 255, 1)",
         borderWidth: 1,
       },
     ],
