@@ -140,7 +140,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="my-8 text-4xl font-semibold">Data Analytics</div>
+      <div className="my-6 text-4xl font-semibold">Data Analytics</div>
 
       {/* Charts Area */}
       <div className="charts my-7 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
