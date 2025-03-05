@@ -12,8 +12,7 @@ import { MdLibraryBooks } from "react-icons/md";
 import { BsClipboard2DataFill } from "react-icons/bs";
 
 const Dashboard = () => {
-
-  useEffect(()=>{},[])
+  useEffect(() => {}, []);
 
   const [expandedChart, setExpandedChart] = useState(null);
   const [showData, setShowData] = useState(false);
@@ -60,7 +59,11 @@ const Dashboard = () => {
   return (
     <div className="dashboard relative p-5 dark:text-white">
       {/* Boxes Area */}
-      <div className="boxes mb-5 flex flex-col items-center justify-start gap-5 sm:gap-5 md:flex-row md:gap-3 lg:gap-7">
+      <div
+        className={`boxes mb-5 grid gap-3 overflow-auto pt-1 sm:gap-2 md:grid-cols-2 md:gap-3 lg:grid-cols-4 ${
+          showData ? "h-80 md:h-56 lg:h-32" : ""
+        }`}
+      >
         <Boxes
           icon={<FaUsers fontSize={36} />}
           title={"Users"}
@@ -89,11 +92,9 @@ const Dashboard = () => {
           // percentage={45}
           event={() => handleBoxClick("ResultGenerated")}
         />
-      </div>
-
-      {showData && (
-        <>
-          <div className="boxes flex flex-col items-center justify-start gap-5 transition-all sm:gap-5 md:flex-row md:gap-3 lg:gap-7">
+        {showData && (
+          <>
+            {/* <div className="boxes flex flex-col items-center justify-start gap-5 transition-all sm:gap-5 md:flex-row md:gap-3 lg:gap-7"> */}
             <Boxes
               icon={<BsClipboard2DataFill fontSize={36} />}
               title={"Schemas"}
@@ -122,16 +123,17 @@ const Dashboard = () => {
               // percentage={45}
               event={() => handleBoxClick("Booklets")}
             />
-          </div>
-        </>
-      )}
+            {/* </div> */}
+          </>
+        )}
+      </div>
 
-      <div className="mt-5 flex cursor-pointer justify-between">
-        <div className="text-indigo-600 font-semibold dark:text-indigo-400">
+      <div className="mt-2 flex cursor-pointer justify-between">
+        <div className="font-semibold text-indigo-600 dark:text-indigo-400">
           Click on any above data to see detailed insights...
         </div>
         <div
-          className="bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition-all"
+          className="rounded-lg bg-indigo-500 px-4 py-2 text-white transition-all hover:bg-indigo-600"
           onClick={() => {
             setShowData(!showData);
           }}
@@ -140,10 +142,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="my-6 text-4xl font-semibold">Data Analytics</div>
+      <div className="text-4xl font-semibold">Data Analytics</div>
 
       {/* Charts Area */}
-      <div className="charts my-7 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
+      <div className="charts mt-5 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
         {/* Bar Chart Section */}
         <div
           onClick={() => openChart("bar")}
