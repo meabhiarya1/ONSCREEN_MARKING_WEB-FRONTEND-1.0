@@ -12,6 +12,9 @@ import { MdLibraryBooks } from "react-icons/md";
 import { BsClipboard2DataFill } from "react-icons/bs";
 
 const Dashboard = () => {
+
+  useEffect(()=>{},[])
+
   const [expandedChart, setExpandedChart] = useState(null);
   const [showData, setShowData] = useState(false);
   const [selectedChartData, setSelectedChartData] = useState(null);
@@ -124,7 +127,7 @@ const Dashboard = () => {
       )}
 
       <div className="mt-5 flex cursor-pointer justify-between">
-        <div className="text-indigo-600 font-semibold">
+        <div className="text-indigo-600 font-semibold dark:text-indigo-400">
           Click on any above data to see detailed insights...
         </div>
         <div
@@ -137,7 +140,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="my-8 text-4xl font-semibold">Data Analytics</div>
+      <div className="my-6 text-4xl font-semibold">Data Analytics</div>
 
       {/* Charts Area */}
       <div className="charts my-7 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
