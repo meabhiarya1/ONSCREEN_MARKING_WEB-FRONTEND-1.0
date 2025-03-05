@@ -60,8 +60,8 @@ const Dashboard = () => {
     <div className="dashboard relative p-5 dark:text-white">
       {/* Boxes Area */}
       <div
-        className={`boxes mb-5 grid gap-5 overflow-auto pt-1 sm:gap-5 md:grid-cols-2 md:gap-3 lg:grid-cols-4 ${
-          showData ? "h-32" : ""
+        className={`boxes mb-5 grid gap-3 overflow-auto pt-1 sm:gap-2 md:grid-cols-2 md:gap-3 lg:grid-cols-4 ${
+          showData ? "h-80 md:h-56 lg:h-32" : ""
         }`}
       >
         <Boxes
@@ -145,7 +145,7 @@ const Dashboard = () => {
       <div className="text-4xl font-semibold">Data Analytics</div>
 
       {/* Charts Area */}
-      <div className="charts mt-7 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
+      <div className="charts mt-5 flex flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-7">
         {/* Bar Chart Section */}
         <div
           onClick={() => openChart("bar")}
